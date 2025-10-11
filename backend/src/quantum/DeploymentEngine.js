@@ -18,8 +18,10 @@ class DeploymentEngine {
    * Deploy an agent with one command
    */
   async deployAgent(config) {
-    const deploymentId = `deploy_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
+    const deploymentId = `deploy_${Date.now()}_${Math.random()
+      .toString(36)
+      .substr(2, 9)}`;
+
     logger.info(`🚀 Starting deployment: ${deploymentId}`);
 
     try {
@@ -76,7 +78,9 @@ class DeploymentEngine {
         timestamp: new Date().toISOString(),
       });
 
-      logger.info(`✅ Deployment complete in ${duration}ms: ${agent.name} (DNA: ${dnaScore.totalScore})`);
+      logger.info(
+        `✅ Deployment complete in ${duration}ms: ${agent.name} (DNA: ${dnaScore.totalScore})`
+      );
 
       return {
         success: true,
@@ -89,7 +93,7 @@ class DeploymentEngine {
       };
     } catch (error) {
       logger.error(`❌ Deployment failed: ${error.message}`);
-      
+
       this.deploymentHistory.push({
         id: deploymentId,
         status: 'failed',
@@ -136,18 +140,34 @@ class DeploymentEngine {
     }
 
     // Validate personality
-    const personalityFields = ['analytical', 'creative', 'empathetic', 'logical', 'intuitive', 'assertive'];
+    const personalityFields = [
+      'analytical',
+      'creative',
+      'empathetic',
+      'logical',
+      'intuitive',
+      'assertive',
+    ];
     for (const field of personalityFields) {
       if (config.personality[field] === undefined) {
         throw new Error(`Missing personality field: ${field}`);
       }
       if (config.personality[field] < 0 || config.personality[field] > 100) {
-        throw new Error(`Invalid personality value for ${field}: must be 0-100`);
+        throw new Error(
+          `Invalid personality value for ${field}: must be 0-100`
+        );
       }
     }
 
     // Validate skills
-    const skillFields = ['coding', 'communication', 'problemSolving', 'leadership', 'learning', 'cultural'];
+    const skillFields = [
+      'coding',
+      'communication',
+      'problemSolving',
+      'leadership',
+      'learning',
+      'cultural',
+    ];
     for (const field of skillFields) {
       if (config.skills[field] === undefined) {
         throw new Error(`Missing skill field: ${field}`);
@@ -158,7 +178,12 @@ class DeploymentEngine {
     }
 
     // Validate behavior
-    const behaviorFields = ['decisionSpeed', 'riskTolerance', 'workStyle', 'detailLevel'];
+    const behaviorFields = [
+      'decisionSpeed',
+      'riskTolerance',
+      'workStyle',
+      'detailLevel',
+    ];
     for (const field of behaviorFields) {
       if (config.behavior[field] === undefined) {
         throw new Error(`Missing behavior field: ${field}`);
@@ -218,7 +243,10 @@ class DeploymentEngine {
         score: agent.dnaScore,
       },
       systemPrompt: {
-        status: agent.systemPrompt && agent.systemPrompt.length > 100 ? 'healthy' : 'unhealthy',
+        status:
+          agent.systemPrompt && agent.systemPrompt.length > 100
+            ? 'healthy'
+            : 'unhealthy',
         length: agent.systemPrompt ? agent.systemPrompt.length : 0,
       },
       performance: {
@@ -227,9 +255,15 @@ class DeploymentEngine {
       },
     };
 
-    const allHealthy = Object.values(checks).every(check => check.status === 'healthy');
+    const allHealthy = Object.values(checks).every(
+      (check) => check.status === 'healthy'
+    );
 
-    logger.info(`  ${allHealthy ? '✅' : '⚠️'} Health check ${allHealthy ? 'passed' : 'has warnings'}`);
+    logger.info(
+      `  ${allHealthy ? '✅' : '⚠️'} Health check ${
+        allHealthy ? 'passed' : 'has warnings'
+      }`
+    );
 
     return {
       status: allHealthy ? 'healthy' : 'degraded',
@@ -306,14 +340,16 @@ class DeploymentEngine {
     const active = this.getActiveDeployments();
     const history = this.deploymentHistory;
 
-    const successful = history.filter(d => d.status === 'success').length;
-    const failed = history.filter(d => d.status === 'failed').length;
-    const successRate = history.length > 0 ? (successful / history.length) * 100 : 0;
+    const successful = history.filter((d) => d.status === 'success').length;
+    const failed = history.filter((d) => d.status === 'failed').length;
+    const successRate =
+      history.length > 0 ? (successful / history.length) * 100 : 0;
 
-    const averageDuration = active.reduce((sum, d) => sum + d.duration, 0) / (active.length || 1);
+    const averageDuration =
+      active.reduce((sum, d) => sum + d.duration, 0) / (active.length || 1);
 
     const byType = {};
-    active.forEach(d => {
+    active.forEach((d) => {
       byType[d.agent.type] = (byType[d.agent.type] || 0) + 1;
     });
 
@@ -325,7 +361,8 @@ class DeploymentEngine {
       successRate: Math.round(successRate * 100) / 100,
       averageDuration: Math.round(averageDuration),
       deploymentsByType: byType,
-      lastDeployment: history.length > 0 ? history[history.length - 1].timestamp : null,
+      lastDeployment:
+        history.length > 0 ? history[history.length - 1].timestamp : null,
     };
   }
 
@@ -336,13 +373,15 @@ class DeploymentEngine {
     logger.info(`📦 Batch deploying ${configs.length} agents...`);
 
     const results = await Promise.allSettled(
-      configs.map(config => this.deployAgent(config))
+      configs.map((config) => this.deployAgent(config))
     );
 
-    const successful = results.filter(r => r.status === 'fulfilled').length;
-    const failed = results.filter(r => r.status === 'rejected').length;
+    const successful = results.filter((r) => r.status === 'fulfilled').length;
+    const failed = results.filter((r) => r.status === 'rejected').length;
 
-    logger.info(`📊 Batch deployment complete: ${successful} succeeded, ${failed} failed`);
+    logger.info(
+      `📊 Batch deployment complete: ${successful} succeeded, ${failed} failed`
+    );
 
     return {
       total: configs.length,
@@ -361,4 +400,3 @@ class DeploymentEngine {
 // Export singleton instance
 const deploymentEngine = new DeploymentEngine();
 module.exports = deploymentEngine;
-

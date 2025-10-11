@@ -439,6 +439,11 @@ const quantumRoutes = require('./routes/quantum');
 app.use('/api/quantum', quantumRoutes);
 logger.info('✅ Quantum System Routes mounted successfully');
 
+// ============ Admin Dashboard Routes ============
+const adminDashboardRoutes = require('./routes/admin-dashboard');
+app.use('/api/admin', adminDashboardRoutes);
+logger.info('✅ Admin Dashboard Routes mounted successfully');
+
 // Advanced Telegram Bot (only start if token is provided and not in test mode)
 if (process.env.TELEGRAM_BOT_TOKEN && process.env.NODE_ENV !== 'test') {
   // Check if token is a placeholder
