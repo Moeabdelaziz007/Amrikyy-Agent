@@ -14,7 +14,7 @@ class CountryAgent {
     this.country = countryConfig.country;
     this.countryCode = countryConfig.countryCode;
     this.config = countryConfig;
-    
+
     // Load DNA from preset or custom config
     if (countryConfig.presetKey) {
       const preset = agentDNAEngine.getPreset(countryConfig.presetKey);
@@ -27,7 +27,7 @@ class CountryAgent {
 
     // Calculate DNA Score
     this.dnaScore = agentDNAEngine.calculateDNAScore(this);
-    
+
     // Generate system prompt
     this.systemPrompt = agentDNAEngine.generateSystemPrompt(this);
 
@@ -48,7 +48,9 @@ class CountryAgent {
     this.updateTimer = null;
     this.isUpdating = false;
 
-    logger.info(`✅ ${this.name} initialized (DNA Score: ${this.dnaScore.totalScore})`);
+    logger.info(
+      `✅ ${this.name} initialized (DNA Score: ${this.dnaScore.totalScore})`
+    );
   }
 
   /**
@@ -61,7 +63,7 @@ class CountryAgent {
     }
 
     logger.info(`🔄 Starting auto-updates for ${this.name} (every 15 minutes)`);
-    
+
     // Initial update
     this.updateKnowledge();
 
@@ -117,7 +119,10 @@ class CountryAgent {
       // Cache the knowledge
       await this.cacheKnowledge();
     } catch (error) {
-      logger.error(`❌ Failed to update ${this.name} knowledge:`, error.message);
+      logger.error(
+        `❌ Failed to update ${this.name} knowledge:`,
+        error.message
+      );
     } finally {
       this.isUpdating = false;
     }
@@ -144,7 +149,10 @@ class CountryAgent {
 
       return attractions;
     } catch (error) {
-      logger.error(`Failed to fetch attractions for ${this.country}:`, error.message);
+      logger.error(
+        `Failed to fetch attractions for ${this.country}:`,
+        error.message
+      );
       return [];
     }
   }
@@ -206,7 +214,7 @@ class CountryAgent {
     if (redisService.isConnected) {
       const cacheKey = `country-agent:${this.countryCode}:knowledge`;
       const cached = await redisService.get(cacheKey);
-      
+
       if (cached) {
         this.knowledge = cached;
         logger.info(`✅ Loaded cached knowledge for ${this.name}`);
@@ -245,7 +253,10 @@ class CountryAgent {
         response,
         intent,
         knowledgeAge: this.knowledge.lastUpdate
-          ? Math.round((Date.now() - new Date(this.knowledge.lastUpdate).getTime()) / 1000)
+          ? Math.round(
+              (Date.now() - new Date(this.knowledge.lastUpdate).getTime()) /
+                1000
+            )
           : null,
       };
     } catch (error) {
@@ -265,7 +276,14 @@ class CountryAgent {
     const lowerQuery = query.toLowerCase();
 
     const intents = {
-      attractions: ['attraction', 'place', 'visit', 'see', 'landmark', 'monument'],
+      attractions: [
+        'attraction',
+        'place',
+        'visit',
+        'see',
+        'landmark',
+        'monument',
+      ],
       tours: ['tour', 'guide', 'audio', 'walk', 'trip'],
       hotels: ['hotel', 'stay', 'accommodation', 'resort', 'lodge'],
       weather: ['weather', 'temperature', 'climate', 'season'],
@@ -348,12 +366,16 @@ class CountryAgent {
   getGeneralResponse(query) {
     return {
       type: 'general',
-      message: `As your ${this.country} expert, I'm here to help! I have extensive knowledge about ${this.domainExpertise.join(', ')}. What would you like to know?`,
+      message: `As your ${
+        this.country
+      } expert, I'm here to help! I have extensive knowledge about ${this.domainExpertise.join(
+        ', '
+      )}. What would you like to know?`,
       suggestions: [
         'Show me top attractions',
         'What are the best tours?',
         'Tell me about local culture',
-        'What\'s the weather like?',
+        "What's the weather like?",
         'Where should I stay?',
       ],
     };
@@ -374,7 +396,10 @@ class CountryAgent {
         tours: this.knowledge.tours.length,
         lastUpdate: this.knowledge.lastUpdate,
         ageSeconds: this.knowledge.lastUpdate
-          ? Math.round((Date.now() - new Date(this.knowledge.lastUpdate).getTime()) / 1000)
+          ? Math.round(
+              (Date.now() - new Date(this.knowledge.lastUpdate).getTime()) /
+                1000
+            )
           : null,
       },
       autoUpdate: {
@@ -400,4 +425,3 @@ class CountryAgent {
 }
 
 module.exports = CountryAgent;
-

@@ -32,13 +32,18 @@ class AgentDNAEngine {
       // Base scores
       const personalityScore = this.calculatePersonalityScore(dna.personality);
       const skillScore = this.calculateSkillScore(dna.skills);
-      const behaviorScore = this.calculateBehaviorScore(dna.behavior, dna.specialization);
+      const behaviorScore = this.calculateBehaviorScore(
+        dna.behavior,
+        dna.specialization
+      );
 
       // Synergy bonus (how well traits work together)
       const synergyBonus = this.calculateSynergy(dna);
 
       // Specialization multiplier
-      const specializationMultiplier = this.getSpecializationMultiplier(dna.specialization);
+      const specializationMultiplier = this.getSpecializationMultiplier(
+        dna.specialization
+      );
 
       // Final quantum score calculation
       const rawScore =
@@ -88,7 +93,8 @@ class AgentDNAEngine {
 
     // Diversity bonus: reward balanced personalities
     const variance =
-      traits.reduce((sum, val) => sum + Math.pow(val - average, 2), 0) / traits.length;
+      traits.reduce((sum, val) => sum + Math.pow(val - average, 2), 0) /
+      traits.length;
     const stdDev = Math.sqrt(variance);
     const diversityBonus = Math.min(stdDev / 2, 20); // Max 20 points
 
@@ -271,7 +277,10 @@ class AgentDNAEngine {
           : potential > 50
           ? 'Moderate'
           : 'Limited',
-      maxTier: Math.min(currentLevel + Math.floor(roomForGrowth * (potential / 100)), 10),
+      maxTier: Math.min(
+        currentLevel + Math.floor(roomForGrowth * (potential / 100)),
+        10
+      ),
       timeToNext: this.estimateTimeToNextLevel(potential, currentLevel),
     };
   }
@@ -313,11 +322,13 @@ class AgentDNAEngine {
   findWeakestArea(dna) {
     let weakest = { name: '', value: 100 };
 
-    Object.entries({ ...dna.personality, ...dna.skills }).forEach(([key, value]) => {
-      if (value < weakest.value) {
-        weakest = { name: key, value };
+    Object.entries({ ...dna.personality, ...dna.skills }).forEach(
+      ([key, value]) => {
+        if (value < weakest.value) {
+          weakest = { name: key, value };
+        }
       }
-    });
+    );
 
     return weakest;
   }
@@ -328,11 +339,13 @@ class AgentDNAEngine {
   findStrongestArea(dna) {
     let strongest = { name: '', value: 0 };
 
-    Object.entries({ ...dna.personality, ...dna.skills }).forEach(([key, value]) => {
-      if (value > strongest.value) {
-        strongest = { name: key, value };
+    Object.entries({ ...dna.personality, ...dna.skills }).forEach(
+      ([key, value]) => {
+        if (value > strongest.value) {
+          strongest = { name: key, value };
+        }
       }
-    });
+    );
 
     return strongest;
   }
@@ -389,7 +402,9 @@ class AgentDNAEngine {
     const skills = this.describeSkills(dna.skills);
     const behavior = this.describeBehavior(dna.behavior);
 
-    return `You are ${agent.name || 'an AI agent'}, ${agent.specialization || 'a general assistant'}.
+    return `You are ${agent.name || 'an AI agent'}, ${
+      agent.specialization || 'a general assistant'
+    }.
 
 🧬 DNA Profile
 - DNA Score: ${score.totalScore}/1000
@@ -406,11 +421,19 @@ ${skills}
 ${behavior}
 
 🌍 Specialization: ${agent.specialization || 'General'}
-${agent.domainExpertise && agent.domainExpertise.length > 0 ? `📚 Domain Expertise: ${agent.domainExpertise.join(', ')}` : ''}
+${
+  agent.domainExpertise && agent.domainExpertise.length > 0
+    ? `📚 Domain Expertise: ${agent.domainExpertise.join(', ')}`
+    : ''
+}
 
 Your mission is to provide the highest quality assistance while continuously learning and evolving. You embody these characteristics in every interaction, adapting your approach based on user needs while staying true to your core DNA.
 
-${score.tier >= 7 ? '\nAs a Legendary-tier agent, you demonstrate exceptional capabilities and can handle the most complex challenges with ease.' : ''}`;
+${
+  score.tier >= 7
+    ? '\nAs a Legendary-tier agent, you demonstrate exceptional capabilities and can handle the most complex challenges with ease.'
+    : ''
+}`;
   }
 
   /**
@@ -452,10 +475,18 @@ ${score.tier >= 7 ? '\nAs a Legendary-tier agent, you demonstrate exceptional ca
    * Describe behavior
    */
   describeBehavior(behavior) {
-    return `- Decision Speed: ${behavior.decisionSpeed > 50 ? 'Quick' : 'Thorough'} (${behavior.decisionSpeed}%)
-- Risk Tolerance: ${behavior.riskTolerance > 50 ? 'Bold' : 'Conservative'} (${behavior.riskTolerance}%)
-- Work Style: ${behavior.workStyle > 50 ? 'Collaborative' : 'Independent'} (${behavior.workStyle}%)
-- Detail Focus: ${behavior.detailLevel > 50 ? 'Meticulous' : 'Big Picture'} (${behavior.detailLevel}%)`;
+    return `- Decision Speed: ${
+      behavior.decisionSpeed > 50 ? 'Quick' : 'Thorough'
+    } (${behavior.decisionSpeed}%)
+- Risk Tolerance: ${behavior.riskTolerance > 50 ? 'Bold' : 'Conservative'} (${
+      behavior.riskTolerance
+    }%)
+- Work Style: ${behavior.workStyle > 50 ? 'Collaborative' : 'Independent'} (${
+      behavior.workStyle
+    }%)
+- Detail Focus: ${behavior.detailLevel > 50 ? 'Meticulous' : 'Big Picture'} (${
+      behavior.detailLevel
+    }%)`;
   }
 
   /**
@@ -673,4 +704,3 @@ ${score.tier >= 7 ? '\nAs a Legendary-tier agent, you demonstrate exceptional ca
 // Export singleton instance
 const agentDNAEngine = new AgentDNAEngine();
 module.exports = agentDNAEngine;
-

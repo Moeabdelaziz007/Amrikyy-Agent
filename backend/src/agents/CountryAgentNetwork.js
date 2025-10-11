@@ -61,7 +61,9 @@ class CountryAgentNetwork {
     });
 
     this.isInitialized = true;
-    logger.info(`✅ Country Agent Network initialized with ${this.agents.size} agents`);
+    logger.info(
+      `✅ Country Agent Network initialized with ${this.agents.size} agents`
+    );
   }
 
   /**
@@ -112,7 +114,9 @@ class CountryAgentNetwork {
     // If no specific country, query all agents and synthesize
     logger.info('🌍 Broadcasting query to all agents...');
     const responses = await Promise.all(
-      Array.from(this.agents.values()).map((agent) => agent.processQuery(query, context))
+      Array.from(this.agents.values()).map((agent) =>
+        agent.processQuery(query, context)
+      )
     );
 
     return this.synthesizeResponses(responses, query);
@@ -129,7 +133,8 @@ class CountryAgentNetwork {
       const normalized = context.country.toLowerCase();
       if (normalized.includes('egypt')) return 'egypt';
       if (normalized.includes('saudi')) return 'saudi';
-      if (normalized.includes('uae') || normalized.includes('dubai')) return 'uae';
+      if (normalized.includes('uae') || normalized.includes('dubai'))
+        return 'uae';
     }
 
     // Check query
@@ -177,7 +182,10 @@ class CountryAgentNetwork {
     const allTours = [];
 
     successful.forEach((response) => {
-      if (response.response.type === 'attractions' && response.response.highlights) {
+      if (
+        response.response.type === 'attractions' &&
+        response.response.highlights
+      ) {
         allAttractions.push(...response.response.highlights);
       }
       if (response.response.type === 'tours' && response.response.highlights) {
@@ -203,16 +211,21 @@ class CountryAgentNetwork {
    * Get network status
    */
   getNetworkStatus() {
-    const agentStatuses = Array.from(this.agents.entries()).map(([key, agent]) => ({
-      key,
-      ...agent.getStatus(),
-    }));
+    const agentStatuses = Array.from(this.agents.entries()).map(
+      ([key, agent]) => ({
+        key,
+        ...agent.getStatus(),
+      })
+    );
 
     const totalAttractions = agentStatuses.reduce(
       (sum, a) => sum + a.knowledge.attractions,
       0
     );
-    const totalTours = agentStatuses.reduce((sum, a) => sum + a.knowledge.tours, 0);
+    const totalTours = agentStatuses.reduce(
+      (sum, a) => sum + a.knowledge.tours,
+      0
+    );
 
     return {
       network: 'Country Agent Network',
@@ -248,4 +261,3 @@ class CountryAgentNetwork {
 // Export singleton instance
 const countryAgentNetwork = new CountryAgentNetwork();
 module.exports = countryAgentNetwork;
-
