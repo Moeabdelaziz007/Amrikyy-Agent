@@ -444,6 +444,11 @@ const adminDashboardRoutes = require('./routes/admin-dashboard');
 app.use('/api/admin', adminDashboardRoutes);
 logger.info('✅ Admin Dashboard Routes mounted successfully');
 
+// ============ Sabre Travel Booking Routes ============
+const sabreRoutes = require('./routes/sabre');
+app.use('/api/sabre', sabreRoutes);
+logger.info('✅ Sabre Travel Booking Routes mounted successfully');
+
 // Advanced Telegram Bot (only start if token is provided and not in test mode)
 if (process.env.TELEGRAM_BOT_TOKEN && process.env.NODE_ENV !== 'test') {
   // Check if token is a placeholder
