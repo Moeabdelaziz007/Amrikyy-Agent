@@ -434,6 +434,11 @@ const iziTravelRoutes = require('./routes/izi-travel');
 app.use('/api/izi-travel', iziTravelRoutes);
 logger.info('✅ izi.TRAVEL API Routes mounted successfully');
 
+// ============ Quantum System Routes (DNA Engine + Country Agents) ============
+const quantumRoutes = require('./routes/quantum');
+app.use('/api/quantum', quantumRoutes);
+logger.info('✅ Quantum System Routes mounted successfully');
+
 // Advanced Telegram Bot (only start if token is provided and not in test mode)
 if (process.env.TELEGRAM_BOT_TOKEN && process.env.NODE_ENV !== 'test') {
   // Check if token is a placeholder
