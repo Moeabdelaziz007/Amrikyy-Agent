@@ -81,7 +81,9 @@ class StripeService {
   /**
    * Create payment intent
    */
-  async createPaymentIntent(data: PaymentIntentRequest): Promise<PaymentIntentResponse> {
+  async createPaymentIntent(
+    data: PaymentIntentRequest
+  ): Promise<PaymentIntentResponse> {
     const response = await this.api.post('/payment/create-intent', data);
     return response.data;
   }
@@ -105,7 +107,9 @@ class StripeService {
   /**
    * Create subscription
    */
-  async createSubscription(data: SubscriptionRequest): Promise<SubscriptionResponse> {
+  async createSubscription(
+    data: SubscriptionRequest
+  ): Promise<SubscriptionResponse> {
     const response = await this.api.post('/payment/create-subscription', data);
     return response.data;
   }
@@ -113,7 +117,10 @@ class StripeService {
   /**
    * Cancel subscription
    */
-  async cancelSubscription(subscriptionId: string, immediate: boolean = false): Promise<any> {
+  async cancelSubscription(
+    subscriptionId: string,
+    immediate: boolean = false
+  ): Promise<any> {
     const response = await this.api.post('/payment/cancel-subscription', {
       subscriptionId,
       immediate,
@@ -124,23 +131,36 @@ class StripeService {
   /**
    * Create checkout session
    */
-  async createCheckoutSession(data: CheckoutSessionRequest): Promise<CheckoutSessionResponse> {
-    const response = await this.api.post('/payment/create-checkout-session', data);
+  async createCheckoutSession(
+    data: CheckoutSessionRequest
+  ): Promise<CheckoutSessionResponse> {
+    const response = await this.api.post(
+      '/payment/create-checkout-session',
+      data
+    );
     return response.data;
   }
 
   /**
    * Get payment intent
    */
-  async getPaymentIntent(paymentIntentId: string): Promise<PaymentIntentResponse> {
-    const response = await this.api.get(`/payment/payment-intent/${paymentIntentId}`);
+  async getPaymentIntent(
+    paymentIntentId: string
+  ): Promise<PaymentIntentResponse> {
+    const response = await this.api.get(
+      `/payment/payment-intent/${paymentIntentId}`
+    );
     return response.data;
   }
 
   /**
    * Create refund
    */
-  async createRefund(paymentIntentId: string, amount?: number, reason?: string): Promise<any> {
+  async createRefund(
+    paymentIntentId: string,
+    amount?: number,
+    reason?: string
+  ): Promise<any> {
     const response = await this.api.post('/payment/create-refund', {
       paymentIntentId,
       amount,
@@ -152,7 +172,10 @@ class StripeService {
   /**
    * List customer payment methods
    */
-  async listPaymentMethods(customerId: string, type: string = 'card'): Promise<any[]> {
+  async listPaymentMethods(
+    customerId: string,
+    type: string = 'card'
+  ): Promise<any[]> {
     const response = await this.api.get('/payment/payment-methods', {
       params: { customerId, type },
     });
@@ -171,4 +194,3 @@ class StripeService {
 // Export singleton instance
 export const stripeService = new StripeService();
 export default stripeService;
-

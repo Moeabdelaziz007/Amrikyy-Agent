@@ -61,8 +61,13 @@ class IziTravelService {
   /**
    * Get object details
    */
-  async getObject(uuid: string, params?: { form?: string; languages?: string }): Promise<IziTour> {
-    const response = await this.api.get(`/izi-travel/object/${uuid}`, { params });
+  async getObject(
+    uuid: string,
+    params?: { form?: string; languages?: string }
+  ): Promise<IziTour> {
+    const response = await this.api.get(`/izi-travel/object/${uuid}`, {
+      params,
+    });
     return response.data.object;
   }
 
@@ -141,24 +146,39 @@ class IziTravelService {
   /**
    * Get reviews for an object
    */
-  async getReviews(uuid: string, params?: { languages?: string; limit?: number }): Promise<any[]> {
-    const response = await this.api.get(`/izi-travel/object/${uuid}/reviews`, { params });
+  async getReviews(
+    uuid: string,
+    params?: { languages?: string; limit?: number }
+  ): Promise<any[]> {
+    const response = await this.api.get(`/izi-travel/object/${uuid}/reviews`, {
+      params,
+    });
     return response.data.reviews || [];
   }
 
   /**
    * Get children of an object (e.g., exhibits in museum)
    */
-  async getChildren(uuid: string, params?: { languages?: string; form?: string }): Promise<any[]> {
-    const response = await this.api.get(`/izi-travel/object/${uuid}/children`, { params });
+  async getChildren(
+    uuid: string,
+    params?: { languages?: string; form?: string }
+  ): Promise<any[]> {
+    const response = await this.api.get(`/izi-travel/object/${uuid}/children`, {
+      params,
+    });
     return response.data.children || [];
   }
 
   /**
    * Search by city
    */
-  async searchByCity(cityUuid: string, params?: { type?: string; languages?: string }): Promise<IziTour[]> {
-    const response = await this.api.get(`/izi-travel/city/${cityUuid}/search`, { params });
+  async searchByCity(
+    cityUuid: string,
+    params?: { type?: string; languages?: string }
+  ): Promise<IziTour[]> {
+    const response = await this.api.get(`/izi-travel/city/${cityUuid}/search`, {
+      params,
+    });
     return response.data.results || [];
   }
 
@@ -182,4 +202,3 @@ class IziTravelService {
 // Export singleton instance
 export const iziTravelService = new IziTravelService();
 export default iziTravelService;
-
