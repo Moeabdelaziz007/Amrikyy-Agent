@@ -3,9 +3,11 @@
 ## 🎯 **What These Tools Bring**
 
 ### **vLLM-Mixed-Precision**
+
 High-performance LLM inference engine with mixed-precision support.
 
 **Key Benefits:**
+
 - ⚡ **2.1x faster** than AWQ (35.02 vs 16.71 iterations/sec)
 - 🚀 **2.2x faster completion** (4.5 min vs 10 min)
 - 💾 **Lower memory footprint** via mixed precision
@@ -13,9 +15,11 @@ High-performance LLM inference engine with mixed-precision support.
 - 📈 **Higher throughput** for LLM inference
 
 ### **MIXQ**
+
 Advanced mixed-precision quantization with dynamic outlier handling.
 
 **Key Benefits:**
+
 - 🎯 **Online outlier prediction** (handles dynamic patterns)
 - 📊 **Better accuracy** than static quantization
 - 🔧 **Tames outliers** automatically
@@ -27,13 +31,17 @@ Advanced mixed-precision quantization with dynamic outlier handling.
 ## 💡 **Why This Is PERFECT for Our Quantum System**
 
 ### **Current Bottleneck:**
+
 Our AI agents use Z.ai GLM-4.6, but we need:
+
 - Faster inference (for real-time responses)
 - Lower costs (for scalability)
 - Better quality (for user satisfaction)
 
 ### **Solution:**
+
 vLLM + MIXQ gives us:
+
 ```
 Traditional LLM:
 - Speed: 16.71 iter/sec
@@ -109,7 +117,7 @@ class VLLMService:
             outlier_threshold=3.0,
             precision_bits=8  # Mixed 8-bit/16-bit
         )
-        
+
         # Initialize vLLM engine with mixed precision
         self.llm = LLM(
             model=model_path,
@@ -119,7 +127,7 @@ class VLLMService:
             gpu_memory_utilization=0.9,
             max_model_len=4096
         )
-        
+
         # Sampling parameters
         self.sampling_params = SamplingParams(
             temperature=0.7,
@@ -128,14 +136,14 @@ class VLLMService:
             presence_penalty=0.1,
             frequency_penalty=0.1
         )
-        
+
         self.performance_metrics = {
             'total_requests': 0,
             'avg_latency_ms': 0,
             'throughput_tokens_per_sec': 0,
             'quantization_quality': 0
         }
-    
+
     async def generate(
         self,
         prompt: str,
@@ -146,29 +154,29 @@ class VLLMService:
         Generate response using vLLM + MIXQ
         """
         start_time = time.time()
-        
+
         # Build full prompt
         full_prompt = f"{system_prompt}\n\nUser: {prompt}\n\nAssistant:"
-        
+
         # Apply MIXQ quantization (handles outliers dynamically)
         quantized_prompt = self.quantizer.quantize_online(full_prompt)
-        
+
         # Generate with vLLM
         outputs = self.llm.generate(
             [quantized_prompt],
             self.sampling_params
         )
-        
+
         # Extract response
         response_text = outputs[0].outputs[0].text
-        
+
         # Calculate metrics
         latency = (time.time() - start_time) * 1000
         tokens = len(response_text.split())
-        
+
         # Update performance metrics
         self._update_metrics(latency, tokens)
-        
+
         return {
             'response': response_text,
             'latency_ms': latency,
@@ -176,7 +184,7 @@ class VLLMService:
             'quantization_stats': self.quantizer.get_stats(),
             'metrics': self.performance_metrics
         }
-    
+
     async def batch_generate(
         self,
         prompts: List[str],
@@ -187,24 +195,24 @@ class VLLMService:
         """
         if system_prompts is None:
             system_prompts = [""] * len(prompts)
-        
+
         # Build all prompts
         full_prompts = [
             f"{sys_prompt}\n\nUser: {prompt}\n\nAssistant:"
             for sys_prompt, prompt in zip(system_prompts, prompts)
         ]
-        
+
         # Quantize batch
         quantized_prompts = [
             self.quantizer.quantize_online(p) for p in full_prompts
         ]
-        
+
         # Generate batch
         outputs = self.llm.generate(
             quantized_prompts,
             self.sampling_params
         )
-        
+
         # Extract responses
         return [
             {
@@ -213,24 +221,24 @@ class VLLMService:
             }
             for output in outputs
         ]
-    
+
     def _update_metrics(self, latency: float, tokens: int):
         """Update performance metrics"""
         self.performance_metrics['total_requests'] += 1
-        
+
         # Exponential moving average
         alpha = 0.1
         self.performance_metrics['avg_latency_ms'] = (
             alpha * latency +
             (1 - alpha) * self.performance_metrics['avg_latency_ms']
         )
-        
+
         throughput = tokens / (latency / 1000)
         self.performance_metrics['throughput_tokens_per_sec'] = (
             alpha * throughput +
             (1 - alpha) * self.performance_metrics['throughput_tokens_per_sec']
         )
-    
+
     def get_metrics(self) -> Dict:
         """Get current performance metrics"""
         return {
@@ -238,15 +246,15 @@ class VLLMService:
             'quantization_quality': self.quantizer.get_quality_score(),
             'outliers_handled': self.quantizer.get_outlier_count()
         }
-    
+
     def optimize(self):
         """Auto-optimize based on performance"""
         metrics = self.get_metrics()
-        
+
         # If latency too high, increase quantization
         if metrics['avg_latency_ms'] > 100:
             self.quantizer.increase_compression()
-        
+
         # If quality drops, reduce quantization
         if metrics['quantization_quality'] < 0.95:
             self.quantizer.decrease_compression()
@@ -267,17 +275,17 @@ const axios = require('axios');
 class VLLMAgentNode extends AgentNode {
   constructor(config) {
     super(config);
-    
+
     this.vllmEndpoint = config.vllmEndpoint || 'http://localhost:8000';
     this.useMixedPrecision = config.useMixedPrecision !== false;
     this.batchSize = config.batchSize || 1;
-    
+
     // vLLM-specific metrics
     this.vllmMetrics = {
       avgInferenceTime: 0,
       throughput: 0,
       quantizationQuality: 1.0,
-      outliersHandled: 0
+      outliersHandled: 0,
     };
   }
 
@@ -288,7 +296,7 @@ class VLLMAgentNode extends AgentNode {
         prompt: enhancedQuery.query,
         system_prompt: this.systemPrompt,
         context: enhancedQuery.context,
-        mixed_precision: this.useMixedPrecision
+        mixed_precision: this.useMixedPrecision,
       });
 
       // Update vLLM metrics
@@ -299,7 +307,7 @@ class VLLMAgentNode extends AgentNode {
         confidence: response.data.quantization_stats.confidence,
         sources: this._extractSources(response.data),
         inferenceTime: response.data.latency_ms,
-        vllmOptimized: true
+        vllmOptimized: true,
       };
     } catch (error) {
       // Fallback to classical execution if vLLM fails
@@ -310,11 +318,11 @@ class VLLMAgentNode extends AgentNode {
 
   _updateVLLMMetrics(metrics) {
     const alpha = 0.1;
-    
-    this.vllmMetrics.avgInferenceTime = 
-      alpha * metrics.latency_ms + 
+
+    this.vllmMetrics.avgInferenceTime =
+      alpha * metrics.latency_ms +
       (1 - alpha) * this.vllmMetrics.avgInferenceTime;
-    
+
     this.vllmMetrics.throughput = metrics.throughput_tokens_per_sec;
     this.vllmMetrics.quantizationQuality = metrics.quantization_quality;
     this.vllmMetrics.outliersHandled = metrics.outliers_handled;
@@ -328,8 +336,8 @@ class VLLMAgentNode extends AgentNode {
         enabled: true,
         mixedPrecision: this.useMixedPrecision,
         metrics: this.vllmMetrics,
-        speedup: this._calculateSpeedup()
-      }
+        speedup: this._calculateSpeedup(),
+      },
     };
   }
 
@@ -450,12 +458,12 @@ version: '3.8'
 
 services:
   # Existing services...
-  
+
   vllm-service:
     build: ./backend/vllm-service
     container_name: vllm-mixq
     ports:
-      - "8000:8000"
+      - '8000:8000'
     environment:
       - CUDA_VISIBLE_DEVICES=0
       - MODEL_PATH=THUDM/glm-4-9b
@@ -487,6 +495,7 @@ networks:
 ## 📊 **Expected Performance Gains**
 
 ### **Before (Traditional LLM):**
+
 ```
 Egypt Agent Query:
 - Inference Time: 500ms
@@ -496,6 +505,7 @@ Egypt Agent Query:
 ```
 
 ### **After (vLLM + MIXQ):**
+
 ```
 Egypt Agent Query:
 - Inference Time: 238ms (2.1x faster) ⚡
@@ -509,26 +519,28 @@ Egypt Agent Query:
 ## 🎯 **Integration Benefits**
 
 ### **1. Quantum Simulation Enhancement**
+
 ```javascript
 // Now quantum simulation can test vLLM strategies!
 const quantumSim = new QuantumSimulationEngine({
   strategies: [
-    'vllm-optimistic',  // Full mixed precision
-    'vllm-balanced',    // Adaptive quantization
-    'vllm-quality',     // Minimal quantization
-    'classical-safe',   // Fallback to regular
-  ]
+    'vllm-optimistic', // Full mixed precision
+    'vllm-balanced', // Adaptive quantization
+    'vllm-quality', // Minimal quantization
+    'classical-safe', // Fallback to regular
+  ],
 });
 ```
 
 ### **2. Agent Intelligence Boost**
+
 ```javascript
 // Agents get faster AND smarter
 const egyptAgent = new VLLMAgentNode({
   dna: { score: 850 },
   vllmEndpoint: 'http://vllm-service:8000',
   useMixedPrecision: true,
-  batchSize: 8  // Process 8 queries simultaneously
+  batchSize: 8, // Process 8 queries simultaneously
 });
 
 // Intelligence evolution is now 2.1x faster!
@@ -537,14 +549,15 @@ const egyptAgent = new VLLMAgentNode({
 ```
 
 ### **3. System-Wide Optimization**
+
 ```javascript
 // All agents benefit from vLLM
 const workflow = await system.createQuantumWorkflow({
   nodes: [
-    { type: 'agent', vllmEnabled: true },  // Egypt
-    { type: 'agent', vllmEnabled: true },  // Saudi
-    { type: 'agent', vllmEnabled: true },  // UAE
-  ]
+    { type: 'agent', vllmEnabled: true }, // Egypt
+    { type: 'agent', vllmEnabled: true }, // Saudi
+    { type: 'agent', vllmEnabled: true }, // UAE
+  ],
 });
 
 // System now handles:
@@ -558,6 +571,7 @@ const workflow = await system.createQuantumWorkflow({
 ## 🚀 **Quick Start**
 
 ### **Step 1: Install Dependencies**
+
 ```bash
 # Clone vLLM-mixed-precision
 git clone https://github.com/Qcompiler/vllm-mixed-precision.git
@@ -571,23 +585,26 @@ cd ../MIXQ && pip install -e .
 ```
 
 ### **Step 2: Start vLLM Service**
+
 ```bash
 cd backend/vllm-service
 docker-compose up vllm-service
 ```
 
 ### **Step 3: Update Agent Configuration**
+
 ```javascript
 // In your quantum workflow
 const egyptAgent = new VLLMAgentNode({
   name: 'Egypt Expert',
   dna: { score: 850 },
   vllmEndpoint: 'http://localhost:8000',
-  useMixedPrecision: true
+  useMixedPrecision: true,
 });
 ```
 
 ### **Step 4: Test**
+
 ```bash
 curl -X POST http://localhost:8000/generate \
   -H "Content-Type: application/json" \
@@ -602,6 +619,7 @@ curl -X POST http://localhost:8000/generate \
 ## 💡 **Advanced Features**
 
 ### **1. Adaptive Quantization**
+
 ```python
 # MIXQ automatically adjusts based on input
 quantizer.set_adaptive_mode(
@@ -612,6 +630,7 @@ quantizer.set_adaptive_mode(
 ```
 
 ### **2. Batch Processing**
+
 ```javascript
 // Process multiple queries efficiently
 const results = await egyptAgent.batchProcess([
@@ -623,6 +642,7 @@ const results = await egyptAgent.batchProcess([
 ```
 
 ### **3. Real-Time Optimization**
+
 ```python
 # vLLM auto-optimizes during runtime
 vllm_service.enable_auto_optimization(
@@ -636,6 +656,7 @@ vllm_service.enable_auto_optimization(
 ## 🌟 **Summary**
 
 ### **What We Get:**
+
 - ⚡ **2.1x faster** inference
 - 💰 **40% lower** costs
 - ✨ **Better quality** (outlier handling)
@@ -644,6 +665,7 @@ vllm_service.enable_auto_optimization(
 - 🧠 **Smarter agents** (faster evolution)
 
 ### **Integration Status:**
+
 - ✅ Architecture designed
 - ✅ Code examples provided
 - ✅ Docker setup ready
@@ -654,4 +676,3 @@ vllm_service.enable_auto_optimization(
 ---
 
 **This transforms our Quantum System from fast to LIGHTNING FAST!** ⚡🌌
-
