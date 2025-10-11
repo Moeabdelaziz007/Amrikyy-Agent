@@ -9,61 +9,56 @@ This document specifies exactly what needs to be built in the frontend UI. All b
 ## 🏠 **Page 1: Landing/Home Page**
 
 ### Purpose
+
 First impression, value proposition, country selection
 
 ### Components Needed
 
 #### 1. Hero Section
+
 ```tsx
 <Hero>
-  - Headline: "Plan Your Perfect Trip to the Middle East"
-  - Subheadline: "AI-powered travel planning for Egypt, Saudi Arabia & UAE"
-  - CTA Button: "Start Planning" → /planner
-  - Background: Stunning image carousel (Pyramids, Mecca, Dubai)
+  - Headline: "Plan Your Perfect Trip to the Middle East" - Subheadline:
+  "AI-powered travel planning for Egypt, Saudi Arabia & UAE" - CTA Button:
+  "Start Planning" → /planner - Background: Stunning image carousel (Pyramids,
+  Mecca, Dubai)
 </Hero>
 ```
 
 #### 2. Country Cards
+
 ```tsx
 <CountrySelector>
-  - Card 1: Egypt 🇪🇬
-    - Icon/Image: Pyramids
-    - Description: "Ancient wonders & Nile cruises"
-    - Button: "Explore Egypt" → /planner?country=egypt
-  
-  - Card 2: Saudi Arabia 🇸🇦
-    - Icon/Image: Kaaba
-    - Description: "Hajj, Umrah & Islamic heritage"
-    - Button: "Explore Saudi" → /planner?country=saudi
-  
-  - Card 3: UAE 🇦🇪
-    - Icon/Image: Burj Khalifa
-    - Description: "Luxury & modern marvels"
-    - Button: "Explore UAE" → /planner?country=uae
+  - Card 1: Egypt 🇪🇬 - Icon/Image: Pyramids - Description: "Ancient wonders &
+  Nile cruises" - Button: "Explore Egypt" → /planner?country=egypt - Card 2:
+  Saudi Arabia 🇸🇦 - Icon/Image: Kaaba - Description: "Hajj, Umrah & Islamic
+  heritage" - Button: "Explore Saudi" → /planner?country=saudi - Card 3: UAE 🇦🇪
+  - Icon/Image: Burj Khalifa - Description: "Luxury & modern marvels" - Button:
+  "Explore UAE" → /planner?country=uae
 </CountrySelector>
 ```
 
 #### 3. Features Section
+
 ```tsx
 <Features>
-  - Feature 1: AI-Powered Planning (icon: brain)
-  - Feature 2: Real-Time Bookings (icon: ticket)
-  - Feature 3: Audio Tours (icon: headphones)
-  - Feature 4: Best Prices (icon: dollar)
+  - Feature 1: AI-Powered Planning (icon: brain) - Feature 2: Real-Time Bookings
+  (icon: ticket) - Feature 3: Audio Tours (icon: headphones) - Feature 4: Best
+  Prices (icon: dollar)
 </Features>
 ```
 
 #### 4. How It Works
+
 ```tsx
 <HowItWorks>
-  Step 1: Choose destination
-  Step 2: Tell us your preferences
-  Step 3: Get AI-generated itinerary
-  Step 4: Book instantly
+  Step 1: Choose destination Step 2: Tell us your preferences Step 3: Get
+  AI-generated itinerary Step 4: Book instantly
 </HowItWorks>
 ```
 
 ### API Calls
+
 None (static page)
 
 ---
@@ -71,11 +66,13 @@ None (static page)
 ## 🗺️ **Page 2: Trip Planner**
 
 ### Purpose
+
 Collect user preferences and generate itinerary
 
 ### Components Needed
 
 #### 1. Destination Selector
+
 ```tsx
 <DestinationSelector
   value={country}
@@ -89,6 +86,7 @@ Collect user preferences and generate itinerary
 ```
 
 #### 2. Date Picker
+
 ```tsx
 <DateRangePicker
   startDate={departureDate}
@@ -100,6 +98,7 @@ Collect user preferences and generate itinerary
 ```
 
 #### 3. Traveler Counter
+
 ```tsx
 <TravelerCounter>
   - Adults: <NumberInput min={1} max={9} />
@@ -109,6 +108,7 @@ Collect user preferences and generate itinerary
 ```
 
 #### 4. Budget Selector
+
 ```tsx
 <BudgetSelector
   value={budget}
@@ -122,6 +122,7 @@ Collect user preferences and generate itinerary
 ```
 
 #### 5. Interest Tags
+
 ```tsx
 <InterestSelector
   multiple
@@ -139,12 +140,9 @@ Collect user preferences and generate itinerary
 ```
 
 #### 6. Submit Button
+
 ```tsx
-<Button
-  onClick={handleGenerateItinerary}
-  loading={loading}
-  size="large"
->
+<Button onClick={handleGenerateItinerary} loading={loading} size="large">
   Create My Itinerary
 </Button>
 ```
@@ -152,6 +150,7 @@ Collect user preferences and generate itinerary
 ### API Calls
 
 **1. Query Country Agent Network**
+
 ```typescript
 POST /api/quantum/network/query
 
@@ -179,6 +178,7 @@ Response:
 ```
 
 **2. Search Flights**
+
 ```typescript
 POST /api/sabre/flights/search
 
@@ -207,6 +207,7 @@ Response:
 ```
 
 **3. Search Hotels**
+
 ```typescript
 POST /api/sabre/hotels/search
 
@@ -235,6 +236,7 @@ Response:
 ```
 
 **4. Get Tours**
+
 ```typescript
 POST /api/quantum/network/query
 
@@ -259,29 +261,31 @@ Response:
 ## 📋 **Page 3: Results Page**
 
 ### Purpose
+
 Display generated itinerary with flight, hotel, and tour options
 
 ### Components Needed
 
 #### 1. Itinerary Summary
+
 ```tsx
 <ItinerarySummary>
-  - Destination: Egypt 🇪🇬
-  - Dates: Dec 15-22, 2025
-  - Duration: 7 nights, 8 days
-  - Travelers: 2 adults, 1 child
-  - Total Price: $3,200
+  - Destination: Egypt 🇪🇬 - Dates: Dec 15-22, 2025 - Duration: 7 nights, 8 days
+  - Travelers: 2 adults, 1 child - Total Price: $3,200
 </ItinerarySummary>
 ```
 
 #### 2. Day-by-Day Itinerary
+
 ```tsx
 <DayByDay>
-  {itinerary.days.map(day => (
+  {itinerary.days.map((day) => (
     <DayCard key={day.number}>
-      <h3>Day {day.number}: {day.title}</h3>
+      <h3>
+        Day {day.number}: {day.title}
+      </h3>
       <Timeline>
-        {day.activities.map(activity => (
+        {day.activities.map((activity) => (
           <Activity>
             <Time>{activity.time}</Time>
             <Icon>{activity.icon}</Icon>
@@ -298,20 +302,19 @@ Display generated itinerary with flight, hotel, and tour options
 ```
 
 #### 3. Flight Options
+
 ```tsx
 <FlightSelector>
-  {flights.map(flight => (
+  {flights.map((flight) => (
     <FlightCard
       key={flight.id}
       selected={selectedFlight === flight.id}
       onClick={() => setSelectedFlight(flight.id)}
     >
       <FlightDetails>
-        - Airline: {flight.airline}
-        - Departure: {flight.segments[0].departure}
-        - Arrival: {flight.segments[0].arrival}
-        - Duration: {flight.duration}
-        - Stops: {flight.segments.length - 1}
+        - Airline: {flight.airline}- Departure: {flight.segments[0].departure}-
+        Arrival: {flight.segments[0].arrival}- Duration: {flight.duration}-
+        Stops: {flight.segments.length - 1}
       </FlightDetails>
       <Price>${flight.price.total}</Price>
     </FlightCard>
@@ -320,9 +323,10 @@ Display generated itinerary with flight, hotel, and tour options
 ```
 
 #### 4. Hotel Options
+
 ```tsx
 <HotelSelector>
-  {hotels.map(hotel => (
+  {hotels.map((hotel) => (
     <HotelCard
       key={hotel.id}
       selected={selectedHotel === hotel.id}
@@ -330,10 +334,8 @@ Display generated itinerary with flight, hotel, and tour options
     >
       <Image src={hotel.images[0]} />
       <Details>
-        - Name: {hotel.name}
-        - Rating: {hotel.rating} ⭐
-        - Location: {hotel.city}
-        - Amenities: {hotel.amenities.join(', ')}
+        - Name: {hotel.name}- Rating: {hotel.rating} ⭐ - Location: {hotel.city}-
+        Amenities: {hotel.amenities.join(', ')}
       </Details>
       <Price>${hotel.price.total} for 7 nights</Price>
     </HotelCard>
@@ -342,9 +344,10 @@ Display generated itinerary with flight, hotel, and tour options
 ```
 
 #### 5. Tours & Attractions
+
 ```tsx
 <ToursList>
-  {tours.map(tour => (
+  {tours.map((tour) => (
     <TourCard key={tour.uuid}>
       <Image src={tour.images[0]} />
       <AudioBadge>🎧 Audio Tour Included</AudioBadge>
@@ -358,22 +361,17 @@ Display generated itinerary with flight, hotel, and tour options
 ```
 
 #### 6. Price Breakdown
+
 ```tsx
 <PriceBreakdown>
-  - Flights: $1,200
-  - Hotel: $700
-  - Tours: $300
-  - Service Fee: $100
-  ---
-  Total: $2,300
-  
-  <Button onClick={handleBooking}>
-    Proceed to Checkout
-  </Button>
+  - Flights: $1,200 - Hotel: $700 - Tours: $300 - Service Fee: $100 --- Total:
+  $2,300
+  <Button onClick={handleBooking}>Proceed to Checkout</Button>
 </PriceBreakdown>
 ```
 
 ### API Calls
+
 Uses data from previous page (Trip Planner)
 
 ---
@@ -381,11 +379,13 @@ Uses data from previous page (Trip Planner)
 ## 💳 **Page 4: Checkout Page**
 
 ### Purpose
+
 Collect traveler details and process payment
 
 ### Components Needed
 
 #### 1. Traveler Information Form
+
 ```tsx
 <TravelerForm>
   {travelers.map((traveler, index) => (
@@ -403,6 +403,7 @@ Collect traveler details and process payment
 ```
 
 #### 2. Contact Information
+
 ```tsx
 <ContactForm>
   - Email: <Input type="email" required />
@@ -414,43 +415,36 @@ Collect traveler details and process payment
 ```
 
 #### 3. Payment Form (Stripe)
+
 ```tsx
 <PaymentForm>
   <CardElement
     options={{
-      style: stripeCardStyle
+      style: stripeCardStyle,
     }}
   />
-  
-  <Checkbox>
-    I agree to the Terms & Conditions
-  </Checkbox>
-  
-  <Button
-    onClick={handlePayment}
-    loading={processing}
-    disabled={!stripe}
-  >
+
+  <Checkbox>I agree to the Terms & Conditions</Checkbox>
+
+  <Button onClick={handlePayment} loading={processing} disabled={!stripe}>
     Pay $3,200
   </Button>
 </PaymentForm>
 ```
 
 #### 4. Booking Summary (Sidebar)
+
 ```tsx
 <BookingSummary>
-  - Trip: Egypt, Dec 15-22
-  - Travelers: 2 adults, 1 child
-  - Flight: Emirates EK924
-  - Hotel: Marriott Cairo
-  - Tours: 5 included
-  - Total: $3,200
+  - Trip: Egypt, Dec 15-22 - Travelers: 2 adults, 1 child - Flight: Emirates
+  EK924 - Hotel: Marriott Cairo - Tours: 5 included - Total: $3,200
 </BookingSummary>
 ```
 
 ### API Calls
 
 **1. Create Booking (Sabre)**
+
 ```typescript
 POST /api/sabre/booking
 
@@ -489,6 +483,7 @@ Response:
 ```
 
 **2. Process Payment (Stripe)**
+
 ```typescript
 POST /api/payment/create-payment-intent
 
@@ -511,6 +506,7 @@ Response:
 ```
 
 **3. Confirm Booking**
+
 ```typescript
 POST /api/bookings/confirm
 
@@ -535,11 +531,13 @@ Response:
 ## ✅ **Page 5: Confirmation Page**
 
 ### Purpose
+
 Show booking confirmation and next steps
 
 ### Components Needed
 
 #### 1. Success Message
+
 ```tsx
 <SuccessHeader>
   <Icon>✅</Icon>
@@ -549,48 +547,47 @@ Show booking confirmation and next steps
 ```
 
 #### 2. Booking Details
+
 ```tsx
 <BookingDetails>
-  - Booking Reference: ABC123
-  - Confirmation Email: sent to john@example.com
-  - Trip: Egypt, Dec 15-22, 2025
-  - Travelers: 2 adults, 1 child
-  - Total Paid: $3,200
+  - Booking Reference: ABC123 - Confirmation Email: sent to john@example.com -
+  Trip: Egypt, Dec 15-22, 2025 - Travelers: 2 adults, 1 child - Total Paid:
+  $3,200
 </BookingDetails>
 ```
 
 #### 3. What's Next
+
 ```tsx
 <NextSteps>
-  1. Check your email for detailed itinerary
-  2. Download izi.TRAVEL app for audio tours
-  3. Complete visa application (if required)
-  4. Travel insurance recommended
+  1. Check your email for detailed itinerary 2. Download izi.TRAVEL app for
+  audio tours 3. Complete visa application (if required) 4. Travel insurance
+  recommended
 </NextSteps>
 ```
 
 #### 4. Download Options
+
 ```tsx
 <DownloadButtons>
-  - <Button>Download Itinerary PDF</Button>
-  - <Button>Add to Calendar</Button>
-  - <Button>Access Audio Tours</Button>
+  - <Button>Download Itinerary PDF</Button>- <Button>Add to Calendar</Button>-{' '}
+  <Button>Access Audio Tours</Button>
 </DownloadButtons>
 ```
 
 #### 5. Contact Support
+
 ```tsx
 <Support>
-  Need help? Contact us:
-  - Email: support@amrikyy.com
-  - WhatsApp: +20 123 456 7890
-  - Live Chat: <ChatButton />
+  Need help? Contact us: - Email: support@amrikyy.com - WhatsApp: +20 123 456
+  7890 - Live Chat: <ChatButton />
 </Support>
 ```
 
 ### API Calls
 
 **Get Booking Details**
+
 ```typescript
 GET /api/sabre/booking/:pnr
 
@@ -611,11 +608,13 @@ Response:
 ## 🎛️ **Page 6: Admin Dashboard**
 
 ### Purpose
+
 Monitor bookings, revenue, and system health
 
 ### Components Needed
 
 #### 1. Overview Cards
+
 ```tsx
 <DashboardCards>
   <Card title="Today's Bookings" value="12" trend="+8%" />
@@ -626,15 +625,13 @@ Monitor bookings, revenue, and system health
 ```
 
 #### 2. Revenue Chart
+
 ```tsx
-<RevenueChart
-  data={revenueData}
-  type="line"
-  timeRange="7d"
-/>
+<RevenueChart data={revenueData} type="line" timeRange="7d" />
 ```
 
 #### 3. Recent Bookings Table
+
 ```tsx
 <BookingsTable
   columns={['PNR', 'Traveler', 'Destination', 'Date', 'Amount', 'Status']}
@@ -644,17 +641,17 @@ Monitor bookings, revenue, and system health
 ```
 
 #### 4. Country Agent Status
+
 ```tsx
 <AgentStatus>
-  {agents.map(agent => (
+  {agents.map((agent) => (
     <AgentCard key={agent.key}>
       <Icon>{agent.icon}</Icon>
       <Name>{agent.name}</Name>
       <Status>{agent.status}</Status>
       <Metrics>
-        - DNA Score: {agent.dnaScore}
-        - Queries: {agent.queryCount}
-        - Last Update: {agent.lastUpdate}
+        - DNA Score: {agent.dnaScore}- Queries: {agent.queryCount}- Last Update:{' '}
+        {agent.lastUpdate}
       </Metrics>
     </AgentCard>
   ))}
@@ -662,18 +659,18 @@ Monitor bookings, revenue, and system health
 ```
 
 #### 5. System Health
+
 ```tsx
 <HealthMonitor>
-  - API Response Time: 245ms
-  - Uptime: 99.9%
-  - Error Rate: 0.1%
-  - Cache Hit Rate: 87%
+  - API Response Time: 245ms - Uptime: 99.9% - Error Rate: 0.1% - Cache Hit
+  Rate: 87%
 </HealthMonitor>
 ```
 
 ### API Calls
 
 **1. Dashboard Overview**
+
 ```typescript
 GET /api/admin/dashboard
 
@@ -691,6 +688,7 @@ Response:
 ```
 
 **2. Analytics**
+
 ```typescript
 GET /api/admin/analytics?range=7d
 
@@ -709,6 +707,7 @@ Response:
 ```
 
 **3. Agent Leaderboard**
+
 ```typescript
 GET /api/admin/leaderboard
 
@@ -731,6 +730,7 @@ Response:
 ## 🎨 Design System / Style Guide
 
 ### Colors
+
 ```css
 --primary: #2563EB (Blue)
 --secondary: #10B981 (Green)
@@ -743,6 +743,7 @@ Response:
 ```
 
 ### Typography
+
 ```css
 --font-heading: 'Inter', sans-serif
 --font-body: 'Inter', sans-serif
@@ -756,6 +757,7 @@ Response:
 ```
 
 ### Spacing
+
 ```css
 --space-1: 4px
 --space-2: 8px
@@ -767,6 +769,7 @@ Response:
 ```
 
 ### Components
+
 - Buttons: Rounded corners (8px), hover effects, loading states
 - Cards: White background, shadow, hover lift
 - Inputs: Border, focus ring, validation states
@@ -777,42 +780,54 @@ Response:
 ## 📦 Recommended Tech Stack
 
 ### Core
+
 - **React 18** (already installed)
 - **TypeScript** (already configured)
 - **Vite** (already set up)
 - **Tailwind CSS** (already integrated)
 
 ### State Management
+
 - **React Query** - API calls, caching, sync
+
 ```bash
 npm install @tanstack/react-query
 ```
 
 ### Forms
+
 - **React Hook Form** - Form validation
+
 ```bash
 npm install react-hook-form
 ```
 
 ### Payment
+
 - **Stripe React** - Payment processing
+
 ```bash
 npm install @stripe/react-stripe-js @stripe/stripe-js
 ```
 
 ### Date/Time
+
 - **date-fns** - Date manipulation
+
 ```bash
 npm install date-fns
 ```
 
 ### UI Components (Optional)
+
 - **Headless UI** - Accessible components
+
 ```bash
 npm install @headlessui/react
 ```
 
 ### Icons
+
 - **Lucide React** - Icons (already installed)
 
 ---
@@ -820,6 +835,7 @@ npm install @headlessui/react
 ## 🔌 API Integration Checklist
 
 ### Setup React Query
+
 ```tsx
 // src/main.tsx
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -828,10 +844,11 @@ const queryClient = new QueryClient();
 
 <QueryClientProvider client={queryClient}>
   <App />
-</QueryClientProvider>
+</QueryClientProvider>;
 ```
 
 ### Create API Client
+
 ```tsx
 // src/api/client.ts
 import axios from 'axios';
@@ -845,6 +862,7 @@ export const api = axios.create({
 ```
 
 ### Example Hook
+
 ```tsx
 // src/hooks/useFlightSearch.ts
 import { useQuery } from '@tanstack/react-query';
@@ -867,16 +885,19 @@ export const useFlightSearch = (params) => {
 ## 📝 Implementation Priority
 
 ### Week 1: Core Pages
+
 1. ✅ Landing Page (Day 1-2)
 2. ✅ Trip Planner (Day 2-3)
 3. ✅ Results Page (Day 3-4)
 
 ### Week 2: Booking Flow
+
 4. ✅ Checkout Page (Day 5-6)
 5. ✅ Confirmation Page (Day 6)
 6. ✅ Payment Integration (Day 7)
 
 ### Week 3: Admin & Polish
+
 7. ✅ Admin Dashboard (Day 8-9)
 8. ✅ Testing & Bug Fixes (Day 10-11)
 9. ✅ Performance Optimization (Day 12)
@@ -886,6 +907,7 @@ export const useFlightSearch = (params) => {
 ## 🎯 Success Criteria
 
 ### Functional
+
 - ✅ All pages load in < 3 seconds
 - ✅ Forms validate correctly
 - ✅ API calls succeed
@@ -893,6 +915,7 @@ export const useFlightSearch = (params) => {
 - ✅ Mobile responsive
 
 ### User Experience
+
 - ✅ Intuitive navigation
 - ✅ Clear CTAs
 - ✅ Helpful error messages
@@ -900,6 +923,7 @@ export const useFlightSearch = (params) => {
 - ✅ Success confirmations
 
 ### Performance
+
 - ✅ Lighthouse score > 90
 - ✅ First Contentful Paint < 1.5s
 - ✅ Time to Interactive < 3s
@@ -909,6 +933,7 @@ export const useFlightSearch = (params) => {
 ## 📞 Questions for UI Design?
 
 If you need clarification on any component, ask about:
+
 1. Exact layout/positioning
 2. Interactions/animations
 3. Responsive breakpoints
@@ -919,7 +944,6 @@ If you need clarification on any component, ask about:
 
 **All backend APIs are ready and waiting!**  
 **Backend URL:** `http://localhost:5001/api`  
-**Docs:** See `QUANTUM_API_DOCUMENTATION.md`  
+**Docs:** See `QUANTUM_API_DOCUMENTATION.md`
 
 **Let's build this UI! 🚀**
-

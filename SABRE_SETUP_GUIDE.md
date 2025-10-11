@@ -27,6 +27,7 @@
 ## Step 3: Get Credentials
 
 After creating the app, you'll see:
+
 - **Client ID**: `V1:xxxxx:DEVCENTER:EXT`
 - **Client Secret**: Long string of characters
 - **Shared Secret**: Another long string
@@ -38,11 +39,15 @@ Copy these values!
 The PCC is required for booking. Two options:
 
 ### Option A: Test PCC (for development)
+
 Sabre provides test PCCs:
+
 - **Test PCC**: `F9CE` (use this for testing)
 
 ### Option B: Production PCC (for live bookings)
+
 Contact Sabre:
+
 1. Email: developer@sabre.com
 2. Subject: "PCC Request for Amrikyy Travel"
 3. Include:
@@ -85,6 +90,7 @@ curl -X POST "https://api.sabre.com/v2/auth/token" \
 ```
 
 Expected response:
+
 ```json
 {
   "access_token": "T1RLAQKvj...",
@@ -138,16 +144,19 @@ curl http://localhost:5001/api/sabre/health
 ## Troubleshooting
 
 ### Error: "Invalid credentials"
+
 - Double-check Client ID and Secret
 - Ensure no extra spaces
 - Base64 encoding might be incorrect
 
 ### Error: "PCC not authorized"
+
 - Using production PCC in test mode?
 - Use `F9CE` for testing
 - Contact Sabre for production PCC
 
 ### Error: "Rate limit exceeded"
+
 - Free tier: 1000 calls/month
 - Production: 50K+ calls/month
 - Upgrade plan if needed
@@ -155,12 +164,14 @@ curl http://localhost:5001/api/sabre/health
 ## Pricing
 
 ### Sandbox (Free)
+
 - 1,000 API calls/month
 - All APIs available
 - Test data only
 - Perfect for development
 
 ### Production Plans
+
 - **Starter**: $99/month - 10K calls
 - **Professional**: $299/month - 50K calls
 - **Enterprise**: Custom pricing - Unlimited
@@ -168,15 +179,18 @@ curl http://localhost:5001/api/sabre/health
 ## Important Notes
 
 1. **Test vs Production**
+
    - Sandbox: Different base URL + test PCC
    - Production: Real bookings, real money
 
 2. **Booking Liability**
+
    - Test bookings don't cost money
    - Production bookings are real transactions
    - You're responsible for customer payments
 
 3. **Compliance**
+
    - IATA/ARC certification may be required
    - Travel agency license needed in some countries
    - Check local regulations
@@ -197,6 +211,7 @@ curl http://localhost:5001/api/sabre/health
 ## Next Steps
 
 Once Sabre is configured:
+
 1. ✅ Test flight search
 2. ✅ Test hotel search
 3. ✅ Test booking creation
@@ -206,4 +221,3 @@ Once Sabre is configured:
 ---
 
 **Questions?** Contact Sabre Developer Support or email: support@amrikyy.com
-

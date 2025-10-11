@@ -1,0 +1,514 @@
+syntax = "proto3";
+
+package quantum;
+
+// ============================================================================
+// Quantum Agent Communication Protocol
+// High-performance agent-to-agent and service-to-service communication
+// ============================================================================
+
+// Agent Service - Core agent operations
+service AgentService {
+  // Single request-response
+  rpc ProcessQuery(QueryRequest) returns (QueryResponse);
+  
+  // Streaming: Client sends multiple queries, server responds to each
+  rpc StreamQueries(stream QueryRequest) returns (stream QueryResponse);
+  
+  // Bi-directional: Real-time agent collaboration
+  rpc CollaborateAgents(stream AgentMessage) returns (stream AgentMessage);
+  
+  // Get agent status
+  rpc GetAgentStatus(AgentStatusRequest) returns (AgentStatusResponse);
+  
+  // Update agent knowledge
+  rpc UpdateKnowledge(KnowledgeUpdate) returns (UpdateResponse);
+}
+
+// DNA Service - Agent DNA operations
+service DNAService {
+  // Calculate DNA score
+  rpc CalculateDNA(DNARequest) returns (DNAResponse);
+  
+  // Generate system prompt
+  rpc GeneratePrompt(PromptRequest) returns (PromptResponse);
+  
+  // Evolve agent (continuous learning)
+  rpc EvolveAgent(EvolutionRequest) returns (EvolutionResponse);
+  
+  // Stream DNA changes in real-time
+  rpc WatchDNA(DNAWatchRequest) returns (stream DNAUpdate);
+}
+
+// Network Service - Country agent network operations
+service NetworkService {
+  // Route query to appropriate agent
+  rpc RouteQuery(NetworkQueryRequest) returns (NetworkQueryResponse);
+  
+  // Broadcast to all agents
+  rpc BroadcastMessage(BroadcastRequest) returns (BroadcastResponse);
+  
+  // Get network status
+  rpc GetNetworkStatus(NetworkStatusRequest) returns (NetworkStatusResponse);
+  
+  // Agent heartbeat (for health monitoring)
+  rpc AgentHeartbeat(stream Heartbeat) returns (stream HeartbeatAck);
+}
+
+// Deployment Service - Agent deployment operations
+service DeploymentService {
+  // Deploy new agent
+  rpc DeployAgent(DeploymentRequest) returns (DeploymentResponse);
+  
+  // Batch deploy
+  rpc BatchDeploy(BatchDeploymentRequest) returns (stream DeploymentProgress);
+  
+  // Undeploy agent
+  rpc UndeployAgent(UndeployRequest) returns (UndeployResponse);
+  
+  // Monitor deployment
+  rpc WatchDeployment(DeploymentWatchRequest) returns (stream DeploymentStatus);
+}
+
+// ============================================================================
+// Message Definitions
+// ============================================================================
+
+// Query Messages
+message QueryRequest {
+  string query_id = 1;
+  string query = 2;
+  QueryContext context = 3;
+  int64 timestamp = 4;
+  string user_id = 5;
+}
+
+message QueryContext {
+  string country = 1;
+  map<string, string> metadata = 2;
+  repeated string interests = 3;
+  string budget = 4;
+  DateRange dates = 5;
+  TravelerInfo travelers = 6;
+}
+
+message DateRange {
+  string start_date = 1;
+  string end_date = 2;
+}
+
+message TravelerInfo {
+  int32 adults = 1;
+  int32 children = 2;
+  int32 infants = 3;
+}
+
+message QueryResponse {
+  string query_id = 1;
+  bool success = 2;
+  string agent_name = 3;
+  string country = 4;
+  int32 dna_score = 5;
+  ResponseData response = 6;
+  repeated string intents = 7;
+  int64 processing_time_ms = 8;
+  int32 knowledge_age_seconds = 9;
+}
+
+message ResponseData {
+  string type = 1;  // "attractions", "tours", "itinerary", "general"
+  string message = 2;
+  repeated Attraction highlights = 3;
+  repeated Tour tours = 4;
+  repeated string suggestions = 5;
+  int32 count = 6;
+}
+
+message Attraction {
+  string uuid = 1;
+  string title = 2;
+  Location location = 3;
+  float rating = 4;
+  string description = 5;
+  repeated string images = 6;
+}
+
+message Tour {
+  string uuid = 1;
+  string title = 2;
+  int32 duration = 3;
+  repeated string languages = 4;
+  string summary = 5;
+  repeated string images = 6;
+  bool has_audio = 7;
+}
+
+message Location {
+  double latitude = 1;
+  double longitude = 2;
+  string address = 3;
+  string city = 4;
+}
+
+// Agent Messages (for bi-directional streaming)
+message AgentMessage {
+  string message_id = 1;
+  string from_agent = 2;
+  string to_agent = 3;
+  MessageType type = 4;
+  string content = 5;
+  map<string, string> metadata = 6;
+  int64 timestamp = 7;
+}
+
+enum MessageType {
+  QUERY = 0;
+  RESPONSE = 1;
+  KNOWLEDGE_SHARE = 2;
+  COORDINATION = 3;
+  ALERT = 4;
+}
+
+// Agent Status Messages
+message AgentStatusRequest {
+  string agent_key = 1;
+}
+
+message AgentStatusResponse {
+  string name = 1;
+  string country = 2;
+  string country_code = 3;
+  DNAScore dna_score = 4;
+  string specialization = 5;
+  KnowledgeStats knowledge = 6;
+  AutoUpdateConfig auto_update = 7;
+  PerformanceMetrics performance = 8;
+}
+
+message KnowledgeStats {
+  int32 attractions = 1;
+  int32 tours = 2;
+  string last_update = 3;
+  int32 age_seconds = 4;
+}
+
+message AutoUpdateConfig {
+  bool enabled = 1;
+  int32 interval_seconds = 2;
+  bool is_updating = 3;
+}
+
+message PerformanceMetrics {
+  int32 tier = 1;
+  string level = 2;
+  string emoji = 3;
+  int32 total_queries = 4;
+  float avg_response_time_ms = 5;
+}
+
+// Knowledge Update Messages
+message KnowledgeUpdate {
+  string agent_key = 1;
+  KnowledgeType type = 2;
+  bytes data = 3;  // Serialized knowledge data
+  int64 timestamp = 4;
+}
+
+enum KnowledgeType {
+  ATTRACTIONS = 0;
+  TOURS = 1;
+  WEATHER = 2;
+  EVENTS = 3;
+  PRICES = 4;
+  SAFETY = 5;
+}
+
+message UpdateResponse {
+  bool success = 1;
+  string message = 2;
+  int32 items_updated = 3;
+}
+
+// DNA Messages
+message DNARequest {
+  Personality personality = 1;
+  Skills skills = 2;
+  Behavior behavior = 3;
+  string specialization = 4;
+}
+
+message Personality {
+  int32 analytical = 1;
+  int32 creative = 2;
+  int32 empathetic = 3;
+  int32 logical = 4;
+  int32 intuitive = 5;
+  int32 assertive = 6;
+}
+
+message Skills {
+  int32 coding = 1;
+  int32 communication = 2;
+  int32 problem_solving = 3;
+  int32 leadership = 4;
+  int32 learning = 5;
+  int32 cultural = 6;
+}
+
+message Behavior {
+  int32 decision_speed = 1;
+  int32 risk_tolerance = 2;
+  int32 work_style = 3;
+  int32 detail_level = 4;
+}
+
+message DNAResponse {
+  DNAScore dna_score = 1;
+}
+
+message DNAScore {
+  int32 total_score = 1;
+  string level = 2;
+  int32 tier = 3;
+  string emoji = 4;
+  ScoreBreakdown breakdown = 5;
+  Potential potential = 6;
+  Evolution evolution = 7;
+}
+
+message ScoreBreakdown {
+  int32 personality = 1;
+  int32 skills = 2;
+  int32 behavior = 3;
+  int32 synergy = 4;
+  float multiplier = 5;
+}
+
+message Potential {
+  int32 score = 1;
+  string rating = 2;
+  int32 max_tier = 3;
+  TimeToNext time_to_next = 4;
+}
+
+message TimeToNext {
+  int32 days = 1;
+  int32 weeks = 2;
+  string formatted = 3;
+}
+
+message Evolution {
+  string current_level = 1;
+  string next_level = 2;
+  EvolutionPath evolution_path = 3;
+  repeated FocusArea recommended_focus = 4;
+  string estimated_growth = 5;
+}
+
+message EvolutionPath {
+  string phase1 = 1;
+  string phase2 = 2;
+  string phase3 = 3;
+  string phase4 = 4;
+}
+
+message FocusArea {
+  string trait = 1;
+  int32 current_value = 2;
+  int32 target_value = 3;
+  string priority = 4;
+}
+
+// Prompt Messages
+message PromptRequest {
+  string name = 1;
+  string specialization = 2;
+  Personality personality = 3;
+  Skills skills = 4;
+  Behavior behavior = 5;
+  repeated string domain_expertise = 6;
+}
+
+message PromptResponse {
+  string system_prompt = 1;
+  int32 length = 2;
+}
+
+// Evolution Messages
+message EvolutionRequest {
+  string agent_id = 1;
+  repeated TaskFeedback feedback = 2;
+  map<string, float> performance_metrics = 3;
+}
+
+message TaskFeedback {
+  string task_id = 1;
+  bool success = 2;
+  float quality_score = 3;
+  int64 completion_time_ms = 4;
+  string user_feedback = 5;
+}
+
+message EvolutionResponse {
+  bool evolved = 1;
+  DNAScore new_dna_score = 2;
+  repeated string improvements = 3;
+  string next_milestone = 4;
+}
+
+// DNA Watch Messages
+message DNAWatchRequest {
+  string agent_id = 1;
+}
+
+message DNAUpdate {
+  string agent_id = 1;
+  DNAScore dna_score = 2;
+  string change_reason = 3;
+  int64 timestamp = 4;
+}
+
+// Network Messages
+message NetworkQueryRequest {
+  string query = 1;
+  QueryContext context = 2;
+  bool broadcast = 3;  // Send to all agents or route to one
+}
+
+message NetworkQueryResponse {
+  bool success = 1;
+  bool multi_agent = 2;
+  repeated AgentResponse agent_responses = 3;
+  SynthesizedResponse synthesized = 4;
+}
+
+message AgentResponse {
+  string agent_name = 1;
+  string country = 2;
+  int32 dna_score = 3;
+  ResponseData response = 4;
+}
+
+message SynthesizedResponse {
+  string message = 1;
+  repeated Attraction all_attractions = 2;
+  repeated Tour all_tours = 3;
+  int32 total_count = 4;
+}
+
+message BroadcastRequest {
+  string message = 1;
+  MessageType type = 2;
+  map<string, string> metadata = 3;
+}
+
+message BroadcastResponse {
+  bool success = 1;
+  int32 agents_reached = 2;
+  repeated string agent_keys = 3;
+}
+
+message NetworkStatusRequest {
+  bool include_agent_details = 1;
+}
+
+message NetworkStatusResponse {
+  string network_name = 1;
+  string status = 2;
+  int32 agents_count = 3;
+  TotalKnowledge total_knowledge = 4;
+  repeated AgentStatusResponse agent_details = 5;
+  string timestamp = 6;
+}
+
+message TotalKnowledge {
+  int32 attractions = 1;
+  int32 tours = 2;
+}
+
+message Heartbeat {
+  string agent_key = 1;
+  string status = 2;
+  int64 timestamp = 3;
+  map<string, string> metrics = 4;
+}
+
+message HeartbeatAck {
+  string agent_key = 1;
+  bool acknowledged = 2;
+  int64 timestamp = 3;
+}
+
+// Deployment Messages
+message DeploymentRequest {
+  string name = 1;
+  string type = 2;
+  string specialization = 3;
+  Personality personality = 4;
+  Skills skills = 5;
+  Behavior behavior = 6;
+  map<string, string> config = 7;
+}
+
+message DeploymentResponse {
+  bool success = 1;
+  string deployment_id = 2;
+  string agent_id = 3;
+  string agent_name = 4;
+  DNAScore dna_score = 5;
+  map<string, IntegrationStatus> integrations = 6;
+  HealthCheck health = 7;
+  int32 duration_ms = 8;
+}
+
+message IntegrationStatus {
+  bool enabled = 1;
+  string status = 2;
+  string note = 3;
+}
+
+message HealthCheck {
+  string status = 1;
+  map<string, CheckResult> checks = 2;
+  string timestamp = 3;
+}
+
+message CheckResult {
+  string status = 1;
+  string message = 2;
+}
+
+message BatchDeploymentRequest {
+  repeated DeploymentRequest agents = 1;
+}
+
+message DeploymentProgress {
+  int32 index = 1;
+  string status = 2;  // "in_progress", "completed", "failed"
+  DeploymentResponse result = 3;
+  string error = 4;
+  int32 completed = 5;
+  int32 total = 6;
+}
+
+message UndeployRequest {
+  string deployment_id = 1;
+}
+
+message UndeployResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message DeploymentWatchRequest {
+  string deployment_id = 1;
+}
+
+message DeploymentStatus {
+  string deployment_id = 1;
+  string status = 2;
+  HealthCheck health = 3;
+  PerformanceMetrics performance = 4;
+  int64 timestamp = 5;
+}
+

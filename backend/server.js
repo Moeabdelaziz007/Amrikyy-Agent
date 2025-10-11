@@ -449,6 +449,20 @@ const sabreRoutes = require('./routes/sabre');
 app.use('/api/sabre', sabreRoutes);
 logger.info('✅ Sabre Travel Booking Routes mounted successfully');
 
+// ============ gRPC Server (High-Performance Agent Communication) ============
+const quantumGrpcServer = require('./src/grpc/QuantumGrpcServer');
+// gRPC server starts separately on port 50051
+if (process.env.ENABLE_GRPC !== 'false') {
+  quantumGrpcServer
+    .start()
+    .then(() => {
+      logger.info('✅ gRPC Server started for agent communication');
+    })
+    .catch((error) => {
+      logger.error('❌ gRPC Server failed to start:', error.message);
+    });
+}
+
 // Advanced Telegram Bot (only start if token is provided and not in test mode)
 if (process.env.TELEGRAM_BOT_TOKEN && process.env.NODE_ENV !== 'test') {
   // Check if token is a placeholder
