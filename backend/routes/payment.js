@@ -1,105 +1,12 @@
 const express = require('express');
 const router = express.Router();
-
-// Payment service integration
-class PaymentService {
-  // Stripe integration with payment links
-  static async createStripePayment(amount, currency = 'USD', description = 'Amrikyy Trips Payment') {
-    try {
-      // Create Stripe payment link using MCP tool
-      const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-      
-      // Create a price for the payment
-      const price = await stripe.prices.create({
-        unit_amount: Math.round(amount * 100), // Convert to cents
-        currency: currency.toLowerCase(),
-        product_data: {
-          name: description,
-          description: `Amrikyy Trips - ${description}`
-        }
-      });
-
-      // Create payment link
-      const paymentLink = await stripe.paymentLinks.create({
-        line_items: [
-          {
-            price: price.id,
-            quantity: 1
-          }
-        ],
-        after_completion: {
-          type: 'redirect',
-          redirect: {
-            url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/payment/success`
-          }
-        },
-        allow_promotion_codes: true,
-        billing_address_collection: 'auto',
-        payment_method_types: ['card']
-      });
-
-      return { 
-        success: true, 
-        data: {
-          id: paymentLink.id,
-          url: paymentLink.url,
-          amount: amount,
-          currency: currency,
-          description: description,
-          status: 'created'
-        }
-      };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  }
-
-  // PayPal integration
-  static async createPayPalPayment(amount, currency = 'USD', description = 'Amrikyy Trips Payment') {
-    try {
-      // This would integrate with PayPal API
-      const payment = {
-        id: `PAY-${Date.now()}`,
-        amount: {
-          total: amount.toString(),
-          currency
-        },
-        description,
-        state: 'created',
-        create_time: new Date().toISOString()
-      };
-      
-      return { success: true, data: payment };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  }
-
-  // Telegram Bot payment integration
-  static async createTelegramPayment(amount, currency = 'USD', description = 'Amrikyy Trips Payment', chatId) {
-    try {
-      // This would integrate with Telegram Bot API for payments
-      const payment = {
-        id: `tg_${Date.now()}`,
-        amount,
-        currency,
-        description,
-        chat_id: chatId,
-        status: 'pending',
-        created_at: new Date().toISOString()
-      };
-      
-      return { success: true, data: payment };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  }
-}
+const stripeService = require('../src/services/stripeService');
+const PaymentService = require('../src/services/paymentService');
 
 // Create Stripe payment link
 router.post('/create-payment-link', async (req, res) => {
   try {
-    const { amount, currency, description, customerEmail } = req.body;
+    const { amount, currency, description } = req.body;
     
     if (!amount || amount <= 0) {
       return res.status(400).json({
@@ -108,7 +15,7 @@ router.post('/create-payment-link', async (req, res) => {
       });
     }
 
-    const paymentResult = await PaymentService.createStripePayment(amount, currency, description);
+    const paymentResult = await stripeService.createPaymentLink(amount, currency, description);
     
     if (paymentResult.success) {
       res.json({
@@ -147,7 +54,7 @@ router.post('/create-payment', async (req, res) => {
     
     switch (paymentMethod) {
     case 'stripe':
-      paymentResult = await PaymentService.createStripePayment(amount, currency, description);
+      paymentResult = await stripeService.createPaymentLink(amount, currency, description);
       break;
     case 'paypal':
       paymentResult = await PaymentService.createPayPalPayment(amount, currency, description);

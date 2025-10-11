@@ -424,6 +424,16 @@ app.use('/api/prediction', predictionRoutes);
 
 logger.info('✅ QFO Routes mounted successfully');
 
+// ============ AgentDNA Routes ============
+const agentDNARoutes = require('./routes/agent-dna');
+app.use('/api/agent-dna', agentDNARoutes);
+logger.info('✅ AgentDNA Routes mounted successfully');
+
+// ============ izi.TRAVEL API Routes ============
+const iziTravelRoutes = require('./routes/izi-travel');
+app.use('/api/izi-travel', iziTravelRoutes);
+logger.info('✅ izi.TRAVEL API Routes mounted successfully');
+
 // Advanced Telegram Bot (only start if token is provided and not in test mode)
 if (process.env.TELEGRAM_BOT_TOKEN && process.env.NODE_ENV !== 'test') {
   // Check if token is a placeholder
