@@ -1,10 +1,10 @@
 /**
  * AgentDNA API Service
- * Frontend service for communicating with AgentDNA backend
+ * Client for communicating with AgentDNA backend
  */
 
-import axios from 'axios';
-import type {
+import axios, { AxiosInstance } from 'axios';
+import {
   AgentDNA,
   CreateAgentRequest,
   UpdateAgentRequest,
@@ -12,205 +12,116 @@ import type {
   APIResponse,
 } from '../types/agentDNA';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
 class AgentDNAService {
-  private baseURL: string;
+  private api: AxiosInstance;
 
   constructor() {
-    this.baseURL = `${API_BASE_URL}/api/agent-dna`;
+    this.api = axios.create({
+      baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+      timeout: 10000,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Response interceptor for error handling
+    this.api.interceptors.response.use(
+      response => response,
+      error => {
+        console.error('API Error:', error.response?.data || error.message);
+        throw error;
+      }
+    );
   }
 
   /**
    * Create a new agent
    */
   async createAgent(data: CreateAgentRequest): Promise<AgentDNA> {
-    try {
-      const response = await axios.post<{ success: boolean; agent: AgentDNA }>(
-        `${this.baseURL}/create`,
-        data
-      );
-
-      if (!response.data.success) {
-        throw new Error('Failed to create agent');
-      }
-
-      return response.data.agent;
-    } catch (error) {
-      console.error('Create agent error:', error);
-      throw this.handleError(error);
-    }
+    const response = await this.api.post<APIResponse<{ agent: AgentDNA }>>(
+      '/agent-dna/create',
+      data
+    );
+    return response.data.data!.agent;
   }
 
   /**
    * Get agent by ID
    */
-  async getAgent(agentId: string): Promise<AgentDNA> {
-    try {
-      const response = await axios.get<{ success: boolean; agent: AgentDNA }>(
-        `${this.baseURL}/${agentId}`
-      );
-
-      if (!response.data.success) {
-        throw new Error('Agent not found');
-      }
-
-      return response.data.agent;
-    } catch (error) {
-      console.error('Get agent error:', error);
-      throw this.handleError(error);
-    }
-  }
-
-  /**
-   * Update agent
-   */
-  async updateAgent(
-    agentId: string,
-    updates: UpdateAgentRequest
-  ): Promise<AgentDNA> {
-    try {
-      const response = await axios.put<{ success: boolean; agent: AgentDNA }>(
-        `${this.baseURL}/${agentId}`,
-        updates
-      );
-
-      if (!response.data.success) {
-        throw new Error('Failed to update agent');
-      }
-
-      return response.data.agent;
-    } catch (error) {
-      console.error('Update agent error:', error);
-      throw this.handleError(error);
-    }
-  }
-
-  /**
-   * Delete agent
-   */
-  async deleteAgent(agentId: string): Promise<void> {
-    try {
-      const response = await axios.delete<{ success: boolean }>(
-        `${this.baseURL}/${agentId}`
-      );
-
-      if (!response.data.success) {
-        throw new Error('Failed to delete agent');
-      }
-    } catch (error) {
-      console.error('Delete agent error:', error);
-      throw this.handleError(error);
-    }
+  async getAgent(id: string): Promise<AgentDNA> {
+    const response = await this.api.get<APIResponse<{ agent: AgentDNA }>>(
+      `/agent-dna/${id}`
+    );
+    return response.data.data!.agent;
   }
 
   /**
    * Get all agents
    */
   async getAllAgents(): Promise<AgentDNA[]> {
-    try {
-      const response = await axios.get<{
-        success: boolean;
-        agents: AgentDNA[];
-      }>(`${this.baseURL}`);
+    const response = await this.api.get<
+      APIResponse<{ agents: AgentDNA[]; count: number }>
+    >('/agent-dna');
+    return response.data.data!.agents;
+  }
 
-      if (!response.data.success) {
-        throw new Error('Failed to fetch agents');
-      }
+  /**
+   * Update agent
+   */
+  async updateAgent(id: string, data: UpdateAgentRequest): Promise<AgentDNA> {
+    const response = await this.api.put<APIResponse<{ agent: AgentDNA }>>(
+      `/agent-dna/${id}`,
+      data
+    );
+    return response.data.data!.agent;
+  }
 
-      return response.data.agents;
-    } catch (error) {
-      console.error('Get all agents error:', error);
-      throw this.handleError(error);
-    }
+  /**
+   * Delete agent
+   */
+  async deleteAgent(id: string): Promise<void> {
+    await this.api.delete(`/agent-dna/${id}`);
   }
 
   /**
    * Get dashboard statistics
    */
   async getDashboard(): Promise<AgentDashboard> {
-    try {
-      const response = await axios.get<{
-        success: boolean;
-        dashboard: AgentDashboard;
-      }>(`${this.baseURL}/dashboard/stats`);
-
-      if (!response.data.success) {
-        throw new Error('Failed to fetch dashboard');
-      }
-
-      return response.data.dashboard;
-    } catch (error) {
-      console.error('Get dashboard error:', error);
-      throw this.handleError(error);
-    }
+    const response = await this.api.get<
+      APIResponse<{ dashboard: AgentDashboard }>
+    >('/agent-dna/dashboard/stats');
+    return response.data.data!.dashboard;
   }
 
   /**
    * Update agent performance
    */
   async updatePerformance(
-    agentId: string,
+    id: string,
     metrics: {
       tasksCompleted?: number;
       qualityScore?: number;
       innovations?: number;
     }
   ): Promise<AgentDNA> {
-    try {
-      const response = await axios.post<{ success: boolean; agent: AgentDNA }>(
-        `${this.baseURL}/${agentId}/performance`,
-        metrics
-      );
-
-      if (!response.data.success) {
-        throw new Error('Failed to update performance');
-      }
-
-      return response.data.agent;
-    } catch (error) {
-      console.error('Update performance error:', error);
-      throw this.handleError(error);
-    }
+    const response = await this.api.post<APIResponse<{ agent: AgentDNA }>>(
+      `/agent-dna/${id}/performance`,
+      metrics
+    );
+    return response.data.data!.agent;
   }
 
   /**
    * Get agents by type
    */
   async getAgentsByType(type: string): Promise<AgentDNA[]> {
-    try {
-      const response = await axios.get<{
-        success: boolean;
-        agents: AgentDNA[];
-      }>(`${this.baseURL}/by-type/${type}`);
-
-      if (!response.data.success) {
-        throw new Error('Failed to fetch agents by type');
-      }
-
-      return response.data.agents;
-    } catch (error) {
-      console.error('Get agents by type error:', error);
-      throw this.handleError(error);
-    }
-  }
-
-  /**
-   * Handle API errors
-   */
-  private handleError(error: any): Error {
-    if (axios.isAxiosError(error)) {
-      const message =
-        error.response?.data?.error ||
-        error.response?.data?.message ||
-        error.message;
-      return new Error(message);
-    }
-    return error instanceof Error ? error : new Error('Unknown error occurred');
+    const response = await this.api.get<
+      APIResponse<{ agents: AgentDNA[]; count: number }>
+    >(`/agent-dna/by-type/${type}`);
+    return response.data.data!.agents;
   }
 }
 
 // Export singleton instance
 export const agentDNAService = new AgentDNAService();
 export default agentDNAService;
-
