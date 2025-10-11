@@ -59,12 +59,12 @@ router.get('/dashboard', async (req, res) => {
  */
 async function getNetworkMetrics() {
   const status = countryAgentNetwork.getNetworkStatus();
-  
+
   return {
     active: status.status === 'active',
     agents: status.agents,
     totalKnowledge: status.totalKnowledge,
-    agentDetails: status.agentDetails.map(a => ({
+    agentDetails: status.agentDetails.map((a) => ({
       name: a.name,
       country: a.country,
       dnaScore: a.dnaScore.totalScore,
@@ -82,7 +82,7 @@ async function getNetworkMetrics() {
 async function getDeploymentMetrics() {
   const stats = deploymentEngine.getStatistics();
   const active = deploymentEngine.getActiveDeployments();
-  
+
   return {
     active: stats.active,
     total: stats.totalDeployments,
@@ -91,7 +91,7 @@ async function getDeploymentMetrics() {
     successRate: stats.successRate,
     averageDuration: stats.averageDuration,
     byType: stats.deploymentsByType,
-    recentDeployments: active.slice(0, 5).map(d => ({
+    recentDeployments: active.slice(0, 5).map((d) => ({
       id: d.id,
       name: d.agent.name,
       type: d.agent.type,
@@ -108,17 +108,17 @@ async function getDeploymentMetrics() {
 async function getAgentMetrics() {
   try {
     const allAgents = await agentDNAService.getAllAgents();
-    
+
     const byType = {};
     const byTier = {};
     let totalDNAScore = 0;
 
-    allAgents.forEach(agent => {
+    allAgents.forEach((agent) => {
       byType[agent.type] = (byType[agent.type] || 0) + 1;
-      
+
       const tier = agentDNAEngine.getDNALevel(agent.dnaScore || 0).tier;
       byTier[tier] = (byTier[tier] || 0) + 1;
-      
+
       totalDNAScore += agent.dnaScore || 0;
     });
 
@@ -126,11 +126,12 @@ async function getAgentMetrics() {
       total: allAgents.length,
       byType,
       byTier,
-      averageDNAScore: allAgents.length > 0 ? Math.round(totalDNAScore / allAgents.length) : 0,
+      averageDNAScore:
+        allAgents.length > 0 ? Math.round(totalDNAScore / allAgents.length) : 0,
       topAgents: allAgents
         .sort((a, b) => (b.dnaScore || 0) - (a.dnaScore || 0))
         .slice(0, 5)
-        .map(a => ({
+        .map((a) => ({
           id: a._id,
           name: a.name,
           type: a.type,
@@ -165,11 +166,15 @@ async function getSystemHealth() {
     },
     countryNetwork: {
       status: countryAgentNetwork.isInitialized ? 'healthy' : 'inactive',
-      message: countryAgentNetwork.isInitialized ? 'Network active' : 'Network not initialized',
+      message: countryAgentNetwork.isInitialized
+        ? 'Network active'
+        : 'Network not initialized',
     },
     redis: {
       status: redisService.isConnected ? 'healthy' : 'unhealthy',
-      message: redisService.isConnected ? 'Redis connected' : 'Redis disconnected',
+      message: redisService.isConnected
+        ? 'Redis connected'
+        : 'Redis disconnected',
     },
     iziTravel: {
       status: 'pending',
@@ -191,7 +196,7 @@ async function getSystemHealth() {
     };
   }
 
-  const allHealthy = Object.values(checks).every(c => c.status === 'healthy');
+  const allHealthy = Object.values(checks).every((c) => c.status === 'healthy');
 
   return {
     overall: allHealthy ? 'healthy' : 'degraded',
@@ -205,9 +210,9 @@ async function getSystemHealth() {
  */
 async function getRecentActivity() {
   const history = deploymentEngine.getDeploymentHistory(10);
-  
+
   return {
-    deployments: history.map(h => ({
+    deployments: history.map((h) => ({
       id: h.id,
       agentName: h.agentName,
       status: h.status,
@@ -223,7 +228,7 @@ async function getRecentActivity() {
 router.get('/analytics', async (req, res) => {
   try {
     const timeRange = req.query.range || '7d'; // 7 days default
-    
+
     const analytics = {
       deployments: {
         timeline: getDeploymentTimeline(timeRange),
@@ -259,10 +264,10 @@ router.get('/analytics', async (req, res) => {
  */
 function getDeploymentTimeline(range) {
   const history = deploymentEngine.getDeploymentHistory(100);
-  
+
   // Group by date
   const timeline = {};
-  history.forEach(deployment => {
+  history.forEach((deployment) => {
     const date = deployment.timestamp.split('T')[0];
     if (!timeline[date]) {
       timeline[date] = { successful: 0, failed: 0 };
@@ -283,10 +288,10 @@ function getDeploymentTimeline(range) {
 async function getAgentGrowth(range) {
   try {
     const agents = await agentDNAService.getAllAgents();
-    
+
     // Group by creation date
     const growth = {};
-    agents.forEach(agent => {
+    agents.forEach((agent) => {
       const date = agent.createdAt.split('T')[0];
       growth[date] = (growth[date] || 0) + 1;
     });
@@ -303,8 +308,8 @@ async function getAgentGrowth(range) {
 async function getAgentPerformance() {
   try {
     const agents = await agentDNAService.getAllAgents();
-    
-    return agents.map(agent => ({
+
+    return agents.map((agent) => ({
       id: agent._id,
       name: agent.name,
       type: agent.type,
@@ -321,7 +326,7 @@ async function getAgentPerformance() {
  */
 async function getKnowledgeGrowth(range) {
   const status = countryAgentNetwork.getNetworkStatus();
-  
+
   return {
     current: status.totalKnowledge,
     // TODO: Track historical data in Redis
@@ -347,13 +352,13 @@ async function getQueryVolume(range) {
 router.get('/leaderboard', async (req, res) => {
   try {
     const agents = await agentDNAService.getAllAgents();
-    
+
     const leaderboard = agents
       .sort((a, b) => (b.dnaScore || 0) - (a.dnaScore || 0))
       .slice(0, 20)
       .map((agent, index) => {
         const dnaInfo = agentDNAEngine.getDNALevel(agent.dnaScore || 0);
-        
+
         return {
           rank: index + 1,
           id: agent._id,
@@ -444,7 +449,7 @@ router.post('/control/:action', async (req, res) => {
           throw new Error('Network not initialized');
         }
         const agents = countryAgentNetwork.getAllAgents();
-        await Promise.all(agents.map(agent => agent.updateKnowledge()));
+        await Promise.all(agents.map((agent) => agent.updateKnowledge()));
         result = { message: `Updated knowledge for ${agents.length} agents` };
         break;
 
@@ -488,4 +493,3 @@ router.get('/health', async (req, res) => {
 });
 
 module.exports = router;
-
