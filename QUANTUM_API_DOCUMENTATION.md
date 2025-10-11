@@ -30,6 +30,7 @@ POST /quantum/calculate-dna
 ```
 
 **Request Body:**
+
 ```json
 {
   "personality": {
@@ -59,6 +60,7 @@ POST /quantum/calculate-dna
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -87,8 +89,12 @@ POST /quantum/calculate-dna
     "evolution": {
       "currentLevel": "Legendary",
       "nextLevel": "Transcendent",
-      "evolutionPath": { /* ... */ },
-      "recommendedFocus": [ /* ... */ ],
+      "evolutionPath": {
+        /* ... */
+      },
+      "recommendedFocus": [
+        /* ... */
+      ],
       "estimatedGrowth": "8 levels in 6 months"
     }
   }
@@ -106,17 +112,25 @@ POST /quantum/generate-prompt
 ```
 
 **Request Body:**
+
 ```json
 {
   "name": "Egypt Travel Expert",
   "specialization": "travel-expert",
-  "personality": { /* ... */ },
-  "skills": { /* ... */ },
-  "behavior": { /* ... */ }
+  "personality": {
+    /* ... */
+  },
+  "skills": {
+    /* ... */
+  },
+  "behavior": {
+    /* ... */
+  }
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -135,6 +149,7 @@ GET /quantum/presets
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -147,7 +162,9 @@ GET /quantum/presets
       "specialization": "travel-expert",
       "country": "Egypt",
       "icon": "🇪🇬",
-      "dnaScore": { /* ... */ }
+      "dnaScore": {
+        /* ... */
+      }
     },
     {
       "key": "saudiGuide",
@@ -156,7 +173,9 @@ GET /quantum/presets
       "specialization": "cultural-expert",
       "country": "Saudi Arabia",
       "icon": "🇸🇦",
-      "dnaScore": { /* ... */ }
+      "dnaScore": {
+        /* ... */
+      }
     }
     // ... more presets
   ]
@@ -174,9 +193,11 @@ GET /quantum/presets/:key
 ```
 
 **Parameters:**
+
 - `key`: Preset identifier (e.g., `egyptExpert`, `saudiGuide`, `uaeLuxury`)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -184,9 +205,15 @@ GET /quantum/presets/:key
     "name": "Egypt Travel Expert",
     "type": "country-agent",
     "specialization": "travel-expert",
-    "personality": { /* ... */ },
-    "skills": { /* ... */ },
-    "behavior": { /* ... */ },
+    "personality": {
+      /* ... */
+    },
+    "skills": {
+      /* ... */
+    },
+    "behavior": {
+      /* ... */
+    },
     "domainExpertise": [
       "Egyptian history",
       "Pyramids & ancient sites",
@@ -194,7 +221,9 @@ GET /quantum/presets/:key
       "Cairo & Alexandria",
       "Red Sea resorts"
     ],
-    "dnaScore": { /* ... */ }
+    "dnaScore": {
+      /* ... */
+    }
   }
 }
 ```
@@ -212,6 +241,7 @@ POST /quantum/network/initialize
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -224,7 +254,9 @@ POST /quantum/network/initialize
       "attractions": 150,
       "tours": 120
     },
-    "agentDetails": [ /* ... */ ]
+    "agentDetails": [
+      /* ... */
+    ]
   }
 }
 ```
@@ -240,6 +272,7 @@ POST /quantum/network/query
 ```
 
 **Request Body:**
+
 ```json
 {
   "query": "Show me attractions in Egypt",
@@ -254,6 +287,7 @@ POST /quantum/network/query
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -267,7 +301,9 @@ POST /quantum/network/query
       {
         "uuid": "...",
         "title": "Great Pyramid of Giza",
-        "location": { /* ... */ },
+        "location": {
+          /* ... */
+        },
         "rating": 4.8
       }
       // ... more attractions
@@ -290,6 +326,7 @@ GET /quantum/network/status
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -306,7 +343,9 @@ GET /quantum/network/status
       "name": "Egypt Travel Expert",
       "country": "Egypt",
       "countryCode": "EG",
-      "dnaScore": { /* ... */ },
+      "dnaScore": {
+        /* ... */
+      },
       "specialization": "travel-expert",
       "knowledge": {
         "attractions": 50,
@@ -342,9 +381,11 @@ GET /quantum/network/agents/:key
 ```
 
 **Parameters:**
+
 - `key`: Agent key (e.g., `egypt`, `saudi`, `uae`)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -352,10 +393,18 @@ GET /quantum/network/agents/:key
     "name": "Egypt Travel Expert",
     "country": "Egypt",
     "countryCode": "EG",
-    "dnaScore": { /* ... */ },
-    "knowledge": { /* ... */ },
-    "autoUpdate": { /* ... */ },
-    "performance": { /* ... */ }
+    "dnaScore": {
+      /* ... */
+    },
+    "knowledge": {
+      /* ... */
+    },
+    "autoUpdate": {
+      /* ... */
+    },
+    "performance": {
+      /* ... */
+    }
   }
 }
 ```
@@ -373,18 +422,26 @@ POST /quantum/deploy
 ```
 
 **Request Body:**
+
 ```json
 {
   "name": "Custom Travel Expert",
   "type": "travel-expert",
   "specialization": "luxury-expert",
-  "personality": { /* ... */ },
-  "skills": { /* ... */ },
-  "behavior": { /* ... */ }
+  "personality": {
+    /* ... */
+  },
+  "skills": {
+    /* ... */
+  },
+  "behavior": {
+    /* ... */
+  }
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -395,7 +452,9 @@ POST /quantum/deploy
     "dnaScore": 890,
     "systemPrompt": "..."
   },
-  "dnaScore": { /* full DNA breakdown */ },
+  "dnaScore": {
+    /* full DNA breakdown */
+  },
   "integrations": {
     "iziTravel": { "enabled": true, "status": "active" },
     "stripe": { "enabled": true, "status": "active" },
@@ -404,7 +463,9 @@ POST /quantum/deploy
   },
   "health": {
     "status": "healthy",
-    "checks": { /* ... */ }
+    "checks": {
+      /* ... */
+    }
   },
   "duration": 1234
 }
@@ -421,9 +482,11 @@ POST /quantum/deploy/preset/:key
 ```
 
 **Parameters:**
+
 - `key`: Preset identifier (e.g., `egyptExpert`)
 
 **Request Body (optional customizations):**
+
 ```json
 {
   "name": "My Egypt Expert"
@@ -443,9 +506,11 @@ DELETE /quantum/deploy/:id
 ```
 
 **Parameters:**
+
 - `id`: Deployment ID
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -464,15 +529,24 @@ GET /quantum/deploy/:id
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
   "deployment": {
     "id": "deploy_1728648000000_abc123",
-    "agent": { /* ... */ },
-    "dnaScore": { /* ... */ },
-    "integrations": { /* ... */ },
-    "health": { /* ... */ },
+    "agent": {
+      /* ... */
+    },
+    "dnaScore": {
+      /* ... */
+    },
+    "integrations": {
+      /* ... */
+    },
+    "health": {
+      /* ... */
+    },
     "status": "deployed",
     "deployedAt": "2025-10-11T12:00:00.000Z",
     "duration": 1234
@@ -491,11 +565,14 @@ GET /quantum/deployments
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
   "count": 3,
-  "deployments": [ /* ... */ ]
+  "deployments": [
+    /* ... */
+  ]
 }
 ```
 
@@ -510,9 +587,11 @@ GET /quantum/deployments/history?limit=50
 ```
 
 **Query Parameters:**
+
 - `limit`: Number of records (default: 50)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -542,6 +621,7 @@ GET /quantum/deployments/stats
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -573,26 +653,40 @@ POST /quantum/deploy/batch
 ```
 
 **Request Body:**
+
 ```json
 {
   "agents": [
     {
       "name": "Agent 1",
-      "personality": { /* ... */ },
-      "skills": { /* ... */ },
-      "behavior": { /* ... */ }
+      "personality": {
+        /* ... */
+      },
+      "skills": {
+        /* ... */
+      },
+      "behavior": {
+        /* ... */
+      }
     },
     {
       "name": "Agent 2",
-      "personality": { /* ... */ },
-      "skills": { /* ... */ },
-      "behavior": { /* ... */ }
+      "personality": {
+        /* ... */
+      },
+      "skills": {
+        /* ... */
+      },
+      "behavior": {
+        /* ... */
+      }
     }
   ]
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -603,13 +697,17 @@ POST /quantum/deploy/batch
     {
       "index": 0,
       "status": "fulfilled",
-      "data": { /* deployment result */ },
+      "data": {
+        /* deployment result */
+      },
       "error": null
     },
     {
       "index": 1,
       "status": "fulfilled",
-      "data": { /* deployment result */ },
+      "data": {
+        /* deployment result */
+      },
       "error": null
     }
   ]
@@ -629,6 +727,7 @@ GET /admin/dashboard
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -640,7 +739,9 @@ GET /admin/dashboard
         "attractions": 150,
         "tours": 120
       },
-      "agentDetails": [ /* ... */ ]
+      "agentDetails": [
+        /* ... */
+      ]
     },
     "deployments": {
       "active": 3,
@@ -649,8 +750,12 @@ GET /admin/dashboard
       "failed": 1,
       "successRate": 90,
       "averageDuration": 1200,
-      "byType": { /* ... */ },
-      "recentDeployments": [ /* ... */ ]
+      "byType": {
+        /* ... */
+      },
+      "recentDeployments": [
+        /* ... */
+      ]
     },
     "agents": {
       "total": 15,
@@ -665,7 +770,9 @@ GET /admin/dashboard
         "5": 7
       },
       "averageDNAScore": 750,
-      "topAgents": [ /* ... */ ]
+      "topAgents": [
+        /* ... */
+      ]
     },
     "health": {
       "overall": "healthy",
@@ -678,7 +785,9 @@ GET /admin/dashboard
       }
     },
     "activity": {
-      "deployments": [ /* recent activity */ ]
+      "deployments": [
+        /* recent activity */
+      ]
     },
     "timestamp": "2025-10-11T12:00:00.000Z"
   }
@@ -696,9 +805,11 @@ GET /admin/analytics?range=7d
 ```
 
 **Query Parameters:**
+
 - `range`: Time range (e.g., `7d`, `30d`, `90d`)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -716,11 +827,17 @@ GET /admin/analytics?range=7d
         "2025-10-11": 2,
         "2025-10-10": 3
       },
-      "performance": [ /* ... */ ]
+      "performance": [
+        /* ... */
+      ]
     },
     "network": {
-      "knowledgeGrowth": { /* ... */ },
-      "queryVolume": { /* ... */ }
+      "knowledgeGrowth": {
+        /* ... */
+      },
+      "queryVolume": {
+        /* ... */
+      }
     }
   },
   "timeRange": "7d"
@@ -738,6 +855,7 @@ GET /admin/leaderboard
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -771,14 +889,18 @@ GET /admin/logs?limit=50
 ```
 
 **Query Parameters:**
+
 - `limit`: Number of log entries (default: 50)
 
 **Response:**
+
 ```json
 {
   "success": true,
   "count": 50,
-  "logs": [ /* deployment history */ ]
+  "logs": [
+    /* deployment history */
+  ]
 }
 ```
 
@@ -793,12 +915,14 @@ POST /admin/control/:action
 ```
 
 **Available Actions:**
+
 - `initialize-network`: Initialize Country Agent Network
 - `shutdown-network`: Shutdown Country Agent Network
 - `clear-cache`: Clear all caches (Redis + izi.TRAVEL)
 - `update-knowledge`: Force update knowledge for all agents
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -818,11 +942,14 @@ GET /admin/health
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
   "overall": "healthy",
-  "checks": { /* ... */ },
+  "checks": {
+    /* ... */
+  },
   "timestamp": "2025-10-11T12:00:00.000Z"
 }
 ```
@@ -841,6 +968,7 @@ All endpoints return consistent error responses:
 ```
 
 **HTTP Status Codes:**
+
 - `200`: Success
 - `400`: Bad Request (invalid parameters)
 - `404`: Not Found
@@ -852,10 +980,12 @@ All endpoints return consistent error responses:
 ## Rate Limiting
 
 API requests are rate-limited based on IP address:
+
 - **Development**: 100 requests per 15 minutes
 - **Production**: 1000 requests per 15 minutes
 
 Rate limit headers are included in responses:
+
 ```
 X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 95
@@ -867,6 +997,7 @@ X-RateLimit-Reset: 1728648900
 ## Authentication
 
 Currently, the API is open for development. Production deployment will require:
+
 - API Key authentication
 - JWT tokens for user sessions
 - Role-based access control (RBAC)
@@ -884,13 +1015,13 @@ const preset = await fetch('/api/quantum/presets/egyptExpert');
 // 2. Calculate DNA score (optional - to preview)
 const dnaScore = await fetch('/api/quantum/calculate-dna', {
   method: 'POST',
-  body: JSON.stringify(preset.data.preset)
+  body: JSON.stringify(preset.data.preset),
 });
 
 // 3. Deploy the agent
 const deployment = await fetch('/api/quantum/deploy/preset/egyptExpert', {
   method: 'POST',
-  body: JSON.stringify({ name: 'My Egypt Expert' })
+  body: JSON.stringify({ name: 'My Egypt Expert' }),
 });
 
 // 4. Query the network
@@ -898,8 +1029,8 @@ const response = await fetch('/api/quantum/network/query', {
   method: 'POST',
   body: JSON.stringify({
     query: 'Show me pyramids',
-    context: { country: 'Egypt' }
-  })
+    context: { country: 'Egypt' },
+  }),
 });
 ```
 
@@ -908,6 +1039,7 @@ const response = await fetch('/api/quantum/network/query', {
 ## Support
 
 For issues or questions:
+
 - GitHub: [github.com/Moeabdelaziz007/maya-travel-agent](https://github.com/Moeabdelaziz007/maya-travel-agent)
 - Email: support@amrikyy.com
 
@@ -916,4 +1048,3 @@ For issues or questions:
 **Last Updated:** October 11, 2025  
 **API Version:** 1.0.0  
 **Status:** Production Ready
-

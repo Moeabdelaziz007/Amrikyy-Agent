@@ -51,7 +51,10 @@ async function testQuantumSystem() {
     const response = await axios.get(`${BASE_URL}/quantum/presets`);
     if (response.data.success && response.data.count >= 5) {
       log(`✅ Found ${response.data.count} agent presets`, 'green');
-      log(`   Presets: ${response.data.presets.map(p => p.name).join(', ')}`, 'cyan');
+      log(
+        `   Presets: ${response.data.presets.map((p) => p.name).join(', ')}`,
+        'cyan'
+      );
       passedTests++;
     } else {
       log('❌ Failed to get agent presets', 'red');
@@ -91,10 +94,16 @@ async function testQuantumSystem() {
       specialization: 'travel-expert',
     };
 
-    const response = await axios.post(`${BASE_URL}/quantum/calculate-dna`, testDNA);
+    const response = await axios.post(
+      `${BASE_URL}/quantum/calculate-dna`,
+      testDNA
+    );
     if (response.data.success && response.data.dnaScore) {
       log(`✅ DNA Score: ${response.data.dnaScore.totalScore}/1000`, 'green');
-      log(`   Level: ${response.data.dnaScore.level} ${response.data.dnaScore.emoji}`, 'cyan');
+      log(
+        `   Level: ${response.data.dnaScore.level} ${response.data.dnaScore.emoji}`,
+        'cyan'
+      );
       log(`   Tier: ${response.data.dnaScore.tier}/10`, 'cyan');
       passedTests++;
     } else {
@@ -136,7 +145,10 @@ async function testQuantumSystem() {
       },
     };
 
-    const response = await axios.post(`${BASE_URL}/quantum/generate-prompt`, testAgent);
+    const response = await axios.post(
+      `${BASE_URL}/quantum/generate-prompt`,
+      testAgent
+    );
     if (response.data.success && response.data.systemPrompt) {
       log('✅ System prompt generated successfully', 'green');
       log(`   Length: ${response.data.systemPrompt.length} characters`, 'cyan');
@@ -157,7 +169,12 @@ async function testQuantumSystem() {
     if (response.data.success) {
       log('✅ Country Agent Network initialized', 'green');
       log(`   Agents: ${response.data.status.agents}`, 'cyan');
-      log(`   Total Knowledge: ${JSON.stringify(response.data.status.totalKnowledge)}`, 'cyan');
+      log(
+        `   Total Knowledge: ${JSON.stringify(
+          response.data.status.totalKnowledge
+        )}`,
+        'cyan'
+      );
       passedTests++;
     } else {
       log('❌ Network initialization failed', 'red');
@@ -200,9 +217,12 @@ async function testQuantumSystem() {
   log('\n[7/10] Testing Agent Deployment from Preset...', 'blue');
   let deploymentId = null;
   try {
-    const response = await axios.post(`${BASE_URL}/quantum/deploy/preset/egyptExpert`, {
-      name: 'Test Egypt Agent',
-    });
+    const response = await axios.post(
+      `${BASE_URL}/quantum/deploy/preset/egyptExpert`,
+      {
+        name: 'Test Egypt Agent',
+      }
+    );
 
     if (response.data.success && response.data.deploymentId) {
       deploymentId = response.data.deploymentId;
@@ -245,10 +265,19 @@ async function testQuantumSystem() {
     const response = await axios.get(`${BASE_URL}/admin/dashboard`);
     if (response.data.success && response.data.dashboard) {
       log('✅ Admin dashboard data retrieved', 'green');
-      log(`   Network Active: ${response.data.dashboard.network.active}`, 'cyan');
+      log(
+        `   Network Active: ${response.data.dashboard.network.active}`,
+        'cyan'
+      );
       log(`   Total Agents: ${response.data.dashboard.agents.total}`, 'cyan');
-      log(`   Active Deployments: ${response.data.dashboard.deployments.active}`, 'cyan');
-      log(`   System Health: ${response.data.dashboard.health.overall}`, 'cyan');
+      log(
+        `   Active Deployments: ${response.data.dashboard.deployments.active}`,
+        'cyan'
+      );
+      log(
+        `   System Health: ${response.data.dashboard.health.overall}`,
+        'cyan'
+      );
       passedTests++;
     } else {
       log('❌ Dashboard data retrieval failed', 'red');
@@ -263,7 +292,9 @@ async function testQuantumSystem() {
   if (deploymentId) {
     log('\n[10/10] Testing Agent Undeployment...', 'blue');
     try {
-      const response = await axios.delete(`${BASE_URL}/quantum/deploy/${deploymentId}`);
+      const response = await axios.delete(
+        `${BASE_URL}/quantum/deploy/${deploymentId}`
+      );
       if (response.data.success) {
         log('✅ Test agent undeployed successfully', 'green');
         passedTests++;
@@ -289,7 +320,10 @@ async function testQuantumSystem() {
   log(`📊 Success Rate: ${Math.round((passedTests / 10) * 100)}%`, 'magenta');
 
   if (passedTests === 10) {
-    log('\n🎉 ALL TESTS PASSED! Quantum system is fully operational! 🌌', 'green');
+    log(
+      '\n🎉 ALL TESTS PASSED! Quantum system is fully operational! 🌌',
+      'green'
+    );
   } else if (passedTests >= 7) {
     log('\n⚠️ Most tests passed. Some issues detected.', 'yellow');
   } else {
@@ -300,8 +334,7 @@ async function testQuantumSystem() {
 }
 
 // Run tests
-testQuantumSystem().catch(error => {
+testQuantumSystem().catch((error) => {
   log(`\n❌ Fatal error: ${error.message}`, 'red');
   process.exit(1);
 });
-
