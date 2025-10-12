@@ -179,8 +179,7 @@ class EmotionalIntelligenceEngine {
       score += Math.min(exclamationCount, 3);
 
       // الرموز التعبيرية الإيجابية
-      const emojiCount =
-        (content.match(/[😍🎉✨🤩💕❤️]/g) || []).length;
+      const emojiCount = (content.match(/[😍🎉✨🤩💕❤️]/g) || []).length;
       score += emojiCount * CONFIG.SCORING.EXCITEMENT_EMOJI;
     });
 
@@ -549,9 +548,7 @@ class EmotionalIntelligenceEngine {
     const nearDateWords = [
       ...emotionalKeywords.urgency.ar,
       ...emotionalKeywords.urgency.en,
-    ].filter((word) =>
-      ['اليوم', 'غداً', 'today', 'tomorrow'].includes(word)
-    );
+    ].filter((word) => ['اليوم', 'غداً', 'today', 'tomorrow'].includes(word));
 
     return nearDateWords.some((word) =>
       text.toLowerCase().includes(word.toLowerCase())
@@ -624,8 +621,9 @@ class EmotionalAIIntegration {
       });
 
       // كشف الحالة العاطفية
-      const emotionalState =
-        this.emotionEngine.detectEmotionalState(this.conversationHistory);
+      const emotionalState = this.emotionEngine.detectEmotionalState(
+        this.conversationHistory
+      );
 
       // الحصول على التكيف المناسب
       const adaptation = this.emotionEngine.getAdaptiveResponse(emotionalState);
@@ -681,9 +679,7 @@ class EmotionalAIIntegration {
   /**
    * استدعاء GLM API مع error handling كامل
    */
-  private async callGLMAPI(
-    request: ChatCompletionRequest
-  ): Promise<string> {
+  private async callGLMAPI(request: ChatCompletionRequest): Promise<string> {
     if (!this.zaiApiKey) {
       throw new Error('ZAI_API_KEY is not configured');
     }
@@ -710,9 +706,7 @@ class EmotionalAIIntegration {
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(
-          `GLM API Error ${response.status}: ${errorText}`
-        );
+        throw new Error(`GLM API Error ${response.status}: ${errorText}`);
       }
 
       const data = await response.json();
@@ -762,7 +756,9 @@ class EmotionalAIIntegration {
     const previousMessage =
       this.conversationHistory[this.conversationHistory.length - 2];
 
-    return lastMessage.timestamp.getTime() - previousMessage.timestamp.getTime();
+    return (
+      lastMessage.timestamp.getTime() - previousMessage.timestamp.getTime()
+    );
   }
 
   /**
@@ -872,4 +868,3 @@ export {
   type UserMessage,
   type EmotionalSignals,
 };
-
