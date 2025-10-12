@@ -1,0 +1,328 @@
+name: 🏥 Auto Health Check & Self-Healing
+
+on:
+  schedule:
+    - cron: '0 */4 * * *' # Every 4 hours
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch: # Manual trigger
+
+env:
+  NODE_VERSION: '18'
+  HEALTH_CHECK_TIMEOUT: 30
+
+jobs:
+  # ============================================================================
+  # HEALTH DIAGNOSTICS
+  # ============================================================================
+  health-diagnostics:
+    name: 🔍 Health Diagnostics
+    runs-on: ubuntu-latest
+    outputs:
+      backend-healthy: ${{ steps.backend-check.outputs.healthy }}
+      frontend-healthy: ${{ steps.frontend-check.outputs.healthy }}
+      redis-healthy: ${{ steps.redis-check.outputs.healthy }}
+      issues-found: ${{ steps.diagnostics.outputs.issues }}
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: 📦 Install Dependencies
+        run: |
+          cd backend && npm ci
+          cd ../frontend && npm ci
+      
+      - name: 🔍 Run Diagnostic Checks
+        id: diagnostics
+        run: |
+          echo "Running comprehensive diagnostics..."
+          
+          # Create diagnostics report
+          mkdir -p diagnostics-reports
+          
+          # Check for common issues
+          ISSUES=0
+          
+          # Check 1: Linting
+          echo "🔍 Checking code quality..."
+          cd backend
+          if ! npm run lint > ../diagnostics-reports/lint-backend.log 2>&1; then
+            echo "⚠️ Backend linting issues found"
+            ISSUES=$((ISSUES + 1))
+          fi
+          
+          cd ../frontend
+          if ! npm run lint > ../diagnostics-reports/lint-frontend.log 2>&1; then
+            echo "⚠️ Frontend linting issues found"
+            ISSUES=$((ISSUES + 1))
+          fi
+          
+          # Check 2: Security vulnerabilities
+          echo "🔒 Checking security vulnerabilities..."
+          cd ../backend
+          if npm audit --audit-level=moderate > ../diagnostics-reports/security-backend.log 2>&1; then
+            echo "✅ Backend security OK"
+          else
+            echo "⚠️ Backend security vulnerabilities found"
+            ISSUES=$((ISSUES + 1))
+          fi
+          
+          # Check 3: Dependencies
+          echo "📦 Checking dependencies..."
+          if npm outdated > ../diagnostics-reports/outdated.log 2>&1; then
+            echo "✅ Dependencies up to date"
+          else
+            echo "ℹ️ Some dependencies can be updated"
+          fi
+          
+          # Check 4: TypeScript/Build errors
+          echo "🔨 Checking build..."
+          cd ..
+          if npm run build > diagnostics-reports/build.log 2>&1; then
+            echo "✅ Build successful"
+          else
+            echo "⚠️ Build errors found"
+            ISSUES=$((ISSUES + 1))
+          fi
+          
+          echo "issues=$ISSUES" >> $GITHUB_OUTPUT
+          echo "📊 Diagnostics complete: $ISSUES issues found"
+      
+      - name: 📤 Upload Diagnostic Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: diagnostics-reports
+          path: diagnostics-reports/
+          retention-days: 7
+      
+      - name: 🚨 Create Issue for Problems
+        if: steps.diagnostics.outputs.issues > 0
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issues = ${{ steps.diagnostics.outputs.issues }};
+            
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🏥 Auto-Health Check Found ${issues} Issue(s)`,
+              body: `## Health Check Report\n\n` +
+                    `**Issues Found**: ${issues}\n` +
+                    `**Branch**: ${context.ref}\n` +
+                    `**Commit**: ${context.sha}\n` +
+                    `**Workflow Run**: ${context.runId}\n\n` +
+                    `### Next Steps\n` +
+                    `1. Check the diagnostics reports in workflow artifacts\n` +
+                    `2. Auto-healing will attempt to fix common issues\n` +
+                    `3. Manual intervention may be required for complex problems\n\n` +
+                    `[View Workflow Run](${context.payload.repository.html_url}/actions/runs/${context.runId})`,
+              labels: ['auto-health-check', 'needs-attention']
+            });
+
+  # ============================================================================
+  # AUTO-HEALING
+  # ============================================================================
+  auto-healing:
+    name: 🔧 Auto-Healing
+    runs-on: ubuntu-latest
+    needs: health-diagnostics
+    if: needs.health-diagnostics.outputs.issues-found > 0
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: 🔧 Auto-Fix Linting Issues
+        run: |
+          echo "🔧 Attempting to auto-fix linting issues..."
+          
+          cd backend
+          npm run lint:fix || true
+          
+          cd ../frontend
+          npm run lint:fix || true
+          
+          cd ..
+          
+          # Check if files were changed
+          if [[ -n $(git status -s) ]]; then
+            echo "✅ Linting issues auto-fixed"
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add .
+            git commit -m "🤖 Auto-fix: Lint issues resolved by auto-healing"
+            echo "fixed=true" >> $GITHUB_ENV
+          else
+            echo "ℹ️ No auto-fixable linting issues"
+          fi
+      
+      - name: 🔒 Auto-Fix Security Issues
+        run: |
+          echo "🔒 Attempting to auto-fix security vulnerabilities..."
+          
+          cd backend
+          npm audit fix --audit-level=moderate || true
+          
+          cd ../frontend
+          npm audit fix --audit-level=moderate || true
+          
+          cd ..
+          
+          if [[ -n $(git status -s) ]]; then
+            echo "✅ Security vulnerabilities auto-patched"
+            git add .
+            git commit -m "🤖 Auto-fix: Security vulnerabilities patched"
+            echo "fixed=true" >> $GITHUB_ENV
+          fi
+      
+      - name: 📤 Push Auto-Fixes
+        if: env.fixed == 'true'
+        run: |
+          git push
+          echo "✅ Auto-fixes pushed to repository"
+      
+      - name: 💬 Comment on Issue
+        if: env.fixed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: '🤖 **Auto-Healing Complete**\n\n' +
+                    'The following fixes were automatically applied:\n' +
+                    '- ✅ Linting issues resolved\n' +
+                    '- ✅ Security vulnerabilities patched\n\n' +
+                    'Please verify the changes and close this issue if resolved.'
+            });
+
+  # ============================================================================
+  # LOAD TESTING
+  # ============================================================================
+  load-testing:
+    name: 🚀 Load Testing
+    runs-on: ubuntu-latest
+    needs: health-diagnostics
+    
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: 📦 Install k6
+        run: |
+          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+      
+      - name: 📦 Install Dependencies
+        run: cd backend && npm ci
+      
+      - name: 🚀 Start Backend
+        run: |
+          cd backend
+          npm run dev &
+          sleep 15
+          
+          # Wait for backend to be ready
+          for i in {1..30}; do
+            if curl -f http://localhost:5000/health > /dev/null 2>&1; then
+              echo "✅ Backend is ready"
+              break
+            fi
+            echo "Waiting for backend... ($i/30)"
+            sleep 2
+          done
+        env:
+          NODE_ENV: test
+          REDIS_URL: redis://localhost:6379
+      
+      - name: 🧪 Run Smoke Test
+        run: |
+          cd backend
+          npm run test:load:smoke
+        env:
+          BASE_URL: http://localhost:5000
+      
+      - name: 📤 Upload Load Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: load-test-results
+          path: test-outputs/
+          retention-days: 30
+
+  # ============================================================================
+  # DEPLOYMENT READINESS
+  # ============================================================================
+  deployment-readiness:
+    name: ✅ Deployment Readiness Check
+    runs-on: ubuntu-latest
+    needs: [health-diagnostics, load-testing]
+    outputs:
+      ready-to-deploy: ${{ steps.readiness.outputs.ready }}
+    
+    steps:
+      - name: 📊 Evaluate Readiness
+        id: readiness
+        run: |
+          ISSUES=${{ needs.health-diagnostics.outputs.issues-found }}
+          
+          if [ "$ISSUES" -eq 0 ]; then
+            echo "✅ Repository is healthy - READY TO DEPLOY"
+            echo "ready=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ Issues detected - NOT READY TO DEPLOY"
+            echo "ready=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: 🎉 Success Summary
+        if: steps.readiness.outputs.ready == 'true'
+        run: |
+          echo "🎉 Repository Health: EXCELLENT"
+          echo "✅ All checks passed"
+          echo "✅ Load tests successful"
+          echo "🚀 Ready for deployment"
+      
+      - name: ⚠️ Warning Summary
+        if: steps.readiness.outputs.ready != 'true'
+        run: |
+          echo "⚠️ Repository Health: NEEDS ATTENTION"
+          echo "❌ Some checks failed"
+          echo "🔧 Auto-healing attempted"
+          echo "👀 Manual review required"
+

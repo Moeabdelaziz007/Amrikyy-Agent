@@ -53,24 +53,8 @@ Sentry.init({
   
   // Integrations for better error tracking
   integrations: [
-    // Capture console.log, console.error, etc.
-    new Sentry.Integrations.Console({
-      levels: ['error']
-    }),
-    
-    // Capture HTTP requests
-    new Sentry.Integrations.Http({
-      tracing: true
-    }),
-    
-    // Capture unhandled promise rejections
-    new Sentry.Integrations.OnUncaughtException({
-      exitEvenIfOtherHandlersAreRegistered: false
-    }),
-    
-    new Sentry.Integrations.OnUnhandledRejection({
-      mode: 'warn'
-    })
+    // Note: Console, Http, OnUncaughtException, and OnUnhandledRejection
+    // are now enabled by default in Sentry v8+, no need to manually add them
   ]
 });
 

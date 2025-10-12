@@ -1,0 +1,21 @@
+{
+  "name": "Amadeus API Soak Test",
+  "description": "Extended duration test for memory leaks and stability",
+  "profile": "soak",
+  "stages": [
+    { "duration": "5m", "target": 50 },
+    { "duration": "30m", "target": 50 },
+    { "duration": "5m", "target": 0 }
+  ],
+  "thresholds": {
+    "http_req_duration": ["p(95)<8000"],
+    "http_req_failed": ["rate<0.05"],
+    "success_rate": ["rate>0.9"]
+  },
+  "environment": {
+    "LOAD_PROFILE": "soak",
+    "AGENT_TIMEOUT": "10000",
+    "AGENT_PRIORITY": "1"
+  }
+}
+

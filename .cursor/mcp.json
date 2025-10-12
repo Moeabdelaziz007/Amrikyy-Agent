@@ -1,33 +1,6 @@
 {
+  "$schema": "https://modelcontextprotocol.io/schema/mcp.json",
   "mcpServers": {
-    "vercel": {
-      "url": "https://mcp.vercel.com",
-      "description": "General Vercel access - manage all projects and deployments"
-    },
-    "vercel-amrikyy": {
-      "url": "https://mcp.vercel.com/YOUR_TEAM_SLUG/amrikyy-travel-agent",
-      "description": "Project-specific access for Amrikyy Travel Agent - automatic context"
-    },
-    "railway": {
-      "url": "https://mcp.railway.app",
-      "description": "Railway deployment and database management"
-    },
-    "supabase": {
-      "url": "https://mcp.supabase.com",
-      "description": "Supabase database and authentication management"
-    },
-    "github": {
-      "url": "https://mcp.github.com",
-      "description": "GitHub repository management and CI/CD"
-    },
-    "stripe": {
-      "url": "https://mcp.stripe.com",
-      "description": "Stripe payment processing and subscription management"
-    },
-    "telegram": {
-      "url": "https://mcp.telegram.org",
-      "description": "Telegram bot and mini app management"
-    },
     "filesystem": {
       "command": "npx",
       "args": [
@@ -35,27 +8,153 @@
         "@modelcontextprotocol/server-filesystem",
         "/Users/Shared/maya-travel-agent"
       ],
-      "description": "Local filesystem access for project files"
+      "env": {},
+      "description": "Full filesystem access to project",
+      "enabled": true
     },
-    "git": {
+    "github": {
       "command": "npx",
       "args": [
         "-y",
-        "@modelcontextprotocol/server-git",
-        "--repository",
-        "/Users/Shared/maya-travel-agent"
+        "@modelcontextprotocol/server-github"
       ],
-      "description": "Git repository management and version control"
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "description": "GitHub integration for PRs, issues, repos",
+      "enabled": true
     },
-    "sqlite": {
+    "context7": {
       "command": "npx",
       "args": [
         "-y",
-        "@modelcontextprotocol/server-sqlite",
-        "--db-path",
-        "/Users/Shared/maya-travel-agent/database.db"
+        "@context7/mcp-server"
       ],
-      "description": "SQLite database for local development data"
+      "env": {},
+      "description": "Library documentation and examples",
+      "enabled": true
+    },
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "${DATABASE_URL}"
+      ],
+      "env": {},
+      "description": "PostgreSQL database access",
+      "enabled": false,
+      "note": "Enable when DATABASE_URL is configured"
+    },
+    "redis": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-redis",
+        "${REDIS_URL}"
+      ],
+      "env": {},
+      "description": "Redis cache and session management",
+      "enabled": false,
+      "note": "Enable when REDIS_URL is configured"
+    },
+    "slack": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-slack"
+      ],
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
+        "SLACK_TEAM_ID": "${SLACK_TEAM_ID}"
+      },
+      "description": "Slack integration for notifications",
+      "enabled": false,
+      "note": "Enable when Slack tokens are configured"
+    },
+    "sentry": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sentry"
+      ],
+      "env": {
+        "SENTRY_DSN": "${SENTRY_DSN}",
+        "SENTRY_AUTH_TOKEN": "${SENTRY_AUTH_TOKEN}"
+      },
+      "description": "Error tracking and monitoring",
+      "enabled": false,
+      "note": "Enable when Sentry is configured"
+    },
+    "n8n": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@n8n/mcp-server"
+      ],
+      "env": {
+        "N8N_API_KEY": "${N8N_API_KEY}",
+        "N8N_BASE_URL": "${N8N_BASE_URL}"
+      },
+      "description": "n8n workflow automation integration",
+      "enabled": false,
+      "note": "Enable after n8n account setup"
+    },
+    "prometheus": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-prometheus"
+      ],
+      "env": {
+        "PROMETHEUS_URL": "http://localhost:9090"
+      },
+      "description": "Prometheus metrics and monitoring",
+      "enabled": false,
+      "note": "Enable when Prometheus is running"
+    },
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-supabase"
+      ],
+      "env": {
+        "SUPABASE_URL": "${SUPABASE_URL}",
+        "SUPABASE_KEY": "${SUPABASE_ANON_KEY}"
+      },
+      "description": "Supabase database and auth",
+      "enabled": false,
+      "note": "Enable when Supabase is configured"
+    },
+    "vercel": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-vercel"
+      ],
+      "env": {
+        "VERCEL_TOKEN": "${VERCEL_TOKEN}"
+      },
+      "description": "Vercel deployment and management",
+      "enabled": false,
+      "note": "Enable for Vercel deployments"
+    },
+    "stripe": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-stripe"
+      ],
+      "env": {
+        "STRIPE_SECRET_KEY": "${STRIPE_SECRET_KEY}"
+      },
+      "description": "Stripe payment operations",
+      "enabled": false,
+      "note": "Enable for payment management"
     }
-  }
+  },
+  "globalShortcut": "Cmd+Shift+M",
+  "autoStart": true,
+  "logLevel": "info"
 }

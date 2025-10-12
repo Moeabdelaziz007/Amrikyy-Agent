@@ -19,14 +19,14 @@ router.get('/alerts', async (req, res) => {
     res.json({
       success: true,
       total: alerts.length,
-      alerts,
+      alerts
     });
 
   } catch (error) {
     console.error('❌ Get alerts error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -44,14 +44,14 @@ router.post('/alerts/:id/acknowledge', async (req, res) => {
 
     res.json({
       success,
-      alertId: id,
+      alertId: id
     });
 
   } catch (error) {
     console.error('❌ Acknowledge alert error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -69,15 +69,15 @@ router.get('/stats', async (req, res) => {
         totalMonitored: 0,
         alertsToday: 0,
         criticalAlerts: 0,
-        pendingReview: 0,
-      },
+        pendingReview: 0
+      }
     });
 
   } catch (error) {
     console.error('❌ Get stats error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -90,7 +90,7 @@ router.post('/test', async (req, res) => {
   if (process.env.NODE_ENV === 'production') {
     return res.status(403).json({
       success: false,
-      error: 'Test endpoint disabled in production',
+      error: 'Test endpoint disabled in production'
     });
   }
 
@@ -101,21 +101,21 @@ router.post('/test', async (req, res) => {
       amountUSD: req.body.amountUSD || 1000,
       cryptocurrency: 'USDT',
       ipCountry: req.body.ipCountry || 'US',
-      cryptoAddress: req.body.cryptoAddress || '0x0000000000000000000000000000000000000test',
+      cryptoAddress: req.body.cryptoAddress || '0x0000000000000000000000000000000000000test'
     };
 
     const result = await monitoringService.monitorTransaction(testTx);
 
     res.json({
       success: true,
-      result,
+      result
     });
 
   } catch (error) {
     console.error('❌ Test monitoring error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });

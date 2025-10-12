@@ -1,0 +1,22 @@
+{
+  "name": "Amadeus API Spike Test",
+  "description": "Sudden traffic spike test for rate limiter validation",
+  "profile": "spike",
+  "stages": [
+    { "duration": "1m", "target": 20 },
+    { "duration": "30s", "target": 200 },
+    { "duration": "2m", "target": 200 },
+    { "duration": "1m", "target": 20 },
+    { "duration": "1m", "target": 0 }
+  ],
+  "thresholds": {
+    "http_req_duration": ["p(95)<20000"],
+    "http_req_failed": ["rate<0.2"],
+    "success_rate": ["rate>0.7"]
+  },
+  "environment": {
+    "LOAD_PROFILE": "spike",
+    "AGENT_TIMEOUT": "20000",
+    "AGENT_PRIORITY": "2"
+  }
+}

@@ -26,7 +26,7 @@ class RiskEngine {
   constructor() {
     this.THRESHOLDS = {
       REVIEW: parseInt(process.env.RISK_THRESHOLD_REVIEW || '70'),
-      REJECT: parseInt(process.env.RISK_THRESHOLD_REJECT || '85'),
+      REJECT: parseInt(process.env.RISK_THRESHOLD_REJECT || '85')
     };
 
     this.WEIGHTS = {
@@ -34,7 +34,7 @@ class RiskEngine {
       velocity: 0.20,
       location: 0.15,
       behavior: 0.20,
-      wallet: 0.20,
+      wallet: 0.20
     };
   }
 
@@ -51,7 +51,7 @@ class RiskEngine {
         velocity: await this.scoreVelocity(tx.userId),
         location: await this.scoreLocation(tx.ipCountry || tx.location),
         behavior: await this.scoreBehavior(tx.userId, user),
-        wallet: await this.scoreWallet(tx.cryptoAddress || tx.cryptocurrency),
+        wallet: await this.scoreWallet(tx.cryptoAddress || tx.cryptocurrency)
       };
 
       // Calculate weighted total
@@ -70,7 +70,7 @@ class RiskEngine {
         signals,
         weights: this.WEIGHTS,
         timestamp: new Date().toISOString(),
-        transaction_id: tx.bookingId || tx.id,
+        transaction_id: tx.bookingId || tx.id
       };
 
       // Store in database
@@ -89,7 +89,7 @@ class RiskEngine {
         action: 'manual_review',
         signals: {},
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     }
   }
@@ -163,11 +163,11 @@ class RiskEngine {
 
     const HIGH_RISK_COUNTRIES = [
       'KP', 'IR', 'SY', 'CU', 'VE', // Sanctioned
-      'AF', 'MM', 'YE', // High-risk FATF
+      'AF', 'MM', 'YE' // High-risk FATF
     ];
 
     const MEDIUM_RISK_COUNTRIES = [
-      'RU', 'BY', 'LB', 'LY', 'IQ', 'SD',
+      'RU', 'BY', 'LB', 'LY', 'IQ', 'SD'
     ];
 
     const countryCode = country.toUpperCase();
@@ -305,7 +305,7 @@ class RiskEngine {
           risk_level: assessment.level,
           risk_signals: assessment.signals,
           action: assessment.action,
-          created_at: new Date().toISOString(),
+          created_at: new Date().toISOString()
         });
 
       if (error) {
@@ -356,14 +356,14 @@ class RiskEngine {
           low: data.filter(r => r.risk_level === 'low').length,
           medium: data.filter(r => r.risk_level === 'medium').length,
           high: data.filter(r => r.risk_level === 'high').length,
-          critical: data.filter(r => r.risk_level === 'critical').length,
+          critical: data.filter(r => r.risk_level === 'critical').length
         },
         by_action: {
           auto_approve: data.filter(r => r.action === 'auto_approve').length,
           manual_review: data.filter(r => r.action === 'manual_review').length,
-          reject: data.filter(r => r.action === 'reject').length,
+          reject: data.filter(r => r.action === 'reject').length
         },
-        avg_score: data.reduce((sum, r) => sum + r.risk_score, 0) / data.length || 0,
+        avg_score: data.reduce((sum, r) => sum + r.risk_score, 0) / data.length || 0
       };
 
       return stats;

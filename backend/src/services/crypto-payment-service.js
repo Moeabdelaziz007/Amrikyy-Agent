@@ -27,7 +27,7 @@ class CryptoPaymentService {
       ),
       polygon: new Web3(
         process.env.POLYGON_RPC_URL || 'https://polygon-rpc.com/'
-      ),
+      )
     };
 
     // Supported cryptocurrencies
@@ -39,7 +39,7 @@ class CryptoPaymentService {
         decimals: 8,
         icon: '₿',
         minAmount: 0.0001,
-        confirmations: 2,
+        confirmations: 2
       },
       ETH: {
         name: 'Ethereum',
@@ -49,7 +49,7 @@ class CryptoPaymentService {
         icon: 'Ξ',
         minAmount: 0.001,
         confirmations: 12,
-        contractAddress: null, // Native token
+        contractAddress: null // Native token
       },
       USDT: {
         name: 'Tether USD',
@@ -59,7 +59,7 @@ class CryptoPaymentService {
         icon: '₮',
         minAmount: 10,
         confirmations: 12,
-        contractAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7', // ERC-20
+        contractAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7' // ERC-20
       },
       USDC: {
         name: 'USD Coin',
@@ -69,7 +69,7 @@ class CryptoPaymentService {
         icon: '$',
         minAmount: 10,
         confirmations: 12,
-        contractAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        contractAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
       },
       BNB: {
         name: 'Binance Coin',
@@ -79,7 +79,7 @@ class CryptoPaymentService {
         icon: '🔶',
         minAmount: 0.01,
         confirmations: 15,
-        contractAddress: null, // Native token
+        contractAddress: null // Native token
       },
       MATIC: {
         name: 'Polygon',
@@ -89,8 +89,8 @@ class CryptoPaymentService {
         icon: '⬡',
         minAmount: 1,
         confirmations: 128,
-        contractAddress: null, // Native token
-      },
+        contractAddress: null // Native token
+      }
     };
 
     // Supabase for transaction storage
@@ -105,7 +105,7 @@ class CryptoPaymentService {
       ETH: process.env.MERCHANT_ETH_ADDRESS || '0xAmrikyyEthereumWalletAddress',
       BSC: process.env.MERCHANT_BSC_ADDRESS || '0xAmrikyyBSCWalletAddress',
       POLYGON:
-        process.env.MERCHANT_POLYGON_ADDRESS || '0xAmrikyyPolygonWalletAddress',
+        process.env.MERCHANT_POLYGON_ADDRESS || '0xAmrikyyPolygonWalletAddress'
     };
 
     console.log(
@@ -124,7 +124,7 @@ class CryptoPaymentService {
         amountUSD,
         cryptocurrency = 'USDT', // Default to stablecoin
         customerEmail,
-        description,
+        description
       } = bookingData;
 
       // Validate cryptocurrency
@@ -171,8 +171,8 @@ class CryptoPaymentService {
         metadata: {
           customerEmail,
           description,
-          contractAddress: crypto.contractAddress,
-        },
+          contractAddress: crypto.contractAddress
+        }
       };
 
       // Save to database
@@ -206,8 +206,8 @@ class CryptoPaymentService {
           qrCode: qrData,
           expiresIn: 1800, // seconds
           network: crypto.network,
-          explorerUrl: this.getExplorerUrl(crypto.network, paymentAddress),
-        },
+          explorerUrl: this.getExplorerUrl(crypto.network, paymentAddress)
+        }
       };
     } catch (error) {
       console.error('❌ Error creating crypto invoice:', error);
@@ -227,7 +227,7 @@ class CryptoPaymentService {
         USDT: 'tether',
         USDC: 'usd-coin',
         BNB: 'binancecoin',
-        MATIC: 'matic-network',
+        MATIC: 'matic-network'
       };
 
       const coinId = coinIds[cryptocurrency];
@@ -253,7 +253,7 @@ class CryptoPaymentService {
         USDT: 1.0,
         USDC: 1.0,
         BNB: 310,
-        MATIC: 0.85,
+        MATIC: 0.85
       };
 
       return fallbackPrices[cryptocurrency] || 1;
@@ -271,7 +271,7 @@ class CryptoPaymentService {
       const walletMap = {
         ethereum: this.merchantWallets.ETH,
         bsc: this.merchantWallets.BSC,
-        polygon: this.merchantWallets.POLYGON,
+        polygon: this.merchantWallets.POLYGON
       };
       return walletMap[crypto.network];
     }
@@ -306,7 +306,7 @@ class CryptoPaymentService {
         return {
           status: 'confirmed',
           confirmations: invoice.confirmations,
-          transactionHash: invoice.transactionHash,
+          transactionHash: invoice.transactionHash
         };
       }
 
@@ -339,7 +339,7 @@ class CryptoPaymentService {
             confirmedAt:
               transaction.confirmations >= crypto.confirmations
                 ? new Date().toISOString()
-                : null,
+                : null
           })
           .eq('id', invoiceId);
 
@@ -359,14 +359,14 @@ class CryptoPaymentService {
             crypto.network,
             null,
             transaction.hash
-          ),
+          )
         };
       }
 
       return {
         status: 'pending',
         confirmations: 0,
-        message: 'Waiting for transaction...',
+        message: 'Waiting for transaction...'
       };
     } catch (error) {
       console.error('❌ Error verifying transaction:', error);
@@ -431,7 +431,7 @@ class CryptoPaymentService {
           return {
             hash: 'pending_verification',
             confirmations: 12, // Assume confirmed for demo
-            amount: balanceEther,
+            amount: balanceEther
           };
         }
       } else {
@@ -475,7 +475,7 @@ class CryptoPaymentService {
                 confirmations: tx.block_height
                   ? await this.getBitcoinConfirmations(tx.block_height)
                   : 0,
-                amount: amount,
+                amount: amount
               };
             }
           }
@@ -535,7 +535,7 @@ class CryptoPaymentService {
         toAddress: invoice.metadata.refundAddress || 'customer_wallet',
         reason,
         status: 'pending',
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       };
 
       const { data: refundData, error: refundError } = await this.supabase
@@ -552,7 +552,7 @@ class CryptoPaymentService {
         .update({
           status: 'refunded',
           refundId: refundData.id,
-          refundedAt: new Date().toISOString(),
+          refundedAt: new Date().toISOString()
         })
         .eq('id', invoiceId);
 
@@ -561,7 +561,7 @@ class CryptoPaymentService {
       return {
         success: true,
         refund: refundData,
-        message: 'Refund will be processed within 24 hours',
+        message: 'Refund will be processed within 24 hours'
       };
     } catch (error) {
       console.error('❌ Error processing refund:', error);
@@ -578,7 +578,7 @@ class CryptoPaymentService {
       BTC: 'bitcoin',
       ETH: 'ethereum',
       BNB: 'binancecoin',
-      MATIC: 'polygon',
+      MATIC: 'polygon'
     };
 
     const scheme = uriMap[cryptocurrency] || cryptocurrency.toLowerCase();
@@ -593,7 +593,7 @@ class CryptoPaymentService {
       bitcoin: 'https://blockchain.info',
       ethereum: 'https://etherscan.io',
       bsc: 'https://bscscan.com',
-      polygon: 'https://polygonscan.com',
+      polygon: 'https://polygonscan.com'
     };
 
     const baseUrl = explorers[network];
@@ -620,7 +620,7 @@ class CryptoPaymentService {
       name: info.name,
       icon: info.icon,
       network: info.network,
-      minAmount: info.minAmount,
+      minAmount: info.minAmount
     }));
   }
 
@@ -645,7 +645,7 @@ class CryptoPaymentService {
           gasPrice: gasPriceGwei,
           estimatedGas,
           fee: feeEther,
-          currency: crypto.symbol,
+          currency: crypto.symbol
         };
       }
 
@@ -653,7 +653,7 @@ class CryptoPaymentService {
       return {
         fee: 0.0001,
         currency: 'BTC',
-        note: 'Estimated average fee',
+        note: 'Estimated average fee'
       };
     } catch (error) {
       console.error('Error estimating fee:', error);

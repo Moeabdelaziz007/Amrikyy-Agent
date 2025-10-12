@@ -1,0 +1,23 @@
+{
+  "name": "Amadeus API Load Test",
+  "description": "Standard load test for normal traffic patterns",
+  "profile": "default",
+  "stages": [
+    { "duration": "2m", "target": 20 },
+    { "duration": "5m", "target": 50 },
+    { "duration": "3m", "target": 50 },
+    { "duration": "2m", "target": 0 }
+  ],
+  "thresholds": {
+    "http_req_duration": ["p(95)<8000"],
+    "http_req_failed": ["rate<0.05"],
+    "amadeus_flight_search_duration": ["p(95)<12000"],
+    "rate_limit_hits": ["count<50"],
+    "success_rate": ["rate>0.9"]
+  },
+  "environment": {
+    "LOAD_PROFILE": "default",
+    "AGENT_TIMEOUT": "10000",
+    "AGENT_PRIORITY": "1"
+  }
+}

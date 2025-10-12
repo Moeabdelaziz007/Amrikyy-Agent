@@ -15,7 +15,12 @@
     "test:api": "jest src/tests/api --passWithNoTests",
     "test:security": "npm audit --audit-level=high",
     "smoke-test": "node smoke-tests/smoke-test.js",
-    "test:simulation": "node test-simulation.js"
+    "test:simulation": "node test-simulation.js",
+    "test:load": "../k6/scripts/run-load-test.sh default",
+    "test:load:smoke": "../k6/scripts/run-load-test.sh smoke",
+    "test:load:stress": "../k6/scripts/run-load-test.sh stress",
+    "test:load:spike": "../k6/scripts/run-load-test.sh spike",
+    "test:load:soak": "../k6/scripts/run-load-test.sh soak"
   },
   "dependencies": {
     "@confluentinc/kafka-javascript": "^1.6.0",
@@ -23,6 +28,8 @@
     "@grpc/proto-loader": "^0.8.0",
     "@sentry/node": "^10.19.0",
     "@supabase/supabase-js": "^2.74.0",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "amadeus": "^11.0.0",
     "axios": "^1.12.2",
     "bcryptjs": "^2.4.3",
@@ -44,7 +51,8 @@
     "paypal-rest-sdk": "^1.8.1",
     "prom-client": "^15.1.3",
     "redis": "^5.8.3",
-    "stripe": "^13.6.0"
+    "stripe": "^13.6.0",
+    "yaml": "^2.8.1"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",

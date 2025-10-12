@@ -25,19 +25,19 @@ router.post('/log', async (req, res) => {
     if (result.success) {
       res.json({
         success: true,
-        log: result.log,
+        log: result.log
       });
     } else {
       res.status(500).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     console.error('Failed to log audit event:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -60,19 +60,19 @@ router.get('/user/:userId', async (req, res) => {
       res.json({
         success: true,
         logs: result.logs,
-        count: result.logs.length,
+        count: result.logs.length
       });
     } else {
       res.status(500).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     console.error('Failed to get user audit trail:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -91,19 +91,19 @@ router.get('/transaction/:transactionId', async (req, res) => {
       res.json({
         success: true,
         logs: result.logs,
-        count: result.logs.length,
+        count: result.logs.length
       });
     } else {
       res.status(500).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     console.error('Failed to get transaction audit trail:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -119,19 +119,19 @@ router.get('/activity/recent', async (req, res) => {
     if (result.success) {
       res.json({
         success: true,
-        activity: result.activity,
+        activity: result.activity
       });
     } else {
       res.status(500).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     console.error('Failed to get recent activity:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -150,19 +150,19 @@ router.get('/events/failed', async (req, res) => {
       res.json({
         success: true,
         events: result.events,
-        count: result.events.length,
+        count: result.events.length
       });
     } else {
       res.status(500).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     console.error('Failed to get failed events:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -181,19 +181,19 @@ router.get('/actions/admin', async (req, res) => {
       res.json({
         success: true,
         actions: result.actions,
-        count: result.actions.length,
+        count: result.actions.length
       });
     } else {
       res.status(500).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     console.error('Failed to get admin actions:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -211,19 +211,19 @@ router.get('/statistics', async (req, res) => {
     if (result.success) {
       res.json({
         success: true,
-        ...result,
+        ...result
       });
     } else {
       res.status(500).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     console.error('Failed to get statistics:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -240,7 +240,7 @@ router.get('/export/csv', async (req, res) => {
       eventType: req.query.eventType,
       startDate: req.query.startDate,
       endDate: req.query.endDate,
-      limit: req.query.limit ? parseInt(req.query.limit) : 10000,
+      limit: req.query.limit ? parseInt(req.query.limit) : 10000
     };
 
     const result = await auditService.exportToCSV(filters);
@@ -256,14 +256,14 @@ router.get('/export/csv', async (req, res) => {
     } else {
       res.status(500).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     console.error('Failed to export CSV:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -280,7 +280,7 @@ router.get('/export/json', async (req, res) => {
       eventType: req.query.eventType,
       startDate: req.query.startDate,
       endDate: req.query.endDate,
-      limit: req.query.limit ? parseInt(req.query.limit) : 10000,
+      limit: req.query.limit ? parseInt(req.query.limit) : 10000
     };
 
     const result = await auditService.exportToJSON(filters);
@@ -296,14 +296,14 @@ router.get('/export/json', async (req, res) => {
     } else {
       res.status(500).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     console.error('Failed to export JSON:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -325,20 +325,20 @@ router.get('/verify/:logId', async (req, res) => {
         log: result.log,
         hashes: {
           computed: result.computedHash,
-          stored: result.storedHash,
-        },
+          stored: result.storedHash
+        }
       });
     } else {
       res.status(500).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     console.error('Failed to verify integrity:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });

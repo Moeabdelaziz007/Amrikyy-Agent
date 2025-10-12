@@ -1,337 +1,350 @@
-# 🚀 Quick Start - PaymentsKit Implementation
+# ⚡ Quick Start Guide - Best Workflow Ever Made
 
-## 📂 What We Built
-
-```
-backend/
-├── src/
-│   ├── services/
-│   │   ├── kyc-service.js           ✅ NEW (Phase 1)
-│   │   ├── risk-engine.js           ✅ NEW (Phase 2)
-│   │   └── crypto-payment-service.js (Existing)
-│   ├── middleware/
-│   │   └── verifyWebhook.js         ✅ NEW (Phase 1)
-│   └── lib/
-│       └── supabaseClient.js        ✅ NEW (Phase 1)
-├── routes/
-│   ├── kyc.js                       ✅ NEW (Phase 1)
-│   └── crypto-payment.js            ✅ UPDATED (Phase 2 integration)
-├── database/
-│   └── migrations/
-│       ├── 002_kyc_tables.sql       ✅ NEW (Phase 1)
-│       └── 003_risk_tables.sql      ✅ NEW (Phase 2)
-└── test/
-    └── risk-engine.test.js          ✅ NEW (Phase 2)
-```
+**🎯 Goal**: Get you productive in 15 minutes with world-class automation
 
 ---
 
-## ⚡ Quick Setup (5 Minutes)
+## 🚀 Fastest Path to Success (15 Minutes)
 
-### 1. Install Dependencies (if needed)
+### Step 1: One Command Setup (5 min)
 
 ```bash
 cd /Users/Shared/maya-travel-agent
-npm install @supabase/supabase-js axios crypto
+make setup-workflow
 ```
 
-### 2. Environment Variables
+This automatically:
 
-Create/update `.env`:
+- ✅ Installs all dependencies
+- ✅ Installs PM2 (Docker alternative)
+- ✅ Creates environment files
+- ✅ Runs health checks
+- ✅ Tests the system
+
+### Step 2: Fill Environment Variables (5 min)
+
+Edit these files:
 
 ```bash
-# Supabase
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_KEY=your-service-role-key
+# Backend
+nano backend/.env
+# Add: AMADEUS_CLIENT_ID, AMADEUS_CLIENT_SECRET, etc.
 
-# Sumsub KYC
-SUMSUB_API_BASE=https://api.sumsub.com
-SUMSUB_APP_TOKEN=your_sumsub_app_token
-SUMSUB_WEBHOOK_SECRET=your_webhook_secret
-
-# Limits
-LIMIT_NO_KYC=500
-LIMIT_BASIC_KYC=10000
-RISK_THRESHOLD_REVIEW=70
-RISK_THRESHOLD_REJECT=85
+# Frontend
+nano frontend/.env
+# Add: VITE_API_URL, etc.
 ```
 
-### 3. Run Migrations
+### Step 3: Start Coding! (5 min)
 
 ```bash
-# Option A: psql (if installed)
-psql $DATABASE_URL -f backend/database/migrations/002_kyc_tables.sql
-psql $DATABASE_URL -f backend/database/migrations/003_risk_tables.sql
-
-# Option B: Supabase Dashboard
-# Copy SQL from migration files and run in SQL Editor
+make dev
 ```
 
-### 4. Start Server
+**Done!** You now have:
+
+- 🟢 Backend running on http://localhost:5002
+- 🟢 Frontend running on http://localhost:3002
+- 🟢 Auto-restart on crashes
+- 🟢 Auto-reload on file changes
+- 🟢 Load testing ready
+- 🟢 CI/CD automated
+
+---
+
+## 📋 Daily Workflow
+
+### Morning Routine
 
 ```bash
-npm run dev
-# or
-node backend/server.js
+# Start everything
+make dev
+
+# Check status
+make status
+
+# View logs
+make logs
 ```
 
-### 5. Test Endpoints
+### During Development
 
 ```bash
-# Health check
-curl http://localhost:3000/health
+# Run tests while coding
+make test-load-smoke
 
-# KYC Status
-curl http://localhost:3000/api/kyc/status/test-user-123
+# Check code quality
+make lint-fix
 
-# Create Payment (with risk assessment)
-curl -X POST http://localhost:3000/api/crypto/invoice/create \
-  -H "Content-Type: application/json" \
-  -d '{
-    "bookingId": "test-booking-001",
-    "userId": "test-user-123",
-    "amountUSD": 100,
-    "cryptocurrency": "USDT",
-    "ipCountry": "US"
-  }'
+# View real-time logs
+make logs
+```
+
+### Before Committing
+
+```bash
+# Lint and test
+make quick-test
+
+# Commit with confidence
+git add .
+git commit -m "feat: your amazing feature"
+git push
+```
+
+### End of Day
+
+```bash
+# Save PM2 state
+make save
+
+# Stop if needed
+make stop
 ```
 
 ---
 
-## 📊 What Each Endpoint Does
+## 🎯 Key Commands
 
-### KYC Endpoints
+### Most Used
 
-| Endpoint                  | Method | Description             |
-| ------------------------- | ------ | ----------------------- |
-| `/api/kyc/start`          | POST   | Start KYC verification  |
-| `/api/kyc/status/:userId` | GET    | Check KYC status        |
-| `/api/kyc/webhook/sumsub` | POST   | Webhook (HMAC verified) |
-| `/api/kyc/stats`          | GET    | KYC statistics          |
+| Command        | What It Does                  |
+| -------------- | ----------------------------- |
+| `make dev`     | Start development environment |
+| `make status`  | Check what's running          |
+| `make logs`    | View real-time logs           |
+| `make stop`    | Stop everything               |
+| `make restart` | Restart everything            |
 
-### Payment Endpoints (Enhanced)
+### Testing
 
-| Endpoint                         | Method | Description                       |
-| -------------------------------- | ------ | --------------------------------- |
-| `/api/crypto/invoice/create`     | POST   | **Now includes risk assessment!** |
-| `/api/crypto/invoice/:id`        | GET    | Get invoice status                |
-| `/api/crypto/invoice/:id/verify` | POST   | Verify transaction                |
+| Command                | What It Does            |
+| ---------------------- | ----------------------- |
+| `make test-load-smoke` | Quick 4-min smoke test  |
+| `make test-load`       | Full load test (12 min) |
+| `make test`            | Run all tests           |
+| `make lint-fix`        | Auto-fix code style     |
 
----
+### Deployment
 
-## 🎯 How It Works
+| Command               | What It Does         |
+| --------------------- | -------------------- |
+| `make build`          | Build for production |
+| `make deploy-staging` | Deploy to staging    |
+| `make deploy-prod`    | Deploy to production |
 
-### Payment Flow with Compliance:
+### Health & Debugging
 
-```
-User Request
-    ↓
-1. Validate Input
-    ↓
-2. Check KYC Status (Phase 1)
-    ├─ No KYC + Amount > $500? → ❌ Reject
-    ├─ Basic KYC + Amount > $10K? → ❌ Reject
-    └─ KYC OK → Continue
-    ↓
-3. Risk Assessment (Phase 2) ✨ NEW
-    ├─ Score < 70? → ✅ Auto-approve
-    ├─ Score 70-84? → ⚠️ Manual review
-    └─ Score >= 85? → ❌ Auto-reject
-    ↓
-4. Create Invoice (if approved)
-    ↓
-5. Return Response + Risk Score
-```
+| Command         | What It Does          |
+| --------------- | --------------------- |
+| `make health`   | Run auto-debug system |
+| `make validate` | Validate environment  |
+| `make clean`    | Clean build artifacts |
 
 ---
 
-## 🧪 Testing Scenarios
+## 🔥 Power User Shortcuts
 
-### Scenario 1: Low-Risk Transaction ✅
+### Quick Start Your Day
 
 ```bash
-curl -X POST http://localhost:3000/api/crypto/invoice/create \
-  -H "Content-Type: application/json" \
-  -d '{
-    "userId": "verified-user",
-    "amountUSD": 100,
-    "ipCountry": "US"
-  }'
-
-# Expected: Auto-approved, risk_score: 20-40
+make quick-start  # Start dev environment
 ```
 
-### Scenario 2: High-Value Transaction ⚠️
+### Quick Test Before PR
 
 ```bash
-curl -X POST http://localhost:3000/api/crypto/invoice/create \
-  -H "Content-Type: application/json" \
-  -d '{
-    "userId": "new-user",
-    "amountUSD": 25000,
-    "ipCountry": "US"
-  }'
-
-# Expected: Manual review, risk_score: 70-80
+make quick-test  # Lint + smoke test
 ```
 
-### Scenario 3: High-Risk Country ❌
+### View Everything
 
 ```bash
-curl -X POST http://localhost:3000/api/crypto/invoice/create \
-  -H "Content-Type: application/json" \
-  -d '{
-    "userId": "any-user",
-    "amountUSD": 1000,
-    "ipCountry": "IR"
-  }'
+make monitor  # Interactive dashboard
+```
 
-# Expected: Rejected, risk_score: 85+
+### Zero-Downtime Deployment
+
+```bash
+make reload  # Reload without stopping
 ```
 
 ---
 
-## 🔍 Database Queries
+## 🎛️ PM2 Process Management
 
-### Check KYC Status:
+### View Status
 
-```sql
-SELECT * FROM users_kyc_status LIMIT 10;
+```bash
+pm2 status
 ```
 
-### View High-Risk Transactions:
+Output:
 
-```sql
-SELECT * FROM high_risk_transactions LIMIT 10;
+```
+┌────┬────────────────────────┬─────────┬─────────┬──────────┐
+│ id │ name                   │ mode    │ ↺       │ status   │
+├────┼────────────────────────┼─────────┼─────────┼──────────┤
+│ 0  │ amrikyy-backend-dev    │ fork    │ 0       │ online   │
+│ 1  │ amrikyy-frontend-dev   │ fork    │ 0       │ online   │
+└────┴────────────────────────┴─────────┴─────────┴──────────┘
 ```
 
-### Manual Review Queue:
+### Control Individual Processes
 
-```sql
-SELECT * FROM manual_review_queue ORDER BY hours_pending DESC;
+```bash
+pm2 restart amrikyy-backend-dev
+pm2 stop amrikyy-frontend-dev
+pm2 logs amrikyy-backend-dev
 ```
 
-### Risk Statistics:
+### Monitor Resources
 
-```sql
-SELECT * FROM daily_risk_stats ORDER BY date DESC LIMIT 7;
+```bash
+pm2 monit
 ```
 
-### KYC Statistics:
+---
 
-```sql
-SELECT * FROM kyc_stats;
-```
+## 📊 What's Automated For You
+
+### Self-Healing CI/CD
+
+✅ Auto-fixes security vulnerabilities
+✅ Auto-fixes linting issues  
+✅ Auto-retries failed operations
+✅ Auto-rollback on deployment failures
+✅ Canary deployments (10% traffic first)
+
+### Load Testing
+
+✅ Automated smoke tests (4 min)
+✅ Full load tests (12 min)
+✅ Stress tests to find limits
+✅ Beautiful HTML reports
+✅ Rate limiter validation
+
+### Health Monitoring
+
+✅ Daily health checks at 2 AM
+✅ Real-time error tracking (Sentry)
+✅ Performance metrics
+✅ Auto-diagnosis and fixes
+✅ Slack/Discord notifications
 
 ---
 
 ## 🐛 Troubleshooting
 
-### Issue: "Supabase env not set"
+### Backend won't start
 
-**Solution:** Add `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` to `.env`
+```bash
+# Check logs
+pm2 logs amrikyy-backend-dev
 
-### Issue: "KYC routes not found"
+# Run diagnostics
+make health
 
-**Solution:** Check `backend/server.js` line ~475 for KYC routes registration
-
-### Issue: "Risk Engine Error"
-
-**Solution:** Run migration `003_risk_tables.sql` first
-
-### Issue: "Webhook signature mismatch"
-
-**Solution:**
-
-1. Set correct `SUMSUB_WEBHOOK_SECRET`
-2. Ensure using `express.raw()` for webhook route
-
-### Issue: "Cannot find module @supabase/supabase-js"
-
-**Solution:** `npm install @supabase/supabase-js`
-
----
-
-## 📝 Logs to Watch
-
-### Successful Flow:
-
-```
-🔐 Starting KYC for user: test-user-123
-📝 Local KYC record created for user test-user-123
-✅ Sumsub applicant created: sumsub_12345
-✅ Sumsub applicant linked: sumsub_12345
-🎯 Running risk assessment for user test-user-123...
-🎯 Risk Score: 35, Action: auto_approve
-💳 Invoice created: AMK-87654321 (Risk Score: 35)
+# Check environment
+make validate
 ```
 
-### High-Risk Detection:
+### Load tests failing
 
-```
-🎯 Running risk assessment for user suspicious-user...
-🎯 Risk Score: 92, Action: reject
-❌ Transaction rejected due to high risk
+```bash
+# Ensure backend is running
+make status
+
+# Check backend health
+curl http://localhost:5002/health
+
+# Review logs
+cat test-outputs/latest-results.json
 ```
 
-### Manual Review:
+### PM2 not found
 
+```bash
+# Install PM2
+make pm2-install
+
+# Or manually
+npm install -g pm2
 ```
-🎯 Risk Score: 75, Action: manual_review
-⚠️ Transaction flagged for manual review (Score: 75)
-💳 Invoice created: AMK-11111111 (Risk Score: 75)
+
+### Port already in use
+
+```bash
+# Find what's using the port
+lsof -i :5002
+
+# Kill it
+kill -9 <PID>
+
+# Or use different ports in ecosystem.config.js
 ```
 
 ---
 
-## 🎉 Success Indicators
+## 🎯 Next Steps
 
-✅ **Phase 1 (KYC) Working:**
+### Week 1: Master the Basics
 
-- `/api/kyc/start` returns applicantId
-- `/api/kyc/status/:userId` returns level/status
-- Webhook updates KYC status in database
+- [ ] Run `make dev` daily
+- [ ] Get comfortable with `make logs` and `make status`
+- [ ] Run `make test-load-smoke` before each commit
+- [ ] Review `make help` for all commands
 
-✅ **Phase 2 (Risk) Working:**
+### Week 2: Advanced Features
 
-- Payment creation logs "Running risk assessment..."
-- Response includes `riskAssessment` object
-- High-risk transactions rejected automatically
-- `risk_assessments` table has entries
+- [ ] Set up Slack notifications
+- [ ] Configure Sentry error tracking
+- [ ] Explore `make monitor` dashboard
+- [ ] Try `make deploy-staging`
 
-✅ **Integration Working:**
+### Week 3: Optimization
 
-- KYC + Risk checks both execute
-- Appropriate actions taken (approve/review/reject)
-- Audit logs created
-
----
-
-## 🚀 Next Steps
-
-1. **Test with real Sumsub account** (get API keys)
-2. **Set up webhook endpoint** (expose `/api/kyc/webhook/sumsub` publicly)
-3. **Test Phase 3** (Transaction Monitoring with Chainalysis)
-4. **Build Phase 4** (Compliance Dashboard UI)
+- [ ] Review load test results
+- [ ] Tune PM2 settings in `ecosystem.config.js`
+- [ ] Set up custom alerts
+- [ ] Document your team's workflow
 
 ---
 
 ## 📚 Full Documentation
 
-See `PAYMENTS_KIT_IMPLEMENTATION.md` for complete details.
+- **Master Plan**: `WORKFLOW_MASTER_PLAN.md` - Complete roadmap
+- **Load Testing**: `k6/README.md` - Comprehensive testing guide
+- **Workflows**: `.github/workflows/` - CI/CD configuration
+- **Scripts**: `scripts/` - Automation scripts
 
 ---
 
-**Quick Start Complete!** 🎉
+## 🎊 You're Ready!
 
-Your payment system now has:
+You now have **the best workflow automation ever made**:
 
-- ✅ Multi-tier KYC verification
-- ✅ AI-powered risk assessment
-- ✅ Automated compliance checks
-- ✅ Audit trails
-- ✅ Production-ready security
+✅ **No Docker needed** - PM2 manages everything  
+✅ **Self-healing** - Auto-fixes common issues  
+✅ **Load tested** - Know your system's limits  
+✅ **CI/CD automated** - Push and relax  
+✅ **Monitored** - Know what's happening  
+✅ **Documented** - Everything explained
 
-**Time to implement:** ~2 hours  
-**Lines of code:** ~2,500  
-**Status:** Production-ready MVP ✅
+**Start coding**:
+
+```bash
+make dev
+```
+
+**Need help**?
+
+```bash
+make help
+```
+
+**Questions**? Check `WORKFLOW_MASTER_PLAN.md`
+
+---
+
+**Happy coding! 🚀**

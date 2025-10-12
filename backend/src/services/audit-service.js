@@ -37,7 +37,7 @@ class AuditService {
         ipAddress = null,
         userAgent = null,
         requestId = null,
-        sessionId = null,
+        sessionId = null
       } = event;
 
       // Generate hash for tamper detection
@@ -47,7 +47,7 @@ class AuditService {
         userId,
         transactionId,
         timestamp: new Date().toISOString(),
-        metadata,
+        metadata
       });
 
       const logHash = this.generateHash(logData);
@@ -75,7 +75,7 @@ class AuditService {
           request_id: requestId,
           session_id: sessionId,
           previous_log_hash: this.previousHash,
-          log_hash: logHash,
+          log_hash: logHash
         })
         .select()
         .single();
@@ -104,7 +104,7 @@ class AuditService {
       userId,
       action: `Payment ${action}`,
       status,
-      metadata,
+      metadata
     });
   }
 
@@ -119,7 +119,7 @@ class AuditService {
       userId,
       action: `KYC ${action}`,
       status,
-      metadata,
+      metadata
     });
   }
 
@@ -135,7 +135,7 @@ class AuditService {
       userId,
       action: `Risk ${action}`,
       status,
-      metadata,
+      metadata
     });
   }
 
@@ -158,7 +158,7 @@ class AuditService {
       userId,
       action: `Alert ${action}`,
       status,
-      metadata,
+      metadata
     });
   }
 
@@ -174,7 +174,7 @@ class AuditService {
       actionBy,
       actionByType: 'admin',
       status: 'success',
-      metadata,
+      metadata
     });
   }
 
@@ -185,7 +185,7 @@ class AuditService {
     try {
       const { data, error } = await supabase.rpc('get_user_audit_trail', {
         p_user_id: userId,
-        p_limit: limit,
+        p_limit: limit
       });
 
       if (error) throw error;
@@ -205,7 +205,7 @@ class AuditService {
       const { data, error } = await supabase.rpc(
         'get_transaction_audit_trail',
         {
-          p_transaction_id: transactionId,
+          p_transaction_id: transactionId
         }
       );
 
@@ -357,7 +357,7 @@ class AuditService {
         data,
         count: data.length,
         exportedAt: new Date().toISOString(),
-        filters,
+        filters
       };
     } catch (error) {
       console.error('Failed to export to JSON:', error);
@@ -402,7 +402,7 @@ class AuditService {
           byCategory[row.event_category] = {
             count: 0,
             success: 0,
-            failed: 0,
+            failed: 0
           };
         }
         byCategory[row.event_category].count += row.count;
@@ -415,7 +415,7 @@ class AuditService {
         totals,
         byCategory,
         dailyStats: data,
-        period: `${days} days`,
+        period: `${days} days`
       };
     } catch (error) {
       console.error('Failed to get statistics:', error);
@@ -443,7 +443,7 @@ class AuditService {
         userId: data.user_id,
         transactionId: data.transaction_id,
         timestamp: data.created_at,
-        metadata: data.metadata,
+        metadata: data.metadata
       });
 
       // Generate hash
@@ -457,7 +457,7 @@ class AuditService {
         valid: isValid,
         log: data,
         computedHash,
-        storedHash: data.log_hash,
+        storedHash: data.log_hash
       };
     } catch (error) {
       console.error('Failed to verify integrity:', error);

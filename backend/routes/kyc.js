@@ -134,12 +134,12 @@ router.post('/webhook/sumsub',
         'PENDING': 'pending',
         'YELLOW': 'pending',
         'completed': 'approved',
-        'rejected': 'rejected',
+        'rejected': 'rejected'
       };
 
       const mapped = statusMap[reviewStatus] || 
                      (payload.reviewStatus === 'APPROVED' ? 'approved' : 
-                      (payload.reviewStatus === 'REJECTED' ? 'rejected' : 'pending'));
+                       (payload.reviewStatus === 'REJECTED' ? 'rejected' : 'pending'));
 
       // Update KYC status in database
       await kycService.updateKycStatusByProvider(

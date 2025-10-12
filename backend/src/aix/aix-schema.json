@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://aix-spec.org/v0.1/schema.json",
+  "title": "AIX - AI eXecution File Format",
+  "description": "Universal AI agent format specification v0.1",
+  "type": "object",
+  "required": ["$schema", "version", "genome", "identity", "intelligence"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to this schema"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$",
+      "description": "AIX specification version"
+    },
+    "genome": {
+      "type": "string",
+      "enum": ["aixv1"],
+      "description": "AIX genome identifier"
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "author": { "type": "string" },
+        "description": { "type": "string" },
+        "created": { "type": "string", "format": "date-time" },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "required": ["uuid", "species"],
+      "properties": {
+        "uuid": { "type": "string" },
+        "species": { "type": "string" },
+        "generation": { "type": "integer" },
+        "lineage": { "type": "string" },
+        "traits": { "type": "array", "items": { "type": "string" } },
+        "phenotype": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "role": { "type": "string" },
+            "voice": { "type": "string" },
+            "avatar": { "type": "string" },
+            "specialization": { "type": "string" }
+          }
+        }
+      }
+    },
+    "intelligence": {
+      "type": "object",
+      "required": ["cognition"],
+      "properties": {
+        "cognition": {
+          "type": "object",
+          "properties": {
+            "model": { "type": "string" },
+            "provider": { "type": "string" },
+            "parameters": { "type": "object" }
+          }
+        },
+        "memory": { "type": "object" },
+        "plasticity": { "type": "object" }
+      }
+    },
+    "interaction": { "type": "object" },
+    "workflow": { "type": "object" },
+    "apis": { "type": "array" },
+    "security": { "type": "object" },
+    "monitoring": { "type": "object" },
+    "dna_scoring": { "type": "object" },
+    "deployment": { "type": "object" },
+    "metadata": { "type": "object" }
+  }
+}

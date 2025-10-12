@@ -35,7 +35,7 @@ class MonitoringService {
         this.checkVelocityPatterns(tx.userId),
         this.checkAmountPatterns(tx.userId, tx.amountUSD),
         this.checkGeolocation(tx.ipCountry, tx.userId),
-        this.checkWalletReputation(tx.cryptoAddress),
+        this.checkWalletReputation(tx.cryptoAddress)
       ]);
 
       // Filter alerts by severity
@@ -55,7 +55,7 @@ class MonitoringService {
         checks: checks.length,
         alerts: alerts.length,
         alertDetails: alerts,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
 
     } catch (error) {
@@ -63,7 +63,7 @@ class MonitoringService {
       return {
         monitored: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     }
   }
@@ -85,7 +85,7 @@ class MonitoringService {
           {
             params: { address: walletAddress },
             headers: { 'Authorization': `Bearer ${CHAINALYSIS_API_KEY}` },
-            timeout: 5000,
+            timeout: 5000
           }
         );
 
@@ -95,7 +95,7 @@ class MonitoringService {
             severity: 'critical',
             passed: false,
             message: `Wallet address ${walletAddress} is on sanctions list`,
-            details: response.data,
+            details: response.data
           };
         }
       }
@@ -108,8 +108,8 @@ class MonitoringService {
           check: 'sanctions',
           severity: 'critical',
           passed: false,
-          message: `Wallet address is on local sanctions list`,
-          details: { address: walletAddress },
+          message: 'Wallet address is on local sanctions list',
+          details: { address: walletAddress }
         };
       }
 
@@ -118,7 +118,7 @@ class MonitoringService {
         severity: null,
         passed: true,
         message: 'Wallet address clean',
-        details: { address: walletAddress },
+        details: { address: walletAddress }
       };
 
     } catch (error) {
@@ -128,7 +128,7 @@ class MonitoringService {
         severity: 'low',
         passed: false,
         message: 'Sanctions check failed - review manually',
-        error: error.message,
+        error: error.message
       };
     }
   }
@@ -160,7 +160,7 @@ class MonitoringService {
           severity: 'high',
           passed: false,
           message: `High transaction velocity: ${count24h} transactions in 24h`,
-          details: { count24h, volume24h, threshold: HIGH_VELOCITY_COUNT },
+          details: { count24h, volume24h, threshold: HIGH_VELOCITY_COUNT }
         };
       }
 
@@ -170,7 +170,7 @@ class MonitoringService {
           severity: 'high',
           passed: false,
           message: `High transaction volume: $${volume24h} in 24h`,
-          details: { count24h, volume24h, threshold: HIGH_VELOCITY_VOLUME },
+          details: { count24h, volume24h, threshold: HIGH_VELOCITY_VOLUME }
         };
       }
 
@@ -179,7 +179,7 @@ class MonitoringService {
         severity: null,
         passed: true,
         message: 'Normal velocity',
-        details: { count24h, volume24h },
+        details: { count24h, volume24h }
       };
 
     } catch (error) {
@@ -229,7 +229,7 @@ class MonitoringService {
             avgAmount: avg.toFixed(2), 
             stdDev: stdDev.toFixed(2),
             zScore: zScore.toFixed(2)
-          },
+          }
         };
       }
 
@@ -238,7 +238,7 @@ class MonitoringService {
         severity: null,
         passed: true,
         message: 'Normal amount pattern',
-        details: { currentAmount, avgAmount: avg.toFixed(2) },
+        details: { currentAmount, avgAmount: avg.toFixed(2) }
       };
 
     } catch (error) {
@@ -283,7 +283,7 @@ class MonitoringService {
               currentCountry: ipCountry, 
               usualCountry: mostCommonCountry,
               recentCountries 
-            },
+            }
           };
         }
       }
@@ -293,7 +293,7 @@ class MonitoringService {
         severity: null,
         passed: true,
         message: 'Normal location',
-        details: { country: ipCountry },
+        details: { country: ipCountry }
       };
 
     } catch (error) {
@@ -320,7 +320,7 @@ class MonitoringService {
       severity: null,
       passed: true,
       message: 'Wallet reputation check placeholder',
-      details: { address: walletAddress },
+      details: { address: walletAddress }
     };
   }
 
@@ -339,7 +339,7 @@ class MonitoringService {
           checks: validChecks,
           alert_count: validChecks.filter(c => c.severity).length,
           highest_severity: this.getHighestSeverity(validChecks),
-          created_at: new Date().toISOString(),
+          created_at: new Date().toISOString()
         });
 
       if (error) {
@@ -383,7 +383,7 @@ class MonitoringService {
       `User: ${tx.userId}\n` +
       `Amount: $${tx.amountUSD}\n` +
       `Alerts: ${alerts.map(a => a.message).join(', ')}\n\n` +
-      `Action Required: IMMEDIATE REVIEW`;
+      'Action Required: IMMEDIATE REVIEW';
 
     console.log('🚨', message);
 
@@ -393,7 +393,7 @@ class MonitoringService {
         await axios.post(SLACK_WEBHOOK_URL, {
           text: message,
           username: 'Amrikyy Compliance Bot',
-          icon_emoji: ':rotating_light:',
+          icon_emoji: ':rotating_light:'
         });
       } catch (error) {
         console.error('Slack alert failed:', error.message);
@@ -446,7 +446,7 @@ class MonitoringService {
           message: alert.message,
           data: alert.details || {},
           acknowledged: false,
-          created_at: new Date().toISOString(),
+          created_at: new Date().toISOString()
         });
     } catch (error) {
       console.error('Store alert error:', error);
@@ -512,7 +512,7 @@ class MonitoringService {
         .update({
           acknowledged: true,
           acknowledged_by: adminId,
-          acknowledged_at: new Date().toISOString(),
+          acknowledged_at: new Date().toISOString()
         })
         .eq('id', alertId);
 

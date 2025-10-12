@@ -1,0 +1,20 @@
+{
+  "name": "Amadeus API Smoke Test",
+  "description": "Quick validation test with minimal load",
+  "profile": "smoke",
+  "stages": [
+    { "duration": "1m", "target": 5 },
+    { "duration": "2m", "target": 5 },
+    { "duration": "1m", "target": 0 }
+  ],
+  "thresholds": {
+    "http_req_duration": ["p(95)<10000"],
+    "http_req_failed": ["rate<0.1"],
+    "success_rate": ["rate>0.85"]
+  },
+  "environment": {
+    "LOAD_PROFILE": "smoke",
+    "AGENT_TIMEOUT": "10000",
+    "AGENT_PRIORITY": "1"
+  }
+}

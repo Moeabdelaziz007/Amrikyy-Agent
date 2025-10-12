@@ -1,0 +1,165 @@
+{
+  "config": {
+    "id": "agent_egypt_001",
+    "name": "Egypt Travel Agent",
+    "role": "Expert travel planner for Egypt destinations",
+    "specialization": "Egypt Travel & Tourism",
+    "dna": {
+      "personality": {
+        "analytical": 85,
+        "creative": 75,
+        "empathetic": 90
+      },
+      "skills": {
+        "reasoning": 90,
+        "learning": 80,
+        "adaptation": 80,
+        "communication": 75
+      },
+      "domainExpertise": {},
+      "aiModel": {
+        "provider": "anthropic",
+        "model": "claude-3-5-sonnet-20241022",
+        "temperature": 0.7,
+        "maxTokens": 4096
+      },
+      "capabilities": {
+        "problemSolving": 75,
+        "learning": 80,
+        "communication": 75,
+        "leadership": 50,
+        "creativity": 70
+      },
+      "autonomyLevel": "fully-autonomous"
+    },
+    "memory": {
+      "type": "vector",
+      "connectionString": "node://config/vector_db_url",
+      "embeddingModel": "text-embedding-3-small"
+    },
+    "workflow": {
+      "triggers": [
+        {
+          "id": "message_received",
+          "type": "event",
+          "event": "user.message",
+          "priority": "high"
+        }
+      ],
+      "actions": [
+        {
+          "id": "understand_intent",
+          "type": "ai_inference",
+          "model_ref": "intelligence.cognition.model",
+          "prompt": "You are Egypt Travel Agent, an expert in Egyptian tourism.\nAnalyze the user query and provide helpful travel recommendations.\n",
+          "output_var": "intent"
+        }
+      ]
+    },
+    "apis": [
+      {
+        "id": "ai_provider",
+        "name": "Anthropic",
+        "baseURL": "https://api.anthropic.com/v1",
+        "auth": {
+          "type": "bearer",
+          "keyRef": "vault://secrets/anthropic_key"
+        },
+        "rateLimit": {
+          "requests_per_minute": 60,
+          "tokens_per_minute": 100000
+        }
+      }
+    ],
+    "scoring": {
+      "dna": 8500,
+      "performance": 1200,
+      "total": 9700,
+      "level": "Master"
+    },
+    "quantum": {
+      "enabled": true,
+      "replicas": 3,
+      "scaling": "auto",
+      "selfHealing": true,
+      "grpcEnabled": true
+    },
+    "monitoring": {
+      "enabled": true,
+      "provider": "opentelemetry",
+      "metrics": [
+        {
+          "name": "tasks_completed",
+          "type": "counter",
+          "weight": 10
+        },
+        {
+          "name": "success_rate",
+          "type": "gauge",
+          "weight": 50
+        },
+        {
+          "name": "response_quality",
+          "type": "histogram",
+          "weight": 40
+        }
+      ]
+    },
+    "security": {
+      "vault": {
+        "provider": "aix-cloud",
+        "mode": "hybrid",
+        "encryption": {
+          "algorithm": "AES-256-GCM",
+          "key_derivation": "PBKDF2"
+        }
+      },
+      "permissions": {
+        "execution": {
+          "required_roles": [
+            "agent-executor"
+          ]
+        },
+        "autonomy_level": "fully-autonomous"
+      }
+    },
+    "created": "2025-10-12T11:42:09.202Z",
+    "author": "QuantumBuilder",
+    "version": "1.0.0",
+    "tags": [
+      "travel",
+      "egypt",
+      "automation",
+      "booking"
+    ]
+  },
+  "metadata": {
+    "name": "Egypt Travel Agent",
+    "description": "Specialized AI agent for Egypt travel planning and bookings",
+    "species": "egypt-travel-agent",
+    "traits": [
+      "analytical",
+      "empathetic",
+      "cultural-expert"
+    ],
+    "voice": "warm, knowledgeable, culturally sensitive",
+    "dna_score": {
+      "dna": 8500,
+      "performance": 1200,
+      "total": 9700,
+      "level": "Master"
+    },
+    "model": {
+      "provider": "anthropic",
+      "model": "claude-3-5-sonnet-20241022"
+    },
+    "created": "2025-10-12T11:42:09.202Z",
+    "author": "QuantumBuilder",
+    "tags": [
+      "travel",
+      "egypt",
+      "automation",
+      "booking"
+    ]
+  }
+}

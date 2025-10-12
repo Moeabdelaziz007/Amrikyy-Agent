@@ -103,13 +103,13 @@ class KYCService {
       phone: userProfile.phone || null,
       fixedInfo: {
         firstName: userProfile.firstName || null,
-        lastName: userProfile.lastName || null,
+        lastName: userProfile.lastName || null
       }
     };
 
     const headers = {
       'Content-Type': 'application/json',
-      'X-App-Token': SUMSUB_APP_TOKEN,
+      'X-App-Token': SUMSUB_APP_TOKEN
     };
 
     try {
@@ -219,13 +219,13 @@ class KYCService {
         by_status: {
           pending: data.filter(k => k.status === 'pending').length,
           approved: data.filter(k => k.status === 'approved').length,
-          rejected: data.filter(k => k.status === 'rejected').length,
+          rejected: data.filter(k => k.status === 'rejected').length
         },
         by_level: {
           none: data.filter(k => k.level === 'none').length,
           basic: data.filter(k => k.level === 'basic').length,
           advanced: data.filter(k => k.level === 'advanced').length,
-          premium: data.filter(k => k.level === 'premium').length,
+          premium: data.filter(k => k.level === 'premium').length
         }
       };
 

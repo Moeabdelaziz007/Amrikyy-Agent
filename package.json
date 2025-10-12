@@ -20,7 +20,8 @@
     "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install"
   },
   "devDependencies": {
-    "concurrently": "^8.2.0"
+    "concurrently": "^8.2.0",
+    "pm2": "^6.0.13"
   },
   "keywords": [
     "ai",

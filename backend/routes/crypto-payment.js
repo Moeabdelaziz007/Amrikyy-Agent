@@ -28,13 +28,13 @@ router.get('/supported', async (req, res) => {
     res.json({
       success: true,
       cryptocurrencies,
-      total: cryptocurrencies.length,
+      total: cryptocurrencies.length
     });
   } catch (error) {
     console.error('[Crypto API] Error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -54,13 +54,13 @@ router.get('/price/:symbol', async (req, res) => {
       success: true,
       symbol: symbol.toUpperCase(),
       priceUSD: price,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('[Crypto API] Error fetching price:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -79,21 +79,21 @@ router.post('/invoice/create', async (req, res) => {
       customerEmail,
       description,
       ipCountry,
-      cryptoAddress,
+      cryptoAddress
     } = req.body;
 
     // Validation
     if (!bookingId || !userId || !amountUSD) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required fields: bookingId, userId, amountUSD',
+        error: 'Missing required fields: bookingId, userId, amountUSD'
       });
     }
 
     if (amountUSD < 10) {
       return res.status(400).json({
         success: false,
-        error: 'Minimum payment amount is $10',
+        error: 'Minimum payment amount is $10'
       });
     }
 
@@ -136,7 +136,7 @@ router.post('/invoice/create', async (req, res) => {
       cryptocurrency: cryptocurrency || 'USDT',
       ipCountry,
       cryptoAddress,
-      location: ipCountry,
+      location: ipCountry
     });
 
     console.log(`🎯 Risk Score: ${riskAssessment.score}, Action: ${riskAssessment.action}`);
@@ -149,7 +149,7 @@ router.post('/invoice/create', async (req, res) => {
         code: 'HIGH_RISK_REJECTED',
         riskScore: riskAssessment.score,
         riskLevel: riskAssessment.level,
-        message: 'This transaction has been flagged as high risk. Please contact support.',
+        message: 'This transaction has been flagged as high risk. Please contact support.'
       });
     }
 
@@ -161,7 +161,7 @@ router.post('/invoice/create', async (req, res) => {
     // ============================================
     // Phase 3: Transaction Monitoring ✅
     // ============================================
-    console.log(`📊 Running transaction monitoring...`);
+    console.log('📊 Running transaction monitoring...');
 
     const monitoringResult = await monitoringService.monitorTransaction({
       bookingId,
@@ -171,7 +171,7 @@ router.post('/invoice/create', async (req, res) => {
       cryptoAddress,
       walletAddress: cryptoAddress,
       ipCountry,
-      id: bookingId,
+      id: bookingId
     });
 
     console.log(`📊 Monitoring: ${monitoringResult.checks} checks, ${monitoringResult.alerts} alerts`);
@@ -183,7 +183,7 @@ router.post('/invoice/create', async (req, res) => {
         error: 'Transaction blocked due to critical security alert',
         code: 'CRITICAL_ALERT',
         monitoring: monitoringResult,
-        message: 'This transaction has been blocked for security reasons. Please contact support.',
+        message: 'This transaction has been blocked for security reasons. Please contact support.'
       });
     }
 
@@ -196,7 +196,7 @@ router.post('/invoice/create', async (req, res) => {
       amountUSD,
       cryptocurrency: cryptocurrency || 'USDT',
       customerEmail,
-      description: description || `Amrikyy Booking #${bookingId}`,
+      description: description || `Amrikyy Booking #${bookingId}`
     });
 
     console.log(`💳 Invoice created: ${result.invoice.id} (Risk Score: ${riskAssessment.score})`);
@@ -208,14 +208,14 @@ router.post('/invoice/create', async (req, res) => {
         score: riskAssessment.score,
         level: riskAssessment.level,
         action: riskAssessment.action,
-        requiresReview: riskAssessment.action === 'manual_review',
-      },
+        requiresReview: riskAssessment.action === 'manual_review'
+      }
     });
   } catch (error) {
     console.error('[Crypto API] Error creating invoice:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -233,13 +233,13 @@ router.get('/invoice/:invoiceId', async (req, res) => {
     res.json({
       success: true,
       invoiceId,
-      ...status,
+      ...status
     });
   } catch (error) {
     console.error('[Crypto API] Error fetching invoice:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -258,13 +258,13 @@ router.post('/invoice/:invoiceId/verify', async (req, res) => {
 
     res.json({
       success: true,
-      verification,
+      verification
     });
   } catch (error) {
     console.error('[Crypto API] Error verifying transaction:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -280,7 +280,7 @@ router.post('/refund', async (req, res) => {
     if (!invoiceId) {
       return res.status(400).json({
         success: false,
-        error: 'Missing invoiceId',
+        error: 'Missing invoiceId'
       });
     }
 
@@ -294,7 +294,7 @@ router.post('/refund', async (req, res) => {
     console.error('[Crypto API] Error processing refund:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -314,13 +314,13 @@ router.get('/fee/:cryptocurrency', async (req, res) => {
     res.json({
       success: true,
       cryptocurrency: cryptocurrency.toUpperCase(),
-      fee,
+      fee
     });
   } catch (error) {
     console.error('[Crypto API] Error estimating fee:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -337,23 +337,23 @@ router.post('/webhook', express.json(), async (req, res) => {
 
     // Handle different webhook events
     switch (event) {
-      case 'transaction.confirmed':
-        // Update invoice status
-        await cryptoPaymentService.updateInvoiceStatus(
-          data.invoiceId,
-          'confirmed'
-        );
-        break;
+    case 'transaction.confirmed':
+      // Update invoice status
+      await cryptoPaymentService.updateInvoiceStatus(
+        data.invoiceId,
+        'confirmed'
+      );
+      break;
 
-      case 'transaction.failed':
-        await cryptoPaymentService.updateInvoiceStatus(
-          data.invoiceId,
-          'failed'
-        );
-        break;
+    case 'transaction.failed':
+      await cryptoPaymentService.updateInvoiceStatus(
+        data.invoiceId,
+        'failed'
+      );
+      break;
 
-      default:
-        console.log(`Unknown webhook event: ${event}`);
+    default:
+      console.log(`Unknown webhook event: ${event}`);
     }
 
     res.json({ success: true, received: true });
@@ -361,7 +361,7 @@ router.post('/webhook', express.json(), async (req, res) => {
     console.error('[Crypto API] Webhook error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -380,14 +380,14 @@ router.get('/stats', async (req, res) => {
         totalVolume: 0,
         totalTransactions: 0,
         popularCurrency: 'USDT',
-        avgConfirmationTime: '2 minutes',
-      },
+        avgConfirmationTime: '2 minutes'
+      }
     });
   } catch (error) {
     console.error('[Crypto API] Error fetching stats:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });

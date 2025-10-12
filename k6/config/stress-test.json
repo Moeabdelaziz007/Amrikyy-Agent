@@ -1,0 +1,22 @@
+{
+  "name": "Amadeus API Stress Test",
+  "description": "High load test to find breaking points",
+  "profile": "stress",
+  "stages": [
+    { "duration": "2m", "target": 50 },
+    { "duration": "5m", "target": 100 },
+    { "duration": "5m", "target": 150 },
+    { "duration": "5m", "target": 200 },
+    { "duration": "3m", "target": 0 }
+  ],
+  "thresholds": {
+    "http_req_duration": ["p(95)<15000"],
+    "http_req_failed": ["rate<0.15"],
+    "success_rate": ["rate>0.75"]
+  },
+  "environment": {
+    "LOAD_PROFILE": "stress",
+    "AGENT_TIMEOUT": "15000",
+    "AGENT_PRIORITY": "1"
+  }
+}

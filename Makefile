@@ -1,450 +1,337 @@
-# ============================================
-# AMRIKYY TRAVEL AGENT - MAKEFILE
-# Professional shortcuts for common tasks
-# ============================================
-
-.PHONY: help install dev build test clean deploy
-
-# Default target
-.DEFAULT_GOAL := help
+.PHONY: help setup install dev prod staging stop restart logs status clean test lint build deploy health
 
 # Colors for output
-RED := \033[0;31m
-GREEN := \033[0;32m
-YELLOW := \033[0;33m
 BLUE := \033[0;34m
-MAGENTA := \033[0;35m
-CYAN := \033[0;36m
+GREEN := \033[0;32m
+YELLOW := \033[1;33m
 NC := \033[0m # No Color
 
-# ============================================
-# HELP
-# ============================================
-
 help: ## Show this help message
-	@echo "$(CYAN)╔════════════════════════════════════════════════════════╗$(NC)"
-	@echo "$(CYAN)║     AMRIKYY TRAVEL AGENT - DEVELOPMENT COMMANDS       ║$(NC)"
-	@echo "$(CYAN)╚════════════════════════════════════════════════════════╝$(NC)"
-	@echo ""
-	@echo "$(GREEN)Available commands:$(NC)"
-	@echo ""
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(YELLOW)%-20s$(NC) %s\n", $$1, $$2}'
-	@echo ""
-	@echo "$(BLUE)Quick Start:$(NC)"
-	@echo "  1. make install      # Install all dependencies"
-	@echo "  2. make setup        # Setup environment files"
-	@echo "  3. make dev          # Start development servers"
-	@echo ""
+	@echo '$(BLUE)Amrikyy Platform - Workflow Commands$(NC)'
+	@echo ''
+	@echo 'Usage:'
+	@echo '  make $(GREEN)<target>$(NC)'
+	@echo ''
+	@echo 'Targets:'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(GREEN)%-20s$(NC) %s\n", $$1, $$2}'
 
 # ============================================
-# INSTALLATION
+# SETUP & INSTALLATION
 # ============================================
+
+setup: ## Complete initial setup (run this first!)
+	@echo '$(BLUE)🚀 Setting up Amrikyy Platform...$(NC)'
+	@make install
+	@make pm2-install
+	@make env-setup
+	@echo '$(GREEN)✅ Setup complete!$(NC)'
+	@echo ''
+	@echo 'Next steps:'
+	@echo '  1. Fill in environment variables in backend/.env and frontend/.env'
+	@echo '  2. Run: make dev'
+	@echo '  3. Visit: http://localhost:3002 (frontend) and http://localhost:5002 (backend)'
 
 install: ## Install all dependencies
-	@echo "$(GREEN)📦 Installing all dependencies...$(NC)"
-	@npm install
-	@cd frontend && npm install
-	@cd backend && npm install
-	@cd ecmw && npm install
-	@echo "$(GREEN)✅ Installation complete!$(NC)"
+	@echo '$(BLUE)📦 Installing dependencies...$(NC)'
+	cd backend && npm ci
+	cd frontend && npm ci
+	@echo '$(GREEN)✅ Dependencies installed$(NC)'
 
-install-frontend: ## Install frontend dependencies only
-	@echo "$(GREEN)📦 Installing frontend dependencies...$(NC)"
-	@cd frontend && npm install
+pm2-install: ## Install PM2 locally
+	@echo '$(BLUE)📦 Installing PM2...$(NC)'
+	@if ! npx pm2 --version > /dev/null 2>&1; then \
+		npm install pm2 --save-dev; \
+		echo '$(GREEN)✅ PM2 installed$(NC)'; \
+	else \
+		echo '$(GREEN)✅ PM2 already installed$(NC)'; \
+	fi
 
-install-backend: ## Install backend dependencies only
-	@echo "$(GREEN)📦 Installing backend dependencies...$(NC)"
-	@cd backend && npm install
-
-install-ecmw: ## Install E-CMW dependencies only
-	@echo "$(GREEN)📦 Installing E-CMW dependencies...$(NC)"
-	@cd ecmw && npm install
-
-clean-install: clean install ## Clean and reinstall all dependencies
-	@echo "$(GREEN)✅ Clean installation complete!$(NC)"
-
-# ============================================
-# SETUP
-# ============================================
-
-setup: ## Setup environment files
-	@echo "$(CYAN)🔧 Setting up environment files...$(NC)"
-	@if [ ! -f backend/.env ]; then cp backend/env.example backend/.env && echo "$(GREEN)✓ Created backend/.env$(NC)"; fi
-	@if [ ! -f frontend/.env ]; then echo "VITE_API_URL=http://localhost:5000" > frontend/.env && echo "$(GREEN)✓ Created frontend/.env$(NC)"; fi
-	@echo "$(YELLOW)⚠️  Please edit .env files with your credentials$(NC)"
-
-check-env: ## Check if environment files exist
-	@echo "$(CYAN)🔍 Checking environment files...$(NC)"
-	@if [ -f backend/.env ]; then echo "$(GREEN)✓ backend/.env exists$(NC)"; else echo "$(RED)✗ backend/.env missing$(NC)"; fi
-	@if [ -f frontend/.env ]; then echo "$(GREEN)✓ frontend/.env exists$(NC)"; else echo "$(RED)✗ frontend/.env missing$(NC)"; fi
+env-setup: ## Setup environment files
+	@echo '$(BLUE)⚙️  Setting up environment files...$(NC)'
+	@if [ ! -f backend/.env ]; then \
+		cp backend/env.example backend/.env 2>/dev/null || cp backend/env.advanced.example backend/.env 2>/dev/null || echo "No env.example found"; \
+		echo '$(YELLOW)⚠️  Created backend/.env - please fill in values$(NC)'; \
+	fi
+	@if [ ! -f frontend/.env ]; then \
+		cp frontend/.env.example frontend/.env 2>/dev/null || echo "# Frontend environment variables" > frontend/.env; \
+		echo '$(YELLOW)⚠️  Created frontend/.env - please fill in values$(NC)'; \
+	fi
 
 # ============================================
 # DEVELOPMENT
 # ============================================
 
-dev: ## Start all development servers
-	@echo "$(GREEN)🚀 Starting development servers...$(NC)"
-	@npx concurrently "make dev-backend" "make dev-frontend"
+dev: ## Start development environment
+	@echo '$(BLUE)🚀 Starting development environment...$(NC)'
+	npx pm2 start ecosystem.config.js --only amrikyy-backend-dev,amrikyy-frontend-dev
+	@echo '$(GREEN)✅ Development environment started$(NC)'
+	@echo ''
+	@echo 'Access:'
+	@echo '  Frontend: http://localhost:3002'
+	@echo '  Backend:  http://localhost:5002'
+	@echo ''
+	@echo 'Monitor: make logs'
+	@echo 'Stop:    make stop'
 
-dev-frontend: ## Start frontend only
-	@echo "$(GREEN)🎨 Starting frontend on port 5173...$(NC)"
-	@cd frontend && npm run dev
+dev-backend: ## Start only backend development
+	npx pm2 start ecosystem.config.js --only amrikyy-backend-dev
 
-dev-backend: ## Start backend only
-	@echo "$(GREEN)⚙️  Starting backend on port 5000...$(NC)"
-	@cd backend && npm start
-
-dev-all: ## Start everything (frontend + backend)
-	@echo "$(GREEN)🚀 Starting all services...$(NC)"
-	@make dev
+dev-frontend: ## Start only frontend development
+	npx pm2 start ecosystem.config.js --only amrikyy-frontend-dev
 
 # ============================================
-# BUILDING
+# PRODUCTION & STAGING
 # ============================================
 
-build: ## Build frontend and backend
-	@echo "$(CYAN)🏗️  Building project...$(NC)"
-	@make build-frontend
-	@make build-backend
-	@make build-ecmw
-	@echo "$(GREEN)✅ Build complete!$(NC)"
+prod: ## Start production environment
+	@echo '$(BLUE)🌟 Starting production environment...$(NC)'
+	npx pm2 start ecosystem.config.js --only amrikyy-backend-prod,amrikyy-frontend-prod
+	@echo '$(GREEN)✅ Production environment started$(NC)'
 
-build-frontend: ## Build frontend only
-	@echo "$(CYAN)🏗️  Building frontend...$(NC)"
-	@cd frontend && npm run build
+staging: ## Start staging environment
+	@echo '$(BLUE)🚀 Starting staging environment...$(NC)'
+	npx pm2 start ecosystem.config.js --only amrikyy-backend-staging,amrikyy-frontend-staging
+	@echo '$(GREEN)✅ Staging environment started$(NC)'
 
-build-backend: ## Build backend only
-	@echo "$(CYAN)🏗️  Building backend...$(NC)"
-	@cd backend && npm run build
+start-all: ## Start all environments (dev, staging, prod)
+	@echo '$(BLUE)🚀 Starting all environments...$(NC)'
+	npx pm2 start ecosystem.config.js
+	@echo '$(GREEN)✅ All environments started$(NC)'
 
-build-ecmw: ## Build E-CMW only
-	@echo "$(CYAN)🏗️  Building E-CMW...$(NC)"
-	@cd ecmw && npm run build
+# ============================================
+# PROCESS MANAGEMENT
+# ============================================
+
+stop: ## Stop all PM2 processes
+	@echo '$(YELLOW)⏸  Stopping all processes...$(NC)'
+	npx pm2 stop all
+	@echo '$(GREEN)✅ All processes stopped$(NC)'
+
+restart: ## Restart all PM2 processes
+	@echo '$(BLUE)🔄 Restarting all processes...$(NC)'
+	npx pm2 restart all
+	@echo '$(GREEN)✅ All processes restarted$(NC)'
+
+reload: ## Zero-downtime reload (production)
+	@echo '$(BLUE)🔄 Reloading with zero downtime...$(NC)'
+	npx pm2 reload all
+	@echo '$(GREEN)✅ Reload complete$(NC)'
+
+delete: ## Delete all PM2 processes
+	@echo '$(YELLOW)🗑️  Deleting all PM2 processes...$(NC)'
+	npx pm2 delete all
+	@echo '$(GREEN)✅ All processes deleted$(NC)'
+
+# ============================================
+# MONITORING & LOGS
+# ============================================
+
+status: ## Show PM2 process status
+	@echo '$(BLUE)📊 Process Status:$(NC)'
+	npx pm2 status
+
+logs: ## Show real-time logs
+	npx pm2 logs
+
+logs-backend: ## Show backend logs only
+	npx pm2 logs amrikyy-backend-dev
+
+logs-frontend: ## Show frontend logs only
+	npx pm2 logs amrikyy-frontend-dev
+
+monitor: ## Open PM2 monitoring dashboard
+	npx pm2 monit
+
+save: ## Save current PM2 configuration
+	@echo '$(BLUE)💾 Saving PM2 configuration...$(NC)'
+	npx pm2 save
+	@echo '$(GREEN)✅ Configuration saved$(NC)'
+
+startup: ## Configure PM2 to start on boot
+	@echo '$(BLUE)⚙️  Configuring PM2 startup...$(NC)'
+	npx pm2 startup
+	@echo ''
+	@echo '$(YELLOW)Run the command shown above, then run: make save$(NC)'
 
 # ============================================
 # TESTING
 # ============================================
 
 test: ## Run all tests
-	@echo "$(CYAN)🧪 Running all tests...$(NC)"
-	@make test-ecmw
-	@make test-backend
+	@echo '$(BLUE)🧪 Running tests...$(NC)'
+	cd backend && npm test
+	cd frontend && npm test
+	@echo '$(GREEN)✅ Tests complete$(NC)'
 
-test-frontend: ## Run frontend tests
-	@echo "$(CYAN)🧪 Running frontend tests...$(NC)"
-	@cd frontend && npm run test
+test-unit: ## Run unit tests only
+	cd backend && npm run test:unit
+	cd frontend && npm run test:unit
 
-test-backend: ## Run backend tests
-	@echo "$(CYAN)🧪 Running backend tests...$(NC)"
-	@cd backend && npm run test
+test-load: ## Run load tests (requires backend running)
+	@echo '$(BLUE)🚀 Running load tests...$(NC)'
+	cd backend && npm run test:load
+	@echo '$(GREEN)✅ Load tests complete$(NC)'
+	@echo 'View results in: test-outputs/'
 
-test-ecmw: ## Run E-CMW tests
-	@echo "$(CYAN)🧪 Running E-CMW tests...$(NC)"
-	@cd ecmw && npm test
-
-test-watch: ## Run tests in watch mode
-	@echo "$(CYAN)👀 Running E-CMW tests in watch mode...$(NC)"
-	@cd ecmw && npm test -- --watch
-
-test-coverage: ## Run tests with coverage
-	@echo "$(CYAN)📊 Running tests with coverage...$(NC)"
-	@cd ecmw && npm test -- --coverage
+test-load-smoke: ## Run quick smoke test
+	@echo '$(BLUE)💨 Running smoke test...$(NC)'
+	cd backend && npm run test:load:smoke
+	@echo '$(GREEN)✅ Smoke test complete$(NC)'
 
 # ============================================
 # CODE QUALITY
 # ============================================
 
-lint: ## Run linter
-	@echo "$(CYAN)🔍 Linting code...$(NC)"
-	@cd frontend && npm run lint
-	@cd backend && npm run lint || echo "$(YELLOW)No lint script in backend$(NC)"
+lint: ## Run linters
+	@echo '$(BLUE)🎨 Linting code...$(NC)'
+	cd backend && npm run lint
+	cd frontend && npm run lint
+	@echo '$(GREEN)✅ Linting complete$(NC)'
 
-lint-fix: ## Fix linting issues
-	@echo "$(GREEN)🔧 Fixing linting issues...$(NC)"
-	@cd frontend && npm run lint:fix || echo "$(YELLOW)No lint:fix script$(NC)"
+lint-fix: ## Auto-fix linting issues
+	@echo '$(BLUE)🔧 Auto-fixing linting issues...$(NC)'
+	cd backend && npm run lint:fix
+	cd frontend && npm run lint:fix
+	@echo '$(GREEN)✅ Linting fixes applied$(NC)'
 
 format: ## Format code with Prettier
-	@echo "$(CYAN)💅 Formatting code...$(NC)"
-	@npx prettier --write "**/*.{js,jsx,ts,tsx,json,md}"
-
-format-check: ## Check code formatting
-	@echo "$(CYAN)🔍 Checking code formatting...$(NC)"
-	@npx prettier --check "**/*.{js,jsx,ts,tsx,json,md}"
-
-type-check: ## Run TypeScript type checking
-	@echo "$(CYAN)📝 Type checking E-CMW...$(NC)"
-	@cd ecmw && npx tsc --noEmit
-
-quality: ## Run all quality checks (lint + format + type-check + test)
-	@echo "$(CYAN)✨ Running quality checks...$(NC)"
-	@make format-check
-	@make type-check
-	@make test
-	@echo "$(GREEN)✅ All quality checks passed!$(NC)"
-
-quality-fix: ## Fix all quality issues
-	@echo "$(GREEN)🔧 Fixing all quality issues...$(NC)"
-	@make lint-fix
-	@make format
-	@echo "$(GREEN)✅ Fixed all quality issues!$(NC)"
+	@echo '$(BLUE)✨ Formatting code...$(NC)'
+	cd backend && npx prettier --write "src/**/*.{js,ts}"
+	cd frontend && npx prettier --write "src/**/*.{js,jsx,ts,tsx}"
+	@echo '$(GREEN)✅ Code formatted$(NC)'
 
 # ============================================
-# DATABASE
+# BUILD & DEPLOY
 # ============================================
 
-db-studio: ## Open Supabase studio
-	@echo "$(CYAN)🗄️  Opening Supabase studio...$(NC)"
-	@open https://waqewqdmtnabpcvofdnl.supabase.co
+build: ## Build for production
+	@echo '$(BLUE)🏗️  Building for production...$(NC)'
+	cd backend && npm run build
+	cd frontend && npm run build
+	@echo '$(GREEN)✅ Build complete$(NC)'
 
-redis-cli: ## Connect to Redis Cloud
-	@echo "$(CYAN)🔴 Connecting to Redis...$(NC)"
-	@redis-cli -u redis://default:hOgB8zfnI5UcRqfnuAw3ehX5a6Fzs4gr@redis-13608.c84.us-east-1-2.ec2.redns.redis-cloud.com:13608
+deploy-staging: ## Deploy to staging
+	@echo '$(BLUE)🚀 Deploying to staging...$(NC)'
+	git push origin develop
+	@echo '$(GREEN)✅ Pushed to staging branch$(NC)'
+	@echo 'Check GitHub Actions for deployment status'
 
-# ============================================
-# TELEGRAM BOT
-# ============================================
-
-bot: ## Start Telegram bot
-	@echo "$(GREEN)🤖 Starting Telegram bot...$(NC)"
-	@cd backend && node advanced-telegram-bot.js
-
-bot-test: ## Test Telegram bot
-	@echo "$(CYAN)🧪 Testing Telegram bot...$(NC)"
-	@curl http://localhost:5000/api/health
-
-# ============================================
-# DEPLOYMENT
-# ============================================
-
-deploy: ## Deploy to production (frontend + backend)
-	@echo "$(GREEN)🚀 Deploying to production...$(NC)"
-	@./deploy-backend.sh
-	@./deploy-frontend.sh
-	@echo "$(GREEN)✅ Deployment complete!$(NC)"
-
-deploy-frontend: ## Deploy frontend to Vercel
-	@echo "$(GREEN)🌐 Deploying frontend to Vercel...$(NC)"
-	@./deploy-frontend.sh
-
-deploy-backend: ## Deploy backend to Railway
-	@echo "$(GREEN)🚂 Deploying backend to Railway...$(NC)"
-	@./deploy-backend.sh
-
-deploy-check: ## Check deployment status
-	@echo "$(CYAN)🔍 Checking deployment status...$(NC)"
-	@railway status
-	@vercel ls
+deploy-prod: ## Deploy to production
+	@echo '$(YELLOW)⚠️  Deploying to PRODUCTION$(NC)'
+	@echo 'Are you sure? Press Ctrl+C to cancel, Enter to continue...'
+	@read
+	git push origin main
+	@echo '$(GREEN)✅ Pushed to production branch$(NC)'
+	@echo 'Check GitHub Actions for deployment status'
 
 # ============================================
-# CLEANING
+# HEALTH & DIAGNOSTICS
 # ============================================
 
-clean: ## Clean all build artifacts and dependencies
-	@echo "$(RED)🧹 Cleaning project...$(NC)"
-	@rm -rf node_modules frontend/node_modules backend/node_modules ecmw/node_modules
-	@rm -rf frontend/dist backend/dist ecmw/dist
-	@rm -rf frontend/.vite backend/.vite
-	@rm -rf ecmw/coverage
-	@echo "$(GREEN)✅ Project cleaned!$(NC)"
+health: ## Run health check and auto-debug
+	@echo '$(BLUE)🏥 Running health check...$(NC)'
+	./scripts/auto-debug.sh
+	@echo '$(GREEN)✅ Health check complete$(NC)'
 
-clean-deps: ## Clean dependencies only
-	@echo "$(RED)🧹 Cleaning dependencies...$(NC)"
-	@rm -rf node_modules frontend/node_modules backend/node_modules ecmw/node_modules
+validate: ## Validate environment setup
+	@echo '$(BLUE)🔍 Validating environment...$(NC)'
+	node k6/scripts/validate-env.js
+	@echo '$(GREEN)✅ Validation complete$(NC)'
 
-clean-build: ## Clean build artifacts only
-	@echo "$(RED)🧹 Cleaning build artifacts...$(NC)"
-	@rm -rf frontend/dist backend/dist ecmw/dist ecmw/coverage
-
-clean-cache: ## Clean cache files
-	@echo "$(RED)🧹 Cleaning cache...$(NC)"
-	@rm -rf frontend/.vite backend/.vite
-	@rm -rf .turbo frontend/.turbo backend/.turbo
-
-clean-logs: ## Clean log files
-	@echo "$(RED)🧹 Cleaning logs...$(NC)"
-	@rm -rf backend/*.log frontend/*.log
-
-# ============================================
-# SECURITY
-# ============================================
-
-security-audit: ## Run security audit
-	@echo "$(CYAN)🔒 Running security audit...$(NC)"
-	@npm audit
-	@cd frontend && npm audit
-	@cd backend && npm audit
-	@cd ecmw && npm audit
-
-security-fix: ## Fix security vulnerabilities
-	@echo "$(GREEN)🔧 Fixing security vulnerabilities...$(NC)"
-	@npm audit fix
-	@cd frontend && npm audit fix
-	@cd backend && npm audit fix
-	@cd ecmw && npm audit fix
+info: ## Show system information
+	@echo '$(BLUE)📊 System Information:$(NC)'
+	@echo ''
+	@echo 'Node.js:'
+	@node --version
+	@echo ''
+	@echo 'NPM:'
+	@npm --version
+	@echo ''
+	@echo 'PM2:'
+	@pm2 --version 2>/dev/null || echo 'Not installed'
+	@echo ''
+	@echo 'Git:'
+	@git --version
+	@echo ''
+	@echo 'Disk Usage:'
+	@df -h . | tail -1
 
 # ============================================
-# UTILITIES
+# CLEANUP
 # ============================================
 
-check-updates: ## Check for dependency updates
-	@echo "$(CYAN)🔍 Checking for updates...$(NC)"
-	@npx npm-check-updates
+clean: ## Clean build artifacts and logs
+	@echo '$(BLUE)🧹 Cleaning up...$(NC)'
+	rm -rf backend/dist frontend/dist
+	rm -rf backend/coverage frontend/coverage
+	rm -rf logs/*.log
+	rm -rf test-outputs/*
+	rm -rf debug-logs/*
+	@echo '$(GREEN)✅ Cleanup complete$(NC)'
 
-update-deps: ## Update dependencies
-	@echo "$(GREEN)⬆️  Updating dependencies...$(NC)"
-	@npx npm-check-updates -u
+clean-all: ## Clean everything including node_modules
+	@echo '$(YELLOW)⚠️  This will remove all dependencies$(NC)'
+	@echo 'Press Ctrl+C to cancel, Enter to continue...'
+	@read
+	make clean
+	rm -rf backend/node_modules frontend/node_modules node_modules
+	@echo '$(GREEN)✅ Deep cleanup complete$(NC)'
+	@echo 'Run: make install'
+
+# ============================================
+# WORKFLOW AUTOMATION
+# ============================================
+
+setup-workflow: ## Complete workflow setup (automated)
+	@echo '$(BLUE)🎯 Setting up complete workflow automation...$(NC)'
+	@echo ''
+	@echo 'Step 1: Installing dependencies...'
 	@make install
+	@echo ''
+	@echo 'Step 2: Installing PM2...'
+	@make pm2-install
+	@echo ''
+	@echo 'Step 3: Setting up environment...'
+	@make env-setup
+	@echo ''
+	@echo 'Step 4: Running health check...'
+	@make health
+	@echo ''
+	@echo 'Step 5: Running smoke test...'
+	@make test-load-smoke || true
+	@echo ''
+	@echo '$(GREEN)✅ Workflow setup complete!$(NC)'
+	@echo ''
+	@echo 'Next steps:'
+	@echo '  1. Review and fill in: backend/.env and frontend/.env'
+	@echo '  2. Start development: make dev'
+	@echo '  3. View logs: make logs'
+	@echo '  4. Check status: make status'
 
-analyze: ## Analyze bundle size
-	@echo "$(CYAN)📊 Analyzing bundle size...$(NC)"
-	@cd frontend && npm run build -- --report
-
-logs-backend: ## View backend logs
-	@echo "$(CYAN)📋 Viewing backend logs...$(NC)"
-	@tail -f backend/backend.log
-
-logs-frontend: ## View frontend logs
-	@echo "$(CYAN)📋 Viewing frontend logs...$(NC)"
-	@tail -f frontend/frontend.log
-
-open-frontend: ## Open frontend in browser
-	@echo "$(GREEN)🌐 Opening frontend...$(NC)"
-	@open http://localhost:5173
-
-open-backend: ## Open backend health check
-	@echo "$(GREEN)⚙️  Opening backend...$(NC)"
-	@open http://localhost:5000/api/health
-
-open-sentry: ## Open Sentry dashboard
-	@echo "$(GREEN)📊 Opening Sentry...$(NC)"
-	@open https://sentry.io/organizations/aaas-6y/projects/
-
-open-supabase: ## Open Supabase dashboard
-	@echo "$(GREEN)🗄️  Opening Supabase...$(NC)"
-	@open https://waqewqdmtnabpcvofdnl.supabase.co
-
-open-redis: ## Open Redis Cloud dashboard
-	@echo "$(GREEN)🔴 Opening Redis Cloud...$(NC)"
-	@open https://app.redislabs.com/
+ci: ## Run CI checks (lint, test, build)
+	@echo '$(BLUE)🔄 Running CI checks...$(NC)'
+	@make lint
+	@make test
+	@make build
+	@echo '$(GREEN)✅ All CI checks passed$(NC)'
 
 # ============================================
-# GIT SHORTCUTS
+# QUICK ACTIONS
 # ============================================
 
-git-status: ## Git status
-	@git status
+quick-start: ## Quick start for daily use
+	@echo '$(BLUE)⚡ Quick starting...$(NC)'
+	npx pm2 start ecosystem.config.js --only amrikyy-backend-dev,amrikyy-frontend-dev
+	@echo '$(GREEN)✅ Ready to code!$(NC)'
+	@echo 'Frontend: http://localhost:3002'
+	@echo 'Backend:  http://localhost:5002'
 
-git-push: ## Push to remote
-	@echo "$(GREEN)Pushing to remote...$(NC)"
-	@git push
+quick-stop: ## Quick stop all processes
+	npx pm2 stop all
 
-git-pull: ## Pull from remote
-	@echo "$(GREEN)Pulling from remote...$(NC)"
-	@git pull
+quick-test: ## Quick test (lint + smoke test)
+	@make lint-fix
+	@make test-load-smoke
 
-git-sync: ## Sync with remote (pull + push)
-	@git pull
-	@git push
-
-git-commit: ## Quick commit (use: make git-commit m="your message")
-	@git add -A
-	@git commit -m "$(m)"
-	@git push
-
-# ============================================
-# QUICK FIXES
-# ============================================
-
-fix-all: ## Fix everything (quality + security)
-	@echo "$(GREEN)🔧 Fixing everything...$(NC)"
-	@make quality-fix
-	@make security-fix
-	@echo "$(GREEN)✅ All fixes applied!$(NC)"
-
-reset: clean-install setup ## Complete reset (clean + install + setup)
-	@echo "$(GREEN)✅ Project reset complete!$(NC)"
-
-restart: ## Restart all services
-	@echo "$(YELLOW)🔄 Restarting services...$(NC)"
-	@pkill -f "node.*backend" || echo "Backend not running"
-	@pkill -f "vite.*frontend" || echo "Frontend not running"
-	@sleep 2
-	@make dev
-
-# ============================================
-# MONITORING
-# ============================================
-
-health-check: ## Check if all services are running
-	@echo "$(CYAN)🏥 Health check...$(NC)"
-	@echo "$(YELLOW)Backend:$(NC)"
-	@curl -f http://localhost:5000/api/health > /dev/null 2>&1 && echo "$(GREEN)✓ Running$(NC)" || echo "$(RED)✗ Not running$(NC)"
-	@echo "$(YELLOW)Frontend:$(NC)"
-	@curl -f http://localhost:5173 > /dev/null 2>&1 && echo "$(GREEN)✓ Running$(NC)" || echo "$(RED)✗ Not running$(NC)"
-	@echo "$(YELLOW)Redis:$(NC)"
-	@redis-cli -u redis://default:hOgB8zfnI5UcRqfnuAw3ehX5a6Fzs4gr@redis-13608.c84.us-east-1-2.ec2.redns.redis-cloud.com:13608 ping 2>&1 | grep -q "PONG" && echo "$(GREEN)✓ Connected$(NC)" || echo "$(RED)✗ Not connected$(NC)"
-
-status: health-check ## Alias for health-check
-
-# ============================================
-# DOCUMENTATION
-# ============================================
-
-docs: ## Open project documentation
-	@echo "$(CYAN)📖 Opening documentation...$(NC)"
-	@open README.md
-
-docs-api: ## Open API documentation
-	@echo "$(CYAN)📖 Opening API docs...$(NC)"
-	@open http://localhost:5000/api/openapi.json
-
-docs-test: ## Open test report
-	@echo "$(CYAN)📖 Opening test report...$(NC)"
-	@open COMPLETE_TEST_REPORT.md
-
-docs-deploy: ## Open deployment guide
-	@echo "$(CYAN)📖 Opening deployment guide...$(NC)"
-	@open PRODUCTION_READY.md
-
-# ============================================
-# PROJECT INFO
-# ============================================
-
-info: ## Show project information
-	@echo "$(CYAN)╔════════════════════════════════════════════════════════╗$(NC)"
-	@echo "$(CYAN)║          AMRIKYY TRAVEL AGENT - INFO                  ║$(NC)"
-	@echo "$(CYAN)╚════════════════════════════════════════════════════════╝$(NC)"
-	@echo ""
-	@echo "$(YELLOW)Node Version:$(NC)      $$(node --version)"
-	@echo "$(YELLOW)NPM Version:$(NC)       $$(npm --version)"
-	@echo "$(YELLOW)Git Branch:$(NC)        $$(git branch --show-current)"
-	@echo "$(YELLOW)Git Status:$(NC)        $$(git status --short | wc -l | xargs) files changed"
-	@echo ""
-	@echo "$(YELLOW)Frontend:$(NC)          http://localhost:5173"
-	@echo "$(YELLOW)Backend:$(NC)           http://localhost:5000"
-	@echo "$(YELLOW)API Docs:$(NC)          http://localhost:5000/api/openapi.json"
-	@echo ""
-	@echo "$(YELLOW)Supabase:$(NC)          https://waqewqdmtnabpcvofdnl.supabase.co"
-	@echo "$(YELLOW)Sentry:$(NC)            https://sentry.io/organizations/aaas-6y/"
-	@echo "$(YELLOW)Redis Cloud:$(NC)       Connected"
-	@echo ""
-
-version: ## Show version information
-	@echo "$(CYAN)Amrikyy Travel Agent v2.0.0$(NC)"
-	@echo "$(GREEN)E-CMW System: Active$(NC)"
-	@echo "$(GREEN)Test Status: 21/21 Passing$(NC)"
-
-# ============================================
-# ALIASES (Common shortcuts)
-# ============================================
-
-i: install ## Alias for install
-d: dev ## Alias for dev
-b: build ## Alias for build
-t: test ## Alias for test
-l: lint ## Alias for lint
-f: format ## Alias for format
-c: clean ## Alias for clean
-h: help ## Alias for help
-s: status ## Alias for status
-
+# Default target
+.DEFAULT_GOAL := help

@@ -1,336 +1,235 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import {
-  Sparkles,
-  Zap,
-  Globe,
-  Shield,
-  Heart,
-  ArrowRight,
-  Languages,
-} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowRight, Shield, Sparkles, Clock, Star, CheckCircle2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { countries } from '@/lib/mockApi';
+import { useTripStore } from '@/store/tripStore';
 
-const Landing: React.FC = () => {
-  const [language, setLanguage] = useState<'ar' | 'en'>('ar');
+export default function Landing() {
+  const navigate = useNavigate();
+  const { setTripData } = useTripStore();
 
-  const content = {
-    ar: {
-      title: 'منصة الأتمتة بالذكاء الاصطناعي',
-      subtitle: 'قوة الذكاء الاصطناعي الكمي لتخطيط رحلاتك وإدارة ميزانيتك واكتشاف وجهات جديدة',
-      cta: 'ابدأ رحلتك الآن',
-      features: [
-        {
-          icon: Zap,
-          title: 'ذكاء اصطناعي متقدم',
-          description: 'مساعد سفر ذكي يفهم احتياجاتك ويقدم توصيات شخصية',
-        },
-        {
-          icon: Globe,
-          title: 'وجهات عالمية',
-          description: 'اكتشف أكثر من 150 وجهة حول العالم مع معلومات ثقافية',
-        },
-        {
-          icon: Shield,
-          title: 'آمن وموثوق',
-          description: 'حماية كاملة لبياناتك ومدفوعاتك مع تشفير من الدرجة البنكية',
-        },
-        {
-          icon: Heart,
-          title: 'تخصيص شخصي',
-          description: 'رحلات مصممة خصيصاً لاهتماماتك وميزانيتك',
-        },
-      ],
-      services: {
-        title: 'الخدمات المتاحة',
-        subtitle: 'ابدأ بخدمات السفر الذكية، مع المزيد من مجالات الأتمتة قريباً',
-        service: {
-          title: 'خدمات السفر',
-          description: 'تخطيط رحلات ذكي بالذكاء الاصطناعي وتوصيات مخصصة',
-          available: 'متاح الآن',
-        },
-      },
-      ctaSection: {
-        title: 'جاهز لتجربة الذكاء الاصطناعي؟',
-        subtitle: 'ابدأ رحلتك مع خدمات السفر الذكية اليوم',
-        button: 'ابدأ الآن',
-      },
-      footer: '© 2025 Amrikyy. منصة الأتمتة بالذكاء الاصطناعي. جميع الحقوق محفوظة.',
-    },
-    en: {
-      title: 'AI Automation Platform',
-      subtitle: 'Quantum AI power for planning your trips, managing budgets, and discovering new destinations',
-      cta: 'Start Your Journey Now',
-      features: [
-        {
-          icon: Zap,
-          title: 'Advanced AI',
-          description: 'Smart travel assistant that understands your needs and provides personalized recommendations',
-        },
-        {
-          icon: Globe,
-          title: 'Global Destinations',
-          description: 'Discover over 150 destinations worldwide with cultural insights',
-        },
-        {
-          icon: Shield,
-          title: 'Secure & Reliable',
-          description: 'Complete protection for your data and payments with bank-grade encryption',
-        },
-        {
-          icon: Heart,
-          title: 'Personalized',
-          description: 'Trips designed specifically for your interests and budget',
-        },
-      ],
-      services: {
-        title: 'Available Services',
-        subtitle: 'Start with intelligent travel services, with more automation domains coming soon',
-        service: {
-          title: 'Travel Services',
-          description: 'AI-powered trip planning and personalized recommendations',
-          available: 'Available Now',
-        },
-      },
-      ctaSection: {
-        title: 'Ready to Experience AI?',
-        subtitle: 'Start your journey with intelligent travel services today',
-        button: 'Get Started',
-      },
-      footer: '© 2025 Amrikyy. AI Automation Platform. All rights reserved.',
-    },
+  const handleCountrySelect = (country: string) => {
+    setTripData({ destination: country });
+    navigate('/plan');
   };
 
-  const currentContent = content[language];
+  const features = [
+    {
+      icon: Sparkles,
+      title: 'AI-Powered Planning',
+      description: 'Smart recommendations tailored to your preferences and budget',
+    },
+    {
+      icon: Shield,
+      title: 'Secure Booking',
+      description: 'Safe and encrypted transactions with instant confirmation',
+    },
+    {
+      icon: Clock,
+      title: '24/7 Support',
+      description: 'Round-the-clock assistance for your peace of mind',
+    },
+  ];
+
+  const testimonials = [
+    {
+      name: 'Ahmed Hassan',
+      location: 'Cairo, Egypt',
+      rating: 5,
+      text: 'Amazing experience! The AI agent helped me plan the perfect family vacation.',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmed',
+    },
+    {
+      name: 'Sarah Al-Mansoori',
+      location: 'Dubai, UAE',
+      rating: 5,
+      text: 'Best travel platform I\'ve used. Seamless booking and great recommendations.',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
+    },
+    {
+      name: 'Mohammed Al-Otaibi',
+      location: 'Riyadh, Saudi Arabia',
+      rating: 5,
+      text: 'The personalized itinerary was spot-on. Saved me hours of research!',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mohammed',
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Animated background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
-      </div>
-
-      {/* Header */}
-      <header className="relative z-10 px-6 py-8">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <motion.div
-            className="flex items-center space-x-3"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-          >
-            <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
-              <Sparkles className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-white">Amrikyy</h1>
-              <p className="text-purple-300 text-sm">Quantum AI Platform</p>
-            </div>
-          </motion.div>
-
-          <div className="flex items-center gap-4">
-            {/* Language Toggle */}
-            <motion.button
-              onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
-              className="p-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg hover:bg-white/20 transition-all"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-            >
-              <Languages className="w-5 h-5 text-white" />
-            </motion.button>
-
-            <motion.button
-              onClick={() => window.location.href = '/app'}
-              className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-            >
-              {language === 'ar' ? 'ابدأ الآن' : 'Get Started'}
-            </motion.button>
-          </div>
-        </div>
-      </header>
-
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 py-20 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="inline-flex items-center space-x-2 px-4 py-2 bg-purple-500/20 border border-purple-500/50 rounded-full mb-6 backdrop-blur-sm">
-            <Sparkles className="w-4 h-4 text-purple-300" />
-            <span className="text-purple-300 text-sm font-medium">
-              {language === 'ar' ? 'مدعوم بالذكاء الاصطناعي الكمي' : 'Powered by Quantum Intelligence'}
-            </span>
-          </div>
-
-          <h2 className="text-6xl md:text-7xl font-bold text-white mb-6 leading-tight">
-            {language === 'ar' ? 'مستقبل' : 'The Future of'}
-            <br />
-            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-              {language === 'ar' ? 'الأتمتة بالذكاء الاصطناعي' : 'AI Automation'}
-            </span>
-          </h2>
-
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-12">
-            {currentContent.subtitle}
-          </p>
-
-          <motion.button
-            onClick={() => window.location.href = '/app'}
-            className="group px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <span className="flex items-center space-x-2">
-              <span>{currentContent.cta}</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </span>
-          </motion.button>
-        </motion.div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 py-20">
-        <motion.h3
-          className="text-3xl font-bold text-white text-center mb-12"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-        >
-          {language === 'ar' ? 'إمكانيات مدعومة بالذكاء الاصطناعي الكمي' : 'Quantum-Powered Capabilities'}
-        </motion.h3>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {currentContent.features.map((feature, index) => {
-            const Icon = feature.icon;
-            return (
-              <motion.div
-                key={index}
-                className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:bg-white/10 transition-all duration-300"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{
-                  scale: 1.05,
-                  borderColor: 'rgba(168, 85, 247, 0.5)',
-                }}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-hero opacity-10 animate-gradient-shift" style={{ backgroundSize: '200% 200%' }} />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+          <div className="text-center space-y-8 animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-card rounded-full border border-primary/20 animate-float">
+              <Sparkles className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium">AI-Powered Travel Planning</span>
+            </div>
+            <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
+              <span className="block mb-2">Your Journey Starts</span>
+              <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                With Intelligence
+              </span>
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Experience the future of travel with AI-powered recommendations for Egypt, Saudi Arabia, and the UAE. 
+              Plan smarter, travel better.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button
+                onClick={() => navigate('/plan')}
+                size="lg"
+                className="bg-gradient-primary hover:shadow-glow transition-all duration-300 text-lg px-8"
               >
-                <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl w-fit mb-4">
-                  <Icon className="w-6 h-6 text-white" />
-                </div>
-                <h4 className="text-xl font-bold text-white mb-2">
-                  {feature.title}
-                </h4>
-                <p className="text-gray-400">{feature.description}</p>
-              </motion.div>
-            );
-          })}
+                Start Planning
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="text-lg px-8"
+              >
+                Watch Demo
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Current Services */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 py-20">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-        >
-          <h3 className="text-3xl font-bold text-white text-center mb-4">
-            {currentContent.services.title}
-          </h3>
-          <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
-            {currentContent.services.subtitle}
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            <motion.div
-              className="p-8 bg-white/5 backdrop-blur-sm border border-purple-500/50 hover:bg-white/10 cursor-pointer transition-all duration-300"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.05 }}
-              onClick={() => window.location.href = '/app'}
+      {/* Features Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="text-center mb-16 animate-fade-in-up">
+          <h2 className="text-3xl lg:text-4xl font-bold mb-4">Why Choose Amrikyy?</h2>
+          <p className="text-muted-foreground text-lg">Powered by cutting-edge AI technology</p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-8">
+          {features.map((feature, index) => (
+            <Card
+              key={index}
+              className="animate-fade-in-up hover:shadow-elegant transition-all duration-300 bg-gradient-card border-border/50"
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl w-fit mb-4">
-                <Globe className="w-8 h-8 text-white" />
-              </div>
-              <h4 className="text-xl font-bold text-white mb-2">
-                {currentContent.services.service.title}
-              </h4>
-              <p className="text-gray-400 mb-4">{currentContent.services.service.description}</p>
-              <span className="inline-flex items-center text-purple-400 font-semibold">
-                {currentContent.services.service.available} <ArrowRight className="w-4 h-4 ml-2" />
-              </span>
-            </motion.div>
+              <CardContent className="p-8 text-center">
+                <div className="inline-flex p-4 bg-gradient-primary rounded-2xl mb-4">
+                  <feature.icon className="w-8 h-8 text-primary-foreground" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
+                <p className="text-muted-foreground">{feature.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* Destinations Section */}
+      <section className="bg-muted/30 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16 animate-fade-in-up">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4">Explore Our Destinations</h2>
+            <p className="text-muted-foreground text-lg">Choose your next adventure</p>
           </div>
-        </motion.div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {countries.map((country, index) => (
+              <Card
+                key={index}
+                className="group cursor-pointer overflow-hidden animate-fade-in-up hover:shadow-elegant transition-all duration-300"
+                style={{ animationDelay: `${index * 0.1}s` }}
+                onClick={() => handleCountrySelect(country.name)}
+              >
+                <div className="relative h-64 overflow-hidden">
+                  <img
+                    src={country.image}
+                    alt={country.name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                    <h3 className="text-2xl font-bold mb-2">{country.name}</h3>
+                    <p className="text-sm opacity-90 mb-4">{country.description}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {country.highlights.slice(0, 2).map((highlight, i) => (
+                        <span key={i} className="text-xs bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full">
+                          {highlight}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <CardContent className="p-6">
+                  <Button
+                    className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCountrySelect(country.name);
+                    }}
+                  >
+                    Plan Your Trip
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="text-center mb-16 animate-fade-in-up">
+          <h2 className="text-3xl lg:text-4xl font-bold mb-4">Trusted by Travelers</h2>
+          <p className="text-muted-foreground text-lg">See what our customers say</p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-8">
+          {testimonials.map((testimonial, index) => (
+            <Card
+              key={index}
+              className="animate-fade-in-up bg-gradient-card"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4 mb-4">
+                  <img
+                    src={testimonial.avatar}
+                    alt={testimonial.name}
+                    className="w-12 h-12 rounded-full"
+                  />
+                  <div className="flex-1">
+                    <h4 className="font-semibold">{testimonial.name}</h4>
+                    <p className="text-sm text-muted-foreground">{testimonial.location}</p>
+                  </div>
+                  <div className="flex gap-1">
+                    {Array.from({ length: testimonial.rating }).map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-accent text-accent" />
+                    ))}
+                  </div>
+                </div>
+                <p className="text-muted-foreground">{testimonial.text}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </section>
 
       {/* CTA Section */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 py-20">
-        <motion.div
-          className="p-12 bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm border border-purple-500/30 rounded-3xl text-center"
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-        >
-          <h3 className="text-4xl font-bold text-white mb-4">
-            {currentContent.ctaSection.title}
-          </h3>
-          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            {currentContent.ctaSection.subtitle}
+      <section className="bg-gradient-primary text-primary-foreground py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl font-bold mb-6">Ready to Start Your Journey?</h2>
+          <p className="text-xl mb-8 opacity-90">
+            Let our AI travel agents create your perfect itinerary in minutes
           </p>
-          <motion.button
-            onClick={() => window.location.href = '/app'}
-            className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <Button
+            onClick={() => navigate('/plan')}
+            size="lg"
+            variant="secondary"
+            className="bg-white text-primary hover:bg-white/90 text-lg px-8"
           >
-            {currentContent.ctaSection.button}
-          </motion.button>
-        </motion.div>
-      </section>
-
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-white/10 py-8 mt-20">
-        <div className="max-w-7xl mx-auto px-6 text-center text-gray-400">
-          <p>
-            {currentContent.footer}
-          </p>
+            Get Started Now
+            <ArrowRight className="ml-2 w-5 h-5" />
+          </Button>
         </div>
-      </footer>
-
-      <style>{`
-        @keyframes blob {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          25% { transform: translate(20px, -50px) scale(1.1); }
-          50% { transform: translate(-20px, 20px) scale(0.9); }
-          75% { transform: translate(50px, 50px) scale(1.05); }
-        }
-
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
-
+      </section>
     </div>
   );
-};
-
-export default Landing;
+}
