@@ -1,0 +1,2698 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.0.0",
+  "_description": "Complete DNA specification for the Amrikyy AI Travel Agent - an enterprise-grade crypto-first travel booking platform with government-ready compliance, AI-powered automation, and multi-modal intelligence",
+  
+  "meta": {
+    "id": "amrikyy-travel-agent-v1",
+    "name": "Amrikyy AI Travel Agent",
+    "version": "1.0.0",
+    "schema_version": "1.0.0",
+    "author": "Amrikyy Team",
+    "license": "MIT",
+    "description": "Enterprise-grade AI agent for automated travel booking with crypto payment processing, KYC/AML compliance, transaction monitoring, and predictive intelligence. Supports browser automation, multi-currency payments, and government-ready audit logging.",
+    "tags": [
+      "travel-booking",
+      "crypto-payments",
+      "kyc-aml-compliance",
+      "ai-automation",
+      "browser-automation",
+      "risk-assessment",
+      "transaction-monitoring",
+      "gemini-2.5-pro",
+      "glm-4.6",
+      "blockchain",
+      "smart-contracts",
+      "predictive-ai",
+      "emotional-intelligence"
+    ],
+    "created": "2025-10-12T19:15:00Z",
+    "updated": "2025-10-12T19:15:00Z",
+    "homepage": "https://github.com/Moeabdelaziz007/maya-travel-agent",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Moeabdelaziz007/maya-travel-agent",
+      "branch": "pr-7"
+    },
+    "documentation": {
+      "main": "https://github.com/Moeabdelaziz007/maya-travel-agent/blob/pr-7/README.md",
+      "testing": "https://github.com/Moeabdelaziz007/maya-travel-agent/blob/pr-7/COMPREHENSIVE_TESTING_GUIDE.md",
+      "deployment": "https://github.com/Moeabdelaziz007/maya-travel-agent/blob/pr-7/DEPLOYMENT_READY_SUMMARY.md",
+      "implementation": "https://github.com/Moeabdelaziz007/maya-travel-agent/blob/pr-7/PAYMENTS_KIT_IMPLEMENTATION.md"
+    },
+    "statistics": {
+      "total_files": 43,
+      "lines_of_code": 17691,
+      "services": 10,
+      "api_endpoints": 20,
+      "database_tables": 7,
+      "database_views": 3,
+      "database_functions": 4,
+      "automated_tests": 27,
+      "documentation_lines": 9800
+    },
+    "capabilities": [
+      "autonomous_browser_control",
+      "crypto_payment_processing",
+      "kyc_aml_verification",
+      "risk_assessment",
+      "transaction_monitoring",
+      "audit_logging",
+      "smart_contract_execution",
+      "predictive_intelligence",
+      "emotional_adaptation",
+      "multi_currency_support"
+    ]
+  },
+
+  "agent": {
+    "primary_model": {
+      "provider": "google",
+      "id": "gemini-2.5-pro",
+      "version": "computer-use",
+      "temperature": 0.7,
+      "max_tokens": 8192,
+      "capabilities": [
+        "browser_automation",
+        "screenshot_analysis",
+        "mouse_keyboard_control",
+        "web_navigation",
+        "form_filling",
+        "visual_understanding",
+        "code_execution"
+      ],
+      "use_cases": [
+        "automated_travel_booking",
+        "website_navigation",
+        "price_comparison",
+        "form_automation",
+        "data_extraction"
+      ],
+      "configuration": {
+        "vision_enabled": true,
+        "action_space": ["mouse", "keyboard", "scroll", "navigate"],
+        "safety_settings": "strict",
+        "rate_limiting": true
+      }
+    },
+
+    "secondary_model": {
+      "provider": "zhipu",
+      "id": "glm-4.6",
+      "version": "latest",
+      "api_base": "https://api.z.ai/api/paas/v4",
+      "temperature": 0.5,
+      "max_tokens": 4096,
+      "capabilities": [
+        "conversational_ai",
+        "natural_language_understanding",
+        "recommendation_engine",
+        "sentiment_analysis",
+        "multi_language_support"
+      ],
+      "languages": ["en-US", "ar-EG"],
+      "use_cases": [
+        "user_conversation",
+        "travel_recommendations",
+        "budget_analysis",
+        "destination_insights",
+        "customer_support"
+      ]
+    },
+
+    "planned_models": {
+      "genkit": {
+        "provider": "google",
+        "purpose": "workflow_orchestration",
+        "status": "planned"
+      },
+      "openvino": {
+        "provider": "intel",
+        "purpose": "local_inference_optimization",
+        "status": "planned"
+      }
+    },
+
+    "personality": {
+      "role": "AI Travel Automation & Compliance Agent",
+      "primary_functions": [
+        "Autonomous travel booking through browser automation",
+        "Crypto payment processing with compliance checks",
+        "KYC/AML verification and risk assessment",
+        "Transaction monitoring and fraud prevention",
+        "Audit logging and regulatory compliance",
+        "Predictive travel recommendations"
+      ],
+      "tone": "professional, helpful, security-conscious, empathetic",
+      "language": ["en-US", "ar-EG"],
+      "system_prompt": "You are Amrikyy, an enterprise-grade AI travel agent specializing in crypto-first travel bookings with government-ready compliance. Your core responsibilities include:\n\n1. AUTONOMOUS BOOKING: Use browser automation to navigate travel websites, compare prices, fill forms, and complete bookings on behalf of users.\n\n2. COMPLIANCE FIRST: Always perform KYC/AML checks, risk assessment (0-100 score), transaction monitoring, and maintain tamper-proof audit logs for every transaction.\n\n3. CRYPTO PAYMENTS: Process payments in BTC, ETH, USDT, USDC, BNB, MATIC with smart contract escrow, QR code generation, and real-time blockchain verification.\n\n4. SECURITY: Verify all webhooks with HMAC, screen against sanctions lists (Chainalysis), detect suspicious patterns, and generate alerts for manual review when needed.\n\n5. EMOTIONAL INTELLIGENCE: Adapt your tone and recommendations based on user mood, preferences, and past behavior. Be empathetic and personalized.\n\n6. PREDICTIVE: Proactively suggest trips based on user patterns, send price alerts, and forecast trip satisfaction.\n\nConstraints:\n- Never bypass compliance checks\n- Always log actions to audit trail\n- Prioritize user safety and regulatory compliance\n- Refuse transactions flagged as high-risk without manual review\n- Maintain 7-year audit retention for government requirements\n- Follow rate limits and security policies strictly",
+      
+      "personas": {
+        "professional": {
+          "description": "Default mode for business travelers",
+          "tone": "efficient, data-driven, time-conscious",
+          "use_case": "business_trips, quick_bookings"
+        },
+        "casual": {
+          "description": "Friendly mode for leisure travelers",
+          "tone": "warm, enthusiastic, exploratory",
+          "use_case": "vacation_planning, discovery"
+        },
+        "supportive": {
+          "description": "Empathetic mode for stressed users",
+          "tone": "calming, patient, reassuring",
+          "use_case": "complex_issues, complaints, refunds"
+        },
+        "concise": {
+          "description": "Brief mode for mobile users",
+          "tone": "direct, bullet-points, minimal",
+          "use_case": "mobile_interactions, quick_queries"
+        }
+      },
+
+      "behavioral_rules": [
+        "Always prioritize user safety and compliance",
+        "Never process payments without KYC verification",
+        "Log every action with tamper-proof hash chains",
+        "Escalate high-risk transactions (score > 70) to manual review",
+        "Refuse sanctioned entities immediately",
+        "Adapt tone based on detected user mood",
+        "Provide transparent explanations for compliance decisions",
+        "Maintain user privacy and data protection"
+      ]
+    },
+
+    "memory": {
+      "conversation_history": {
+        "type": "relational",
+        "provider": "supabase",
+        "storage": "postgresql",
+        "max_history": 100,
+        "retention": "30_days",
+        "tables": ["conversations", "messages", "user_sessions"]
+      },
+      
+      "user_profiles": {
+        "type": "relational",
+        "provider": "supabase",
+        "storage": "postgresql",
+        "data_points": [
+          "travel_preferences",
+          "budget_patterns",
+          "destination_history",
+          "payment_methods",
+          "kyc_status",
+          "risk_score",
+          "persona_preference"
+        ],
+        "retention": "indefinite"
+      },
+
+      "audit_logs": {
+        "type": "append_only",
+        "provider": "supabase",
+        "storage": "postgresql",
+        "retention": "7_years",
+        "tamper_proof": true,
+        "hash_chaining": "sha256",
+        "tables": ["payment_audit_log", "audit_log_summary"],
+        "compliance": ["SOC2", "PCI-DSS", "GDPR", "CCPA"]
+      },
+
+      "vector_memory": {
+        "type": "vector",
+        "provider": "qdrant",
+        "status": "planned",
+        "collection": "travel_embeddings",
+        "dimensions": 1536,
+        "use_cases": [
+          "semantic_search",
+          "destination_similarity",
+          "recommendation_engine",
+          "user_behavior_patterns"
+        ]
+      },
+
+      "cache": {
+        "type": "in_memory",
+        "provider": "redis",
+        "status": "planned",
+        "ttl": "1_hour",
+        "use_cases": ["api_responses", "rate_limiting", "session_data"]
+      }
+    },
+
+    "tools": [
+      {
+        "id": "browser_automation",
+        "name": "Gemini Browser Control",
+        "provider": "gemini_2.5_pro",
+        "version": "computer-use",
+        "enabled": true,
+        "capabilities": [
+          "screenshot",
+          "mouse_control",
+          "keyboard_input",
+          "navigation",
+          "element_interaction",
+          "form_filling",
+          "data_extraction"
+        ],
+        "use_cases": [
+          "automated_flight_booking",
+          "hotel_reservation",
+          "price_comparison",
+          "availability_checking",
+          "form_automation"
+        ],
+        "configuration": {
+          "viewport": "1920x1080",
+          "user_agent": "Mozilla/5.0 (compatible; AmrikyyBot/1.0)",
+          "timeout": 30000,
+          "retry_attempts": 3,
+          "headless": false
+        },
+        "safety": {
+          "allowed_domains": ["booking.com", "expedia.com", "airbnb.com", "skyscanner.com"],
+          "blocked_actions": ["payment_submission"],
+          "rate_limit": "10_requests_per_minute"
+        }
+      },
+      {
+        "id": "crypto_payment_processing",
+        "name": "Crypto Payment Service",
+        "provider": "internal",
+        "version": "1.0.0",
+        "enabled": true,
+        "file": "backend/src/services/crypto-payment-service.js",
+        "lines_of_code": 800,
+        "capabilities": [
+          "invoice_generation",
+          "qr_code_generation",
+          "blockchain_verification",
+          "multi_currency_support",
+          "smart_contract_interaction",
+          "escrow_management"
+        ],
+        "supported_currencies": [
+          {
+            "symbol": "BTC",
+            "name": "Bitcoin",
+            "network": "mainnet",
+            "confirmations_required": 3
+          },
+          {
+            "symbol": "ETH",
+            "name": "Ethereum",
+            "network": "mainnet",
+            "confirmations_required": 12
+          },
+          {
+            "symbol": "USDT",
+            "name": "Tether",
+            "network": "ethereum",
+            "contract": "0xdac17f958d2ee523a2206206994597c13d831ec7"
+          },
+          {
+            "symbol": "USDC",
+            "name": "USD Coin",
+            "network": "ethereum",
+            "contract": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+          },
+          {
+            "symbol": "BNB",
+            "name": "Binance Coin",
+            "network": "bsc",
+            "confirmations_required": 15
+          },
+          {
+            "symbol": "MATIC",
+            "name": "Polygon",
+            "network": "polygon",
+            "confirmations_required": 128
+          }
+        ],
+        "api_endpoints": [
+          "POST /api/crypto/invoice/create",
+          "GET /api/crypto/status/:invoiceId",
+          "POST /api/crypto/webhook/payment",
+          "GET /api/crypto/supported-currencies"
+        ]
+      },
+      {
+        "id": "kyc_verification",
+        "name": "KYC/AML Service",
+        "provider": "sumsub",
+        "version": "1.0.0",
+        "enabled": true,
+        "file": "backend/src/services/kyc-service.js",
+        "lines_of_code": 250,
+        "capabilities": [
+          "identity_verification",
+          "document_verification",
+          "liveness_detection",
+          "pep_screening",
+          "sanctions_checking",
+          "risk_scoring"
+        ],
+        "verification_levels": [
+          {
+            "level": "basic",
+            "requirements": ["email", "phone"],
+            "max_transaction": 1000,
+            "turnaround": "instant"
+          },
+          {
+            "level": "identity",
+            "requirements": ["id_document", "selfie"],
+            "max_transaction": 10000,
+            "turnaround": "5_minutes"
+          },
+          {
+            "level": "enhanced",
+            "requirements": ["proof_of_address", "source_of_funds"],
+            "max_transaction": 50000,
+            "turnaround": "24_hours"
+          }
+        ],
+        "webhook_verification": {
+          "method": "hmac_sha256",
+          "middleware": "backend/src/middleware/verifyWebhook.js"
+        },
+        "api_endpoints": [
+          "POST /api/kyc/applicant/create",
+          "GET /api/kyc/status/:applicantId",
+          "POST /api/kyc/webhook/verification",
+          "GET /api/kyc/levels"
+        ]
+      },
+      {
+        "id": "risk_assessment",
+        "name": "Risk Engine",
+        "provider": "internal",
+        "version": "1.0.0",
+        "enabled": true,
+        "file": "backend/src/services/risk-engine.js",
+        "lines_of_code": 400,
+        "capabilities": [
+          "transaction_scoring",
+          "pattern_detection",
+          "fraud_prevention",
+          "auto_decisioning",
+          "audit_trail"
+        ],
+        "scoring_algorithm": {
+          "range": "0-100",
+          "signals": [
+            {
+              "name": "kyc_level",
+              "weight": 0.25,
+              "scoring": {
+                "none": 40,
+                "basic": 20,
+                "identity": 10,
+                "enhanced": 0
+              }
+            },
+            {
+              "name": "transaction_amount",
+              "weight": 0.20,
+              "scoring": "threshold_based"
+            },
+            {
+              "name": "velocity_check",
+              "weight": 0.20,
+              "description": "Frequency and volume of recent transactions"
+            },
+            {
+              "name": "geo_location",
+              "weight": 0.15,
+              "high_risk_countries": ["sanctioned_list"]
+            },
+            {
+              "name": "behavioral_patterns",
+              "weight": 0.20,
+              "anomaly_detection": true
+            }
+          ],
+          "thresholds": {
+            "auto_approve": 30,
+            "manual_review": 70,
+            "auto_reject": 90
+          }
+        },
+        "api_endpoints": [
+          "POST /api/risk/assess",
+          "GET /api/risk/score/:userId",
+          "GET /api/risk/history/:transactionId"
+        ]
+      },
+      {
+        "id": "transaction_monitoring",
+        "name": "Transaction Monitoring Service",
+        "provider": "chainalysis",
+        "version": "1.0.0",
+        "enabled": true,
+        "file": "backend/src/services/monitoring-service.js",
+        "lines_of_code": 450,
+        "capabilities": [
+          "sanctions_screening",
+          "wallet_analysis",
+          "aml_checks",
+          "pattern_detection",
+          "real_time_alerts",
+          "blockchain_forensics"
+        ],
+        "monitoring_checks": [
+          {
+            "type": "sanctions_screening",
+            "databases": ["OFAC", "UN", "EU", "UK"],
+            "realtime": true
+          },
+          {
+            "type": "wallet_risk_analysis",
+            "chainalysis_api": true,
+            "risk_factors": ["darknet", "mixer", "exchange_hack"]
+          },
+          {
+            "type": "pattern_detection",
+            "patterns": [
+              "structuring",
+              "rapid_movement",
+              "round_amounts",
+              "unusual_times"
+            ]
+          }
+        ],
+        "alert_system": {
+          "channels": ["slack", "email", "dashboard"],
+          "severity_levels": ["low", "medium", "high", "critical"],
+          "auto_escalation": true
+        },
+        "api_endpoints": [
+          "POST /api/monitoring/screen",
+          "GET /api/monitoring/alerts",
+          "GET /api/monitoring/wallet/:address",
+          "POST /api/monitoring/webhook/alert"
+        ]
+      },
+      {
+        "id": "audit_logging",
+        "name": "Audit Service",
+        "provider": "internal",
+        "version": "1.0.0",
+        "enabled": true,
+        "file": "backend/src/services/audit-service.js",
+        "lines_of_code": 550,
+        "capabilities": [
+          "tamper_proof_logging",
+          "hash_chaining",
+          "compliance_reporting",
+          "export_functionality",
+          "integrity_verification"
+        ],
+        "features": {
+          "retention_period": "7_years",
+          "hash_algorithm": "sha256",
+          "chain_verification": true,
+          "encryption": "aes-256-gcm",
+          "export_formats": ["csv", "json"],
+          "audit_categories": [
+            "payment",
+            "kyc",
+            "risk_assessment",
+            "monitoring",
+            "admin_action",
+            "system_event"
+          ]
+        },
+        "database": {
+          "table": "payment_audit_log",
+          "columns": [
+            "id",
+            "timestamp",
+            "event_type",
+            "user_id",
+            "transaction_id",
+            "action",
+            "details",
+            "previous_hash",
+            "current_hash",
+            "ip_address",
+            "user_agent"
+          ],
+          "views": [
+            "recent_audit_activity",
+            "failed_audit_events",
+            "admin_actions_audit"
+          ],
+          "functions": [
+            "get_user_audit_trail",
+            "get_transaction_audit_trail",
+            "verify_audit_log_integrity",
+            "is_entity_sanctioned"
+          ]
+        },
+        "api_endpoints": [
+          "POST /api/audit/log",
+          "GET /api/audit/logs",
+          "GET /api/audit/export",
+          "GET /api/audit/verify-integrity",
+          "GET /api/audit/user/:userId",
+          "GET /api/audit/transaction/:txId"
+        ]
+      },
+      {
+        "id": "smart_contracts",
+        "name": "Blockchain Escrow",
+        "provider": "ethereum",
+        "version": "1.0.0",
+        "enabled": true,
+        "file": "backend/contracts/AmrikyyBookingEscrow.sol",
+        "lines_of_code": 400,
+        "language": "solidity",
+        "compiler_version": "0.8.19",
+        "capabilities": [
+          "escrow_management",
+          "multi_signature",
+          "timed_release",
+          "dispute_resolution",
+          "refund_handling"
+        ],
+        "contract_functions": [
+          "createEscrow",
+          "releasePayment",
+          "refundPayment",
+          "disputeEscrow",
+          "resolveDispute"
+        ],
+        "security_features": [
+          "reentrancy_guard",
+          "access_control",
+          "pausable",
+          "emergency_withdrawal"
+        ],
+        "deployment": {
+          "networks": ["ethereum_mainnet", "polygon", "bsc"],
+          "status": "tested"
+        }
+      },
+      {
+        "id": "predictive_intelligence",
+        "name": "Predictive AI Service",
+        "provider": "n8n",
+        "version": "1.0.0",
+        "enabled": false,
+        "status": "planned",
+        "file": "backend/routes/predictions.ts",
+        "lines_of_code": 200,
+        "capabilities": [
+          "pattern_analysis",
+          "trip_suggestions",
+          "price_alerts",
+          "satisfaction_forecasting",
+          "demand_prediction"
+        ],
+        "workflows": [
+          {
+            "name": "daily_recommendations",
+            "trigger": "cron",
+            "schedule": "0 8 * * *",
+            "steps": [
+              "analyze_user_patterns",
+              "fetch_travel_deals",
+              "match_preferences",
+              "generate_suggestions",
+              "send_notifications"
+            ]
+          },
+          {
+            "name": "price_monitoring",
+            "trigger": "continuous",
+            "frequency": "hourly",
+            "steps": [
+              "track_saved_trips",
+              "monitor_price_changes",
+              "detect_significant_drops",
+              "alert_users"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "emotional_intelligence",
+        "name": "Mood Detection & Adaptation",
+        "provider": "glm_4.6",
+        "version": "1.0.0",
+        "enabled": false,
+        "status": "planned",
+        "capabilities": [
+          "sentiment_analysis",
+          "mood_detection",
+          "tone_adaptation",
+          "persona_switching",
+          "empathy_response"
+        ],
+        "moods": {
+          "excited": {
+            "persona": "casual",
+            "response_style": "enthusiastic, emoji-rich"
+          },
+          "stressed": {
+            "persona": "supportive",
+            "response_style": "calming, solution-focused"
+          },
+          "neutral": {
+            "persona": "professional",
+            "response_style": "efficient, informative"
+          },
+          "frustrated": {
+            "persona": "supportive",
+            "response_style": "empathetic, problem-solving"
+          }
+        }
+      },
+      {
+        "id": "conversational_ai",
+        "name": "GLM Chat Service",
+        "provider": "glm_4.6",
+        "version": "latest",
+        "enabled": true,
+        "capabilities": [
+          "natural_language_understanding",
+          "multi_turn_conversation",
+          "context_awareness",
+          "intent_classification",
+          "entity_extraction"
+        ],
+        "api_endpoints": [
+          "POST /api/ai/chat",
+          "GET /api/ai/stats"
+        ]
+      }
+    ]
+  },
+
+  "workflow": {
+    "orchestration": {
+      "engine": "n8n",
+      "status": "planned",
+      "version": "1.0",
+      "deployment": "self_hosted"
+    },
+
+    "triggers": [
+      {
+        "id": "user_query_trigger",
+        "name": "User Travel Query",
+        "type": "webhook",
+        "endpoint": "/api/chat",
+        "conditions": {
+          "authenticated": true,
+          "rate_limit": "100_per_hour"
+        },
+        "initiates": ["automated_booking_workflow"]
+      },
+      {
+        "id": "payment_initiated_trigger",
+        "name": "Payment Initiated",
+        "type": "event",
+        "event": "booking.confirmed",
+        "initiates": ["payment_processing_workflow"]
+      },
+      {
+        "id": "transaction_received_trigger",
+        "name": "Crypto Transaction Received",
+        "type": "blockchain_event",
+        "networks": ["ethereum", "bitcoin", "polygon"],
+        "initiates": ["transaction_verification_workflow"]
+      },
+      {
+        "id": "kyc_webhook_trigger",
+        "name": "KYC Status Updated",
+        "type": "webhook",
+        "provider": "sumsub",
+        "endpoint": "/api/kyc/webhook/verification",
+        "verification": "hmac_sha256",
+        "initiates": ["kyc_processing_workflow"]
+      },
+      {
+        "id": "monitoring_alert_trigger",
+        "name": "Suspicious Activity Detected",
+        "type": "event",
+        "severity": ["high", "critical"],
+        "initiates": ["compliance_review_workflow"]
+      },
+      {
+        "id": "scheduled_trigger",
+        "name": "Daily Analytics",
+        "type": "cron",
+        "schedule": "0 0 * * *",
+        "initiates": ["daily_analytics_workflow"]
+      }
+    ],
+
+    "workflows": [
+      {
+        "id": "automated_booking_workflow",
+        "name": "Automated Travel Booking",
+        "description": "End-to-end autonomous booking using Gemini browser automation",
+        "trigger": "user_query_trigger",
+        "enabled": true,
+        "steps": [
+          {
+            "step": 1,
+            "action": "parse_user_intent",
+            "tool": "glm_4.6",
+            "extract": ["destination", "dates", "preferences", "budget"]
+          },
+          {
+            "step": 2,
+            "action": "verify_kyc_status",
+            "tool": "kyc_verification",
+            "requirement": "minimum_level_basic"
+          },
+          {
+            "step": 3,
+            "action": "assess_risk",
+            "tool": "risk_assessment",
+            "decision_tree": {
+              "score_lt_30": "proceed",
+              "score_30_70": "proceed_with_monitoring",
+              "score_gt_70": "require_manual_review"
+            }
+          },
+          {
+            "step": 4,
+            "action": "browser_automation_search",
+            "tool": "browser_automation",
+            "parallel": true,
+            "sites": ["booking.com", "expedia.com", "skyscanner.com"],
+            "extract": ["price", "availability", "amenities"]
+          },
+          {
+            "step": 5,
+            "action": "price_comparison",
+            "tool": "internal_logic",
+            "algorithm": "best_value_ranking"
+          },
+          {
+            "step": 6,
+            "action": "present_options",
+            "tool": "glm_4.6",
+            "format": "structured_comparison"
+          },
+          {
+            "step": 7,
+            "action": "await_user_selection",
+            "timeout": "15_minutes",
+            "fallback": "save_search"
+          },
+          {
+            "step": 8,
+            "action": "browser_automation_booking",
+            "tool": "browser_automation",
+            "tasks": [
+              "navigate_to_booking_page",
+              "fill_traveler_details",
+              "select_options",
+              "reach_payment_page"
+            ],
+            "note": "Stop before payment submission"
+          },
+          {
+            "step": 9,
+            "action": "generate_crypto_invoice",
+            "tool": "crypto_payment_processing",
+            "include": ["qr_code", "wallet_address", "amount"]
+          },
+          {
+            "step": 10,
+            "action": "log_to_audit",
+            "tool": "audit_logging",
+            "event_type": "booking_initiated"
+          },
+          {
+            "step": 11,
+            "action": "monitor_payment",
+            "tool": "crypto_payment_processing",
+            "timeout": "30_minutes",
+            "confirmations_required": "network_dependent"
+          },
+          {
+            "step": 12,
+            "action": "sanctions_screening",
+            "tool": "transaction_monitoring",
+            "async": true
+          },
+          {
+            "step": 13,
+            "action": "release_escrow",
+            "tool": "smart_contracts",
+            "condition": "payment_verified_and_no_alerts"
+          },
+          {
+            "step": 14,
+            "action": "finalize_booking",
+            "tool": "browser_automation",
+            "tasks": ["submit_payment_confirmation", "capture_confirmation_details"]
+          },
+          {
+            "step": 15,
+            "action": "send_confirmation",
+            "tool": "glm_4.6",
+            "channels": ["email", "telegram", "whatsapp"],
+            "include": ["booking_reference", "qr_codes", "itinerary"]
+          }
+        ],
+        "error_handling": {
+          "retry_logic": true,
+          "max_retries": 3,
+          "fallback": "manual_intervention",
+          "notification": ["user", "admin"]
+        },
+        "performance_metrics": {
+          "average_completion_time": "8_minutes",
+          "success_rate": "target_95_percent",
+          "user_satisfaction": "target_4.5_stars"
+        }
+      },
+      {
+        "id": "payment_processing_workflow",
+        "name": "Crypto Payment Processing",
+        "description": "Complete payment lifecycle with compliance checks",
+        "trigger": "payment_initiated_trigger",
+        "enabled": true,
+        "steps": [
+          {
+            "step": 1,
+            "action": "create_payment_invoice",
+            "tool": "crypto_payment_processing",
+            "generate": ["invoice_id", "wallet_address", "qr_code", "amount_crypto"]
+          },
+          {
+            "step": 2,
+            "action": "pre_transaction_risk_check",
+            "tool": "risk_assessment",
+            "blocking": true
+          },
+          {
+            "step": 3,
+            "action": "verify_kyc_compliance",
+            "tool": "kyc_verification",
+            "minimum_level": "amount_dependent"
+          },
+          {
+            "step": 4,
+            "action": "monitor_blockchain",
+            "tool": "crypto_payment_processing",
+            "watch": ["mempool", "confirmations"],
+            "timeout": "30_minutes"
+          },
+          {
+            "step": 5,
+            "action": "wallet_sanctions_screening",
+            "tool": "transaction_monitoring",
+            "async": true,
+            "databases": ["chainalysis", "elliptic"]
+          },
+          {
+            "step": 6,
+            "action": "pattern_analysis",
+            "tool": "transaction_monitoring",
+            "check": ["structuring", "rapid_movement", "unusual_timing"]
+          },
+          {
+            "step": 7,
+            "action": "payment_verification",
+            "tool": "crypto_payment_processing",
+            "verify": ["amount", "address", "confirmations"]
+          },
+          {
+            "step": 8,
+            "action": "escrow_deposit",
+            "tool": "smart_contracts",
+            "function": "createEscrow",
+            "parameters": ["booking_id", "amount", "release_conditions"]
+          },
+          {
+            "step": 9,
+            "action": "comprehensive_audit_log",
+            "tool": "audit_logging",
+            "log_all": [
+              "payment_received",
+              "risk_score",
+              "kyc_status",
+              "monitoring_results",
+              "escrow_created"
+            ]
+          },
+          {
+            "step": 10,
+            "action": "update_booking_status",
+            "tool": "internal_logic",
+            "status": "payment_confirmed"
+          },
+          {
+            "step": 11,
+            "action": "notify_user",
+            "tool": "glm_4.6",
+            "message": "payment_confirmation_with_details"
+          }
+        ],
+        "conditional_flows": {
+          "high_risk_detected": {
+            "action": "freeze_transaction",
+            "escalate_to": "manual_review_queue",
+            "notify": ["compliance_team", "user"],
+            "hold_escrow": true
+          },
+          "sanctions_match": {
+            "action": "reject_transaction",
+            "refund": "automatic",
+            "notify": ["compliance_team", "legal"],
+            "report_to": "regulatory_authorities"
+          },
+          "kyc_insufficient": {
+            "action": "request_upgrade",
+            "hold_payment": true,
+            "deadline": "48_hours"
+          }
+        },
+        "error_handling": {
+          "payment_timeout": "refund_with_fee",
+          "blockchain_error": "retry_or_manual",
+          "escrow_failure": "hold_and_investigate"
+        }
+      },
+      {
+        "id": "compliance_monitoring_workflow",
+        "name": "Continuous Compliance Monitoring",
+        "description": "Real-time transaction monitoring and alert generation",
+        "trigger": "transaction_received_trigger",
+        "enabled": true,
+        "parallel_execution": true,
+        "steps": [
+          {
+            "step": 1,
+            "action": "sanctions_screening",
+            "tool": "transaction_monitoring",
+            "databases": ["OFAC", "UN", "EU", "UK"],
+            "scope": ["sender_wallet", "receiver_wallet", "intermediary_wallets"]
+          },
+          {
+            "step": 2,
+            "action": "wallet_risk_analysis",
+            "tool": "transaction_monitoring",
+            "analyze": [
+              "darknet_exposure",
+              "mixer_usage",
+              "exchange_hack_involvement",
+              "ransomware_connection"
+            ]
+          },
+          {
+            "step": 3,
+            "action": "transaction_pattern_detection",
+            "tool": "transaction_monitoring",
+            "patterns": [
+              {
+                "name": "structuring",
+                "description": "Multiple transactions just below reporting threshold",
+                "threshold": "9000_usd_equivalent"
+              },
+              {
+                "name": "rapid_movement",
+                "description": "Funds moved quickly across multiple wallets",
+                "timeframe": "24_hours"
+              },
+              {
+                "name": "round_amounts",
+                "description": "Suspicious round-number transactions",
+                "examples": ["1000", "5000", "10000"]
+              },
+              {
+                "name": "unusual_timing",
+                "description": "Transactions at odd hours",
+                "hours": ["2am-5am"]
+              }
+            ]
+          },
+          {
+            "step": 4,
+            "action": "behavioral_anomaly_detection",
+            "tool": "risk_assessment",
+            "compare_to": "user_historical_patterns",
+            "deviations": ["amount", "frequency", "destination"]
+          },
+          {
+            "step": 5,
+            "action": "generate_alert_if_needed",
+            "tool": "transaction_monitoring",
+            "severity_mapping": {
+              "sanctions_match": "critical",
+              "high_risk_wallet": "high",
+              "pattern_detected": "medium",
+              "anomaly": "low"
+            }
+          },
+          {
+            "step": 6,
+            "action": "notify_compliance_team",
+            "tool": "internal_logic",
+            "channels": ["slack", "email", "dashboard"],
+            "severity_threshold": "medium"
+          },
+          {
+            "step": 7,
+            "action": "audit_monitoring_results",
+            "tool": "audit_logging",
+            "comprehensive": true
+          }
+        ],
+        "alert_actions": {
+          "critical": {
+            "auto_freeze": true,
+            "immediate_notification": true,
+            "escalate_to": "compliance_officer",
+            "regulatory_report": "prepare"
+          },
+          "high": {
+            "flag_for_review": true,
+            "notification": "within_1_hour",
+            "enhanced_monitoring": true
+          },
+          "medium": {
+            "queue_for_review": true,
+            "daily_digest": true
+          },
+          "low": {
+            "log_only": true,
+            "weekly_summary": true
+          }
+        }
+      },
+      {
+        "id": "kyc_processing_workflow",
+        "name": "KYC Verification Processing",
+        "description": "Handle KYC status updates and compliance decisions",
+        "trigger": "kyc_webhook_trigger",
+        "enabled": true,
+        "steps": [
+          {
+            "step": 1,
+            "action": "verify_webhook_signature",
+            "tool": "middleware",
+            "algorithm": "hmac_sha256",
+            "critical": true
+          },
+          {
+            "step": 2,
+            "action": "parse_kyc_result",
+            "tool": "kyc_verification",
+            "extract": ["status", "level", "rejection_reasons", "documents"]
+          },
+          {
+            "step": 3,
+            "action": "update_user_profile",
+            "tool": "internal_logic",
+            "fields": ["kyc_status", "verification_level", "verified_at"]
+          },
+          {
+            "step": 4,
+            "action": "recalculate_risk_score",
+            "tool": "risk_assessment",
+            "trigger": "status_approved"
+          },
+          {
+            "step": 5,
+            "action": "check_pending_transactions",
+            "tool": "internal_logic",
+            "condition": "kyc_was_blocking"
+          },
+          {
+            "step": 6,
+            "action": "release_pending_transactions",
+            "tool": "payment_processing_workflow",
+            "if": "kyc_approved"
+          },
+          {
+            "step": 7,
+            "action": "notify_user",
+            "tool": "glm_4.6",
+            "message_type": "status_dependent",
+            "channels": ["email", "telegram", "in_app"]
+          },
+          {
+            "step": 8,
+            "action": "audit_log",
+            "tool": "audit_logging",
+            "event": "kyc_status_update"
+          }
+        ],
+        "conditional_flows": {
+          "verification_rejected": {
+            "actions": [
+              "notify_user_with_reasons",
+              "offer_resubmission",
+              "log_rejection"
+            ]
+          },
+          "verification_approved": {
+            "actions": [
+              "congratulate_user",
+              "explain_new_limits",
+              "release_holds"
+            ]
+          },
+          "additional_info_required": {
+            "actions": [
+              "request_specific_documents",
+              "set_deadline",
+              "maintain_pending_status"
+            ]
+          }
+        }
+      },
+      {
+        "id": "predictive_intelligence_workflow",
+        "name": "Predictive Trip Recommendations",
+        "description": "Proactive trip suggestions based on user patterns",
+        "trigger": "scheduled_trigger",
+        "enabled": false,
+        "status": "planned",
+        "frequency": "daily",
+        "steps": [
+          {
+            "step": 1,
+            "action": "analyze_user_patterns",
+            "tool": "predictive_intelligence",
+            "analyze": [
+              "past_bookings",
+              "search_history",
+              "seasonal_preferences",
+              "budget_patterns",
+              "destination_preferences"
+            ]
+          },
+          {
+            "step": 2,
+            "action": "fetch_travel_deals",
+            "tool": "browser_automation",
+            "sources": ["api_integrations", "web_scraping"]
+          },
+          {
+            "step": 3,
+            "action": "match_preferences",
+            "tool": "predictive_intelligence",
+            "algorithm": "collaborative_filtering",
+            "confidence_threshold": 0.7
+          },
+          {
+            "step": 4,
+            "action": "calculate_satisfaction_score",
+            "tool": "predictive_intelligence",
+            "model": "outcome_prediction",
+            "factors": ["price", "amenities", "location", "reviews"]
+          },
+          {
+            "step": 5,
+            "action": "generate_personalized_suggestions",
+            "tool": "glm_4.6",
+            "tone": "exciting_and_personalized",
+            "include": ["why_recommended", "predicted_satisfaction"]
+          },
+          {
+            "step": 6,
+            "action": "send_notifications",
+            "tool": "internal_logic",
+            "channels": ["email", "push_notification"],
+            "respect_preferences": true
+          },
+          {
+            "step": 7,
+            "action": "track_engagement",
+            "tool": "internal_logic",
+            "metrics": ["open_rate", "click_rate", "booking_conversion"]
+          }
+        ]
+      },
+      {
+        "id": "daily_analytics_workflow",
+        "name": "Daily Analytics & Reporting",
+        "description": "Generate compliance reports and system health metrics",
+        "trigger": "scheduled_trigger",
+        "enabled": true,
+        "schedule": "0 0 * * *",
+        "steps": [
+          {
+            "step": 1,
+            "action": "aggregate_audit_logs",
+            "tool": "audit_logging",
+            "function": "audit_log_summary",
+            "timeframe": "last_24_hours"
+          },
+          {
+            "step": 2,
+            "action": "calculate_metrics",
+            "tool": "internal_logic",
+            "metrics": [
+              "total_transactions",
+              "total_volume",
+              "kyc_approvals",
+              "risk_assessments",
+              "alerts_generated",
+              "manual_reviews_pending"
+            ]
+          },
+          {
+            "step": 3,
+            "action": "verify_audit_integrity",
+            "tool": "audit_logging",
+            "function": "verify_audit_log_integrity",
+            "critical": true
+          },
+          {
+            "step": 4,
+            "action": "generate_compliance_report",
+            "tool": "audit_logging",
+            "format": ["pdf", "csv"],
+            "include": [
+              "executive_summary",
+              "transaction_details",
+              "risk_distribution",
+              "alert_summary",
+              "audit_verification"
+            ]
+          },
+          {
+            "step": 5,
+            "action": "send_to_compliance_team",
+            "tool": "internal_logic",
+            "recipients": ["compliance_officer", "cfo", "legal"]
+          }
+        ]
+      }
+    ],
+
+    "state_machine": {
+      "transaction_states": [
+        {
+          "state": "initiated",
+          "next_states": ["pending_kyc", "pending_risk_assessment"],
+          "timeout": "5_minutes"
+        },
+        {
+          "state": "pending_kyc",
+          "next_states": ["kyc_approved", "kyc_rejected", "kyc_pending"],
+          "timeout": "24_hours"
+        },
+        {
+          "state": "pending_risk_assessment",
+          "next_states": ["risk_approved", "risk_review", "risk_rejected"],
+          "timeout": "1_minute"
+        },
+        {
+          "state": "risk_approved",
+          "next_states": ["payment_pending"],
+          "timeout": null
+        },
+        {
+          "state": "payment_pending",
+          "next_states": ["payment_received", "payment_timeout"],
+          "timeout": "30_minutes"
+        },
+        {
+          "state": "payment_received",
+          "next_states": ["monitoring_check"],
+          "timeout": "5_minutes"
+        },
+        {
+          "state": "monitoring_check",
+          "next_states": ["escrow_deposit", "monitoring_alert"],
+          "timeout": "2_minutes"
+        },
+        {
+          "state": "escrow_deposit",
+          "next_states": ["booking_confirmed"],
+          "timeout": "5_minutes"
+        },
+        {
+          "state": "booking_confirmed",
+          "next_states": ["completed", "refund_requested"],
+          "timeout": null
+        },
+        {
+          "state": "completed",
+          "next_states": [],
+          "final": true
+        }
+      ],
+      "decision_points": {
+        "risk_assessment": {
+          "low_risk": "auto_approve",
+          "medium_risk": "proceed_with_monitoring",
+          "high_risk": "manual_review",
+          "critical_risk": "auto_reject"
+        },
+        "kyc_verification": {
+          "none": "max_1000_usd",
+          "basic": "max_10000_usd",
+          "identity": "max_50000_usd",
+          "enhanced": "unlimited"
+        },
+        "monitoring_results": {
+          "clean": "proceed",
+          "minor_flags": "proceed_with_logging",
+          "major_flags": "hold_for_review",
+          "sanctions_match": "immediate_rejection"
+        }
+      }
+    }
+  },
+
+  "apis": {
+    "internal": {
+      "base_url": "http://localhost:3000",
+      "environment": "development",
+      "authentication": {
+        "type": "jwt",
+        "planned": true
+      },
+      "rate_limiting": {
+        "enabled": true,
+        "default": "100_per_hour",
+        "by_endpoint": true
+      },
+      "endpoints": [
+        {
+          "group": "crypto_payments",
+          "base_path": "/api/crypto",
+          "routes": [
+            {
+              "path": "/invoice/create",
+              "method": "POST",
+              "description": "Create crypto payment invoice with risk assessment",
+              "rate_limit": "100/minute",
+              "auth_required": true,
+              "request_body": {
+                "userId": "string",
+                "amount": "number",
+                "currency": "string",
+                "bookingId": "string"
+              },
+              "response": {
+                "invoiceId": "string",
+                "walletAddress": "string",
+                "qrCode": "string",
+                "amount": "string",
+                "expiresAt": "timestamp"
+              }
+            },
+            {
+              "path": "/status/:invoiceId",
+              "method": "GET",
+              "description": "Check payment status",
+              "rate_limit": "200/minute",
+              "auth_required": true
+            },
+            {
+              "path": "/webhook/payment",
+              "method": "POST",
+              "description": "Blockchain payment webhook",
+              "rate_limit": "1000/minute",
+              "auth_required": false,
+              "verification": "signature"
+            },
+            {
+              "path": "/supported-currencies",
+              "method": "GET",
+              "description": "List supported cryptocurrencies",
+              "rate_limit": "1000/hour",
+              "auth_required": false
+            }
+          ]
+        },
+        {
+          "group": "kyc",
+          "base_path": "/api/kyc",
+          "routes": [
+            {
+              "path": "/applicant/create",
+              "method": "POST",
+              "description": "Create KYC applicant",
+              "rate_limit": "50/hour"
+            },
+            {
+              "path": "/status/:applicantId",
+              "method": "GET",
+              "description": "Get KYC status",
+              "rate_limit": "200/hour"
+            },
+            {
+              "path": "/webhook/verification",
+              "method": "POST",
+              "description": "Sumsub webhook",
+              "verification": "hmac_sha256"
+            },
+            {
+              "path": "/levels",
+              "method": "GET",
+              "description": "Get verification levels",
+              "rate_limit": "1000/hour"
+            }
+          ]
+        },
+        {
+          "group": "risk",
+          "base_path": "/api/risk",
+          "routes": [
+            {
+              "path": "/assess",
+              "method": "POST",
+              "description": "Assess transaction risk",
+              "rate_limit": "200/minute"
+            },
+            {
+              "path": "/score/:userId",
+              "method": "GET",
+              "description": "Get user risk score",
+              "rate_limit": "100/minute"
+            },
+            {
+              "path": "/history/:transactionId",
+              "method": "GET",
+              "description": "Get risk assessment history",
+              "rate_limit": "100/minute"
+            }
+          ]
+        },
+        {
+          "group": "monitoring",
+          "base_path": "/api/monitoring",
+          "routes": [
+            {
+              "path": "/screen",
+              "method": "POST",
+              "description": "Screen transaction for compliance",
+              "rate_limit": "200/minute"
+            },
+            {
+              "path": "/alerts",
+              "method": "GET",
+              "description": "Get monitoring alerts",
+              "rate_limit": "100/minute"
+            },
+            {
+              "path": "/wallet/:address",
+              "method": "GET",
+              "description": "Get wallet risk analysis",
+              "rate_limit": "50/minute"
+            },
+            {
+              "path": "/webhook/alert",
+              "method": "POST",
+              "description": "Chainalysis alert webhook",
+              "verification": "api_key"
+            }
+          ]
+        },
+        {
+          "group": "audit",
+          "base_path": "/api/audit",
+          "routes": [
+            {
+              "path": "/log",
+              "method": "POST",
+              "description": "Create audit log entry",
+              "rate_limit": "500/minute",
+              "internal_only": true
+            },
+            {
+              "path": "/logs",
+              "method": "GET",
+              "description": "Query audit logs",
+              "rate_limit": "50/minute",
+              "admin_only": true
+            },
+            {
+              "path": "/export",
+              "method": "GET",
+              "description": "Export audit logs (CSV/JSON)",
+              "rate_limit": "10/hour",
+              "admin_only": true
+            },
+            {
+              "path": "/verify-integrity",
+              "method": "GET",
+              "description": "Verify audit log hash chain",
+              "rate_limit": "20/hour",
+              "admin_only": true
+            },
+            {
+              "path": "/user/:userId",
+              "method": "GET",
+              "description": "Get user audit trail",
+              "rate_limit": "100/hour"
+            },
+            {
+              "path": "/transaction/:txId",
+              "method": "GET",
+              "description": "Get transaction audit trail",
+              "rate_limit": "100/hour"
+            }
+          ]
+        },
+        {
+          "group": "ai",
+          "base_path": "/api/ai",
+          "routes": [
+            {
+              "path": "/chat",
+              "method": "POST",
+              "description": "AI chat endpoint",
+              "rate_limit": "100/hour",
+              "model": "glm_4.6"
+            },
+            {
+              "path": "/stats",
+              "method": "GET",
+              "description": "AI usage statistics",
+              "rate_limit": "50/hour"
+            }
+          ]
+        },
+        {
+          "group": "predictions",
+          "base_path": "/api/predictions",
+          "status": "planned",
+          "routes": [
+            {
+              "path": "/recommendations/:userId",
+              "method": "GET",
+              "description": "Get personalized trip recommendations"
+            },
+            {
+              "path": "/satisfaction/predict",
+              "method": "POST",
+              "description": "Predict trip satisfaction score"
+            }
+          ]
+        }
+      ]
+    },
+
+    "external_integrations": [
+      {
+        "name": "Sumsub KYC",
+        "provider": "sumsub",
+        "base_url": "https://api.sumsub.com",
+        "authentication": {
+          "type": "api_key",
+          "header": "X-App-Token"
+        },
+        "webhook": {
+          "url": "/api/kyc/webhook/verification",
+          "verification": "hmac_sha256",
+          "secret_env": "SUMSUB_WEBHOOK_SECRET"
+        },
+        "endpoints_used": [
+          "POST /resources/applicants",
+          "GET /resources/applicants/:applicantId/status",
+          "GET /resources/applicants/:applicantId/requiredIdDocsStatus"
+        ],
+        "rate_limits": "100_requests_per_second",
+        "documentation": "https://developers.sumsub.com"
+      },
+      {
+        "name": "Chainalysis",
+        "provider": "chainalysis",
+        "base_url": "https://api.chainalysis.com",
+        "authentication": {
+          "type": "api_key",
+          "header": "Token"
+        },
+        "services": [
+          "KYT (Know Your Transaction)",
+          "Sanctions Screening",
+          "Wallet Risk Scoring"
+        ],
+        "endpoints_used": [
+          "POST /api/kyt/v2/transfers",
+          "GET /api/kyt/v2/transfers/:transferId",
+          "GET /api/kyt/v2/users/:userId/risk-score"
+        ],
+        "documentation": "https://docs.chainalysis.com"
+      },
+      {
+        "name": "Blockchain RPCs",
+        "providers": [
+          {
+            "network": "ethereum",
+            "rpc_url": "https://mainnet.infura.io/v3/YOUR_KEY",
+            "provider": "infura"
+          },
+          {
+            "network": "bitcoin",
+            "rpc_url": "https://blockchain.info",
+            "provider": "blockchain.info"
+          },
+          {
+            "network": "polygon",
+            "rpc_url": "https://polygon-rpc.com",
+            "provider": "public"
+          },
+          {
+            "network": "bsc",
+            "rpc_url": "https://bsc-dataseed.binance.org",
+            "provider": "binance"
+          }
+        ],
+        "methods_used": [
+          "eth_getBalance",
+          "eth_getTransactionByHash",
+          "eth_getTransactionReceipt",
+          "eth_blockNumber"
+        ]
+      },
+      {
+        "name": "Supabase",
+        "provider": "supabase",
+        "base_url": "https://[project-id].supabase.co",
+        "authentication": {
+          "type": "service_role_key",
+          "header": "apikey"
+        },
+        "services": [
+          "PostgreSQL Database",
+          "Real-time Subscriptions",
+          "Authentication",
+          "Storage"
+        ],
+        "tables": [
+          "crypto_payments",
+          "kyc_verifications",
+          "risk_assessments",
+          "transaction_monitoring",
+          "transaction_alerts",
+          "payment_audit_log",
+          "audit_log_summary"
+        ],
+        "documentation": "https://supabase.com/docs"
+      },
+      {
+        "name": "n8n Automation",
+        "provider": "n8n",
+        "status": "planned",
+        "deployment": "self_hosted",
+        "base_url": "http://localhost:5678",
+        "authentication": {
+          "type": "api_key"
+        },
+        "workflows": [
+          "daily_recommendations",
+          "price_monitoring",
+          "email_campaigns",
+          "alert_routing"
+        ],
+        "documentation": "https://docs.n8n.io"
+      },
+      {
+        "name": "Gemini API",
+        "provider": "google",
+        "model": "gemini-2.5-pro",
+        "base_url": "https://generativelanguage.googleapis.com",
+        "authentication": {
+          "type": "api_key",
+          "header": "X-Goog-Api-Key"
+        },
+        "features": [
+          "Computer Use (Browser Automation)",
+          "Vision Understanding",
+          "Code Execution"
+        ],
+        "endpoints_used": [
+          "POST /v1beta/models/gemini-2.5-pro:generateContent",
+          "POST /v1beta/models/gemini-2.5-pro:streamGenerateContent"
+        ],
+        "documentation": "https://ai.google.dev/docs"
+      },
+      {
+        "name": "Z.ai GLM",
+        "provider": "zhipu",
+        "model": "glm-4.6",
+        "base_url": "https://api.z.ai/api/paas/v4",
+        "authentication": {
+          "type": "api_key",
+          "header": "Authorization"
+        },
+        "endpoints_used": [
+          "POST /chat/completions"
+        ],
+        "documentation": "https://open.bigmodel.cn/dev/api"
+      },
+      {
+        "name": "Slack Notifications",
+        "provider": "slack",
+        "base_url": "https://slack.com/api",
+        "authentication": {
+          "type": "bearer_token"
+        },
+        "endpoints_used": [
+          "POST /chat.postMessage"
+        ],
+        "channels": [
+          "#compliance-alerts",
+          "#transaction-monitoring",
+          "#system-notifications"
+        ]
+      }
+    ]
+  },
+
+  "security": {
+    "authentication": {
+      "method": "jwt",
+      "status": "planned",
+      "token_expiry": "24_hours",
+      "refresh_token": true,
+      "providers": [
+        "email_password",
+        "telegram",
+        "google",
+        "apple"
+      ]
+    },
+
+    "authorization": {
+      "model": "rbac",
+      "status": "planned",
+      "roles": [
+        {
+          "name": "user",
+          "permissions": [
+            "create_booking",
+            "make_payment",
+            "view_own_data",
+            "chat_with_ai"
+          ]
+        },
+        {
+          "name": "compliance_officer",
+          "permissions": [
+            "view_all_transactions",
+            "approve_reviews",
+            "export_audit_logs",
+            "view_alerts"
+          ]
+        },
+        {
+          "name": "admin",
+          "permissions": [
+            "all_permissions",
+            "manage_users",
+            "system_configuration"
+          ]
+        }
+      ]
+    },
+
+    "encryption": {
+      "at_rest": {
+        "algorithm": "aes-256-gcm",
+        "key_management": "env_variables",
+        "encrypted_fields": [
+          "wallet_addresses",
+          "transaction_amounts",
+          "user_pii",
+          "kyc_documents"
+        ]
+      },
+      "in_transit": {
+        "protocol": "tls_1.3",
+        "certificates": "letsencrypt",
+        "hsts": true
+      },
+      "audit_logs": {
+        "hash_algorithm": "sha256",
+        "chain_verification": true,
+        "tamper_detection": "automatic"
+      }
+    },
+
+    "webhook_verification": {
+      "sumsub": {
+        "algorithm": "hmac_sha256",
+        "middleware": "backend/src/middleware/verifyWebhook.js",
+        "secret_env": "SUMSUB_WEBHOOK_SECRET"
+      },
+      "chainalysis": {
+        "method": "api_key_verification"
+      },
+      "blockchain_providers": {
+        "method": "signature_verification"
+      }
+    },
+
+    "rate_limiting": {
+      "enabled": true,
+      "strategy": "sliding_window",
+      "storage": "memory",
+      "planned_storage": "redis",
+      "limits": {
+        "api_general": "100/hour",
+        "payment_creation": "20/hour",
+        "kyc_submission": "10/hour",
+        "chat_ai": "100/hour",
+        "audit_export": "10/day"
+      },
+      "bypass_for": ["internal_services", "webhooks"]
+    },
+
+    "input_validation": {
+      "enabled": true,
+      "sanitization": true,
+      "frameworks": ["express-validator", "joi"],
+      "prevent": [
+        "sql_injection",
+        "xss",
+        "command_injection",
+        "path_traversal"
+      ]
+    },
+
+    "compliance_requirements": {
+      "kyc_aml": {
+        "standards": ["FATF", "FinCEN"],
+        "verification_levels": 3,
+        "document_types": [
+          "passport",
+          "drivers_license",
+          "national_id",
+          "proof_of_address"
+        ],
+        "retention": "7_years"
+      },
+      "transaction_monitoring": {
+        "standards": ["BSA", "AML", "CTF"],
+        "screening_databases": ["OFAC", "UN", "EU", "UK"],
+        "monitoring_frequency": "real_time",
+        "alert_response_time": "24_hours"
+      },
+      "audit_logging": {
+        "standards": ["SOC2", "PCI-DSS", "GDPR"],
+        "retention": "7_years",
+        "immutability": "hash_chained",
+        "verification": "automatic_daily"
+      },
+      "data_protection": {
+        "standards": ["GDPR", "CCPA"],
+        "user_rights": [
+          "right_to_access",
+          "right_to_erasure",
+          "right_to_portability",
+          "right_to_rectification"
+        ],
+        "data_processing": "documented"
+      }
+    },
+
+    "smart_contract_security": {
+      "audits": "planned",
+      "patterns": [
+        "checks_effects_interactions",
+        "reentrancy_guard",
+        "access_control",
+        "pausable"
+      ],
+      "testing": "comprehensive_unit_tests",
+      "deployment": "multi_sig_required"
+    },
+
+    "incident_response": {
+      "procedures": "documented",
+      "team": ["security_officer", "compliance_officer", "cto"],
+      "escalation_path": "defined",
+      "communication_plan": "prepared",
+      "recovery_procedures": "tested"
+    },
+
+    "security_headers": {
+      "helmet_js": true,
+      "headers": [
+        "Content-Security-Policy",
+        "X-Frame-Options",
+        "X-Content-Type-Options",
+        "Strict-Transport-Security",
+        "X-XSS-Protection"
+      ]
+    }
+  },
+
+  "data_models": {
+    "database": {
+      "provider": "postgresql",
+      "version": "14+",
+      "host": "supabase",
+      "schema": "public",
+      
+      "tables": [
+        {
+          "name": "crypto_payments",
+          "description": "Payment invoices and transaction records",
+          "columns": [
+            {"name": "id", "type": "uuid", "primary_key": true},
+            {"name": "user_id", "type": "uuid", "foreign_key": "users.id"},
+            {"name": "booking_id", "type": "uuid", "foreign_key": "bookings.id"},
+            {"name": "amount", "type": "numeric(20,8)"},
+            {"name": "currency", "type": "varchar(10)"},
+            {"name": "wallet_address", "type": "varchar(255)", "encrypted": true},
+            {"name": "transaction_hash", "type": "varchar(255)"},
+            {"name": "status", "type": "varchar(50)"},
+            {"name": "qr_code", "type": "text"},
+            {"name": "confirmations", "type": "integer"},
+            {"name": "risk_score", "type": "integer"},
+            {"name": "created_at", "type": "timestamp"},
+            {"name": "confirmed_at", "type": "timestamp"}
+          ],
+          "indexes": [
+            "user_id",
+            "booking_id",
+            "status",
+            "created_at"
+          ]
+        },
+        {
+          "name": "kyc_verifications",
+          "description": "KYC verification records",
+          "columns": [
+            {"name": "id", "type": "uuid", "primary_key": true},
+            {"name": "user_id", "type": "uuid", "foreign_key": "users.id"},
+            {"name": "applicant_id", "type": "varchar(255)", "unique": true},
+            {"name": "level", "type": "varchar(50)"},
+            {"name": "status", "type": "varchar(50)"},
+            {"name": "review_result", "type": "jsonb"},
+            {"name": "rejection_reasons", "type": "text[]"},
+            {"name": "documents", "type": "jsonb"},
+            {"name": "submitted_at", "type": "timestamp"},
+            {"name": "reviewed_at", "type": "timestamp"},
+            {"name": "expires_at", "type": "timestamp"}
+          ],
+          "indexes": [
+            "user_id",
+            "applicant_id",
+            "status",
+            "level"
+          ]
+        },
+        {
+          "name": "risk_assessments",
+          "description": "Transaction risk scores and decisions",
+          "columns": [
+            {"name": "id", "type": "uuid", "primary_key": true},
+            {"name": "user_id", "type": "uuid", "foreign_key": "users.id"},
+            {"name": "transaction_id", "type": "uuid"},
+            {"name": "risk_score", "type": "integer"},
+            {"name": "decision", "type": "varchar(50)"},
+            {"name": "signals", "type": "jsonb"},
+            {"name": "kyc_level_score", "type": "integer"},
+            {"name": "amount_score", "type": "integer"},
+            {"name": "velocity_score", "type": "integer"},
+            {"name": "geo_score", "type": "integer"},
+            {"name": "behavioral_score", "type": "integer"},
+            {"name": "assessed_at", "type": "timestamp"}
+          ],
+          "indexes": [
+            "user_id",
+            "transaction_id",
+            "risk_score",
+            "decision",
+            "assessed_at"
+          ]
+        },
+        {
+          "name": "transaction_monitoring",
+          "description": "Monitoring checks and results",
+          "columns": [
+            {"name": "id", "type": "uuid", "primary_key": true},
+            {"name": "transaction_id", "type": "uuid"},
+            {"name": "check_type", "type": "varchar(100)"},
+            {"name": "status", "type": "varchar(50)"},
+            {"name": "result", "type": "jsonb"},
+            {"name": "wallet_address", "type": "varchar(255)"},
+            {"name": "risk_level", "type": "varchar(50)"},
+            {"name": "checked_at", "type": "timestamp"}
+          ],
+          "indexes": [
+            "transaction_id",
+            "check_type",
+            "status",
+            "risk_level"
+          ]
+        },
+        {
+          "name": "transaction_alerts",
+          "description": "Security and compliance alerts",
+          "columns": [
+            {"name": "id", "type": "uuid", "primary_key": true},
+            {"name": "transaction_id", "type": "uuid"},
+            {"name": "alert_type", "type": "varchar(100)"},
+            {"name": "severity", "type": "varchar(50)"},
+            {"name": "details", "type": "jsonb"},
+            {"name": "status", "type": "varchar(50)"},
+            {"name": "assigned_to", "type": "uuid"},
+            {"name": "resolved_at", "type": "timestamp"},
+            {"name": "resolution_notes", "type": "text"},
+            {"name": "created_at", "type": "timestamp"}
+          ],
+          "indexes": [
+            "transaction_id",
+            "alert_type",
+            "severity",
+            "status",
+            "created_at"
+          ]
+        },
+        {
+          "name": "payment_audit_log",
+          "description": "Tamper-proof audit trail",
+          "columns": [
+            {"name": "id", "type": "uuid", "primary_key": true},
+            {"name": "timestamp", "type": "timestamp"},
+            {"name": "event_type", "type": "varchar(100)"},
+            {"name": "user_id", "type": "uuid"},
+            {"name": "transaction_id", "type": "uuid"},
+            {"name": "action", "type": "varchar(255)"},
+            {"name": "details", "type": "jsonb"},
+            {"name": "previous_hash", "type": "varchar(64)"},
+            {"name": "current_hash", "type": "varchar(64)"},
+            {"name": "ip_address", "type": "inet"},
+            {"name": "user_agent", "type": "text"}
+          ],
+          "indexes": [
+            "timestamp",
+            "event_type",
+            "user_id",
+            "transaction_id",
+            "current_hash"
+          ],
+          "special": "append_only_with_hash_chaining"
+        },
+        {
+          "name": "audit_log_summary",
+          "description": "Daily aggregated audit statistics",
+          "columns": [
+            {"name": "id", "type": "uuid", "primary_key": true},
+            {"name": "date", "type": "date", "unique": true},
+            {"name": "total_events", "type": "integer"},
+            {"name": "events_by_type", "type": "jsonb"},
+            {"name": "unique_users", "type": "integer"},
+            {"name": "total_transactions", "type": "integer"},
+            {"name": "verification_status", "type": "varchar(50)"},
+            {"name": "created_at", "type": "timestamp"}
+          ],
+          "indexes": [
+            "date",
+            "verification_status"
+          ]
+        }
+      ],
+
+      "views": [
+        {
+          "name": "recent_audit_activity",
+          "description": "Last 24 hours of audit activity",
+          "definition": "SELECT * FROM payment_audit_log WHERE timestamp > NOW() - INTERVAL '24 hours' ORDER BY timestamp DESC"
+        },
+        {
+          "name": "failed_audit_events",
+          "description": "Events requiring manual review",
+          "definition": "SELECT * FROM payment_audit_log WHERE details->>'status' = 'failed' OR details->>'requires_review' = 'true'"
+        },
+        {
+          "name": "admin_actions_audit",
+          "description": "Administrative actions log",
+          "definition": "SELECT * FROM payment_audit_log WHERE event_type LIKE 'admin_%' ORDER BY timestamp DESC"
+        }
+      ],
+
+      "functions": [
+        {
+          "name": "get_user_audit_trail",
+          "parameters": ["user_id UUID"],
+          "returns": "TABLE",
+          "description": "Complete audit history for a user"
+        },
+        {
+          "name": "get_transaction_audit_trail",
+          "parameters": ["transaction_id UUID"],
+          "returns": "TABLE",
+          "description": "Complete audit history for a transaction"
+        },
+        {
+          "name": "verify_audit_log_integrity",
+          "parameters": [],
+          "returns": "BOOLEAN",
+          "description": "Verify hash chain integrity"
+        },
+        {
+          "name": "is_entity_sanctioned",
+          "parameters": ["entity_type VARCHAR", "entity_id VARCHAR"],
+          "returns": "BOOLEAN",
+          "description": "Check if entity is on sanctions list"
+        }
+      ],
+
+      "migrations": [
+        {
+          "file": "002_kyc_tables.sql",
+          "description": "KYC verification tables",
+          "lines": 80
+        },
+        {
+          "file": "003_risk_tables.sql",
+          "description": "Risk assessment tables",
+          "lines": 120
+        },
+        {
+          "file": "004_monitoring_tables.sql",
+          "description": "Transaction monitoring tables",
+          "lines": 150
+        },
+        {
+          "file": "005_audit_logs.sql",
+          "description": "Audit logging system",
+          "lines": 660
+        }
+      ]
+    },
+
+    "blockchain": {
+      "smart_contracts": [
+        {
+          "name": "AmrikyyBookingEscrow",
+          "file": "backend/contracts/AmrikyyBookingEscrow.sol",
+          "language": "solidity",
+          "version": "0.8.19",
+          "lines": 400,
+          "networks": ["ethereum", "polygon", "bsc"],
+          "functions": [
+            "createEscrow",
+            "releasePayment",
+            "refundPayment",
+            "disputeEscrow",
+            "resolveDispute"
+          ],
+          "events": [
+            "EscrowCreated",
+            "PaymentReleased",
+            "PaymentRefunded",
+            "DisputeRaised",
+            "DisputeResolved"
+          ]
+        }
+      ]
+    }
+  },
+
+  "monitoring": {
+    "observability": {
+      "logging": {
+        "framework": "winston",
+        "levels": ["error", "warn", "info", "debug"],
+        "transports": ["console", "file"],
+        "rotation": "daily",
+        "retention": "30_days"
+      },
+      "metrics": {
+        "framework": "prometheus",
+        "status": "planned",
+        "metrics": [
+          "request_duration",
+          "request_count",
+          "error_rate",
+          "payment_success_rate",
+          "kyc_approval_rate",
+          "risk_score_distribution",
+          "alert_count_by_severity"
+        ]
+      },
+      "tracing": {
+        "framework": "opentelemetry",
+        "status": "planned",
+        "sampling": "10_percent"
+      },
+      "alerting": {
+        "channels": ["slack", "email", "pagerduty"],
+        "conditions": [
+          {
+            "name": "high_error_rate",
+            "threshold": "error_rate > 5%",
+            "severity": "critical"
+          },
+          {
+            "name": "payment_failures",
+            "threshold": "payment_success_rate < 90%",
+            "severity": "high"
+          },
+          {
+            "name": "audit_integrity_failure",
+            "threshold": "hash_chain_broken",
+            "severity": "critical"
+          },
+          {
+            "name": "sanctions_match",
+            "threshold": "any",
+            "severity": "critical"
+          }
+        ]
+      }
+    },
+
+    "health_checks": {
+      "endpoint": "/api/health",
+      "checks": [
+        "database_connection",
+        "sumsub_api",
+        "chainalysis_api",
+        "blockchain_rpcs",
+        "audit_log_integrity"
+      ],
+      "frequency": "60_seconds"
+    },
+
+    "performance": {
+      "sla_targets": {
+        "api_response_time_p95": "500ms",
+        "api_response_time_p99": "1000ms",
+        "payment_processing_time": "5_minutes",
+        "kyc_verification_time": "10_minutes",
+        "uptime": "99.9_percent"
+      },
+      "optimization": {
+        "database_indexes": "comprehensive",
+        "caching_strategy": "redis_planned",
+        "cdn": "cloudflare_planned",
+        "load_balancing": "planned"
+      }
+    }
+  },
+
+  "deployment": {
+    "environments": [
+      {
+        "name": "development",
+        "status": "active",
+        "backend_url": "http://localhost:3000",
+        "frontend_url": "http://localhost:5173",
+        "database": "local_postgresql"
+      },
+      {
+        "name": "staging",
+        "status": "planned",
+        "backend_url": "https://staging-api.amrikyy.com",
+        "frontend_url": "https://staging.amrikyy.com",
+        "database": "supabase_staging"
+      },
+      {
+        "name": "production",
+        "status": "planned",
+        "backend_url": "https://api.amrikyy.com",
+        "frontend_url": "https://amrikyy.com",
+        "database": "supabase_production"
+      }
+    ],
+
+    "infrastructure": {
+      "backend": {
+        "platform": "to_be_determined",
+        "options": ["vercel", "railway", "aws", "gcp"],
+        "requirements": [
+          "node_18+",
+          "postgresql_14+",
+          "redis_planned"
+        ]
+      },
+      "frontend": {
+        "platform": "vercel",
+        "framework": "react_18_vite",
+        "build_command": "npm run build",
+        "output_directory": "dist"
+      },
+      "database": {
+        "provider": "supabase",
+        "type": "postgresql",
+        "version": "14+",
+        "backup": "daily_automated"
+      }
+    },
+
+    "ci_cd": {
+      "platform": "github_actions",
+      "status": "planned",
+      "pipelines": [
+        {
+          "name": "test",
+          "trigger": "pull_request",
+          "steps": ["lint", "type_check", "unit_tests", "e2e_tests"]
+        },
+        {
+          "name": "deploy_staging",
+          "trigger": "push_to_main",
+          "steps": ["build", "test", "deploy_backend", "deploy_frontend", "smoke_tests"]
+        },
+        {
+          "name": "deploy_production",
+          "trigger": "release_tag",
+          "steps": ["build", "test", "security_scan", "deploy_backend", "deploy_frontend", "health_check"]
+        }
+      ]
+    },
+
+    "configuration": {
+      "environment_variables": {
+        "required": [
+          "DATABASE_URL",
+          "SUPABASE_URL",
+          "SUPABASE_SERVICE_ROLE_KEY",
+          "ZAI_API_KEY",
+          "GEMINI_API_KEY",
+          "SUMSUB_API_KEY",
+          "SUMSUB_WEBHOOK_SECRET",
+          "CHAINALYSIS_API_KEY",
+          "JWT_SECRET",
+          "ENCRYPTION_KEY"
+        ],
+        "optional": [
+          "SLACK_WEBHOOK_URL",
+          "SENTRY_DSN",
+          "REDIS_URL",
+          "N8N_WEBHOOK_URL"
+        ]
+      }
+    }
+  },
+
+  "testing": {
+    "automated_tests": {
+      "total_count": 27,
+      "coverage_target": "80_percent",
+      
+      "test_suites": [
+        {
+          "name": "PaymentsKit Tests",
+          "file": "test-paymentskit.js",
+          "tests": 20,
+          "coverage": [
+            "crypto_payment_service",
+            "kyc_service",
+            "risk_engine",
+            "monitoring_service"
+          ]
+        },
+        {
+          "name": "Audit System Tests",
+          "file": "test-audit-system.sh",
+          "tests": 7,
+          "coverage": [
+            "audit_logging",
+            "hash_integrity",
+            "export_functionality"
+          ]
+        }
+      ],
+
+      "test_types": {
+        "unit_tests": {
+          "framework": "vitest",
+          "location": "frontend/src/**/*.test.ts",
+          "command": "npm run test"
+        },
+        "integration_tests": {
+          "framework": "node",
+          "location": "test/",
+          "command": "node test-paymentskit.js"
+        },
+        "e2e_tests": {
+          "framework": "playwright",
+          "location": "frontend/e2e/",
+          "command": "npm run e2e"
+        }
+      }
+    },
+
+    "manual_testing": {
+      "checklists": [
+        "payment_flow_testing",
+        "kyc_verification_testing",
+        "browser_automation_testing",
+        "compliance_dashboard_testing",
+        "security_testing"
+      ],
+      "documentation": "COMPREHENSIVE_TESTING_GUIDE.md"
+    }
+  },
+
+  "documentation": {
+    "comprehensive_guides": [
+      {
+        "file": "README.md",
+        "description": "Project overview and quick start",
+        "lines": 500
+      },
+      {
+        "file": "COMPREHENSIVE_TESTING_GUIDE.md",
+        "description": "Complete testing procedures",
+        "lines": 800
+      },
+      {
+        "file": "DEPLOYMENT_READY_SUMMARY.md",
+        "description": "Deployment checklist and overview",
+        "lines": 1300
+      },
+      {
+        "file": "PAYMENTS_KIT_IMPLEMENTATION.md",
+        "description": "PaymentsKit technical details",
+        "lines": 1500
+      },
+      {
+        "file": "CRYPTO_PAYMENT_SYSTEM.md",
+        "description": "Crypto payment architecture",
+        "lines": 1000
+      },
+      {
+        "file": "AI_TOOLS_COMPREHENSIVE_ANALYSIS.md",
+        "description": "AI capabilities analysis",
+        "lines": 2500
+      },
+      {
+        "file": "BEST_TOOLS_IMPLEMENTATION_PLAN.md",
+        "description": "Implementation roadmap",
+        "lines": 800
+      }
+    ],
+
+    "api_documentation": {
+      "format": "openapi_3.0",
+      "endpoint": "/api/openapi.json",
+      "status": "planned"
+    },
+
+    "architecture_diagrams": {
+      "system_architecture": "included_in_deployment_summary",
+      "database_schema": "included_in_deployment_summary",
+      "workflow_diagrams": "included_in_implementation_docs"
+    }
+  },
+
+  "roadmap": {
+    "completed": [
+      {
+        "phase": "1",
+        "name": "KYC/AML Verification",
+        "status": "complete",
+        "features": [
+          "Sumsub integration",
+          "Multi-level verification",
+          "Webhook verification",
+          "Database tracking"
+        ]
+      },
+      {
+        "phase": "2",
+        "name": "Risk Engine",
+        "status": "complete",
+        "features": [
+          "5-signal risk assessment",
+          "0-100 scoring system",
+          "Auto-decisioning",
+          "Audit trail"
+        ]
+      },
+      {
+        "phase": "3",
+        "name": "Transaction Monitoring",
+        "status": "complete",
+        "features": [
+          "Chainalysis integration",
+          "Pattern detection",
+          "Real-time alerts",
+          "Slack notifications"
+        ]
+      },
+      {
+        "phase": "4",
+        "name": "Audit Logging",
+        "status": "complete",
+        "features": [
+          "Tamper-proof logging",
+          "7-year retention",
+          "CSV/JSON export",
+          "Compliance dashboard"
+        ]
+      }
+    ],
+
+    "in_progress": [
+      {
+        "phase": "5",
+        "name": "Testing & Deployment",
+        "status": "in_progress",
+        "tasks": [
+          "Run automated tests",
+          "Manual testing",
+          "Security audit",
+          "Performance optimization",
+          "Staging deployment"
+        ]
+      }
+    ],
+
+    "planned": [
+      {
+        "phase": "6",
+        "name": "n8n Workflow Automation",
+        "priority": "high",
+        "features": [
+          "Daily trip recommendations",
+          "Price monitoring alerts",
+          "Email campaigns",
+          "Alert routing"
+        ]
+      },
+      {
+        "phase": "7",
+        "name": "Emotional Intelligence",
+        "priority": "medium",
+        "features": [
+          "Sentiment analysis",
+          "Mood detection",
+          "Tone adaptation",
+          "Persona switching"
+        ]
+      },
+      {
+        "phase": "8",
+        "name": "Predictive Intelligence",
+        "priority": "medium",
+        "features": [
+          "Trip suggestions",
+          "Price predictions",
+          "Satisfaction forecasting",
+          "Demand prediction"
+        ]
+      },
+      {
+        "phase": "9",
+        "name": "Authentication & Authorization",
+        "priority": "high",
+        "features": [
+          "JWT implementation",
+          "RBAC system",
+          "OAuth providers",
+          "Session management"
+        ]
+      },
+      {
+        "phase": "10",
+        "name": "Performance Optimization",
+        "priority": "medium",
+        "features": [
+          "Redis caching",
+          "CDN integration",
+          "Database optimization",
+          "Load balancing"
+        ]
+      }
+    ]
+  },
+
+  "compliance_certifications": {
+    "target": [
+      {
+        "name": "SOC 2 Type II",
+        "status": "planned",
+        "requirements": [
+          "Security controls",
+          "Availability monitoring",
+          "Processing integrity",
+          "Confidentiality measures",
+          "Privacy protection"
+        ]
+      },
+      {
+        "name": "PCI DSS",
+        "status": "planned",
+        "requirements": [
+          "Network security",
+          "Data protection",
+          "Access control",
+          "Monitoring and testing",
+          "Security policies"
+        ]
+      },
+      {
+        "name": "GDPR Compliance",
+        "status": "in_progress",
+        "requirements": [
+          "User consent",
+          "Data portability",
+          "Right to erasure",
+          "Privacy by design",
+          "Data breach notification"
+        ]
+      }
+    ]
+  },
+
+  "cost_estimates": {
+    "monthly_operational_costs": {
+      "infrastructure": {
+        "database": "25-100_usd",
+        "hosting": "50-200_usd",
+        "cdn": "20-100_usd",
+        "total": "95-400_usd"
+      },
+      "third_party_apis": {
+        "sumsub": "100-500_usd",
+        "chainalysis": "500-2000_usd",
+        "gemini_api": "100-500_usd",
+        "glm_api": "50-200_usd",
+        "total": "750-3200_usd"
+      },
+      "total_monthly": "845-3600_usd"
+    },
+    "scaling_projections": {
+      "1000_users": "1500_usd_per_month",
+      "10000_users": "5000_usd_per_month",
+      "100000_users": "15000_usd_per_month"
+    }
+  },
+
+  "contact": {
+    "repository": "https://github.com/Moeabdelaziz007/maya-travel-agent",
+    "branch": "pr-7",
+    "issues": "https://github.com/Moeabdelaziz007/maya-travel-agent/issues",
+    "documentation": "https://github.com/Moeabdelaziz007/maya-travel-agent/tree/pr-7/docs"
+  }
+}
