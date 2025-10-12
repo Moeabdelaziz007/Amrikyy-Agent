@@ -5,20 +5,20 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Activity, 
-  AlertCircle, 
-  CheckCircle, 
-  Clock, 
-  Download, 
-  Eye, 
-  FileText, 
+import {
+  Activity,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Download,
+  Eye,
+  FileText,
   Filter,
   Search,
   Shield,
   TrendingUp,
   Users,
-  XCircle
+  XCircle,
 } from 'lucide-react';
 
 interface AuditLog {
@@ -40,11 +40,16 @@ interface Statistics {
     failedCount: number;
     uniqueUsers: number;
   };
-  byCategory: Record<string, { count: number; success: number; failed: number }>;
+  byCategory: Record<
+    string,
+    { count: number; success: number; failed: number }
+  >;
 }
 
 export default function ComplianceDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'audit' | 'review' | 'export'>('overview');
+  const [activeTab, setActiveTab] = useState<
+    'overview' | 'audit' | 'review' | 'export'
+  >('overview');
   const [statistics, setStatistics] = useState<Statistics | null>(null);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [failedEvents, setFailedEvents] = useState<AuditLog[]>([]);
@@ -101,7 +106,7 @@ export default function ComplianceDashboard() {
       if (searchTerm) params.append('eventType', searchTerm);
       if (dateRange.start) params.append('startDate', dateRange.start);
       if (dateRange.end) params.append('endDate', dateRange.end);
-      
+
       const response = await fetch(`/api/audit/export/csv?${params}`);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -123,10 +128,12 @@ export default function ComplianceDashboard() {
       if (searchTerm) params.append('eventType', searchTerm);
       if (dateRange.start) params.append('startDate', dateRange.start);
       if (dateRange.end) params.append('endDate', dateRange.end);
-      
+
       const response = await fetch(`/api/audit/export/json?${params}`);
       const data = await response.json();
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
+        type: 'application/json',
+      });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -165,9 +172,10 @@ export default function ComplianceDashboard() {
             onClick={() => setActiveTab(tab.id as any)}
             className={`
               flex items-center gap-2 px-6 py-3 font-semibold transition-all
-              ${activeTab === tab.id
-                ? 'text-blue-400 border-b-2 border-blue-400'
-                : 'text-gray-400 hover:text-gray-200'
+              ${
+                activeTab === tab.id
+                  ? 'text-blue-400 border-b-2 border-blue-400'
+                  : 'text-gray-400 hover:text-gray-200'
               }
             `}
           >
@@ -185,25 +193,22 @@ export default function ComplianceDashboard() {
         transition={{ duration: 0.3 }}
       >
         {activeTab === 'overview' && (
-          <OverviewTab 
-            statistics={statistics} 
-            recentActivity={recentActivity} 
+          <OverviewTab
+            statistics={statistics}
+            recentActivity={recentActivity}
           />
         )}
-        
+
         {activeTab === 'audit' && (
-          <AuditLogsTab 
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-          />
+          <AuditLogsTab searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         )}
-        
+
         {activeTab === 'review' && (
           <ManualReviewTab failedEvents={failedEvents} />
         )}
-        
+
         {activeTab === 'export' && (
-          <ExportTab 
+          <ExportTab
             dateRange={dateRange}
             setDateRange={setDateRange}
             searchTerm={searchTerm}
@@ -234,7 +239,10 @@ function OverviewTab({ statistics, recentActivity }: any) {
     },
     {
       label: 'Success Rate',
-      value: `${((statistics.totals.successCount / statistics.totals.totalEvents) * 100).toFixed(1)}%`,
+      value: `${(
+        (statistics.totals.successCount / statistics.totals.totalEvents) *
+        100
+      ).toFixed(1)}%`,
       icon: CheckCircle,
       color: 'green',
       change: '+2.3% improvement',
@@ -284,32 +292,38 @@ function OverviewTab({ statistics, recentActivity }: any) {
       <div className="bg-gray-800/50 backdrop-blur-xl border border-gray-700 rounded-xl p-6">
         <h3 className="text-xl font-bold mb-6">Events by Category</h3>
         <div className="space-y-4">
-          {Object.entries(statistics.byCategory).map(([category, stats]: [string, any]) => (
-            <div key={category} className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="capitalize">{category}</span>
-                <span className="text-gray-400">{stats.count} events</span>
+          {Object.entries(statistics.byCategory).map(
+            ([category, stats]: [string, any]) => (
+              <div key={category} className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="capitalize">{category}</span>
+                  <span className="text-gray-400">{stats.count} events</span>
+                </div>
+                <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{
+                      width: `${(stats.success / stats.count) * 100}%`,
+                    }}
+                    transition={{ duration: 1, delay: 0.2 }}
+                    className="h-full bg-gradient-to-r from-blue-500 to-purple-500"
+                  />
+                </div>
+                <div className="flex justify-between text-xs text-gray-500">
+                  <span>{stats.success} success</span>
+                  <span>{stats.failed} failed</span>
+                </div>
               </div>
-              <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${(stats.success / stats.count) * 100}%` }}
-                  transition={{ duration: 1, delay: 0.2 }}
-                  className="h-full bg-gradient-to-r from-blue-500 to-purple-500"
-                />
-              </div>
-              <div className="flex justify-between text-xs text-gray-500">
-                <span>{stats.success} success</span>
-                <span>{stats.failed} failed</span>
-              </div>
-            </div>
-          ))}
+            )
+          )}
         </div>
       </div>
 
       {/* Recent Activity */}
       <div className="bg-gray-800/50 backdrop-blur-xl border border-gray-700 rounded-xl p-6">
-        <h3 className="text-xl font-bold mb-6">Recent Activity (Last 24 Hours)</h3>
+        <h3 className="text-xl font-bold mb-6">
+          Recent Activity (Last 24 Hours)
+        </h3>
         <div className="space-y-3">
           {recentActivity.slice(0, 5).map((activity: any, index: number) => (
             <motion.div
@@ -353,7 +367,7 @@ function AuditLogsTab({ searchTerm, setSearchTerm }: any) {
 
   const searchLogs = async () => {
     if (!searchTerm) return;
-    
+
     setLoading(true);
     try {
       const response = await fetch(`/api/audit/user/${searchTerm}`);
@@ -409,10 +423,16 @@ function AuditLogsTab({ searchTerm, setSearchTerm }: any) {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <span className={`
+                      <span
+                        className={`
                         px-2 py-1 rounded text-xs font-semibold
-                        ${log.status === 'success' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}
-                      `}>
+                        ${
+                          log.status === 'success'
+                            ? 'bg-green-500/20 text-green-400'
+                            : 'bg-red-500/20 text-red-400'
+                        }
+                      `}
+                      >
                         {log.status}
                       </span>
                       <span className="text-sm text-gray-400 capitalize">
@@ -450,9 +470,7 @@ function ManualReviewTab({ failedEvents }: { failedEvents: AuditLog[] }) {
     <div className="space-y-6">
       <div className="bg-gray-800/50 backdrop-blur-xl border border-gray-700 rounded-xl p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold">
-            Failed Events Requiring Review
-          </h3>
+          <h3 className="text-xl font-bold">Failed Events Requiring Review</h3>
           <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm font-semibold">
             {failedEvents.length} pending
           </span>
@@ -505,12 +523,20 @@ function ManualReviewTab({ failedEvents }: { failedEvents: AuditLog[] }) {
 }
 
 // Export Tab Component
-function ExportTab({ dateRange, setDateRange, searchTerm, setSearchTerm, onExportCSV, onExportJSON, loading }: any) {
+function ExportTab({
+  dateRange,
+  setDateRange,
+  searchTerm,
+  setSearchTerm,
+  onExportCSV,
+  onExportJSON,
+  loading,
+}: any) {
   return (
     <div className="space-y-6">
       <div className="bg-gray-800/50 backdrop-blur-xl border border-gray-700 rounded-xl p-6">
         <h3 className="text-xl font-bold mb-6">Export Audit Logs</h3>
-        
+
         {/* Filters */}
         <div className="space-y-4 mb-6">
           <div>
@@ -534,18 +560,20 @@ function ExportTab({ dateRange, setDateRange, searchTerm, setSearchTerm, onExpor
               <input
                 type="date"
                 value={dateRange.start}
-                onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
+                onChange={(e) =>
+                  setDateRange({ ...dateRange, start: e.target.value })
+                }
                 className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:border-blue-500 focus:outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">
-                End Date
-              </label>
+              <label className="block text-sm font-medium mb-2">End Date</label>
               <input
                 type="date"
                 value={dateRange.end}
-                onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
+                onChange={(e) =>
+                  setDateRange({ ...dateRange, end: e.target.value })
+                }
                 className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:border-blue-500 focus:outline-none"
               />
             </div>
@@ -598,4 +626,3 @@ function ExportTab({ dateRange, setDateRange, searchTerm, setSearchTerm, onExpor
     </div>
   );
 }
-

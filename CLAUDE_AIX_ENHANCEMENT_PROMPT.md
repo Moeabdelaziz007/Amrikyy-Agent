@@ -31,18 +31,21 @@ You are tasked with analyzing and enhancing an **AIX (AI Agent eXchange)** speci
 ### **Core Features:**
 
 1. **Crypto Payment System**
+
    - 6 cryptocurrencies: BTC, ETH, USDT, USDC, BNB, MATIC
    - Smart contract escrow (Solidity)
    - Real-time blockchain verification
    - QR code generation
 
 2. **Compliance & Security (PaymentsKit)**
+
    - **Phase 1**: KYC/AML verification (Sumsub integration)
    - **Phase 2**: AI-powered risk engine (0-100 scoring)
    - **Phase 3**: Transaction monitoring (Chainalysis, pattern detection)
    - **Phase 4**: Tamper-proof audit logging (7-year retention)
 
 3. **AI Intelligence**
+
    - **Gemini 2.5 Pro Computer Use**: Browser automation for booking
    - **Emotional Intelligence**: Adapts tone based on user mood
    - **Predictive Intelligence**: Proactive trip suggestions
@@ -117,6 +120,7 @@ maya-travel-agent/
 ```
 
 **Total Stats:**
+
 - 43 files changed
 - 17,691+ lines of code
 - 27 automated tests
@@ -157,6 +161,7 @@ maya-travel-agent/
 ### **Current AI Components:**
 
 1. **Gemini 2.5 Pro Computer Use**
+
    - Browser automation
    - Screenshot analysis
    - Mouse/keyboard control
@@ -164,6 +169,7 @@ maya-travel-agent/
    - Form filling
 
 2. **GLM-4.6 (via Z.ai)**
+
    - Conversational AI
    - Recommendations
    - Natural language understanding
@@ -177,23 +183,25 @@ maya-travel-agent/
 ### **AI Workflows (Current & Planned):**
 
 1. **Automated Booking Flow:**
+
    ```
-   User Query → Intent Analysis → Risk Assessment → 
-   Browser Automation (Gemini) → Site Navigation → 
-   Form Filling → Price Comparison → Booking → 
+   User Query → Intent Analysis → Risk Assessment →
+   Browser Automation (Gemini) → Site Navigation →
+   Form Filling → Price Comparison → Booking →
    Payment Processing → Confirmation
    ```
 
 2. **Predictive Intelligence Flow:**
+
    ```
-   User Patterns → n8n Workflow → GLM-4 Analysis → 
-   Trip Suggestions → User Notification → 
+   User Patterns → n8n Workflow → GLM-4 Analysis →
+   Trip Suggestions → User Notification →
    Acceptance → Automation Trigger
    ```
 
 3. **Emotional Intelligence Flow:**
    ```
-   User Message → Sentiment Analysis → Mood Detection → 
+   User Message → Sentiment Analysis → Mood Detection →
    Persona Matching → Tone Adaptation → Response Generation
    ```
 
@@ -206,7 +214,7 @@ maya-travel-agent/
   "$schema": "https://aix-spec.org/v0.1/schema.json",
   "version": "0.1",
   "_description": "This file represents the complete DNA of an AI Agent...",
-  
+
   "meta": {
     "id": "unique-agent-id-12345",
     "name": "Autonomous Research Analyst Agent",
@@ -219,7 +227,7 @@ maya-travel-agent/
     "updated": "2025-10-12T19:15:00Z",
     "homepage": "https://your-repo-link.com/research-agent"
   },
-  
+
   "agent": {
     "model": {
       "provider": "openai",
@@ -244,16 +252,16 @@ maya-travel-agent/
       {"name": "code_execution", "enabled": true}
     ]
   },
-  
+
   "workflow": {
     "triggers": [...],
     "actions": [...]
   },
-  
+
   "apis": {
     "integrations": [...]
   },
-  
+
   "security": {
     "vault": {...},
     "encryption": {...}
@@ -276,6 +284,7 @@ maya-travel-agent/
 ### **What to Include:**
 
 #### **1. Meta Section** ✨
+
 - Update to reflect Amrikyy platform
 - Add comprehensive tags
 - Link to GitHub repo
@@ -284,23 +293,27 @@ maya-travel-agent/
 #### **2. Agent Section** 🤖
 
 **Models:**
+
 - Primary: Gemini 2.5 Pro (computer use)
 - Secondary: GLM-4.6 (conversational)
 - Future: Genkit, OpenVINO, Intel extensions
 
 **Personality:**
+
 - Role: AI Travel Automation & Compliance Agent
 - Tone: Professional, helpful, security-conscious
 - Constraints: Must follow compliance rules, log all actions
 - Multi-persona support: Emotional intelligence modes
 
 **Memory:**
+
 - Vector DB: Qdrant (planned)
 - Conversation history: Supabase
 - User personas: PostgreSQL
 - Audit logs: 7-year retention
 
 **Tools:**
+
 ```json
 "tools": [
   {
@@ -348,16 +361,19 @@ maya-travel-agent/
 **Key Workflows:**
 
 1. **automated_booking_workflow**
+
    - Trigger: User query
    - Actions: 15+ steps from query to confirmation
    - Error handling: Retry logic, fallbacks
 
 2. **payment_processing_workflow**
+
    - Trigger: Booking confirmation
    - Actions: Risk assessment → KYC check → Invoice → Monitoring → Audit
    - Error handling: Refunds, disputes
 
 3. **compliance_monitoring_workflow**
+
    - Trigger: Every transaction
    - Actions: Sanctions check → Pattern analysis → Alert generation
    - Error handling: Manual review queue
@@ -369,6 +385,7 @@ maya-travel-agent/
 #### **4. APIs Section** 🌐
 
 **Internal APIs:**
+
 ```json
 {
   "name": "crypto_payment_api",
@@ -390,6 +407,7 @@ maya-travel-agent/
 ```
 
 **External APIs:**
+
 - Sumsub (KYC)
 - Chainalysis (Monitoring)
 - Blockchain RPCs (ETH, BTC, etc.)
@@ -399,6 +417,7 @@ maya-travel-agent/
 #### **5. Security Section** 🔐
 
 **Critical Requirements:**
+
 - HMAC webhook verification
 - AES-256-GCM encryption
 - Hash-chained audit logs
@@ -410,6 +429,7 @@ maya-travel-agent/
 #### **6. Additional Sections** (Your Innovation)
 
 Consider adding:
+
 - **Compliance section**: Government-ready features
 - **Monitoring section**: Observability, alerting
 - **Data models**: Database schemas
@@ -424,21 +444,25 @@ Consider adding:
 Please research and incorporate:
 
 1. **AIX Best Practices**
+
    - Study the official AIX v0.1 spec thoroughly
    - Find examples of well-structured AIX files
    - Identify optimization patterns
 
 2. **Multi-Agent Systems**
+
    - How to represent multiple AI models in one AIX file
    - Agent orchestration patterns
    - Model routing logic
 
 3. **Workflow Optimization**
+
    - DAG (Directed Acyclic Graph) representation
    - Conditional logic in AIX
    - Error handling patterns
 
 4. **Security Standards**
+
    - Payment industry best practices
    - KYC/AML compliance requirements
    - Audit logging standards
@@ -461,7 +485,7 @@ Your enhanced AIX file should:
 ✅ **Secure**: Include all security context  
 ✅ **Documented**: Inline comments explaining complex sections  
 ✅ **Validated**: Pass JSON schema validation  
-✅ **Practical**: Usable by other AI systems to understand our agent  
+✅ **Practical**: Usable by other AI systems to understand our agent
 
 ---
 
@@ -470,11 +494,13 @@ Your enhanced AIX file should:
 Please provide:
 
 1. **Enhanced AIX File** (`amrikyy-agent.aix.json`)
+
    - Complete, production-ready AIX specification
    - Inline documentation
    - All sections filled
 
 2. **Explanation Document** (`AIX_ENHANCEMENT_REPORT.md`)
+
    - Changes made and rationale
    - Research findings
    - Design decisions
@@ -482,6 +508,7 @@ Please provide:
    - How to maintain/extend the file
 
 3. **Validation Script** (Optional)
+
    - Script to validate AIX file against spec
    - Test coverage
 
@@ -494,15 +521,18 @@ Please provide:
 ## 📚 **Reference Materials**
 
 **Official Spec:**
+
 - https://aix-spec.org/v0.1/schema.json
 
 **Our Documentation:**
+
 - `DEPLOYMENT_READY_SUMMARY.md` - Complete project overview
 - `PAYMENTS_KIT_IMPLEMENTATION.md` - Technical implementation
 - `COMPREHENSIVE_TESTING_GUIDE.md` - Testing procedures
 - `AI_TOOLS_COMPREHENSIVE_ANALYSIS.md` - AI research
 
 **Repository:**
+
 - GitHub: https://github.com/Moeabdelaziz007/maya-travel-agent
 - Branch: `pr-7`
 
@@ -547,6 +577,7 @@ Please provide:
 ## 🎯 **Final Notes**
 
 This is a **production system** serving real users with real money. The AIX file must:
+
 - Accurately represent our capabilities
 - Be usable by other AI agents to understand our system
 - Serve as living documentation
@@ -561,4 +592,3 @@ This is a **production system** serving real users with real money. The AIX file
 ---
 
 **Good luck! We're excited to see how you enhance our AI agent's DNA. 🧬**
-
