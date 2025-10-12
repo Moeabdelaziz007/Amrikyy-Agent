@@ -1,0 +1,180 @@
+{
+  "name": "🧠 Amrikyy - محرك الذكاء التنبؤي",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "name": "محفز يومي - 8 صباحاً",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "notes": "يعمل يومياً في الساعة 8 صباحاً لتوليد التنبؤات"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT u.id, u.email, u.telegram_id, u.created_at,\n       tp.persona_type, tp.booking_patterns\nFROM users u\nLEFT JOIN traveler_personas tp ON u.id = tp.user_id\nWHERE u.last_active > NOW() - INTERVAL '30 days'\n  AND NOT EXISTS (\n    SELECT 1 FROM trip_predictions pred\n    WHERE pred.user_id = u.id\n      AND pred.expires_at > NOW()\n  )\nLIMIT 100"
+      },
+      "name": "جلب المستخدمين النشطين",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [470, 300],
+      "notes": "جلب 100 مستخدم نشط بدون تنبؤات فعالة"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT action_type, action_data, timestamp, response_time_ms\nFROM user_behavior_log\nWHERE user_id = '{{$json.id}}'\nORDER BY timestamp DESC\nLIMIT 50"
+      },
+      "name": "تحليل سلوك المستخدم",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [690, 300],
+      "notes": "آخر 50 إجراء من الـ partitioned table"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pattern Analyzer with error handling\nconst user = $input.first().json;\nconst behaviors = $input.all().map(item => item.json);\n\ntry {\n  // Calculate intent score\n  const signals = {\n    recentSearches: behaviors.filter(b => b.action_type === 'بدء_بحث').length,\n    favoritesSaved: behaviors.filter(b => b.action_type === 'حفظ_للمفضلة').length,\n    reviewsRead: behaviors.filter(b => b.action_type === 'قراءة_تقييمات').length\n  };\n  \n  const intentScore = Math.min(\n    (signals.recentSearches * 15) +\n    (signals.favoritesSaved * 20) +\n    (signals.reviewsRead * 10),\n    100\n  );\n  \n  return [{\n    userId: user.id,\n    userEmail: user.email,\n    user_telegram_id: user.telegram_id,\n    persona: user.persona_type,\n    patterns: user.booking_patterns,\n    upcomingTripIntent: { signals, intentScore },\n    readyForPrediction: intentScore >= 40\n  }];\n} catch (error) {\n  return [{ error: true, userId: user.id, message: error.message }];\n}"
+      },
+      "name": "محلل الأنماط",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [910, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.readyForPrediction}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "تصفية: جاهز للتنبؤ؟",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1130, 300],
+      "notes": "نقاط النية > 40"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.z.ai/api/paas/v4/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$credentials.zaiApiKey}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  \"model\": \"glm-4.6\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"أنت محرك ذكاء تنبؤي. حلل بيانات المستخدم وتنبأ برحلته القادمة. أجب فقط بصيغة JSON.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": `بيانات المستخدم:\\n- الشخصية: ${JSON.stringify($json.persona)}\\n- الأنماط: ${JSON.stringify($json.patterns)}\\n- نقاط النية: ${$json.upcomingTripIntent.intentScore}\\n\\nتنبأ بـ: destination, check_in, check_out, budget_min, budget_max, confidence, reasoning[], trigger_phrase`\n    }\n  ],\n  \"max_tokens\": 500,\n  \"temperature\": 0.7\n} }}"
+      },
+      "name": "GLM-4.6: توليد التنبؤ",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1350, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse GLM response with error handling\ntry {\n  const response = $input.first().json;\n  const aiMessage = response.choices?.[0]?.message?.content;\n  \n  if (!aiMessage) throw new Error('No response from GLM');\n  \n  const jsonText = aiMessage.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n  const prediction = JSON.parse(jsonText);\n  \n  // Add metadata\n  prediction.user_id = $node['محلل الأنماط'].json.userId;\n  prediction.user_email = $node['محلل الأنماط'].json.userEmail;\n  prediction.user_telegram_id = $node['محلل الأنماط'].json.user_telegram_id;\n  prediction.predicted_at = new Date().toISOString();\n  prediction.expires_at = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();\n  prediction.id = require('crypto').randomUUID();\n  \n  return [prediction];\n} catch (error) {\n  return [{\n    error: true,\n    user_id: $node['محلل الأنماط'].json.userId,\n    message: error.message,\n    raw_response: $input.first().json\n  }];\n}"
+      },
+      "name": "استخراج التنبؤ",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [1570, 200]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "trip_predictions",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{$json.user_id}}",
+            "predicted_destination": "={{$json.destination}}",
+            "predicted_dates_range": "=[{{$json.check_in}}, {{$json.check_out}})",
+            "predicted_budget": "={{($json.budget_min + $json.budget_max) / 2}}",
+            "prediction_reasoning": "={{JSON.stringify({ reasoning: $json.reasoning, confidence: $json.confidence })}}",
+            "confidence_level": "={{$json.confidence}}",
+            "predicted_at": "={{$json.predicted_at}}",
+            "expires_at": "={{$json.expires_at}}"
+          }
+        }
+      },
+      "name": "حفظ في قاعدة البيانات",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [1790, 200]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$json.user_telegram_id}}",
+        "text": "={{$json.trigger_phrase}}\\n\\n🎯 اقتراح رحلة مخصص لك:\\n📍 الوجهة: {{$json.destination}}\\n📅 التواريخ: {{$json.check_in}} - {{$json.check_out}}\\n💰 الميزانية: ${{$json.budget_min}}-{{$json.budget_max}}/ليلة\\n\\n✨ لماذا هذا الاقتراح؟\\n{{$json.reasoning.join('\\n• ')}}\\n\\n🚀 هل تريد أن أبدأ البحث؟",
+        "additionalFields": {
+          "parseMode": "MarkdownV2",
+          "replyMarkup": "={{ {\n  \"inline_keyboard\": [\n    [{ \"text\": \"✅ نعم، ابحث الآن!\", \"callback_data\": \"search_\" + $json.id }],\n    [\n      { \"text\": \"📝 غيّر التفاصيل\", \"callback_data\": \"modify_\" + $json.id },\n      { \"text\": \"❌ ليس الآن\", \"callback_data\": \"dismiss_\" + $json.id }\n    ]\n  ]\n} }}"
+        }
+      },
+      "name": "إرسال عبر Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [2010, 200]
+    }
+  ],
+  "connections": {
+    "محفز يومي - 8 صباحاً": {
+      "main": [[{"node": "جلب المستخدمين النشطين", "type": "main", "index": 0}]]
+    },
+    "جلب المستخدمين النشطين": {
+      "main": [[{"node": "تحليل سلوك المستخدم", "type": "main", "index": 0}]]
+    },
+    "تحليل سلوك المستخدم": {
+      "main": [[{"node": "محلل الأنماط", "type": "main", "index": 0}]]
+    },
+    "محلل الأنماط": {
+      "main": [[{"node": "تصفية: جاهز للتنبؤ؟", "type": "main", "index": 0}]]
+    },
+    "تصفية: جاهز للتنبؤ؟": {
+      "main": [
+        [{"node": "GLM-4.6: توليد التنبؤ", "type": "main", "index": 0}],
+        [{"node": "GLM-Flash: تحليل انخفاض النية", "type": "main", "index": 0}]
+      ]
+    },
+    "GLM-4.6: توليد التنبؤ": {
+      "main": [[{"node": "استخراج التنبؤ", "type": "main", "index": 0}]]
+    },
+    "استخراج التنبؤ": {
+      "main": [[{"node": "حفظ في قاعدة البيانات", "type": "main", "index": 0}]]
+    },
+    "حفظ في قاعدة البيانات": {
+      "main": [[{"node": "إرسال عبر Telegram", "type": "main", "index": 0}]]
+    }
+  },
+  "tags": [
+    {
+      "id": "predictive-ai",
+      "name": "Predictive Intelligence"
+    }
+  ]
+}
+
