@@ -31,8 +31,8 @@ class CountryAgentNetwork {
       presetKey: 'egyptExpert',
       location: {
         latitude: 30.0444,
-        longitude: 31.2357,
-      },
+        longitude: 31.2357
+      }
     });
 
     this.createAgent('saudi', {
@@ -41,8 +41,8 @@ class CountryAgentNetwork {
       presetKey: 'saudiGuide',
       location: {
         latitude: 21.3891,
-        longitude: 39.8579, // Mecca
-      },
+        longitude: 39.8579 // Mecca
+      }
     });
 
     this.createAgent('uae', {
@@ -51,8 +51,8 @@ class CountryAgentNetwork {
       presetKey: 'uaeLuxury',
       location: {
         latitude: 25.2048,
-        longitude: 55.2708, // Dubai
-      },
+        longitude: 55.2708 // Dubai
+      }
     });
 
     // Start auto-updates for all agents
@@ -173,7 +173,7 @@ class CountryAgentNetwork {
     if (successful.length === 0) {
       return {
         success: false,
-        message: 'No agents could process your query',
+        message: 'No agents could process your query'
       };
     }
 
@@ -199,11 +199,11 @@ class CountryAgentNetwork {
       agents: successful.map((r) => ({
         name: r.agent,
         country: r.country,
-        dnaScore: r.dnaScore,
+        dnaScore: r.dnaScore
       })),
       attractions: allAttractions,
       tours: allTours,
-      message: `I found amazing options across ${successful.length} countries!`,
+      message: `I found amazing options across ${successful.length} countries!`
     };
   }
 
@@ -214,7 +214,7 @@ class CountryAgentNetwork {
     const agentStatuses = Array.from(this.agents.entries()).map(
       ([key, agent]) => ({
         key,
-        ...agent.getStatus(),
+        ...agent.getStatus()
       })
     );
 
@@ -233,10 +233,10 @@ class CountryAgentNetwork {
       agents: agentStatuses.length,
       totalKnowledge: {
         attractions: totalAttractions,
-        tours: totalTours,
+        tours: totalTours
       },
       agentDetails: agentStatuses,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
 

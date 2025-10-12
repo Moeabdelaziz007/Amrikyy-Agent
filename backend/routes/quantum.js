@@ -22,18 +22,18 @@ router.post('/calculate-dna', async (req, res) => {
       personality,
       skills,
       behavior,
-      specialization,
+      specialization
     });
 
     res.json({
       success: true,
-      dnaScore,
+      dnaScore
     });
   } catch (error) {
     logger.error('DNA calculation error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -49,13 +49,13 @@ router.post('/generate-prompt', async (req, res) => {
 
     res.json({
       success: true,
-      systemPrompt,
+      systemPrompt
     });
   } catch (error) {
     logger.error('Prompt generation error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -71,13 +71,13 @@ router.get('/presets', async (req, res) => {
     res.json({
       success: true,
       count: presets.length,
-      presets,
+      presets
     });
   } catch (error) {
     logger.error('Presets fetch error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -93,7 +93,7 @@ router.get('/presets/:key', async (req, res) => {
     if (!preset) {
       return res.status(404).json({
         success: false,
-        error: 'Preset not found',
+        error: 'Preset not found'
       });
     }
 
@@ -103,14 +103,14 @@ router.get('/presets/:key', async (req, res) => {
       success: true,
       preset: {
         ...preset,
-        dnaScore,
-      },
+        dnaScore
+      }
     });
   } catch (error) {
     logger.error('Preset fetch error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -126,13 +126,13 @@ router.post('/network/initialize', async (req, res) => {
     res.json({
       success: true,
       message: 'Country Agent Network initialized',
-      status: countryAgentNetwork.getNetworkStatus(),
+      status: countryAgentNetwork.getNetworkStatus()
     });
   } catch (error) {
     logger.error('Network initialization error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -148,7 +148,7 @@ router.post('/network/query', async (req, res) => {
     if (!query) {
       return res.status(400).json({
         success: false,
-        error: 'Query is required',
+        error: 'Query is required'
       });
     }
 
@@ -161,13 +161,13 @@ router.post('/network/query', async (req, res) => {
 
     res.json({
       success: true,
-      ...response,
+      ...response
     });
   } catch (error) {
     logger.error('Network query error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -182,13 +182,13 @@ router.get('/network/status', async (req, res) => {
 
     res.json({
       success: true,
-      ...status,
+      ...status
     });
   } catch (error) {
     logger.error('Network status error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -204,19 +204,19 @@ router.get('/network/agents/:key', async (req, res) => {
     if (!agent) {
       return res.status(404).json({
         success: false,
-        error: 'Agent not found',
+        error: 'Agent not found'
       });
     }
 
     res.json({
       success: true,
-      agent: agent.getStatus(),
+      agent: agent.getStatus()
     });
   } catch (error) {
     logger.error('Agent status error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -231,13 +231,13 @@ router.post('/deploy', async (req, res) => {
 
     res.json({
       success: true,
-      ...result,
+      ...result
     });
   } catch (error) {
     logger.error('Deployment error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -255,13 +255,13 @@ router.post('/deploy/preset/:key', async (req, res) => {
 
     res.json({
       success: true,
-      ...result,
+      ...result
     });
   } catch (error) {
     logger.error('Preset deployment error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -276,13 +276,13 @@ router.delete('/deploy/:id', async (req, res) => {
 
     res.json({
       success: true,
-      ...result,
+      ...result
     });
   } catch (error) {
     logger.error('Undeploy error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -298,19 +298,19 @@ router.get('/deploy/:id', async (req, res) => {
     if (!deployment) {
       return res.status(404).json({
         success: false,
-        error: 'Deployment not found',
+        error: 'Deployment not found'
       });
     }
 
     res.json({
       success: true,
-      deployment,
+      deployment
     });
   } catch (error) {
     logger.error('Deployment status error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -326,13 +326,13 @@ router.get('/deployments', async (req, res) => {
     res.json({
       success: true,
       count: deployments.length,
-      deployments,
+      deployments
     });
   } catch (error) {
     logger.error('Deployments fetch error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -349,13 +349,13 @@ router.get('/deployments/history', async (req, res) => {
     res.json({
       success: true,
       count: history.length,
-      history,
+      history
     });
   } catch (error) {
     logger.error('Deployment history error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -370,13 +370,13 @@ router.get('/deployments/stats', async (req, res) => {
 
     res.json({
       success: true,
-      statistics: stats,
+      statistics: stats
     });
   } catch (error) {
     logger.error('Deployment stats error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -392,7 +392,7 @@ router.post('/deploy/batch', async (req, res) => {
     if (!agents || !Array.isArray(agents)) {
       return res.status(400).json({
         success: false,
-        error: 'agents array is required',
+        error: 'agents array is required'
       });
     }
 
@@ -400,13 +400,13 @@ router.post('/deploy/batch', async (req, res) => {
 
     res.json({
       success: true,
-      ...result,
+      ...result
     });
   } catch (error) {
     logger.error('Batch deployment error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -423,19 +423,19 @@ router.get('/health', async (req, res) => {
       network: countryAgentNetwork.isInitialized ? 'active' : 'inactive',
       agents: countryAgentNetwork.agents.size,
       activeDeployments: deploymentEngine.getActiveDeployments().length,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     res.json({
       success: true,
       status: 'healthy',
-      ...status,
+      ...status
     });
   } catch (error) {
     res.status(503).json({
       success: false,
       status: 'unhealthy',
-      error: error.message,
+      error: error.message
     });
   }
 });

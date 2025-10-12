@@ -18,14 +18,14 @@ router.get('/search', async (req, res) => {
     res.json({
       success: true,
       count: results.length || 0,
-      results,
+      results
     });
   } catch (error) {
     logger.error('izi.TRAVEL search error:', error);
     res.status(500).json({
       success: false,
       error: error.error || error.message,
-      details: error.details,
+      details: error.details
     });
   }
 });
@@ -39,14 +39,14 @@ router.get('/object/:uuid', async (req, res) => {
     const object = await iziTravelService.getObject(req.params.uuid, req.query);
     res.json({
       success: true,
-      object,
+      object
     });
   } catch (error) {
     logger.error('izi.TRAVEL object error:', error);
     res.status(500).json({
       success: false,
       error: error.error || error.message,
-      details: error.details,
+      details: error.details
     });
   }
 });
@@ -62,7 +62,7 @@ router.get('/tours/nearby', async (req, res) => {
     if (!lat || !lon) {
       return res.status(400).json({
         success: false,
-        error: 'Latitude and longitude are required',
+        error: 'Latitude and longitude are required'
       });
     }
 
@@ -75,13 +75,13 @@ router.get('/tours/nearby', async (req, res) => {
     res.json({
       success: true,
       count: tours.length || 0,
-      tours,
+      tours
     });
   } catch (error) {
     logger.error('izi.TRAVEL nearby tours error:', error);
     res.status(500).json({
       success: false,
-      error: error.error || error.message,
+      error: error.error || error.message
     });
   }
 });
@@ -97,7 +97,7 @@ router.get('/museums/nearby', async (req, res) => {
     if (!lat || !lon) {
       return res.status(400).json({
         success: false,
-        error: 'Latitude and longitude are required',
+        error: 'Latitude and longitude are required'
       });
     }
 
@@ -110,13 +110,13 @@ router.get('/museums/nearby', async (req, res) => {
     res.json({
       success: true,
       count: museums.length || 0,
-      museums,
+      museums
     });
   } catch (error) {
     logger.error('izi.TRAVEL nearby museums error:', error);
     res.status(500).json({
       success: false,
-      error: error.error || error.message,
+      error: error.error || error.message
     });
   }
 });
@@ -132,7 +132,7 @@ router.get('/attractions/nearby', async (req, res) => {
     if (!lat || !lon) {
       return res.status(400).json({
         success: false,
-        error: 'Latitude and longitude are required',
+        error: 'Latitude and longitude are required'
       });
     }
 
@@ -145,13 +145,13 @@ router.get('/attractions/nearby', async (req, res) => {
     res.json({
       success: true,
       count: attractions.length || 0,
-      attractions,
+      attractions
     });
   } catch (error) {
     logger.error('izi.TRAVEL nearby attractions error:', error);
     res.status(500).json({
       success: false,
-      error: error.error || error.message,
+      error: error.error || error.message
     });
   }
 });
@@ -166,13 +166,13 @@ router.get('/cities', async (req, res) => {
     res.json({
       success: true,
       count: cities.length || 0,
-      cities,
+      cities
     });
   } catch (error) {
     logger.error('izi.TRAVEL cities error:', error);
     res.status(500).json({
       success: false,
-      error: error.error || error.message,
+      error: error.error || error.message
     });
   }
 });
@@ -187,13 +187,13 @@ router.get('/countries', async (req, res) => {
     res.json({
       success: true,
       count: countries.length || 0,
-      countries,
+      countries
     });
   } catch (error) {
     logger.error('izi.TRAVEL countries error:', error);
     res.status(500).json({
       success: false,
-      error: error.error || error.message,
+      error: error.error || error.message
     });
   }
 });
@@ -209,13 +209,13 @@ router.get('/featured', async (req, res) => {
     );
     res.json({
       success: true,
-      featured,
+      featured
     });
   } catch (error) {
     logger.error('izi.TRAVEL featured content error:', error);
     res.status(500).json({
       success: false,
-      error: error.error || error.message,
+      error: error.error || error.message
     });
   }
 });
@@ -232,13 +232,13 @@ router.get('/object/:uuid/reviews', async (req, res) => {
     );
     res.json({
       success: true,
-      reviews,
+      reviews
     });
   } catch (error) {
     logger.error('izi.TRAVEL reviews error:', error);
     res.status(500).json({
       success: false,
-      error: error.error || error.message,
+      error: error.error || error.message
     });
   }
 });
@@ -255,13 +255,13 @@ router.get('/object/:uuid/children', async (req, res) => {
     );
     res.json({
       success: true,
-      children,
+      children
     });
   } catch (error) {
     logger.error('izi.TRAVEL children error:', error);
     res.status(500).json({
       success: false,
-      error: error.error || error.message,
+      error: error.error || error.message
     });
   }
 });
@@ -279,13 +279,13 @@ router.get('/city/:uuid/search', async (req, res) => {
     res.json({
       success: true,
       count: results.length || 0,
-      results,
+      results
     });
   } catch (error) {
     logger.error('izi.TRAVEL city search error:', error);
     res.status(500).json({
       success: false,
-      error: error.error || error.message,
+      error: error.error || error.message
     });
   }
 });
@@ -299,13 +299,13 @@ router.get('/languages', async (req, res) => {
     const languages = await iziTravelService.getSupportedLanguages();
     res.json({
       success: true,
-      languages,
+      languages
     });
   } catch (error) {
     logger.error('izi.TRAVEL languages error:', error);
     res.status(500).json({
       success: false,
-      error: error.error || error.message,
+      error: error.error || error.message
     });
   }
 });
@@ -321,7 +321,7 @@ router.get('/health', async (req, res) => {
   } catch (error) {
     res.status(503).json({
       status: 'unhealthy',
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -335,13 +335,13 @@ router.post('/clear-cache', async (req, res) => {
     await iziTravelService.clearCache(req.body.pattern);
     res.json({
       success: true,
-      message: 'Cache cleared successfully',
+      message: 'Cache cleared successfully'
     });
   } catch (error) {
     logger.error('izi.TRAVEL clear cache error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });

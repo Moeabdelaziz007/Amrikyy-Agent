@@ -6,7 +6,7 @@ class StripeService {
       throw new Error('Stripe secret key not configured.');
     }
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2022-11-15',
+      apiVersion: '2022-11-15'
     });
   }
 
@@ -17,26 +17,26 @@ class StripeService {
         currency: currency.toLowerCase(),
         product_data: {
           name: description,
-          description: `Amrikyy Trips - ${description}`,
-        },
+          description: `Amrikyy Trips - ${description}`
+        }
       });
 
       const paymentLink = await this.stripe.paymentLinks.create({
         line_items: [
           {
             price: price.id,
-            quantity: 1,
-          },
+            quantity: 1
+          }
         ],
         after_completion: {
           type: 'redirect',
           redirect: {
-            url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/payment/success`,
-          },
+            url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/payment/success`
+          }
         },
         allow_promotion_codes: true,
         billing_address_collection: 'auto',
-        payment_method_types: ['card'],
+        payment_method_types: ['card']
       });
 
       return {
@@ -47,8 +47,8 @@ class StripeService {
           amount: amount,
           currency: currency,
           description: description,
-          status: 'created',
-        },
+          status: 'created'
+        }
       };
     } catch (error) {
       return { success: false, error: error.message };

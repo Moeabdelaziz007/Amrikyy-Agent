@@ -73,7 +73,7 @@ function createRedisRateLimiter(options = {}) {
     // Redis store configuration
     store: new RedisStore({
       prefix: options.prefix || redisConfig.rateLimit.prefix,
-      resetTime: Math.ceil((options.windowMs || redisConfig.rateLimit.windowMs) / 1000),
+      resetTime: Math.ceil((options.windowMs || redisConfig.rateLimit.windowMs) / 1000)
     }),
 
     // Rate limiting settings
@@ -106,14 +106,14 @@ function createRedisRateLimiter(options = {}) {
         error: 'Too many requests from this IP, please try again later.',
         retryAfter: `${Math.ceil((options.windowMs || redisConfig.rateLimit.windowMs) / 1000 / 60)} minutes`,
         limit: options.max || redisConfig.rateLimit.maxRequests,
-        windowMs: options.windowMs || redisConfig.rateLimit.windowMs,
+        windowMs: options.windowMs || redisConfig.rateLimit.windowMs
       });
     }),
 
     // Request handler for successful requests
     onLimitReached: options.onLimitReached || ((req, res, options) => {
       console.warn(`🚫 Rate limit reached for IP: ${req.ip}, Path: ${req.path}`);
-    }),
+    })
   });
 }
 
@@ -131,7 +131,7 @@ function configureRedisRateLimiting(app) {
       error: 'Too many requests from this IP, please try again later.',
       retryAfter: '15 minutes'
     },
-    prefix: 'ratelimit:general:',
+    prefix: 'ratelimit:general:'
   });
 
   // API rate limiter - stricter for API endpoints
@@ -142,7 +142,7 @@ function configureRedisRateLimiting(app) {
       error: 'Too many API requests from this IP, please try again later.',
       retryAfter: '15 minutes'
     },
-    prefix: 'ratelimit:api:',
+    prefix: 'ratelimit:api:'
   });
 
   // AI endpoints rate limiter - very strict
@@ -153,7 +153,7 @@ function configureRedisRateLimiting(app) {
       error: 'Too many AI requests, please slow down.',
       retryAfter: '1 minute'
     },
-    prefix: 'ratelimit:ai:',
+    prefix: 'ratelimit:ai:'
   });
 
   // Payment endpoints rate limiter - strict
@@ -164,7 +164,7 @@ function configureRedisRateLimiting(app) {
       error: 'Too many payment requests, please try again later.',
       retryAfter: '5 minutes'
     },
-    prefix: 'ratelimit:payment:',
+    prefix: 'ratelimit:payment:'
   });
 
   // Apply general rate limiting to all routes
@@ -197,7 +197,7 @@ async function getRateLimitStatus(key, type = 'general') {
       current: count || 0,
       remaining: Math.max(0, redisConfig.rateLimit.maxRequests - (count || 0)),
       resetTime: ttl,
-      limit: redisConfig.rateLimit.maxRequests,
+      limit: redisConfig.rateLimit.maxRequests
     };
   } catch (error) {
     console.error('❌ Failed to get rate limit status:', error.message);
@@ -206,7 +206,7 @@ async function getRateLimitStatus(key, type = 'general') {
       remaining: redisConfig.rateLimit.maxRequests,
       resetTime: -1,
       limit: redisConfig.rateLimit.maxRequests,
-      error: error.message,
+      error: error.message
     };
   }
 }
@@ -231,5 +231,5 @@ module.exports = {
   createRedisRateLimiter,
   configureRedisRateLimiting,
   getRateLimitStatus,
-  resetRateLimit,
+  resetRateLimit
 };

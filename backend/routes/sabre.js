@@ -20,7 +20,7 @@ router.get('/health', async (req, res) => {
     logger.error('Sabre health check error:', error);
     res.status(503).json({
       status: 'unhealthy',
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -38,7 +38,7 @@ router.post('/flights/search', async (req, res) => {
     if (!origin || !destination || !departureDate) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required fields: origin, destination, departureDate',
+        error: 'Missing required fields: origin, destination, departureDate'
       });
     }
 
@@ -50,7 +50,7 @@ router.post('/flights/search', async (req, res) => {
       adults: adults || 1,
       children: children || 0,
       infants: infants || 0,
-      cabinClass: cabinClass || 'Y',
+      cabinClass: cabinClass || 'Y'
     });
 
     res.json({
@@ -62,14 +62,14 @@ router.post('/flights/search', async (req, res) => {
         destination,
         departureDate,
         returnDate,
-        tripType: returnDate ? 'roundTrip' : 'oneWay',
-      },
+        tripType: returnDate ? 'roundTrip' : 'oneWay'
+      }
     });
   } catch (error) {
     logger.error('Flight search error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -86,7 +86,7 @@ router.post('/hotels/search', async (req, res) => {
     if (!location || !checkIn || !checkOut) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required fields: location, checkIn, checkOut',
+        error: 'Missing required fields: location, checkIn, checkOut'
       });
     }
 
@@ -96,7 +96,7 @@ router.post('/hotels/search', async (req, res) => {
       checkOut,
       adults: adults || 1,
       rooms: rooms || 1,
-      maxResults: maxResults || 20,
+      maxResults: maxResults || 20
     });
 
     res.json({
@@ -106,14 +106,14 @@ router.post('/hotels/search', async (req, res) => {
       searchParams: {
         location,
         checkIn,
-        checkOut,
-      },
+        checkOut
+      }
     });
   } catch (error) {
     logger.error('Hotel search error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -130,7 +130,7 @@ router.post('/booking', async (req, res) => {
     if (!type || !travelerInfo || !contact || !itinerary) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required fields: type, travelerInfo, contact, itinerary',
+        error: 'Missing required fields: type, travelerInfo, contact, itinerary'
       });
     }
 
@@ -139,7 +139,7 @@ router.post('/booking', async (req, res) => {
       travelerInfo,
       contact,
       payment,
-      itinerary,
+      itinerary
     });
 
     res.json(result);
@@ -147,7 +147,7 @@ router.post('/booking', async (req, res) => {
     logger.error('Booking creation error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -164,13 +164,13 @@ router.get('/booking/:pnr', async (req, res) => {
 
     res.json({
       success: true,
-      booking,
+      booking
     });
   } catch (error) {
     logger.error('Get booking error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -190,7 +190,7 @@ router.delete('/booking/:pnr', async (req, res) => {
     logger.error('Cancel booking error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });

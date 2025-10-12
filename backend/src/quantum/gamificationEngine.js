@@ -10,7 +10,7 @@ class GamificationEngine {
     this.pointsSystem = {
       workflow_completed: 10,
       feedback_provided: 5,
-      group_booking: 40,
+      group_booking: 40
     };
 
     this.userProfiles = new Map();
@@ -36,7 +36,7 @@ class GamificationEngine {
       action,
       points,
       level: profile.level,
-      leveledUp,
+      leveledUp
     });
 
     return {
@@ -45,7 +45,7 @@ class GamificationEngine {
       totalPoints: profile.totalPoints,
       level: profile.level,
       leveledUp,
-      newAchievements,
+      newAchievements
     };
   }
 
@@ -58,7 +58,7 @@ class GamificationEngine {
       userId,
       workflowId,
       ...feedbackData,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     // Reward user
@@ -70,7 +70,7 @@ class GamificationEngine {
       success: true,
       feedbackId: feedback.id,
       reward,
-      message: 'شكراً لملاحظاتك!',
+      message: 'شكراً لملاحظاتك!'
     };
   }
 
@@ -83,7 +83,7 @@ class GamificationEngine {
         totalPoints: 0,
         achievements: [],
         statistics: {},
-        createdAt: Date.now(),
+        createdAt: Date.now()
       });
     }
     return this.userProfiles.get(userId);
@@ -131,14 +131,14 @@ class GamificationEngine {
       id: 'first_trip',
       name: 'الرحلة الأولى',
       reward: 50,
-      condition: { type: 'workflows', value: 1 },
+      condition: { type: 'workflows', value: 1 }
     });
 
     achievements.set('level_5', {
       id: 'level_5',
       name: 'خبير السفر',
       reward: 200,
-      condition: { type: 'level', value: 5 },
+      condition: { type: 'level', value: 5 }
     });
 
     return achievements;

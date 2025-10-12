@@ -21,7 +21,7 @@ class MultiAgentOrchestrator extends EventEmitter {
     logger.info('Starting orchestration', {
       orchId,
       workflowId: workflow.workflow_id,
-      strategy: workflow.execution_strategy,
+      strategy: workflow.execution_strategy
     });
 
     const orchestration = {
@@ -30,7 +30,7 @@ class MultiAgentOrchestrator extends EventEmitter {
       context,
       startTime: Date.now(),
       results: [],
-      sharedState: {},
+      sharedState: {}
     };
 
     this.activeOrchestrations.set(orchId, orchestration);
@@ -49,7 +49,7 @@ class MultiAgentOrchestrator extends EventEmitter {
       logger.info('Orchestration complete', {
         orchId,
         duration,
-        steps: result.completedSteps,
+        steps: result.completedSteps
       });
 
       return {
@@ -59,8 +59,8 @@ class MultiAgentOrchestrator extends EventEmitter {
         metadata: {
           duration,
           steps_completed: result.completedSteps,
-          agents_involved: result.agents,
-        },
+          agents_involved: result.agents
+        }
       };
     } catch (error) {
       logger.error('Orchestration failed', { orchId, error: error.message });
@@ -69,7 +69,7 @@ class MultiAgentOrchestrator extends EventEmitter {
         success: false,
         orchestrationId: orchId,
         error: error.message,
-        partialResults: orchestration.results,
+        partialResults: orchestration.results
       };
     } finally {
       setTimeout(() => this.activeOrchestrations.delete(orchId), 60000);
@@ -104,7 +104,7 @@ class MultiAgentOrchestrator extends EventEmitter {
       output: this.aggregateResults(results),
       completedSteps: completed,
       results,
-      agents,
+      agents
     };
   }
 
@@ -113,7 +113,7 @@ class MultiAgentOrchestrator extends EventEmitter {
 
     const promises = workflow.steps.map((step) =>
       this.executeStep(step, sharedState).catch((err) => ({
-        error: err.message,
+        error: err.message
       }))
     );
 
@@ -124,7 +124,7 @@ class MultiAgentOrchestrator extends EventEmitter {
       output: this.aggregateResults(successful),
       completedSteps: successful.length,
       results: successful,
-      agents: successful.map(() => 'default_agent'),
+      agents: successful.map(() => 'default_agent')
     };
   }
 
@@ -136,7 +136,7 @@ class MultiAgentOrchestrator extends EventEmitter {
     return {
       summary: `تم إكمال ${results.length} خطوة بنجاح`,
       successful_steps: results.length,
-      details: results.map((r) => r.result),
+      details: results.map((r) => r.result)
     };
   }
 
@@ -146,7 +146,7 @@ class MultiAgentOrchestrator extends EventEmitter {
       id: 'default',
       name: 'Default Agent',
       capabilities: ['all'],
-      handler: async (task) => task,
+      handler: async (task) => task
     });
   }
 }

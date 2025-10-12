@@ -50,7 +50,7 @@ class BlockchainTrustLayer {
       id: txId,
       ...transaction,
       timestamp: Date.now(),
-      hash: this.hashData(transaction),
+      hash: this.hashData(transaction)
     };
 
     this.pendingTransactions.push(tx);
@@ -88,7 +88,7 @@ class BlockchainTrustLayer {
           return {
             verified: true,
             transaction: tx,
-            block: { index: block.index, hash: block.hash },
+            block: { index: block.index, hash: block.hash }
           };
         }
       }
@@ -100,7 +100,7 @@ class BlockchainTrustLayer {
     return {
       blocks: this.chain.length,
       pendingTransactions: this.pendingTransactions.length,
-      isValid: this.isChainValid(),
+      isValid: this.isChainValid()
     };
   }
 
@@ -140,7 +140,7 @@ class BlockchainTrustLayer {
     return this.createTransaction({
       type: 'trip_booking',
       userId: bookingData.userId,
-      data: bookingData,
+      data: bookingData
     });
   }
 
@@ -148,7 +148,7 @@ class BlockchainTrustLayer {
     return this.createTransaction({
       type: 'payment',
       userId: paymentData.userId,
-      data: paymentData,
+      data: paymentData
     });
   }
 }

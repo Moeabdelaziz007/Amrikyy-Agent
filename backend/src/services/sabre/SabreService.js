@@ -21,8 +21,8 @@ class SabreService {
     this.api = axios.create({
       baseURL: this.isProduction ? SABRE_REST_URL : SABRE_BASE_URL,
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     });
 
     // Response interceptor for automatic token refresh
@@ -74,8 +74,8 @@ class SabreService {
         {
           headers: {
             Authorization: `Basic ${credentials}`,
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
         }
       );
 
@@ -114,7 +114,7 @@ class SabreService {
         adults = 1,
         children = 0,
         infants = 0,
-        cabinClass = 'Y', // Y=Economy, C=Business, F=First
+        cabinClass = 'Y' // Y=Economy, C=Business, F=First
       } = searchParams;
 
       const cacheKey = `sabre_flights:${origin}:${destination}:${departureDate}:${returnDate}:${adults}`;
@@ -140,22 +140,22 @@ class SabreService {
                   Type: '1',
                   ID: '1',
                   CompanyName: {
-                    Code: 'TN',
-                  },
-                },
-              },
-            ],
+                    Code: 'TN'
+                  }
+                }
+              }
+            ]
           },
           OriginDestinationInformation: [
             {
               RPH: '1',
               DepartureDateTime: `${departureDate}T00:00:00`,
               OriginLocation: { LocationCode: origin },
-              DestinationLocation: { LocationCode: destination },
-            },
+              DestinationLocation: { LocationCode: destination }
+            }
           ],
           TravelPreferences: {
-            CabinPref: [{ Cabin: cabinClass }],
+            CabinPref: [{ Cabin: cabinClass }]
           },
           TravelerInfoSummary: {
             AirTravelerAvail: [
@@ -163,12 +163,12 @@ class SabreService {
                 PassengerTypeQuantity: [
                   { Code: 'ADT', Quantity: adults },
                   { Code: 'CNN', Quantity: children },
-                  { Code: 'INF', Quantity: infants },
-                ],
-              },
-            ],
-          },
-        },
+                  { Code: 'INF', Quantity: infants }
+                ]
+              }
+            ]
+          }
+        }
       };
 
       // Add return flight if round trip
@@ -177,14 +177,14 @@ class SabreService {
           RPH: '2',
           DepartureDateTime: `${returnDate}T00:00:00`,
           OriginLocation: { LocationCode: destination },
-          DestinationLocation: { LocationCode: origin },
+          DestinationLocation: { LocationCode: origin }
         });
       }
 
       const response = await this.api.post('/v5/offers/shop', request, {
         headers: {
-          Authorization: `Bearer ${this.accessToken}`,
-        },
+          Authorization: `Bearer ${this.accessToken}`
+        }
       });
 
       const flights = this.parseFlightResults(response.data);
@@ -220,10 +220,10 @@ class SabreService {
           price: {
             total: parseFloat(pricing.ItinTotalFare.TotalFare.Amount),
             currency: pricing.ItinTotalFare.TotalFare.CurrencyCode,
-            perPerson: parseFloat(pricing.ItinTotalFare.BaseFare.Amount),
+            perPerson: parseFloat(pricing.ItinTotalFare.BaseFare.Amount)
           },
           segments: this.parseSegments(airItinerary.OriginDestinationOptions),
-          validatingCarrier: pricing.ValidatingCarrier?.Code,
+          validatingCarrier: pricing.ValidatingCarrier?.Code
         });
       });
 
@@ -250,7 +250,7 @@ class SabreService {
           departure: segment.DepartureDateTime,
           arrival: segment.ArrivalDateTime,
           duration: segment.ElapsedTime || 'N/A',
-          aircraft: segment.Equipment?.[0]?.AirEquipType || 'N/A',
+          aircraft: segment.Equipment?.[0]?.AirEquipType || 'N/A'
         });
       });
     });
@@ -271,7 +271,7 @@ class SabreService {
         checkOut,
         adults = 1,
         rooms = 1,
-        maxResults = 20,
+        maxResults = 20
       } = searchParams;
 
       const cacheKey = `sabre_hotels:${location}:${checkIn}:${checkOut}:${adults}:${rooms}`;
@@ -299,9 +299,9 @@ class SabreService {
                 UOM: 'MI',
                 RefPoint: {
                   Value: location,
-                  ValueContext: 'CODE',
-                },
-              },
+                  ValueContext: 'CODE'
+                }
+              }
             },
             RateInfoRef: {
               ConvertedRateInfoOnly: false,
@@ -310,23 +310,23 @@ class SabreService {
               PrepaidQualifier: 'IncludePrepaid',
               StayDateTimeRange: {
                 StartDate: checkIn,
-                EndDate: checkOut,
+                EndDate: checkOut
               },
               Rooms: {
                 Room: Array(rooms).fill({
                   Index: 1,
-                  Adults: adults,
-                }),
-              },
-            },
-          },
-        },
+                  Adults: adults
+                })
+              }
+            }
+          }
+        }
       };
 
       const response = await this.api.post('/v3.0.0/get/hotelavail', request, {
         headers: {
-          Authorization: `Bearer ${this.accessToken}`,
-        },
+          Authorization: `Bearer ${this.accessToken}`
+        }
       });
 
       const hotels = this.parseHotelResults(response.data);
@@ -362,10 +362,10 @@ class SabreService {
           price: {
             total: parseFloat(hotel.RateInfo?.AmountAfterTax || 0),
             currency: hotel.RateInfo?.CurrencyCode || 'USD',
-            perNight: parseFloat(hotel.RateInfo?.AmountBeforeTax || 0),
+            perNight: parseFloat(hotel.RateInfo?.AmountBeforeTax || 0)
           },
           amenities: hotel.HotelInfo?.Amenities || [],
-          images: hotel.HotelInfo?.Media?.Image?.map((img) => img.URL) || [],
+          images: hotel.HotelInfo?.Media?.Image?.map((img) => img.URL) || []
         });
       });
 
@@ -388,7 +388,7 @@ class SabreService {
         travelerInfo,
         contact,
         payment,
-        itinerary,
+        itinerary
       } = bookingData;
 
       logger.info(`Creating ${type} booking...`);
@@ -405,34 +405,34 @@ class SabreService {
                 CityName: process.env.COMPANY_CITY || 'Cairo',
                 CountryCode: process.env.COMPANY_COUNTRY || 'EG',
                 PostalCode: process.env.COMPANY_POSTAL || '11511',
-                StateCountyProv: { StateCode: process.env.COMPANY_STATE || 'C' },
+                StateCountyProv: { StateCode: process.env.COMPANY_STATE || 'C' }
               },
               Ticketing: {
-                TicketType: '7TAW',
-              },
+                TicketType: '7TAW'
+              }
             },
             CustomerInfo: {
               ContactNumbers: {
                 ContactNumber: [
                   {
                     Phone: contact.phone,
-                    PhoneUseType: 'H',
-                  },
-                ],
+                    PhoneUseType: 'H'
+                  }
+                ]
               },
               Email: [
                 {
-                  Address: contact.email,
-                },
+                  Address: contact.email
+                }
               ],
               PersonName: travelerInfo.map((traveler, index) => ({
                 NameNumber: `${index + 1}.1`,
                 GivenName: traveler.firstName,
-                Surname: traveler.lastName,
-              })),
-            },
-          },
-        },
+                Surname: traveler.lastName
+              }))
+            }
+          }
+        }
       };
 
       // Add flight or hotel specific data
@@ -444,8 +444,8 @@ class SabreService {
 
       const response = await this.api.post('/v2.3.0/passenger/records', request, {
         headers: {
-          Authorization: `Bearer ${this.accessToken}`,
-        },
+          Authorization: `Bearer ${this.accessToken}`
+        }
       });
 
       const pnr = this.parsePNR(response.data);
@@ -457,7 +457,7 @@ class SabreService {
         pnr: pnr.recordLocator,
         bookingReference: pnr.recordLocator,
         status: 'confirmed',
-        details: pnr,
+        details: pnr
       };
     } catch (error) {
       logger.error('Booking creation error:', error.message);
@@ -480,9 +480,9 @@ class SabreService {
           Status: 'NN',
           DestinationLocation: { LocationCode: segment.destination },
           MarketingAirline: { Code: segment.airline },
-          OriginLocation: { LocationCode: segment.origin },
-        })),
-      },
+          OriginLocation: { LocationCode: segment.origin }
+        }))
+      }
     };
   }
 
@@ -493,16 +493,16 @@ class SabreService {
     return {
       HotelProperty: {
         ChainCode: itinerary.chainCode || '',
-        HotelCode: itinerary.hotelCode,
+        HotelCode: itinerary.hotelCode
       },
       RoomStay: {
         CheckInDate: itinerary.checkIn,
         CheckOutDate: itinerary.checkOut,
         RoomTypeCode: itinerary.roomType || 'K1',
         RoomRate: {
-          NumberOfUnits: itinerary.rooms || 1,
-        },
-      },
+          NumberOfUnits: itinerary.rooms || 1
+        }
+      }
     };
   }
 
@@ -518,7 +518,7 @@ class SabreService {
         createdAt: new Date().toISOString(),
         status: 'confirmed',
         travelers: pnr?.TravelItineraryRead?.TravelItinerary?.CustomerInfo?.PersonName || [],
-        itinerary: pnr?.TravelItineraryRead?.TravelItinerary || {},
+        itinerary: pnr?.TravelItineraryRead?.TravelItinerary || {}
       };
     } catch (error) {
       logger.error('Error parsing PNR:', error.message);
@@ -533,13 +533,13 @@ class SabreService {
     try {
       await this.ensureAuthenticated();
 
-      const response = await this.api.get(`/v1/trip/orders/getBooking`, {
+      const response = await this.api.get('/v1/trip/orders/getBooking', {
         headers: {
-          Authorization: `Bearer ${this.accessToken}`,
+          Authorization: `Bearer ${this.accessToken}`
         },
         params: {
-          recordLocator: pnr,
-        },
+          recordLocator: pnr
+        }
       });
 
       return response.data;
@@ -557,12 +557,12 @@ class SabreService {
       await this.ensureAuthenticated();
 
       const response = await this.api.post(
-        `/v1/trip/orders/cancelBooking`,
+        '/v1/trip/orders/cancelBooking',
         { recordLocator: pnr },
         {
           headers: {
-            Authorization: `Bearer ${this.accessToken}`,
-          },
+            Authorization: `Bearer ${this.accessToken}`
+          }
         }
       );
 
@@ -570,7 +570,7 @@ class SabreService {
       return {
         success: true,
         message: 'Booking cancelled',
-        pnr,
+        pnr
       };
     } catch (error) {
       logger.error(`Error cancelling booking ${pnr}:`, error.message);
@@ -596,7 +596,7 @@ class SabreService {
         return {
           status: 'warning',
           message: 'Sabre credentials not configured',
-          configured: false,
+          configured: false
         };
       }
 
@@ -606,14 +606,14 @@ class SabreService {
         status: 'healthy',
         message: 'Sabre API is operational',
         configured: true,
-        authenticated: !!this.accessToken,
+        authenticated: !!this.accessToken
       };
     } catch (error) {
       return {
         status: 'unhealthy',
         message: `Sabre API error: ${error.message}`,
         configured: true,
-        authenticated: false,
+        authenticated: false
       };
     }
   }

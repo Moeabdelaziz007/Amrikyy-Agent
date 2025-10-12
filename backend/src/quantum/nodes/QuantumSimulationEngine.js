@@ -27,7 +27,7 @@ class QuantumSimulationEngine extends FractalNode {
   constructor(config) {
     super({
       ...config,
-      name: config.name || 'QuantumSimulation',
+      name: config.name || 'QuantumSimulation'
     });
 
     // Quantum configuration
@@ -43,7 +43,7 @@ class QuantumSimulationEngine extends FractalNode {
       'aggressive', // Fast approach
       'balanced', // Middle ground
       'adaptive', // Learn from past
-      'random', // Exploration
+      'random' // Exploration
     ];
 
     // Quantum state
@@ -56,7 +56,7 @@ class QuantumSimulationEngine extends FractalNode {
       totalSimulations: 0,
       avgSimulationTime: 0,
       avgSpeedup: 0,
-      bestStrategyWins: {},
+      bestStrategyWins: {}
     };
 
     logger.info(
@@ -145,7 +145,7 @@ class QuantumSimulationEngine extends FractalNode {
         operation,
         context: { ...context },
         state: 'superposed', // Not yet measured
-        probability: 1 / this.universeCount, // Equal probability initially
+        probability: 1 / this.universeCount // Equal probability initially
       };
 
       universes.push(universe);
@@ -154,7 +154,7 @@ class QuantumSimulationEngine extends FractalNode {
     this.superpositionState = {
       universes,
       createdAt: Date.now(),
-      coherenceTime: 5000, // 5 seconds max before decoherence
+      coherenceTime: 5000 // 5 seconds max before decoherence
     };
 
     logger.info(
@@ -188,7 +188,7 @@ class QuantumSimulationEngine extends FractalNode {
           ...universe,
           simulation: result.value,
           success: true,
-          score: this._calculateUniverseScore(result.value),
+          score: this._calculateUniverseScore(result.value)
         };
       } else {
         return {
@@ -196,7 +196,7 @@ class QuantumSimulationEngine extends FractalNode {
           simulation: null,
           success: false,
           error: result.reason,
-          score: 0,
+          score: 0
         };
       }
     });
@@ -247,7 +247,7 @@ class QuantumSimulationEngine extends FractalNode {
         simulationTime: simTime,
         strategy: universe.strategy,
         warnings: simResult.warnings || [],
-        opportunities: simResult.opportunities || [],
+        opportunities: simResult.opportunities || []
       };
     } catch (error) {
       logger.warn(`    ⚠️  Simulation ${universe.id} failed: ${error.message}`);
@@ -270,7 +270,7 @@ class QuantumSimulationEngine extends FractalNode {
       retryCount: strategyConfig.retryCount,
       cacheEnabled: strategyConfig.cacheEnabled,
       parallelism: strategyConfig.parallelism,
-      riskLevel: strategyConfig.riskLevel,
+      riskLevel: strategyConfig.riskLevel
     };
   }
 
@@ -292,8 +292,8 @@ class QuantumSimulationEngine extends FractalNode {
         success: Math.random() > 0.3,
         time: Math.random() * 200,
         quality: Math.random(),
-        risk: Math.random(),
-      },
+        risk: Math.random()
+      }
     };
 
     // Get mock result for strategy
@@ -312,10 +312,10 @@ class QuantumSimulationEngine extends FractalNode {
       metrics: {
         executionTime: mock.time,
         quality: mock.quality,
-        risk: mock.risk,
+        risk: mock.risk
       },
       warnings: mock.risk > 0.5 ? ['High risk detected'] : [],
-      opportunities: mock.quality > 0.9 ? ['High quality path'] : [],
+      opportunities: mock.quality > 0.9 ? ['High quality path'] : []
     };
   }
 
@@ -330,7 +330,7 @@ class QuantumSimulationEngine extends FractalNode {
       expectedQuality: quality,
       riskLevel: risk,
       confidence: quality * (1 - risk), // High quality + low risk = high confidence
-      recommendedActions: this._generateRecommendations(simResult, strategy),
+      recommendedActions: this._generateRecommendations(simResult, strategy)
     };
   }
 
@@ -433,7 +433,7 @@ class QuantumSimulationEngine extends FractalNode {
       ...bestUniverse.strategyConfig,
       quantumOptimized: true,
       predictedTime: bestUniverse.simulation.prediction.expectedTime,
-      predictedQuality: bestUniverse.simulation.prediction.expectedQuality,
+      predictedQuality: bestUniverse.simulation.prediction.expectedQuality
     };
 
     // Execute with optimal strategy (we already know it works!)
@@ -467,7 +467,7 @@ class QuantumSimulationEngine extends FractalNode {
         result,
         actualTime,
         predictedTime: avgSimTime,
-        speedup,
+        speedup
       };
 
       return result;
@@ -507,7 +507,7 @@ class QuantumSimulationEngine extends FractalNode {
       ),
       opportunities: simulations.flatMap(
         (s) => s.simulation?.result?.opportunities || []
-      ),
+      )
     };
 
     // Store in memory for learning
@@ -542,50 +542,50 @@ class QuantumSimulationEngine extends FractalNode {
         retryCount: 1,
         cacheEnabled: true,
         parallelism: 5,
-        riskLevel: 0.7,
+        riskLevel: 0.7
       },
       pessimistic: {
         timeout: 30000,
         retryCount: 5,
         cacheEnabled: true,
         parallelism: 1,
-        riskLevel: 0.1,
+        riskLevel: 0.1
       },
       conservative: {
         timeout: 15000,
         retryCount: 3,
         cacheEnabled: true,
         parallelism: 2,
-        riskLevel: 0.3,
+        riskLevel: 0.3
       },
       aggressive: {
         timeout: 3000,
         retryCount: 0,
         cacheEnabled: false,
         parallelism: 10,
-        riskLevel: 0.9,
+        riskLevel: 0.9
       },
       balanced: {
         timeout: 10000,
         retryCount: 2,
         cacheEnabled: true,
         parallelism: 3,
-        riskLevel: 0.5,
+        riskLevel: 0.5
       },
       adaptive: {
         timeout: this._adaptiveValue('timeout', 10000),
         retryCount: this._adaptiveValue('retryCount', 2),
         cacheEnabled: true,
         parallelism: this._adaptiveValue('parallelism', 3),
-        riskLevel: this._adaptiveValue('riskLevel', 0.4),
+        riskLevel: this._adaptiveValue('riskLevel', 0.4)
       },
       random: {
         timeout: Math.random() * 20000 + 5000,
         retryCount: Math.floor(Math.random() * 4),
         cacheEnabled: Math.random() > 0.5,
         parallelism: Math.floor(Math.random() * 8) + 1,
-        riskLevel: Math.random(),
-      },
+        riskLevel: Math.random()
+      }
     };
 
     return configs[strategy] || configs.balanced;
@@ -630,8 +630,8 @@ class QuantumSimulationEngine extends FractalNode {
       currentState: this.collapsedState
         ? 'collapsed'
         : this.superpositionState
-        ? 'superposed'
-        : 'idle',
+          ? 'superposed'
+          : 'idle'
     };
   }
 }

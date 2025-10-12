@@ -41,14 +41,14 @@ class HealthChecker {
             connections: healthResult.connections.connected,
             hit_rate: healthResult.metrics
               ? Math.round(healthResult.metrics.hitRate * 100) / 100
-              : 0,
+              : 0
           };
         } else {
           return {
             status: 'unhealthy',
             message: healthResult.message || 'Redis health check failed',
             response_time: responseTime,
-            error: healthResult.message,
+            error: healthResult.message
           };
         }
       } catch (error) {
@@ -57,7 +57,7 @@ class HealthChecker {
           status: 'error',
           message: 'Redis health check threw an exception',
           response_time: 0,
-          error: error.message,
+          error: error.message
         };
       }
     });
@@ -78,7 +78,7 @@ class HealthChecker {
         ) {
           return {
             status: 'disabled',
-            message: 'Supabase anon key not configured',
+            message: 'Supabase anon key not configured'
           };
         }
 
@@ -115,13 +115,13 @@ class HealthChecker {
         const response = await axios.get('https://api.zai.ai/health', {
           timeout: 5000,
           headers: {
-            Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
-          },
+            Authorization: `Bearer ${process.env.ZAI_API_KEY}`
+          }
         });
 
         return {
           status: response.status === 200 ? 'healthy' : 'degraded',
-          response_time: response.data.response_time || 0,
+          response_time: response.data.response_time || 0
         };
       } catch (error) {
         logger.error('Z.ai API health check failed:', error.message);
@@ -135,20 +135,20 @@ class HealthChecker {
         if (!process.env.TELEGRAM_BOT_TOKEN) {
           return {
             status: 'disabled',
-            message: 'Telegram bot token not configured',
+            message: 'Telegram bot token not configured'
           };
         }
 
         const response = await axios.get(
           `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/getMe`,
           {
-            timeout: 5000,
+            timeout: 5000
           }
         );
 
         return {
           status: response.data.ok ? 'healthy' : 'unhealthy',
-          bot_info: response.data.result,
+          bot_info: response.data.result
         };
       } catch (error) {
         logger.error('Telegram Bot health check failed:', error.message);
@@ -170,21 +170,21 @@ class HealthChecker {
           memoryUsagePercent > 90
             ? 'unhealthy'
             : memoryUsagePercent > 75
-            ? 'degraded'
-            : 'healthy';
+              ? 'degraded'
+              : 'healthy';
 
         return {
           status: healthStatus,
           memory: {
             used: Math.round(usedMemory / 1024 / 1024), // MB
             total: Math.round(totalMemory / 1024 / 1024), // MB
-            usage_percent: Math.round(memoryUsagePercent * 100) / 100,
+            usage_percent: Math.round(memoryUsagePercent * 100) / 100
           },
           cpu: {
             user: cpuUsage.user,
-            system: cpuUsage.system,
+            system: cpuUsage.system
           },
-          uptime: process.uptime(),
+          uptime: process.uptime()
         };
       } catch (error) {
         logger.error('System resources health check failed:', error.message);
@@ -207,7 +207,7 @@ class HealthChecker {
 
         return {
           status: 'healthy',
-          type: process.env.REDIS_URL ? 'redis' : 'jsonbin',
+          type: process.env.REDIS_URL ? 'redis' : 'jsonbin'
         };
       } catch (error) {
         logger.error('Cache system health check failed:', error.message);
@@ -251,13 +251,13 @@ class HealthChecker {
         results[name] = {
           ...result,
           timestamp: new Date().toISOString(),
-          check_duration: Date.now() - startTime,
+          check_duration: Date.now() - startTime
         };
       } catch (error) {
         results[name] = {
           status: 'error',
           error: error.message,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         };
       }
     }
@@ -278,13 +278,13 @@ class HealthChecker {
       const result = await checkFunction();
       return {
         ...result,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     } catch (error) {
       return {
         status: 'error',
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     }
   }
@@ -334,8 +334,8 @@ class HealthChecker {
           (r) => r.status === 'unhealthy' || r.status === 'error'
         ).length,
         disabled: Object.values(results).filter((r) => r.status === 'disabled')
-          .length,
-      },
+          .length
+      }
     };
   }
 
@@ -349,7 +349,7 @@ class HealthChecker {
       status: report.overall_status,
       timestamp: report.timestamp,
       uptime: report.uptime,
-      version: report.version,
+      version: report.version
     };
   }
 }

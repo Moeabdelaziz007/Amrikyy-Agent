@@ -35,14 +35,14 @@ class DynamicWorkflowSynthesizer {
         success_probability: quantumAnalysis.confidence,
         metadata: {
           synthesis_time: Date.now() - startTime,
-          complexity_score: enhanced.length * 0.1,
-        },
+          complexity_score: enhanced.length * 0.1
+        }
       };
 
       logger.info('Workflow synthesized', {
         id: workflow.workflow_id,
         steps: workflow.steps.length,
-        strategy,
+        strategy
       });
 
       return workflow;
@@ -62,7 +62,7 @@ class DynamicWorkflowSynthesizer {
       search_destination: ['get_destination_info', 'get_weather'],
       budget_inquiry: ['calculate_budget'],
       book_flight: ['search_flights'],
-      get_weather: ['get_weather'],
+      get_weather: ['get_weather']
     };
 
     const skillSequence = intentMap[intent] || ['plan_trip'];
@@ -73,7 +73,7 @@ class DynamicWorkflowSynthesizer {
         order: i + 1,
         skill,
         timeout: 10000,
-        critical: i === 0,
+        critical: i === 0
       });
     });
 
@@ -90,7 +90,7 @@ class DynamicWorkflowSynthesizer {
     return steps.map((step) => ({
       ...step,
       retry_policy: { max_attempts: 3, backoff: 'exponential' },
-      fallback: { strategy: 'use_cached_data' },
+      fallback: { strategy: 'use_cached_data' }
     }));
   }
 
@@ -109,7 +109,7 @@ class DynamicWorkflowSynthesizer {
       steps: [{ id: 'step_1', skill: 'simple_response', timeout: 1000 }],
       execution_strategy: 'sequential',
       estimated_duration: 1000,
-      success_probability: 0.7,
+      success_probability: 0.7
     };
   }
 }

@@ -38,7 +38,7 @@ class FractalNode extends EventEmitter {
       successes: [],
       failures: [],
       patterns: {},
-      optimizations: [],
+      optimizations: []
     };
 
     // Health metrics
@@ -48,7 +48,7 @@ class FractalNode extends EventEmitter {
       failureCount: 0,
       healCount: 0,
       avgExecutionTime: 0,
-      lastError: null,
+      lastError: null
     };
 
     // Child nodes (for fractal structure)
@@ -243,7 +243,7 @@ class FractalNode extends EventEmitter {
       errorType,
       rootCause,
       knownSolution,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     logger.info(`  📊 Diagnosis: ${errorType} - ${rootCause}`);
@@ -324,7 +324,7 @@ class FractalNode extends EventEmitter {
     this.emit('learned', {
       node: this.id,
       hasError: !!error,
-      memorySize: this.memory.successes.length + this.memory.failures.length,
+      memorySize: this.memory.successes.length + this.memory.failures.length
     });
   }
 
@@ -339,12 +339,12 @@ class FractalNode extends EventEmitter {
       result,
       error: error
         ? {
-            message: error.message,
-            stack: error.stack,
-            type: error.constructor.name,
-          }
+          message: error.message,
+          stack: error.stack,
+          type: error.constructor.name
+        }
         : null,
-      metrics: { ...this.metrics },
+      metrics: { ...this.metrics }
     };
 
     // Sub-op 2: Store in appropriate collection
@@ -416,7 +416,7 @@ class FractalNode extends EventEmitter {
     return {
       context,
       startTime: Date.now(),
-      nodeId: this.id,
+      nodeId: this.id
     };
   }
 
@@ -498,7 +498,7 @@ class FractalNode extends EventEmitter {
       return {
         found: true,
         solution: 'Applied previous successful recovery',
-        count: similarFailures.length,
+        count: similarFailures.length
       };
     }
 
@@ -529,14 +529,14 @@ class FractalNode extends EventEmitter {
     const fixes = {
       retry_with_backoff: {
         delay: Math.min(1000 * Math.pow(2, this.attemptCount), 10000),
-        contextUpdates: { retryCount: this.attemptCount },
+        contextUpdates: { retryCount: this.attemptCount }
       },
       increase_timeout: {
-        contextUpdates: { timeout: 60000 },
+        contextUpdates: { timeout: 60000 }
       },
       generic_recovery: {
-        contextUpdates: { recoveryMode: true },
-      },
+        contextUpdates: { recoveryMode: true }
+      }
     };
 
     return fixes[strategy] || fixes.generic_recovery;
@@ -581,7 +581,7 @@ class FractalNode extends EventEmitter {
       optimizations.push({
         type: 'increase_max_attempts',
         description: 'Increase retry attempts due to low success rate',
-        priority: 'high',
+        priority: 'high'
       });
     }
 
@@ -589,7 +589,7 @@ class FractalNode extends EventEmitter {
       optimizations.push({
         type: 'optimize_execution',
         description: 'Execution time too high, needs optimization',
-        priority: 'medium',
+        priority: 'medium'
       });
     }
 
@@ -612,7 +612,7 @@ class FractalNode extends EventEmitter {
       success: false,
       error: error.message,
       degraded: true,
-      fallback: true,
+      fallback: true
     };
   }
 
@@ -649,7 +649,7 @@ class FractalNode extends EventEmitter {
         this.metrics.successCount / Math.max(this.metrics.totalExecutions, 1),
       memorySize: this.memory.successes.length + this.memory.failures.length,
       patterns: Object.keys(this.memory.patterns).length,
-      optimizations: this.memory.optimizations.length,
+      optimizations: this.memory.optimizations.length
     };
   }
 
@@ -661,7 +661,7 @@ class FractalNode extends EventEmitter {
       ...config,
       depth: this.depth + 1,
       maxDepth: this.maxDepth,
-      parent: this,
+      parent: this
     });
 
     this.children.push(child);

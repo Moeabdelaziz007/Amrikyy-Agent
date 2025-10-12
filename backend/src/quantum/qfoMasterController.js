@@ -19,7 +19,7 @@ class QFOMasterController {
       total_requests: 0,
       successful: 0,
       failed: 0,
-      avg_time: 0,
+      avg_time: 0
     };
   }
 
@@ -32,7 +32,7 @@ class QFOMasterController {
     logger.info('QFO Processing', {
       requestId,
       userId: request.userId,
-      message: request.message?.substring(0, 30),
+      message: request.message?.substring(0, 30)
     });
 
     try {
@@ -42,7 +42,7 @@ class QFOMasterController {
         {
           sessionId: request.sessionId,
           userId: request.userId,
-          ...request.context,
+          ...request.context
         }
       );
 
@@ -67,8 +67,8 @@ class QFOMasterController {
           requestId,
           workflowId: workflow.workflow_id,
           intent: analysis.primary_intent,
-          success: orchestrationResult.success,
-        },
+          success: orchestrationResult.success
+        }
       });
 
       // Step 5: Gamification Reward
@@ -87,7 +87,7 @@ class QFOMasterController {
       // Step 7: Cross-Platform Sync
       if (request.syncAcrossPlatforms) {
         await superAppOrchestrator.syncStateAcrossPlatforms(request.userId, {
-          lastAction: analysis.primary_intent,
+          lastAction: analysis.primary_intent
         });
       }
 
@@ -97,7 +97,7 @@ class QFOMasterController {
       logger.info('QFO Complete', {
         requestId,
         time: processingTime,
-        success: true,
+        success: true
       });
 
       return {
@@ -109,21 +109,21 @@ class QFOMasterController {
           confidence: analysis.confidence,
           workflow: {
             id: workflow.workflow_id,
-            steps_completed: orchestrationResult.metadata.steps_completed,
+            steps_completed: orchestrationResult.metadata.steps_completed
           },
           gamification: {
             points_earned: reward.points,
             level: reward.level,
             level_up: reward.leveledUp,
-            achievements: reward.newAchievements,
+            achievements: reward.newAchievements
           },
           predictions: predictions.predictions,
-          blockchain: { verified: true },
+          blockchain: { verified: true }
         },
         metadata: {
           processing_time: processingTime,
-          agents_involved: orchestrationResult.metadata.agents_involved,
-        },
+          agents_involved: orchestrationResult.metadata.agents_involved
+        }
       };
     } catch (error) {
       const processingTime = Date.now() - startTime;
@@ -135,7 +135,7 @@ class QFOMasterController {
         success: false,
         requestId,
         error: error.message,
-        fallback_response: 'عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.',
+        fallback_response: 'عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.'
       };
     }
   }
@@ -159,7 +159,7 @@ class QFOMasterController {
         success_rate:
           ((this.stats.successful / this.stats.total_requests) * 100).toFixed(
             2
-          ) + '%',
+          ) + '%'
       },
       components: {
         quantum_engine: 'operational',
@@ -168,9 +168,9 @@ class QFOMasterController {
         gamification: 'operational',
         super_app: 'operational',
         blockchain: 'operational',
-        prediction: 'operational',
+        prediction: 'operational'
       },
-      health: 'excellent',
+      health: 'excellent'
     };
   }
 }

@@ -40,7 +40,7 @@ class CountryAgent {
       safety: {},
       culture: {},
       prices: {},
-      lastUpdate: null,
+      lastUpdate: null
     };
 
     // Auto-update scheduler
@@ -103,7 +103,7 @@ class CountryAgent {
       const [attractions, tours, featured] = await Promise.all([
         this.updateAttractions(),
         this.updateTours(),
-        this.updateFeaturedContent(),
+        this.updateFeaturedContent()
       ]);
 
       this.knowledge.attractions = attractions;
@@ -143,7 +143,7 @@ class CountryAgent {
         {
           radius: 100000, // 100km radius
           languages: 'en,ar',
-          limit: 50,
+          limit: 50
         }
       );
 
@@ -172,7 +172,7 @@ class CountryAgent {
         {
           radius: 100000, // 100km radius
           languages: 'en,ar',
-          limit: 50,
+          limit: 50
         }
       );
 
@@ -191,7 +191,7 @@ class CountryAgent {
       const featured = await iziTravelService.getFeaturedContent('en,ar');
       return featured;
     } catch (error) {
-      logger.error(`Failed to fetch featured content:`, error.message);
+      logger.error('Failed to fetch featured content:', error.message);
       return null;
     }
   }
@@ -254,17 +254,17 @@ class CountryAgent {
         intent,
         knowledgeAge: this.knowledge.lastUpdate
           ? Math.round(
-              (Date.now() - new Date(this.knowledge.lastUpdate).getTime()) /
+            (Date.now() - new Date(this.knowledge.lastUpdate).getTime()) /
                 1000
-            )
-          : null,
+          )
+          : null
       };
     } catch (error) {
       logger.error(`❌ ${this.name} query processing failed:`, error.message);
       return {
         success: false,
         agent: this.name,
-        error: error.message,
+        error: error.message
       };
     }
   }
@@ -282,7 +282,7 @@ class CountryAgent {
         'visit',
         'see',
         'landmark',
-        'monument',
+        'monument'
       ],
       tours: ['tour', 'guide', 'audio', 'walk', 'trip'],
       hotels: ['hotel', 'stay', 'accommodation', 'resort', 'lodge'],
@@ -292,7 +292,7 @@ class CountryAgent {
       safety: ['safe', 'security', 'danger', 'risk'],
       transport: ['transport', 'bus', 'train', 'taxi', 'metro', 'airport'],
       budget: ['cheap', 'budget', 'affordable', 'price', 'cost'],
-      luxury: ['luxury', 'premium', 'expensive', 'exclusive', 'vip'],
+      luxury: ['luxury', 'premium', 'expensive', 'exclusive', 'vip']
     };
 
     const detected = [];
@@ -312,13 +312,13 @@ class CountryAgent {
     const primaryIntent = intents[0];
 
     switch (primaryIntent) {
-      case 'attractions':
-        return this.getAttractionsResponse();
-      case 'tours':
-        return this.getToursResponse();
-      case 'general':
-      default:
-        return this.getGeneralResponse(query);
+    case 'attractions':
+      return this.getAttractionsResponse();
+    case 'tours':
+      return this.getToursResponse();
+    case 'general':
+    default:
+      return this.getGeneralResponse(query);
     }
   }
 
@@ -335,9 +335,9 @@ class CountryAgent {
         uuid: a.uuid,
         title: a.title,
         location: a.location,
-        rating: a.rating,
+        rating: a.rating
       })),
-      message: `I found ${this.knowledge.attractions.length} amazing attractions in ${this.country}! Here are the top ones...`,
+      message: `I found ${this.knowledge.attractions.length} amazing attractions in ${this.country}! Here are the top ones...`
     };
   }
 
@@ -354,9 +354,9 @@ class CountryAgent {
         uuid: t.uuid,
         title: t.title,
         duration: t.audio_duration,
-        languages: t.languages,
+        languages: t.languages
       })),
-      message: `I have ${this.knowledge.tours.length} professional audio tours ready for you in ${this.country}!`,
+      message: `I have ${this.knowledge.tours.length} professional audio tours ready for you in ${this.country}!`
     };
   }
 
@@ -375,9 +375,9 @@ class CountryAgent {
         'Show me top attractions',
         'What are the best tours?',
         'Tell me about local culture',
-        "What's the weather like?",
-        'Where should I stay?',
-      ],
+        'What\'s the weather like?',
+        'Where should I stay?'
+      ]
     };
   }
 
@@ -397,21 +397,21 @@ class CountryAgent {
         lastUpdate: this.knowledge.lastUpdate,
         ageSeconds: this.knowledge.lastUpdate
           ? Math.round(
-              (Date.now() - new Date(this.knowledge.lastUpdate).getTime()) /
+            (Date.now() - new Date(this.knowledge.lastUpdate).getTime()) /
                 1000
-            )
-          : null,
+          )
+          : null
       },
       autoUpdate: {
         enabled: !!this.updateTimer,
         interval: this.updateInterval / 1000,
-        isUpdating: this.isUpdating,
+        isUpdating: this.isUpdating
       },
       performance: {
         tier: this.dnaScore.tier,
         level: this.dnaScore.level,
-        emoji: this.dnaScore.emoji,
-      },
+        emoji: this.dnaScore.emoji
+      }
     };
   }
 

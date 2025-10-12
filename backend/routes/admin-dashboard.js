@@ -25,13 +25,13 @@ router.get('/dashboard', async (req, res) => {
       deploymentStats,
       agentStats,
       systemHealth,
-      recentActivity,
+      recentActivity
     ] = await Promise.all([
       getNetworkMetrics(),
       getDeploymentMetrics(),
       getAgentMetrics(),
       getSystemHealth(),
-      getRecentActivity(),
+      getRecentActivity()
     ]);
 
     res.json({
@@ -42,14 +42,14 @@ router.get('/dashboard', async (req, res) => {
         agents: agentStats,
         health: systemHealth,
         activity: recentActivity,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
     logger.error('Dashboard overview error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -71,8 +71,8 @@ async function getNetworkMetrics() {
       tier: a.performance.tier,
       attractions: a.knowledge.attractions,
       tours: a.knowledge.tours,
-      lastUpdate: a.knowledge.lastUpdate,
-    })),
+      lastUpdate: a.knowledge.lastUpdate
+    }))
   };
 }
 
@@ -97,8 +97,8 @@ async function getDeploymentMetrics() {
       type: d.agent.type,
       dnaScore: d.dnaScore.totalScore,
       status: d.status,
-      deployedAt: d.deployedAt,
-    })),
+      deployedAt: d.deployedAt
+    }))
   };
 }
 
@@ -136,8 +136,8 @@ async function getAgentMetrics() {
           name: a.name,
           type: a.type,
           dnaScore: a.dnaScore,
-          specialization: a.specialization,
-        })),
+          specialization: a.specialization
+        }))
     };
   } catch (error) {
     logger.error('Agent metrics error:', error);
@@ -146,7 +146,7 @@ async function getAgentMetrics() {
       byType: {},
       byTier: {},
       averageDNAScore: 0,
-      topAgents: [],
+      topAgents: []
     };
   }
 }
@@ -158,28 +158,28 @@ async function getSystemHealth() {
   const checks = {
     dnaEngine: {
       status: 'healthy',
-      message: 'Agent DNA Engine operational',
+      message: 'Agent DNA Engine operational'
     },
     deploymentEngine: {
       status: 'healthy',
-      message: 'Deployment Engine operational',
+      message: 'Deployment Engine operational'
     },
     countryNetwork: {
       status: countryAgentNetwork.isInitialized ? 'healthy' : 'inactive',
       message: countryAgentNetwork.isInitialized
         ? 'Network active'
-        : 'Network not initialized',
+        : 'Network not initialized'
     },
     redis: {
       status: redisService.isConnected ? 'healthy' : 'unhealthy',
       message: redisService.isConnected
         ? 'Redis connected'
-        : 'Redis disconnected',
+        : 'Redis disconnected'
     },
     iziTravel: {
       status: 'pending',
-      message: 'Checking...',
-    },
+      message: 'Checking...'
+    }
   };
 
   // Check izi.TRAVEL
@@ -187,12 +187,12 @@ async function getSystemHealth() {
     const iziHealth = await iziTravelService.healthCheck();
     checks.iziTravel = {
       status: iziHealth.status === 'healthy' ? 'healthy' : 'unhealthy',
-      message: iziHealth.message,
+      message: iziHealth.message
     };
   } catch (error) {
     checks.iziTravel = {
       status: 'unhealthy',
-      message: error.message,
+      message: error.message
     };
   }
 
@@ -201,7 +201,7 @@ async function getSystemHealth() {
   return {
     overall: allHealthy ? 'healthy' : 'degraded',
     checks,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 
@@ -216,8 +216,8 @@ async function getRecentActivity() {
       id: h.id,
       agentName: h.agentName,
       status: h.status,
-      timestamp: h.timestamp,
-    })),
+      timestamp: h.timestamp
+    }))
   };
 }
 
@@ -233,28 +233,28 @@ router.get('/analytics', async (req, res) => {
       deployments: {
         timeline: getDeploymentTimeline(timeRange),
         successRate: deploymentEngine.getStatistics().successRate,
-        averageDuration: deploymentEngine.getStatistics().averageDuration,
+        averageDuration: deploymentEngine.getStatistics().averageDuration
       },
       agents: {
         growth: await getAgentGrowth(timeRange),
-        performance: await getAgentPerformance(),
+        performance: await getAgentPerformance()
       },
       network: {
         knowledgeGrowth: await getKnowledgeGrowth(timeRange),
-        queryVolume: await getQueryVolume(timeRange),
-      },
+        queryVolume: await getQueryVolume(timeRange)
+      }
     };
 
     res.json({
       success: true,
       analytics,
-      timeRange,
+      timeRange
     });
   } catch (error) {
     logger.error('Analytics error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -314,7 +314,7 @@ async function getAgentPerformance() {
       name: agent.name,
       type: agent.type,
       dnaScore: agent.dnaScore,
-      performance: agent.performanceMetrics || {},
+      performance: agent.performanceMetrics || {}
     }));
   } catch (error) {
     return [];
@@ -330,7 +330,7 @@ async function getKnowledgeGrowth(range) {
   return {
     current: status.totalKnowledge,
     // TODO: Track historical data in Redis
-    history: [],
+    history: []
   };
 }
 
@@ -341,7 +341,7 @@ async function getQueryVolume(range) {
   // TODO: Track query metrics in Redis
   return {
     total: 0,
-    byCountry: {},
+    byCountry: {}
   };
 }
 
@@ -369,20 +369,20 @@ router.get('/leaderboard', async (req, res) => {
           tier: dnaInfo.tier,
           level: dnaInfo.name,
           emoji: dnaInfo.emoji,
-          createdAt: agent.createdAt,
+          createdAt: agent.createdAt
         };
       });
 
     res.json({
       success: true,
       count: leaderboard.length,
-      leaderboard,
+      leaderboard
     });
   } catch (error) {
     logger.error('Leaderboard error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -399,13 +399,13 @@ router.get('/logs', async (req, res) => {
     res.json({
       success: true,
       count: history.length,
-      logs: history,
+      logs: history
     });
   } catch (error) {
     logger.error('Logs error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -421,52 +421,52 @@ router.post('/control/:action', async (req, res) => {
     let result;
 
     switch (action) {
-      case 'initialize-network':
-        await countryAgentNetwork.initialize();
-        result = { message: 'Country Agent Network initialized' };
-        break;
+    case 'initialize-network':
+      await countryAgentNetwork.initialize();
+      result = { message: 'Country Agent Network initialized' };
+      break;
 
-      case 'shutdown-network':
-        countryAgentNetwork.shutdown();
-        result = { message: 'Country Agent Network shut down' };
-        break;
+    case 'shutdown-network':
+      countryAgentNetwork.shutdown();
+      result = { message: 'Country Agent Network shut down' };
+      break;
 
-      case 'clear-cache':
-        if (redisService.isConnected) {
-          // Clear all caches
-          await Promise.all([
-            iziTravelService.clearCache(),
-            // Add more cache clearing as needed
-          ]);
-          result = { message: 'All caches cleared' };
-        } else {
-          throw new Error('Redis not connected');
-        }
-        break;
+    case 'clear-cache':
+      if (redisService.isConnected) {
+        // Clear all caches
+        await Promise.all([
+          iziTravelService.clearCache()
+          // Add more cache clearing as needed
+        ]);
+        result = { message: 'All caches cleared' };
+      } else {
+        throw new Error('Redis not connected');
+      }
+      break;
 
-      case 'update-knowledge':
-        if (!countryAgentNetwork.isInitialized) {
-          throw new Error('Network not initialized');
-        }
-        const agents = countryAgentNetwork.getAllAgents();
-        await Promise.all(agents.map((agent) => agent.updateKnowledge()));
-        result = { message: `Updated knowledge for ${agents.length} agents` };
-        break;
+    case 'update-knowledge':
+      if (!countryAgentNetwork.isInitialized) {
+        throw new Error('Network not initialized');
+      }
+      const agents = countryAgentNetwork.getAllAgents();
+      await Promise.all(agents.map((agent) => agent.updateKnowledge()));
+      result = { message: `Updated knowledge for ${agents.length} agents` };
+      break;
 
-      default:
-        throw new Error(`Unknown action: ${action}`);
+    default:
+      throw new Error(`Unknown action: ${action}`);
     }
 
     res.json({
       success: true,
       action,
-      ...result,
+      ...result
     });
   } catch (error) {
     logger.error('Control action error:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -481,13 +481,13 @@ router.get('/health', async (req, res) => {
 
     res.json({
       success: true,
-      ...health,
+      ...health
     });
   } catch (error) {
     res.status(503).json({
       success: false,
       status: 'unhealthy',
-      error: error.message,
+      error: error.message
     });
   }
 });

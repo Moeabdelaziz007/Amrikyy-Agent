@@ -21,7 +21,7 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   longs: String,
   enums: String,
   defaults: true,
-  oneofs: true,
+  oneofs: true
 });
 
 const quantumProto = grpc.loadPackageDefinition(packageDefinition).quantum;
@@ -43,7 +43,7 @@ class QuantumGrpcServer {
       StreamQueries: this.streamQueries.bind(this),
       CollaborateAgents: this.collaborateAgents.bind(this),
       GetAgentStatus: this.getAgentStatus.bind(this),
-      UpdateKnowledge: this.updateKnowledge.bind(this),
+      UpdateKnowledge: this.updateKnowledge.bind(this)
     });
 
     // DNA Service
@@ -51,7 +51,7 @@ class QuantumGrpcServer {
       CalculateDNA: this.calculateDNA.bind(this),
       GeneratePrompt: this.generatePrompt.bind(this),
       EvolveAgent: this.evolveAgent.bind(this),
-      WatchDNA: this.watchDNA.bind(this),
+      WatchDNA: this.watchDNA.bind(this)
     });
 
     // Network Service
@@ -59,7 +59,7 @@ class QuantumGrpcServer {
       RouteQuery: this.routeQuery.bind(this),
       BroadcastMessage: this.broadcastMessage.bind(this),
       GetNetworkStatus: this.getNetworkStatus.bind(this),
-      AgentHeartbeat: this.agentHeartbeat.bind(this),
+      AgentHeartbeat: this.agentHeartbeat.bind(this)
     });
 
     // Deployment Service
@@ -67,7 +67,7 @@ class QuantumGrpcServer {
       DeployAgent: this.deployAgent.bind(this),
       BatchDeploy: this.batchDeploy.bind(this),
       UndeployAgent: this.undeployAgent.bind(this),
-      WatchDeployment: this.watchDeployment.bind(this),
+      WatchDeployment: this.watchDeployment.bind(this)
     });
 
     logger.info('✅ gRPC services registered');
@@ -101,7 +101,7 @@ class QuantumGrpcServer {
       logger.error('gRPC processQuery error:', error);
       callback({
         code: grpc.status.INTERNAL,
-        details: error.message,
+        details: error.message
       });
     }
   }
@@ -126,8 +126,8 @@ class QuantumGrpcServer {
           success: false,
           response: {
             type: 'error',
-            message: error.message,
-          },
+            message: error.message
+          }
         });
       }
     });
@@ -157,7 +157,7 @@ class QuantumGrpcServer {
           type: 1, // RESPONSE
           content: `Processed: ${message.content}`,
           metadata: message.metadata,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         };
 
         call.write(response);
@@ -183,7 +183,7 @@ class QuantumGrpcServer {
       if (!agent) {
         return callback({
           code: grpc.status.NOT_FOUND,
-          details: `Agent not found: ${agentKey}`,
+          details: `Agent not found: ${agentKey}`
         });
       }
 
@@ -195,7 +195,7 @@ class QuantumGrpcServer {
       logger.error('getAgentStatus error:', error);
       callback({
         code: grpc.status.INTERNAL,
-        details: error.message,
+        details: error.message
       });
     }
   }
@@ -211,7 +211,7 @@ class QuantumGrpcServer {
       if (!agent) {
         return callback({
           code: grpc.status.NOT_FOUND,
-          details: `Agent not found: ${agent_key}`,
+          details: `Agent not found: ${agent_key}`
         });
       }
 
@@ -221,13 +221,13 @@ class QuantumGrpcServer {
       callback(null, {
         success: true,
         message: 'Knowledge updated successfully',
-        items_updated: 1,
+        items_updated: 1
       });
     } catch (error) {
       logger.error('updateKnowledge error:', error);
       callback({
         code: grpc.status.INTERNAL,
-        details: error.message,
+        details: error.message
       });
     }
   }
@@ -247,7 +247,7 @@ class QuantumGrpcServer {
         personality: this.convertPersonality(personality),
         skills: this.convertSkills(skills),
         behavior: this.convertBehavior(behavior),
-        specialization,
+        specialization
       };
 
       const dnaScore = agentDNAEngine.calculateDNAScore(dna);
@@ -258,7 +258,7 @@ class QuantumGrpcServer {
       logger.error('calculateDNA error:', error);
       callback({
         code: grpc.status.INTERNAL,
-        details: error.message,
+        details: error.message
       });
     }
   }
@@ -274,20 +274,20 @@ class QuantumGrpcServer {
         personality: this.convertPersonality(call.request.personality),
         skills: this.convertSkills(call.request.skills),
         behavior: this.convertBehavior(call.request.behavior),
-        domainExpertise: call.request.domain_expertise || [],
+        domainExpertise: call.request.domain_expertise || []
       };
 
       const prompt = agentDNAEngine.generateSystemPrompt(agent);
 
       callback(null, {
         system_prompt: prompt,
-        length: prompt.length,
+        length: prompt.length
       });
     } catch (error) {
       logger.error('generatePrompt error:', error);
       callback({
         code: grpc.status.INTERNAL,
-        details: error.message,
+        details: error.message
       });
     }
   }
@@ -304,16 +304,16 @@ class QuantumGrpcServer {
           total_score: 800,
           level: 'Expert',
           tier: 5,
-          emoji: '🚀',
+          emoji: '🚀'
         },
         improvements: ['Enhanced problem-solving', 'Improved communication'],
-        next_milestone: 'Reach Master tier',
+        next_milestone: 'Reach Master tier'
       });
     } catch (error) {
       logger.error('evolveAgent error:', error);
       callback({
         code: grpc.status.INTERNAL,
-        details: error.message,
+        details: error.message
       });
     }
   }
@@ -332,10 +332,10 @@ class QuantumGrpcServer {
         total_score: 750,
         level: 'Expert',
         tier: 5,
-        emoji: '🚀',
+        emoji: '🚀'
       },
       change_reason: 'Initial state',
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
     // Simulate DNA updates every 10 seconds
@@ -346,10 +346,10 @@ class QuantumGrpcServer {
           total_score: 750 + Math.floor(Math.random() * 50),
           level: 'Expert',
           tier: 5,
-          emoji: '🚀',
+          emoji: '🚀'
         },
         change_reason: 'Performance improvement',
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     }, 10000);
 
@@ -382,18 +382,18 @@ class QuantumGrpcServer {
         multi_agent: result.multi_agent || false,
         synthesized: result.multi_agent
           ? {
-              message: result.message,
-              all_attractions: result.attractions || [],
-              all_tours: result.tours || [],
-              total_count: (result.attractions?.length || 0) + (result.tours?.length || 0),
-            }
-          : null,
+            message: result.message,
+            all_attractions: result.attractions || [],
+            all_tours: result.tours || [],
+            total_count: (result.attractions?.length || 0) + (result.tours?.length || 0)
+          }
+          : null
       });
     } catch (error) {
       logger.error('routeQuery error:', error);
       callback({
         code: grpc.status.INTERNAL,
-        details: error.message,
+        details: error.message
       });
     }
   }
@@ -408,13 +408,13 @@ class QuantumGrpcServer {
       callback(null, {
         success: true,
         agents_reached: agents.length,
-        agent_keys: agents.map((a) => a.countryCode.toLowerCase()),
+        agent_keys: agents.map((a) => a.countryCode.toLowerCase())
       });
     } catch (error) {
       logger.error('broadcastMessage error:', error);
       callback({
         code: grpc.status.INTERNAL,
-        details: error.message,
+        details: error.message
       });
     }
   }
@@ -432,15 +432,15 @@ class QuantumGrpcServer {
         agents_count: status.agents,
         total_knowledge: {
           attractions: status.totalKnowledge.attractions,
-          tours: status.totalKnowledge.tours,
+          tours: status.totalKnowledge.tours
         },
-        timestamp: status.timestamp,
+        timestamp: status.timestamp
       });
     } catch (error) {
       logger.error('getNetworkStatus error:', error);
       callback({
         code: grpc.status.INTERNAL,
-        details: error.message,
+        details: error.message
       });
     }
   }
@@ -458,7 +458,7 @@ class QuantumGrpcServer {
       call.write({
         agent_key: heartbeat.agent_key,
         acknowledged: true,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     });
 
@@ -483,7 +483,7 @@ class QuantumGrpcServer {
         specialization: call.request.specialization,
         personality: this.convertPersonality(call.request.personality),
         skills: this.convertSkills(call.request.skills),
-        behavior: this.convertBehavior(call.request.behavior),
+        behavior: this.convertBehavior(call.request.behavior)
       };
 
       const result = await deploymentEngine.deployAgent(config);
@@ -494,13 +494,13 @@ class QuantumGrpcServer {
         agent_id: result.agent._id,
         agent_name: result.agent.name,
         dna_score: this.convertDNAScore(result.dnaScore),
-        duration_ms: result.duration,
+        duration_ms: result.duration
       });
     } catch (error) {
       logger.error('deployAgent error:', error);
       callback({
         code: grpc.status.INTERNAL,
-        details: error.message,
+        details: error.message
       });
     }
   }
@@ -522,7 +522,7 @@ class QuantumGrpcServer {
           specialization: agentReq.specialization,
           personality: this.convertPersonality(agentReq.personality),
           skills: this.convertSkills(agentReq.skills),
-          behavior: this.convertBehavior(agentReq.behavior),
+          behavior: this.convertBehavior(agentReq.behavior)
         };
 
         const result = await deploymentEngine.deployAgent(config);
@@ -534,10 +534,10 @@ class QuantumGrpcServer {
           result: {
             success: true,
             deployment_id: result.deploymentId,
-            agent_name: result.agent.name,
+            agent_name: result.agent.name
           },
           completed,
-          total: agents.length,
+          total: agents.length
         });
       } catch (error) {
         completed++;
@@ -546,7 +546,7 @@ class QuantumGrpcServer {
           status: 'failed',
           error: error.message,
           completed,
-          total: agents.length,
+          total: agents.length
         });
       }
 
@@ -565,13 +565,13 @@ class QuantumGrpcServer {
 
       callback(null, {
         success: result.success,
-        message: result.message,
+        message: result.message
       });
     } catch (error) {
       logger.error('undeployAgent error:', error);
       callback({
         code: grpc.status.INTERNAL,
-        details: error.message,
+        details: error.message
       });
     }
   }
@@ -590,9 +590,9 @@ class QuantumGrpcServer {
         status: 'running',
         health: {
           status: 'healthy',
-          checks: {},
+          checks: {}
         },
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     }, 5000);
 
@@ -614,7 +614,7 @@ class QuantumGrpcServer {
       interests: context.interests,
       budget: context.budget,
       dates: context.dates,
-      travelers: context.travelers,
+      travelers: context.travelers
     };
   }
 
@@ -628,11 +628,11 @@ class QuantumGrpcServer {
       response: {
         type: result.response?.type || 'general',
         message: result.response?.message || '',
-        count: result.response?.count || 0,
+        count: result.response?.count || 0
       },
       intents: result.intent || [],
       processing_time_ms: Date.now(),
-      knowledge_age_seconds: result.knowledgeAge || 0,
+      knowledge_age_seconds: result.knowledgeAge || 0
     };
   }
 
@@ -646,18 +646,18 @@ class QuantumGrpcServer {
         attractions: status.knowledge.attractions,
         tours: status.knowledge.tours,
         last_update: status.knowledge.lastUpdate,
-        age_seconds: status.knowledge.ageSeconds || 0,
+        age_seconds: status.knowledge.ageSeconds || 0
       },
       auto_update: {
         enabled: status.autoUpdate.enabled,
         interval_seconds: status.autoUpdate.interval,
-        is_updating: status.autoUpdate.isUpdating,
+        is_updating: status.autoUpdate.isUpdating
       },
       performance: {
         tier: status.performance.tier,
         level: status.performance.level,
-        emoji: status.performance.emoji,
-      },
+        emoji: status.performance.emoji
+      }
     };
   }
 
@@ -669,13 +669,13 @@ class QuantumGrpcServer {
       emoji: dnaScore.emoji,
       breakdown: dnaScore.breakdown
         ? {
-            personality: dnaScore.breakdown.personality,
-            skills: dnaScore.breakdown.skills,
-            behavior: dnaScore.breakdown.behavior,
-            synergy: dnaScore.breakdown.synergy,
-            multiplier: dnaScore.breakdown.multiplier,
-          }
-        : null,
+          personality: dnaScore.breakdown.personality,
+          skills: dnaScore.breakdown.skills,
+          behavior: dnaScore.breakdown.behavior,
+          synergy: dnaScore.breakdown.synergy,
+          multiplier: dnaScore.breakdown.multiplier
+        }
+        : null
     };
   }
 
@@ -686,7 +686,7 @@ class QuantumGrpcServer {
       empathetic: p.empathetic,
       logical: p.logical,
       intuitive: p.intuitive,
-      assertive: p.assertive,
+      assertive: p.assertive
     };
   }
 
@@ -697,7 +697,7 @@ class QuantumGrpcServer {
       problemSolving: s.problem_solving,
       leadership: s.leadership,
       learning: s.learning,
-      cultural: s.cultural,
+      cultural: s.cultural
     };
   }
 
@@ -706,7 +706,7 @@ class QuantumGrpcServer {
       decisionSpeed: b.decision_speed,
       riskTolerance: b.risk_tolerance,
       workStyle: b.work_style,
-      detailLevel: b.detail_level,
+      detailLevel: b.detail_level
     };
   }
 

@@ -176,7 +176,7 @@ class RedisSessionStore extends require('express-session').Store {
         sessions: length,
         ttl: this.ttl,
         prefix: this.prefix,
-        redisConnected: redisService.isConnected,
+        redisConnected: redisService.isConnected
       };
     } catch (error) {
       console.error('❌ RedisSessionStore.getStats error:', error.message);
@@ -185,7 +185,7 @@ class RedisSessionStore extends require('express-session').Store {
         ttl: this.ttl,
         prefix: this.prefix,
         redisConnected: false,
-        error: error.message,
+        error: error.message
       };
     }
   }

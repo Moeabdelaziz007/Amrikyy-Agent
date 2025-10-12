@@ -16,7 +16,7 @@ class RedisService {
       hits: 0,
       misses: 0,
       errors: 0,
-      operations: 0,
+      operations: 0
     };
 
     // Bind methods
@@ -113,7 +113,7 @@ class RedisService {
           message: 'Redis client not connected',
           uptime: 0,
           memory: { used: 0, peak: 0 },
-          connections: { connected: 0, total: 0 },
+          connections: { connected: 0, total: 0 }
         };
       }
 
@@ -139,14 +139,14 @@ class RedisService {
         uptime: parseInt(infoObj.uptime_in_seconds) || 0,
         memory: {
           used: parseInt(infoObj.used_memory) || 0,
-          peak: parseInt(infoObj.used_memory_peak) || 0,
+          peak: parseInt(infoObj.used_memory_peak) || 0
         },
         connections: {
           connected: parseInt(infoObj.connected_clients) || 0,
-          total: parseInt(infoObj.total_connections_received) || 0,
+          total: parseInt(infoObj.total_connections_received) || 0
         },
         responseTime,
-        metrics: this.metrics,
+        metrics: this.metrics
       };
     } catch (error) {
       console.error('❌ Redis health check failed:', error.message);
@@ -154,7 +154,7 @@ class RedisService {
       return {
         status: 'unhealthy',
         message: error.message,
-        error: error.message,
+        error: error.message
       };
     }
   }
@@ -442,7 +442,7 @@ class RedisService {
           remaining: 0,
           resetTime: await this.ttl(
             rateLimitKey.replace(redisConfig.rateLimit.prefix, '')
-          ),
+          )
         };
       }
 
@@ -457,7 +457,7 @@ class RedisService {
       return {
         allowed: true,
         remaining: Math.max(0, max - newCount),
-        resetTime: Math.ceil(window / 1000),
+        resetTime: Math.ceil(window / 1000)
       };
     } catch (error) {
       console.error('❌ Rate limit check error:', error.message);
@@ -644,7 +644,7 @@ class RedisService {
       ...this.metrics,
       hitRate: Math.round(hitRate * 100) / 100,
       connected: this.isConnected,
-      uptime: process.uptime(),
+      uptime: process.uptime()
     };
   }
 

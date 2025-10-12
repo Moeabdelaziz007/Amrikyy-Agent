@@ -18,7 +18,7 @@ class AgentDNAEngine {
       { name: 'Advanced', tier: 4, emoji: '📈', minScore: 600 },
       { name: 'Intermediate', tier: 3, emoji: '🌱', minScore: 500 },
       { name: 'Developing', tier: 2, emoji: '💡', minScore: 400 },
-      { name: 'Novice', tier: 1, emoji: '🌟', minScore: 0 },
+      { name: 'Novice', tier: 1, emoji: '🌟', minScore: 0 }
     ];
 
     this.presets = this.initializePresets();
@@ -67,10 +67,10 @@ class AgentDNAEngine {
           skills: Math.round(skillScore),
           behavior: Math.round(behaviorScore),
           synergy: Math.round(synergyBonus),
-          multiplier: specializationMultiplier,
+          multiplier: specializationMultiplier
         },
         potential: this.calculatePotential(dna),
-        evolution: this.predictEvolution(dna),
+        evolution: this.predictEvolution(dna)
       };
     } catch (error) {
       logger.error('DNA Score calculation error:', error);
@@ -79,7 +79,7 @@ class AgentDNAEngine {
         level: 'Intermediate',
         tier: 3,
         emoji: '🌱',
-        error: error.message,
+        error: error.message
       };
     }
   }
@@ -111,7 +111,7 @@ class AgentDNAEngine {
       problemSolving: 1.5,
       leadership: 1.1,
       learning: 1.4,
-      cultural: 1.0,
+      cultural: 1.0
     };
 
     let weightedSum = 0;
@@ -155,38 +155,38 @@ class AgentDNAEngine {
         decisionSpeed: 65,
         riskTolerance: 45,
         workStyle: 75,
-        detailLevel: 80,
+        detailLevel: 80
       },
       'country-agent': {
         decisionSpeed: 60,
         riskTolerance: 40,
         workStyle: 70,
-        detailLevel: 85,
+        detailLevel: 85
       },
       'luxury-expert': {
         decisionSpeed: 55,
         riskTolerance: 35,
         workStyle: 80,
-        detailLevel: 95,
+        detailLevel: 95
       },
       'budget-expert': {
         decisionSpeed: 75,
         riskTolerance: 60,
         workStyle: 65,
-        detailLevel: 60,
+        detailLevel: 60
       },
       'ai-engineer': {
         decisionSpeed: 50,
         riskTolerance: 70,
         workStyle: 60,
-        detailLevel: 90,
+        detailLevel: 90
       },
       general: {
         decisionSpeed: 50,
         riskTolerance: 50,
         workStyle: 50,
-        detailLevel: 50,
-      },
+        detailLevel: 50
+      }
     };
 
     return profiles[specialization] || profiles.general;
@@ -236,7 +236,7 @@ class AgentDNAEngine {
       'luxury-expert': 1.1,
       'ai-engineer': 1.25,
       'cultural-expert': 1.15,
-      general: 1.0,
+      general: 1.0
     };
 
     return multipliers[specialization] || 1.0;
@@ -273,15 +273,15 @@ class AgentDNAEngine {
         potential > 80
           ? 'Exceptional'
           : potential > 65
-          ? 'High'
-          : potential > 50
-          ? 'Moderate'
-          : 'Limited',
+            ? 'High'
+            : potential > 50
+              ? 'Moderate'
+              : 'Limited',
       maxTier: Math.min(
         currentLevel + Math.floor(roomForGrowth * (potential / 100)),
         10
       ),
-      timeToNext: this.estimateTimeToNextLevel(potential, currentLevel),
+      timeToNext: this.estimateTimeToNextLevel(potential, currentLevel)
     };
   }
 
@@ -297,7 +297,7 @@ class AgentDNAEngine {
       nextLevel: this.getDNALevel(currentScore + 50).name,
       evolutionPath: this.generateEvolutionPath(dna),
       recommendedFocus: this.getRecommendedFocus(dna),
-      estimatedGrowth: `${Math.round(potential.score / 10)} levels in 6 months`,
+      estimatedGrowth: `${Math.round(potential.score / 10)} levels in 6 months`
     };
   }
 
@@ -312,7 +312,7 @@ class AgentDNAEngine {
       phase1: `Strengthen ${weakestArea.name} (current: ${weakestArea.value})`,
       phase2: `Leverage ${strongestArea.name} for specialization`,
       phase3: 'Develop unique trait combinations',
-      phase4: 'Achieve quantum-level capabilities',
+      phase4: 'Achieve quantum-level capabilities'
     };
   }
 
@@ -364,7 +364,7 @@ class AgentDNAEngine {
           trait,
           currentValue: value,
           targetValue: 70,
-          priority: value < 40 ? 'High' : 'Medium',
+          priority: value < 40 ? 'High' : 'Medium'
         });
       }
     });
@@ -385,7 +385,7 @@ class AgentDNAEngine {
     return {
       days,
       weeks: Math.ceil(days / 7),
-      formatted: `${Math.ceil(days / 7)} weeks`,
+      formatted: `${Math.ceil(days / 7)} weeks`
     };
   }
 
@@ -479,14 +479,14 @@ ${
       behavior.decisionSpeed > 50 ? 'Quick' : 'Thorough'
     } (${behavior.decisionSpeed}%)
 - Risk Tolerance: ${behavior.riskTolerance > 50 ? 'Bold' : 'Conservative'} (${
-      behavior.riskTolerance
-    }%)
+  behavior.riskTolerance
+}%)
 - Work Style: ${behavior.workStyle > 50 ? 'Collaborative' : 'Independent'} (${
-      behavior.workStyle
-    }%)
+  behavior.workStyle
+}%)
 - Detail Focus: ${behavior.detailLevel > 50 ? 'Meticulous' : 'Big Picture'} (${
-      behavior.detailLevel
-    }%)`;
+  behavior.detailLevel
+}%)`;
   }
 
   /**
@@ -504,7 +504,7 @@ ${
           empathetic: 85,
           logical: 70,
           intuitive: 80,
-          assertive: 65,
+          assertive: 65
         },
         skills: {
           cultural: 95,
@@ -512,23 +512,23 @@ ${
           problemSolving: 85,
           learning: 80,
           leadership: 70,
-          coding: 50,
+          coding: 50
         },
         behavior: {
           decisionSpeed: 60,
           riskTolerance: 40,
           workStyle: 70,
-          detailLevel: 80,
+          detailLevel: 80
         },
         domainExpertise: [
           'Egyptian history',
           'Pyramids & ancient sites',
           'Nile cruises',
           'Cairo & Alexandria',
-          'Red Sea resorts',
+          'Red Sea resorts'
         ],
         country: 'Egypt',
-        icon: '🇪🇬',
+        icon: '🇪🇬'
       },
       saudiGuide: {
         name: 'Saudi Arabia Guide',
@@ -540,7 +540,7 @@ ${
           empathetic: 90,
           logical: 75,
           intuitive: 70,
-          assertive: 60,
+          assertive: 60
         },
         skills: {
           cultural: 98,
@@ -548,23 +548,23 @@ ${
           problemSolving: 80,
           learning: 75,
           leadership: 65,
-          coding: 45,
+          coding: 45
         },
         behavior: {
           decisionSpeed: 55,
           riskTolerance: 35,
           workStyle: 75,
-          detailLevel: 85,
+          detailLevel: 85
         },
         domainExpertise: [
           'Hajj & Umrah',
           'Islamic heritage',
           'Mecca & Medina',
           'Saudi culture',
-          'Desert experiences',
+          'Desert experiences'
         ],
         country: 'Saudi Arabia',
-        icon: '🇸🇦',
+        icon: '🇸🇦'
       },
       uaeLuxury: {
         name: 'UAE Luxury Concierge',
@@ -576,7 +576,7 @@ ${
           empathetic: 85,
           logical: 75,
           intuitive: 85,
-          assertive: 75,
+          assertive: 75
         },
         skills: {
           communication: 95,
@@ -584,23 +584,23 @@ ${
           cultural: 85,
           leadership: 80,
           learning: 75,
-          coding: 50,
+          coding: 50
         },
         behavior: {
           decisionSpeed: 65,
           riskTolerance: 50,
           workStyle: 80,
-          detailLevel: 90,
+          detailLevel: 90
         },
         domainExpertise: [
           'Luxury hotels',
           'Fine dining',
           'Premium experiences',
           'Dubai & Abu Dhabi',
-          'High-end shopping',
+          'High-end shopping'
         ],
         country: 'UAE',
-        icon: '🇦🇪',
+        icon: '🇦🇪'
       },
       budgetBackpacker: {
         name: 'Budget Adventure Guide',
@@ -612,7 +612,7 @@ ${
           empathetic: 70,
           logical: 60,
           intuitive: 80,
-          assertive: 70,
+          assertive: 70
         },
         skills: {
           problemSolving: 90,
@@ -620,22 +620,22 @@ ${
           cultural: 75,
           learning: 85,
           leadership: 70,
-          coding: 55,
+          coding: 55
         },
         behavior: {
           decisionSpeed: 75,
           riskTolerance: 70,
           workStyle: 65,
-          detailLevel: 60,
+          detailLevel: 60
         },
         domainExpertise: [
           'Budget travel',
           'Hostels & guesthouses',
           'Local transportation',
           'Street food',
-          'Off-the-beaten-path',
+          'Off-the-beaten-path'
         ],
-        icon: '🎒',
+        icon: '🎒'
       },
       familyPlanner: {
         name: 'Family Travel Planner',
@@ -647,7 +647,7 @@ ${
           empathetic: 90,
           logical: 75,
           intuitive: 70,
-          assertive: 60,
+          assertive: 60
         },
         skills: {
           communication: 90,
@@ -655,23 +655,23 @@ ${
           cultural: 70,
           learning: 75,
           leadership: 80,
-          coding: 50,
+          coding: 50
         },
         behavior: {
           decisionSpeed: 55,
           riskTolerance: 30,
           workStyle: 80,
-          detailLevel: 85,
+          detailLevel: 85
         },
         domainExpertise: [
           'Family-friendly destinations',
           'Kid-friendly activities',
           'Safety & comfort',
           'Educational travel',
-          'Multi-generational trips',
+          'Multi-generational trips'
         ],
-        icon: '👨‍👩‍👧‍👦',
-      },
+        icon: '👨‍👩‍👧‍👦'
+      }
     };
   }
 
@@ -689,7 +689,7 @@ ${
     return Object.entries(this.presets).map(([key, preset]) => ({
       key,
       ...preset,
-      dnaScore: this.calculateDNAScore(preset),
+      dnaScore: this.calculateDNAScore(preset)
     }));
   }
 

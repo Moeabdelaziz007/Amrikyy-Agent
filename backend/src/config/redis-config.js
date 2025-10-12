@@ -27,20 +27,20 @@ const redisConfig = {
   // Cache settings
   cache: {
     ttl: parseInt(process.env.REDIS_CACHE_TTL) || 3600, // 1 hour default
-    prefix: process.env.REDIS_CACHE_PREFIX || 'amrikyy:',
+    prefix: process.env.REDIS_CACHE_PREFIX || 'amrikyy:'
   },
 
   // Session settings
   session: {
     ttl: parseInt(process.env.REDIS_SESSION_TTL) || 86400, // 24 hours default
-    prefix: 'session:',
+    prefix: 'session:'
   },
 
   // Rate limiting settings
   rateLimit: {
     prefix: process.env.REDIS_RATE_LIMIT_PREFIX || 'ratelimit:',
     windowMs: parseInt(process.env.REDIS_RATE_LIMIT_WINDOW) || 900000, // 15 minutes
-    maxRequests: parseInt(process.env.REDIS_RATE_LIMIT_MAX_REQUESTS) || 100,
+    maxRequests: parseInt(process.env.REDIS_RATE_LIMIT_MAX_REQUESTS) || 100
   },
 
   // Environment-specific settings
@@ -53,8 +53,8 @@ const redisConfig = {
   monitoring: {
     enableMetrics: true,
     slowCommandThreshold: 100, // ms
-    logSlowCommands: process.env.NODE_ENV !== 'test',
-  },
+    logSlowCommands: process.env.NODE_ENV !== 'test'
+  }
 };
 
 // Validation

@@ -86,7 +86,7 @@ class EnhancedAIService {
         const signature = await quantumService.signData({
           query,
           response: response.content,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
         response.signature = signature;
         response.authenticity = 'quantum-verified';
@@ -116,7 +116,7 @@ class EnhancedAIService {
         error: error.message,
         timestamp: Date.now(),
         processingMethod: 'error-fallback',
-        securityLevel: this.quantumEnabled ? 'quantum-safe' : 'standard',
+        securityLevel: this.quantumEnabled ? 'quantum-safe' : 'standard'
       };
     }
   }
@@ -130,7 +130,7 @@ class EnhancedAIService {
       userData,
       options,
       timestamp: Date.now(),
-      quantumAcceleration: true,
+      quantumAcceleration: true
     });
 
     // Use vLLM with quantum context
@@ -138,14 +138,14 @@ class EnhancedAIService {
       ...userData,
       query: query,
       quantumContext: quantumInput,
-      enhanced: true,
+      enhanced: true
     });
 
     // Quantum-enhanced result processing
     const enhancedResult = await quantumService.enhanceAIRecommendation({
       originalResponse: vllmResponse,
       quantumInput,
-      confidence: 0.85,
+      confidence: 0.85
     });
 
     return {
@@ -157,9 +157,9 @@ class EnhancedAIService {
       performance: {
         method: 'quantum-accelerated',
         confidence: enhancedResult.confidence,
-        processingTime: 'optimized',
+        processingTime: 'optimized'
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
   }
 
@@ -169,7 +169,7 @@ class EnhancedAIService {
     const response = await vllmService.generateTravelPlan({
       ...userData,
       query: query,
-      enhanced: true,
+      enhanced: true
     });
 
     return {
@@ -180,9 +180,9 @@ class EnhancedAIService {
       performance: {
         method: 'gpu-accelerated',
         throughput: 'high',
-        latency: 'low',
+        latency: 'low'
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
   }
 
@@ -202,11 +202,11 @@ class EnhancedAIService {
             'AI service temporarily unavailable. Using cached recommendations.',
           recommendations: this.getFallbackRecommendations(userData),
           disclaimer:
-            'This is a fallback response. Full AI features will be restored soon.',
+            'This is a fallback response. Full AI features will be restored soon.'
         },
         processingMethod: 'fallback-cache',
         securityLevel: 'standard',
-        timestamp: Date.now(),
+        timestamp: Date.now()
       };
     }
 
@@ -217,7 +217,7 @@ class EnhancedAIService {
       content: response,
       processingMethod: 'zai-fallback',
       securityLevel: 'standard',
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
   }
 
@@ -230,20 +230,20 @@ class EnhancedAIService {
         type: 'accommodation',
         recommendation: `Budget-friendly hotels in ${destination}`,
         estimatedCost: budget * 0.3,
-        rating: 4.0,
+        rating: 4.0
       },
       {
         type: 'activities',
         recommendation: `Popular ${interests?.[0] || 'cultural'} attractions`,
         estimatedCost: budget * 0.4,
-        duration: '2-3 hours',
+        duration: '2-3 hours'
       },
       {
         type: 'transportation',
         recommendation: 'Local transport and airport transfer',
         estimatedCost: budget * 0.2,
-        tips: 'Use ride-sharing apps for convenience',
-      },
+        tips: 'Use ride-sharing apps for convenience'
+      }
     ];
   }
 
@@ -272,16 +272,16 @@ class EnhancedAIService {
       services: {
         vllm: this.vllmEnabled,
         quantum: this.quantumEnabled,
-        redis: redisService.isConnected,
+        redis: redisService.isConnected
       },
       capabilities: {
         streaming: this.vllmEnabled,
         quantumEncryption: this.quantumEnabled,
         caching: redisService.isConnected,
         performance: this.vllmEnabled ? 'high' : 'standard',
-        security: this.quantumEnabled ? 'quantum-safe' : 'standard',
+        security: this.quantumEnabled ? 'quantum-safe' : 'standard'
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
   }
 

@@ -19,7 +19,7 @@ class APINode extends FractalNode {
   constructor(config) {
     super({
       ...config,
-      name: config.name || 'APINode',
+      name: config.name || 'APINode'
     });
 
     this.endpoint = config.endpoint;
@@ -27,7 +27,7 @@ class APINode extends FractalNode {
     this.retryStrategies = [
       'exponential_backoff',
       'circuit_breaker',
-      'fallback',
+      'fallback'
     ];
     this.circuitBreakerState = 'closed'; // closed, open, half-open
     this.failureCount = 0;
@@ -61,7 +61,7 @@ class APINode extends FractalNode {
     // Simulated for now
     return {
       success: true,
-      data: { response: 'API response' },
+      data: { response: 'API response' }
     };
   }
 
@@ -95,7 +95,7 @@ class DatabaseNode extends FractalNode {
   constructor(config) {
     super({
       ...config,
-      name: config.name || 'DatabaseNode',
+      name: config.name || 'DatabaseNode'
     });
 
     this.connection = config.connection;
@@ -127,7 +127,7 @@ class DatabaseNode extends FractalNode {
   async _createCheckpoint() {
     return {
       timestamp: Date.now(),
-      transactionCount: this.transactionLog.length,
+      transactionCount: this.transactionLog.length
     };
   }
 
@@ -147,7 +147,7 @@ class DatabaseNode extends FractalNode {
       sql,
       params,
       result,
-      status,
+      status
     });
 
     // Keep only recent transactions
@@ -184,7 +184,7 @@ class AgentNode extends FractalNode {
   constructor(config) {
     super({
       ...config,
-      name: config.name || 'AgentNode',
+      name: config.name || 'AgentNode'
     });
 
     this.agentDNA = config.dna;
@@ -216,7 +216,7 @@ class AgentNode extends FractalNode {
     return {
       query,
       knowledge: this.knowledgeBase,
-      context,
+      context
     };
   }
 
@@ -225,7 +225,7 @@ class AgentNode extends FractalNode {
     return {
       answer: 'AI response',
       confidence: 0.95,
-      sources: [],
+      sources: []
     };
   }
 
@@ -275,7 +275,7 @@ class StreamNode extends FractalNode {
   constructor(config) {
     super({
       ...config,
-      name: config.name || 'StreamNode',
+      name: config.name || 'StreamNode'
     });
 
     this.buffer = [];
@@ -296,7 +296,7 @@ class StreamNode extends FractalNode {
       // Add to buffer
       this.buffer.push({
         data: dataChunk,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
 
       // Process buffer
@@ -318,7 +318,7 @@ class StreamNode extends FractalNode {
     const batch = this.buffer.splice(0, 10); // Process in batches
     return {
       processed: batch.length,
-      remaining: this.buffer.length,
+      remaining: this.buffer.length
     };
   }
 
@@ -330,7 +330,7 @@ class StreamNode extends FractalNode {
       success: false,
       error: error.message,
       bufferStored: true,
-      itemCount: this.buffer.length,
+      itemCount: this.buffer.length
     };
   }
 }
@@ -343,7 +343,7 @@ class CacheNode extends FractalNode {
   constructor(config) {
     super({
       ...config,
-      name: config.name || 'CacheNode',
+      name: config.name || 'CacheNode'
     });
 
     this.cache = new Map();
@@ -388,7 +388,7 @@ class CacheNode extends FractalNode {
 
     this.cache.set(key, {
       value,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
 
@@ -429,7 +429,7 @@ class OrchestratorNode extends FractalNode {
   constructor(config) {
     super({
       ...config,
-      name: config.name || 'OrchestratorNode',
+      name: config.name || 'OrchestratorNode'
     });
 
     this.childNodes = new Map();
@@ -472,7 +472,7 @@ class OrchestratorNode extends FractalNode {
       if (!node) {
         node = this.createChild({
           id: step.id,
-          name: step.name,
+          name: step.name
         });
         this.childNodes.set(step.id, node);
       }
@@ -535,5 +535,5 @@ module.exports = {
   AgentNode,
   StreamNode,
   CacheNode,
-  OrchestratorNode,
+  OrchestratorNode
 };

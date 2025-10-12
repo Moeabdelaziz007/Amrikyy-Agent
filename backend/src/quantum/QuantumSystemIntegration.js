@@ -19,7 +19,7 @@ const {
   AgentNode,
   StreamNode,
   CacheNode,
-  OrchestratorNode,
+  OrchestratorNode
 } = require('./nodes/SpecializedNodes');
 
 const logger = require('../utils/logger');
@@ -34,7 +34,7 @@ class QuantumSystem {
     this.globalKnowledge = {
       patterns: {},
       optimizations: [],
-      bestPractices: [],
+      bestPractices: []
     };
 
     logger.info('🌌 Quantum System initialized');
@@ -52,7 +52,7 @@ class QuantumSystem {
     const orchestrator = new OrchestratorNode({
       id: `${config.name}_orchestrator`,
       name: `${config.name} Orchestrator`,
-      concurrencyLimit: config.concurrencyLimit || 10,
+      concurrencyLimit: config.concurrencyLimit || 10
     });
 
     this.nodes.set(orchestrator.id, orchestrator);
@@ -68,7 +68,7 @@ class QuantumSystem {
     const quantumSim = new QuantumSimulationEngine({
       id: `${config.name}_quantum`,
       name: `${config.name} Quantum Sim`,
-      universeCount: config.universeCount || 5,
+      universeCount: config.universeCount || 5
     });
 
     this.simulations.set(quantumSim.id, quantumSim);
@@ -88,7 +88,7 @@ class QuantumSystem {
       },
       interval: config.interval || 1000,
       maxIterations: config.maxIterations || Infinity,
-      quantumMode: true,
+      quantumMode: true
     });
 
     this.loops.set(loop.id, loop);
@@ -109,7 +109,7 @@ class QuantumSystem {
       stop: () => loop.stop(),
       pause: () => loop.pause(),
       resume: () => loop.resume(),
-      getStatus: () => this._getWorkflowStatus(config.name),
+      getStatus: () => this._getWorkflowStatus(config.name)
     };
   }
 
@@ -123,54 +123,54 @@ class QuantumSystem {
       let node;
 
       switch (nodeConfig.type) {
-        case 'api':
-          node = new APINode({
-            id: nodeConfig.id,
-            name: nodeConfig.name,
-            endpoint: nodeConfig.endpoint,
-            method: nodeConfig.method,
-          });
-          break;
+      case 'api':
+        node = new APINode({
+          id: nodeConfig.id,
+          name: nodeConfig.name,
+          endpoint: nodeConfig.endpoint,
+          method: nodeConfig.method
+        });
+        break;
 
-        case 'database':
-          node = new DatabaseNode({
-            id: nodeConfig.id,
-            name: nodeConfig.name,
-            connection: nodeConfig.connection,
-          });
-          break;
+      case 'database':
+        node = new DatabaseNode({
+          id: nodeConfig.id,
+          name: nodeConfig.name,
+          connection: nodeConfig.connection
+        });
+        break;
 
-        case 'agent':
-          node = new AgentNode({
-            id: nodeConfig.id,
-            name: nodeConfig.name,
-            dna: nodeConfig.dna,
-            knowledge: nodeConfig.knowledge,
-          });
-          break;
+      case 'agent':
+        node = new AgentNode({
+          id: nodeConfig.id,
+          name: nodeConfig.name,
+          dna: nodeConfig.dna,
+          knowledge: nodeConfig.knowledge
+        });
+        break;
 
-        case 'stream':
-          node = new StreamNode({
-            id: nodeConfig.id,
-            name: nodeConfig.name,
-            maxBufferSize: nodeConfig.maxBufferSize,
-          });
-          break;
+      case 'stream':
+        node = new StreamNode({
+          id: nodeConfig.id,
+          name: nodeConfig.name,
+          maxBufferSize: nodeConfig.maxBufferSize
+        });
+        break;
 
-        case 'cache':
-          node = new CacheNode({
-            id: nodeConfig.id,
-            name: nodeConfig.name,
-            ttl: nodeConfig.ttl,
-            maxSize: nodeConfig.maxSize,
-          });
-          break;
+      case 'cache':
+        node = new CacheNode({
+          id: nodeConfig.id,
+          name: nodeConfig.name,
+          ttl: nodeConfig.ttl,
+          maxSize: nodeConfig.maxSize
+        });
+        break;
 
-        default:
-          node = new FractalNode({
-            id: nodeConfig.id,
-            name: nodeConfig.name,
-          });
+      default:
+        node = new FractalNode({
+          id: nodeConfig.id,
+          name: nodeConfig.name
+        });
       }
 
       this.nodes.set(node.id, node);
@@ -228,7 +228,7 @@ class QuantumSystem {
       loop: data.loop,
       error: data.error,
       strategy: data.strategy,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
     // Keep only recent
@@ -278,7 +278,7 @@ class QuantumSystem {
           type: 'preventive',
           target: 'system',
           description: `Prevent recurring error: ${mostCommon[0]}`,
-          priority: 'high',
+          priority: 'high'
         });
       }
     }
@@ -308,7 +308,7 @@ class QuantumSystem {
       loops: loops.map((l) => l.getStatus()),
       nodes: nodes.map((n) => n.getStatus()),
       simulations: sims.map((s) => s.getQuantumStats()),
-      globalKnowledge: this.globalKnowledge,
+      globalKnowledge: this.globalKnowledge
     };
   }
 
@@ -325,7 +325,7 @@ class QuantumSystem {
       loops: Array.from(this.loops.values()).map((l) => l.getStatus()),
       simulations: Array.from(this.simulations.values()).map((s) =>
         s.getQuantumStats()
-      ),
+      )
     };
   }
 }
@@ -347,20 +347,20 @@ async function example() {
         id: 'sabre_api',
         name: 'Sabre API',
         type: 'api',
-        endpoint: 'https://api.sabre.com',
+        endpoint: 'https://api.sabre.com'
       },
       {
         id: 'booking_cache',
         name: 'Booking Cache',
         type: 'cache',
-        ttl: 3600000,
+        ttl: 3600000
       },
       {
         id: 'egypt_agent',
         name: 'Egypt Agent',
         type: 'agent',
-        dna: { score: 850 },
-      },
+        dna: { score: 850 }
+      }
     ],
     workflow: {
       steps: [
@@ -369,17 +369,17 @@ async function example() {
           name: 'Search Flights',
           operation: async (ctx) => {
             return { flights: [] };
-          },
+          }
         },
         {
           id: 'step2',
           name: 'Get Recommendations',
           operation: async (ctx) => {
             return { recommendations: [] };
-          },
-        },
-      ],
-    },
+          }
+        }
+      ]
+    }
   });
 
   // Start the workflow

@@ -23,7 +23,7 @@ class QuantumLoopEngine extends EventEmitter {
       totalIterations: 0,
       totalHeals: 0,
       totalLearnings: 0,
-      patterns: {},
+      patterns: {}
     };
 
     logger.info('🌀 Quantum Loop Engine initialized');
@@ -41,7 +41,7 @@ class QuantumLoopEngine extends EventEmitter {
       maxIterations: config.maxIterations || Infinity,
       continueOnError: config.continueOnError !== false,
       quantumMode: config.quantumMode !== false,
-      globalMemory: this.globalMemory,
+      globalMemory: this.globalMemory
     });
 
     this.loops.set(loop.id, loop);
@@ -63,7 +63,7 @@ class QuantumLoopEngine extends EventEmitter {
       totalLoops: this.loops.size,
       activeLoops: 0,
       globalMemory: this.globalMemory,
-      loops: [],
+      loops: []
     };
 
     this.loops.forEach((loop) => {
@@ -103,7 +103,7 @@ class UnbreakableLoop extends FractalNode {
       avgIterationTime: 0,
       successRate: 1.0,
       healRate: 0,
-      lastIterationTime: 0,
+      lastIterationTime: 0
     };
 
     // Quantum universes (for parallel resilience)
@@ -158,7 +158,7 @@ class UnbreakableLoop extends FractalNode {
           iteration: this.currentIteration,
           result,
           duration: Date.now() - iterationStart,
-          status: 'success',
+          status: 'success'
         });
 
         // Learn from success
@@ -183,7 +183,7 @@ class UnbreakableLoop extends FractalNode {
             iteration: this.currentIteration,
             error: error.message,
             healed: healed.success,
-            strategy: healed.strategy,
+            strategy: healed.strategy
           });
 
           // Learn from failure
@@ -222,7 +222,7 @@ class UnbreakableLoop extends FractalNode {
     this.emit('stopped', {
       loop: this.id,
       totalIterations: this.currentIteration,
-      performance: this.performance,
+      performance: this.performance
     });
   }
 
@@ -264,7 +264,7 @@ class UnbreakableLoop extends FractalNode {
    */
   async _singleExecute() {
     return await this.execute(this.operation, {
-      iteration: this.currentIteration,
+      iteration: this.currentIteration
     });
   }
 
@@ -368,7 +368,7 @@ class UnbreakableLoop extends FractalNode {
       loop: this.id,
       iteration: this.currentIteration,
       performance: this.performance,
-      patterns: Object.keys(this.globalMemory.patterns).length,
+      patterns: Object.keys(this.globalMemory.patterns).length
     });
   }
 
@@ -424,7 +424,7 @@ class UnbreakableLoop extends FractalNode {
         id: `${this.id}_universe_${i}`,
         name: `${this.name}_U${i}`,
         depth: this.depth + 1,
-        parent: this,
+        parent: this
       });
       this.universes.push(universe);
     }
@@ -444,7 +444,7 @@ class UnbreakableLoop extends FractalNode {
       return {
         pattern: errorPattern,
         description: `Seen ${this.globalMemory.patterns[errorPattern]} times`,
-        action: 'increase_backoff',
+        action: 'increase_backoff'
       };
     }
 
@@ -558,7 +558,7 @@ class UnbreakableLoop extends FractalNode {
       performance: this.performance,
       quantumMode: this.quantumMode,
       universeCount: this.universes.length,
-      memorySize: this.memory.successes.length + this.memory.failures.length,
+      memorySize: this.memory.successes.length + this.memory.failures.length
     };
   }
 }

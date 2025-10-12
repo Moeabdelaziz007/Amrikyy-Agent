@@ -44,7 +44,7 @@ class DeploymentEngine {
       const agent = await agentDNAService.createAgent({
         ...config,
         dnaScore: dnaScore.totalScore,
-        systemPrompt,
+        systemPrompt
       });
 
       // Phase 5: Setup integrations
@@ -65,7 +65,7 @@ class DeploymentEngine {
         health,
         status: 'deployed',
         deployedAt: new Date().toISOString(),
-        duration,
+        duration
       };
 
       this.deployments.set(deploymentId, deployment);
@@ -75,7 +75,7 @@ class DeploymentEngine {
         agentName: agent.name,
         status: 'success',
         duration,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
 
       logger.info(
@@ -89,7 +89,7 @@ class DeploymentEngine {
         dnaScore,
         integrations,
         health,
-        duration,
+        duration
       };
     } catch (error) {
       logger.error(`❌ Deployment failed: ${error.message}`);
@@ -98,7 +98,7 @@ class DeploymentEngine {
         id: deploymentId,
         status: 'failed',
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
 
       throw error;
@@ -121,7 +121,7 @@ class DeploymentEngine {
     const config = {
       ...preset,
       ...customizations,
-      name: customizations.name || preset.name,
+      name: customizations.name || preset.name
     };
 
     return this.deployAgent(config);
@@ -146,7 +146,7 @@ class DeploymentEngine {
       'empathetic',
       'logical',
       'intuitive',
-      'assertive',
+      'assertive'
     ];
     for (const field of personalityFields) {
       if (config.personality[field] === undefined) {
@@ -166,7 +166,7 @@ class DeploymentEngine {
       'problemSolving',
       'leadership',
       'learning',
-      'cultural',
+      'cultural'
     ];
     for (const field of skillFields) {
       if (config.skills[field] === undefined) {
@@ -182,7 +182,7 @@ class DeploymentEngine {
       'decisionSpeed',
       'riskTolerance',
       'workStyle',
-      'detailLevel',
+      'detailLevel'
     ];
     for (const field of behaviorFields) {
       if (config.behavior[field] === undefined) {
@@ -204,20 +204,20 @@ class DeploymentEngine {
     const integrations = {
       iziTravel: {
         enabled: true,
-        status: 'active',
+        status: 'active'
       },
       stripe: {
         enabled: config.type !== 'ai-engineer', // Not needed for technical agents
-        status: config.type !== 'ai-engineer' ? 'active' : 'disabled',
+        status: config.type !== 'ai-engineer' ? 'active' : 'disabled'
       },
       redis: {
         enabled: true,
-        status: 'active',
+        status: 'active'
       },
       supabase: {
         enabled: true,
-        status: 'active',
-      },
+        status: 'active'
+      }
     };
 
     // Add country-specific integrations
@@ -225,7 +225,7 @@ class DeploymentEngine {
       integrations.sabre = {
         enabled: false, // Will be enabled when API keys are configured
         status: 'pending',
-        note: 'Awaiting Sabre API credentials',
+        note: 'Awaiting Sabre API credentials'
       };
     }
 
@@ -240,19 +240,19 @@ class DeploymentEngine {
     const checks = {
       dna: {
         status: agent.dnaScore > 0 ? 'healthy' : 'unhealthy',
-        score: agent.dnaScore,
+        score: agent.dnaScore
       },
       systemPrompt: {
         status:
           agent.systemPrompt && agent.systemPrompt.length > 100
             ? 'healthy'
             : 'unhealthy',
-        length: agent.systemPrompt ? agent.systemPrompt.length : 0,
+        length: agent.systemPrompt ? agent.systemPrompt.length : 0
       },
       performance: {
         status: agent.performance ? 'healthy' : 'unhealthy',
-        level: agent.performance ? agent.performance.level : 'Unknown',
-      },
+        level: agent.performance ? agent.performance.level : 'Unknown'
+      }
     };
 
     const allHealthy = Object.values(checks).every(
@@ -268,7 +268,7 @@ class DeploymentEngine {
     return {
       status: allHealthy ? 'healthy' : 'degraded',
       checks,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
 
@@ -297,14 +297,14 @@ class DeploymentEngine {
         agentId: deployment.agent.id,
         agentName: deployment.agent.name,
         status: 'undeployed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
 
       logger.info(`✅ Successfully undeployed: ${deployment.agent.name}`);
 
       return {
         success: true,
-        message: `Agent ${deployment.agent.name} undeployed`,
+        message: `Agent ${deployment.agent.name} undeployed`
       };
     } catch (error) {
       logger.error(`❌ Undeploy failed: ${error.message}`);
@@ -362,7 +362,7 @@ class DeploymentEngine {
       averageDuration: Math.round(averageDuration),
       deploymentsByType: byType,
       lastDeployment:
-        history.length > 0 ? history[history.length - 1].timestamp : null,
+        history.length > 0 ? history[history.length - 1].timestamp : null
     };
   }
 
@@ -391,8 +391,8 @@ class DeploymentEngine {
         index: i,
         status: r.status,
         data: r.status === 'fulfilled' ? r.value : null,
-        error: r.status === 'rejected' ? r.reason.message : null,
-      })),
+        error: r.status === 'rejected' ? r.reason.message : null
+      }))
     };
   }
 }
