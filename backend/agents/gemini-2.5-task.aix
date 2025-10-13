@@ -1,0 +1,130 @@
+# Gemini 2.5 Task Assignment - AIX3 Format
+# Created by Cursor - Team Lead
+
+meta:
+  sender: "Cursor"
+  recipient: "Gemini 2.5"
+  timestamp: "2025-01-13T08:15:00Z"
+  priority: "high"
+  type: "task_assignment"
+  team: "AIX Integration"
+  version: "AIX3"
+
+content:
+  action: "task_assignment"
+  mission: "AIX Parser & Validation Expert"
+  status: "ready_to_start"
+  
+  primary_task:
+    id: "G1"
+    title: "Improve AIX Parser Performance"
+    description: "Enhance the AIX Parser for better performance and advanced features"
+    priority: "critical"
+    estimated_time: "3 hours"
+    deadline: "2025-01-13T14:00:00Z"
+    
+    requirements:
+      - "Optimize YAML parsing performance"
+      - "Add support for large AIX files (>1MB)"
+      - "Implement streaming parser for big files"
+      - "Add caching mechanism for parsed agents"
+      - "Improve error handling and reporting"
+    
+    success_criteria:
+      - "Parser handles 10MB+ files in <2 seconds"
+      - "Memory usage reduced by 40%"
+      - "Error messages are more descriptive"
+      - "Caching reduces re-parse time by 80%"
+    
+    resources:
+      - "Current parser: /backend/src/aix/AIXManager.js"
+      - "Reference implementation: https://github.com/Moeabdelaziz007/aix-format"
+      - "Test files: /backend/agents/"
+    
+    dependencies:
+      - "Cursor: AIX Infrastructure (COMPLETED)"
+      - "ONA: Test cases (IN PROGRESS)"
+
+  secondary_tasks:
+    - id: "G2"
+      title: "Create Advanced AIX Validator"
+      priority: "high"
+      estimated_time: "2 hours"
+      deadline: "2025-01-13T16:00:00Z"
+      
+    - id: "G3"
+      title: "Develop AIX CLI Tools"
+      priority: "medium"
+      estimated_time: "2 hours"
+      deadline: "2025-01-13T18:00:00Z"
+      
+    - id: "G4"
+      title: "Create AIX Security System"
+      priority: "high"
+      estimated_time: "3 hours"
+      deadline: "2025-01-14T10:00:00Z"
+
+team_coordination:
+  status: "ready_to_start"
+  blockers: []
+  support_needed: ["ONA for testing", "Cursor for integration"]
+  next_checkpoint: "2025-01-13T12:00:00Z"
+  
+  communication:
+    check_in_frequency: "every 2 hours"
+    emergency_contact: "Cursor"
+    progress_updates: "real-time"
+  
+  collaboration:
+    with_ona: "Test cases and validation scenarios"
+    with_cursor: "Integration and performance testing"
+    deliverables: ["Enhanced parser", "CLI tools", "Security system"]
+
+technical_guidance:
+  focus_areas:
+    - "Performance optimization"
+    - "Memory management"
+    - "Error handling"
+    - "Security validation"
+  
+  code_standards:
+    - "Follow existing logger patterns"
+    - "Add comprehensive JSDoc comments"
+    - "Include unit tests for all functions"
+    - "Use async/await consistently"
+  
+  testing_requirements:
+    - "Unit tests for all parser functions"
+    - "Performance benchmarks"
+    - "Memory usage tests"
+    - "Error handling tests"
+
+emergency_protocol:
+  if_blocked:
+    - "Contact Cursor immediately"
+    - "Document the blocker in detail"
+    - "Suggest alternative approaches"
+    - "Request additional resources if needed"
+  
+  escalation_path:
+    - "Level 1: Cursor (Team Lead)"
+    - "Level 2: Boss (Human)"
+    - "Response time: 15 minutes"
+
+success_metrics:
+  performance:
+    - "Parse time < 2 seconds for 10MB files"
+    - "Memory usage < 100MB for large files"
+    - "Error rate < 0.1%"
+  
+  quality:
+    - "Code coverage > 90%"
+    - "All tests passing"
+    - "Zero critical bugs"
+  
+  delivery:
+    - "On time delivery"
+    - "Complete documentation"
+    - "Ready for integration"
+
+# AIX3 Message End
