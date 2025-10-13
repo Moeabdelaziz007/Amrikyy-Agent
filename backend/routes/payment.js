@@ -8,7 +8,7 @@ class PaymentService {
     try {
       // Create Stripe payment link using MCP tool
       const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-      
+
       // Create a price for the payment
       const price = await stripe.prices.create({
         unit_amount: Math.round(amount * 100), // Convert to cents
@@ -38,16 +38,16 @@ class PaymentService {
         payment_method_types: ['card'],
       });
 
-      return { 
-        success: true, 
+      return {
+        success: true,
         data: {
           id: paymentLink.id,
           url: paymentLink.url,
           amount: amount,
           currency: currency,
           description: description,
-          status: 'created'
-        }
+          status: 'created',
+        },
       };
     } catch (error) {
       return { success: false, error: error.message };
@@ -62,13 +62,13 @@ class PaymentService {
         id: `PAY-${Date.now()}`,
         amount: {
           total: amount.toString(),
-          currency
+          currency,
         },
         description,
         state: 'created',
-        create_time: new Date().toISOString()
+        create_time: new Date().toISOString(),
       };
-      
+
       return { success: true, data: payment };
     } catch (error) {
       return { success: false, error: error.message };
@@ -76,7 +76,12 @@ class PaymentService {
   }
 
   // Telegram Bot payment integration
-  static async createTelegramPayment(amount, currency = 'USD', description = 'Maya Trips Payment', chatId) {
+  static async createTelegramPayment(
+    amount,
+    currency = 'USD',
+    description = 'Maya Trips Payment',
+    chatId
+  ) {
     try {
       // This would integrate with Telegram Bot API for payments
       const payment = {
@@ -86,9 +91,9 @@ class PaymentService {
         description,
         chat_id: chatId,
         status: 'pending',
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
-      
+
       return { success: true, data: payment };
     } catch (error) {
       return { success: false, error: error.message };
@@ -100,33 +105,33 @@ class PaymentService {
 router.post('/create-payment-link', async (req, res) => {
   try {
     const { amount, currency, description, customerEmail } = req.body;
-    
+
     if (!amount || amount <= 0) {
       return res.status(400).json({
         success: false,
-        error: 'Amount is required and must be greater than 0'
+        error: 'Amount is required and must be greater than 0',
       });
     }
 
     const paymentResult = await PaymentService.createStripePayment(amount, currency, description);
-    
+
     if (paymentResult.success) {
       res.json({
         success: true,
         paymentLink: paymentResult.data,
-        message: 'Payment link created successfully'
+        message: 'Payment link created successfully',
       });
     } else {
       res.status(400).json({
         success: false,
-        error: paymentResult.error
+        error: paymentResult.error,
       });
     }
   } catch (error) {
     res.status(500).json({
       success: false,
       error: 'Internal server error',
-      message: error.message
+      message: error.message,
     });
   }
 });
@@ -135,16 +140,16 @@ router.post('/create-payment-link', async (req, res) => {
 router.post('/create-payment', async (req, res) => {
   try {
     const { amount, currency, paymentMethod, description, chatId } = req.body;
-    
+
     if (!amount || amount <= 0) {
       return res.status(400).json({
         success: false,
-        error: 'Amount is required and must be greater than 0'
+        error: 'Amount is required and must be greater than 0',
       });
     }
 
     let paymentResult;
-    
+
     switch (paymentMethod) {
       case 'stripe':
         paymentResult = await PaymentService.createStripePayment(amount, currency, description);
@@ -153,12 +158,17 @@ router.post('/create-payment', async (req, res) => {
         paymentResult = await PaymentService.createPayPalPayment(amount, currency, description);
         break;
       case 'telegram':
-        paymentResult = await PaymentService.createTelegramPayment(amount, currency, description, chatId);
+        paymentResult = await PaymentService.createTelegramPayment(
+          amount,
+          currency,
+          description,
+          chatId
+        );
         break;
       default:
         return res.status(400).json({
           success: false,
-          error: 'Invalid payment method. Supported: stripe, paypal, telegram'
+          error: 'Invalid payment method. Supported: stripe, paypal, telegram',
         });
     }
 
@@ -166,19 +176,19 @@ router.post('/create-payment', async (req, res) => {
       res.json({
         success: true,
         payment: paymentResult.data,
-        message: 'Payment created successfully'
+        message: 'Payment created successfully',
       });
     } else {
       res.status(400).json({
         success: false,
-        error: paymentResult.error
+        error: paymentResult.error,
       });
     }
   } catch (error) {
     res.status(500).json({
       success: false,
       error: 'Internal server error',
-      message: error.message
+      message: error.message,
     });
   }
 });
@@ -187,11 +197,11 @@ router.post('/create-payment', async (req, res) => {
 router.post('/confirm-payment', async (req, res) => {
   try {
     const { paymentId, paymentMethod } = req.body;
-    
+
     if (!paymentId || !paymentMethod) {
       return res.status(400).json({
         success: false,
-        error: 'Payment ID and method are required'
+        error: 'Payment ID and method are required',
       });
     }
 
@@ -200,19 +210,19 @@ router.post('/confirm-payment', async (req, res) => {
       id: paymentId,
       status: 'succeeded',
       confirmed_at: new Date().toISOString(),
-      method: paymentMethod
+      method: paymentMethod,
     };
 
     res.json({
       success: true,
       confirmation,
-      message: 'Payment confirmed successfully'
+      message: 'Payment confirmed successfully',
     });
   } catch (error) {
     res.status(500).json({
       success: false,
       error: 'Internal server error',
-      message: error.message
+      message: error.message,
     });
   }
 });
@@ -221,26 +231,26 @@ router.post('/confirm-payment', async (req, res) => {
 router.get('/payment-status/:paymentId', async (req, res) => {
   try {
     const { paymentId } = req.params;
-    
+
     // Simulate payment status check
     const status = {
       id: paymentId,
       status: 'succeeded',
-      amount: 100.00,
+      amount: 100.0,
       currency: 'USD',
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
 
     res.json({
       success: true,
-      payment: status
+      payment: status,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
       error: 'Internal server error',
-      message: error.message
+      message: error.message,
     });
   }
 });
@@ -249,48 +259,48 @@ router.get('/payment-status/:paymentId', async (req, res) => {
 router.post('/telegram-webhook', async (req, res) => {
   try {
     const { update } = req.body;
-    
+
     if (update.pre_checkout_query) {
       // Handle pre-checkout query
       const { id, from, currency, total_amount } = update.pre_checkout_query;
-      
+
       // Validate payment
       const isValid = total_amount > 0 && currency === 'USD';
-      
+
       if (isValid) {
         // Approve payment
         res.json({
           success: true,
           message: 'Payment approved',
-          pre_checkout_query_id: id
+          pre_checkout_query_id: id,
         });
       } else {
         // Reject payment
         res.status(400).json({
           success: false,
-          error: 'Invalid payment amount or currency'
+          error: 'Invalid payment amount or currency',
         });
       }
     } else if (update.message && update.message.successful_payment) {
       // Handle successful payment
       const { successful_payment } = update.message;
-      
+
       res.json({
         success: true,
         message: 'Payment processed successfully',
-        payment: successful_payment
+        payment: successful_payment,
       });
     } else {
       res.json({
         success: true,
-        message: 'Webhook received'
+        message: 'Webhook received',
       });
     }
   } catch (error) {
     res.status(500).json({
       success: false,
       error: 'Internal server error',
-      message: error.message
+      message: error.message,
     });
   }
 });

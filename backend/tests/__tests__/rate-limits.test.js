@@ -15,27 +15,27 @@ const mockHealthResponse = {
   headers: {
     'ratelimit-limit': '100',
     'ratelimit-remaining': '99',
-    'ratelimit-reset': Math.floor(Date.now() / 1000) + 3600
+    'ratelimit-reset': Math.floor(Date.now() / 1000) + 3600,
   },
-  data: { status: 'healthy' }
+  data: { status: 'healthy' },
 };
 
 // Mock server response for rate limited requests
 const mockRateLimitResponse = {
   status: 429,
-  data: { error: 'Too Many Requests', retryAfter: 60 }
+  data: { error: 'Too Many Requests', retryAfter: 60 },
 };
 
 // Mock server response for AI endpoint
 const mockAIResponse = {
   status: 200,
-  data: { message: 'AI response', success: true }
+  data: { message: 'AI response', success: true },
 };
 
 // Mock server response for payment endpoint
 const mockPaymentResponse = {
   status: 200,
-  data: { paymentLink: 'https://example.com/pay', success: true }
+  data: { paymentLink: 'https://example.com/pay', success: true },
 };
 
 describe('Rate Limits Tests', () => {
@@ -52,7 +52,7 @@ describe('Rate Limits Tests', () => {
       // Mock successful responses
       mockedAxios.get.mockResolvedValueOnce({
         ...mockHealthResponse,
-        headers: { ...mockHealthResponse.headers, 'ratelimit-remaining': '95' }
+        headers: { ...mockHealthResponse.headers, 'ratelimit-remaining': '95' },
       });
 
       const response = await axios.get(`${API_BASE_URL}/api/health`);
@@ -65,31 +65,34 @@ describe('Rate Limits Tests', () => {
     test('should handle rate limit exceeded', async () => {
       // Mock rate limit response
       mockedAxios.get.mockRejectedValueOnce({
-        response: mockRateLimitResponse
+        response: mockRateLimitResponse,
       });
 
-      await expect(axios.get(`${API_BASE_URL}/api/health`))
-        .rejects.toMatchObject({
-          response: expect.objectContaining({
-            status: 429,
-            data: expect.objectContaining({
-              error: 'Too Many Requests'
-            })
-          })
-        });
+      await expect(axios.get(`${API_BASE_URL}/api/health`)).rejects.toMatchObject({
+        response: expect.objectContaining({
+          status: 429,
+          data: expect.objectContaining({
+            error: 'Too Many Requests',
+          }),
+        }),
+      });
 
       expect(axios.get).toHaveBeenCalledWith(`${API_BASE_URL}/api/health`);
     });
 
     test('should track rate limit headers correctly', async () => {
       const responses = [
-        { ...mockHealthResponse, headers: { ...mockHealthResponse.headers, 'ratelimit-remaining': '98' } },
-        { ...mockHealthResponse, headers: { ...mockHealthResponse.headers, 'ratelimit-remaining': '97' } }
+        {
+          ...mockHealthResponse,
+          headers: { ...mockHealthResponse.headers, 'ratelimit-remaining': '98' },
+        },
+        {
+          ...mockHealthResponse,
+          headers: { ...mockHealthResponse.headers, 'ratelimit-remaining': '97' },
+        },
       ];
 
-      mockedAxios.get
-        .mockResolvedValueOnce(responses[0])
-        .mockResolvedValueOnce(responses[1]);
+      mockedAxios.get.mockResolvedValueOnce(responses[0]).mockResolvedValueOnce(responses[1]);
 
       const response1 = await axios.get(`${API_BASE_URL}/api/health`);
       const response2 = await axios.get(`${API_BASE_URL}/api/health`);
@@ -106,16 +109,13 @@ describe('Rate Limits Tests', () => {
 
       const response = await axios.post(`${API_BASE_URL}/api/ai/chat`, {
         message: 'Test message',
-        userId: 'test-user'
+        userId: 'test-user',
       });
 
-      expect(axios.post).toHaveBeenCalledWith(
-        `${API_BASE_URL}/api/ai/chat`,
-        {
-          message: 'Test message',
-          userId: 'test-user'
-        }
-      );
+      expect(axios.post).toHaveBeenCalledWith(`${API_BASE_URL}/api/ai/chat`, {
+        message: 'Test message',
+        userId: 'test-user',
+      });
       expect(response.status).toBe(200);
       expect(response.data).toEqual(mockAIResponse.data);
     });
@@ -124,46 +124,47 @@ describe('Rate Limits Tests', () => {
       mockedAxios.post.mockRejectedValueOnce({
         response: {
           status: 429,
-          data: { error: 'AI Rate limit exceeded', retryAfter: 60 }
-        }
+          data: { error: 'AI Rate limit exceeded', retryAfter: 60 },
+        },
       });
 
-      await expect(axios.post(`${API_BASE_URL}/api/ai/chat`, {
-        message: 'Test message',
-        userId: 'test-user'
-      })).rejects.toMatchObject({
+      await expect(
+        axios.post(`${API_BASE_URL}/api/ai/chat`, {
+          message: 'Test message',
+          userId: 'test-user',
+        })
+      ).rejects.toMatchObject({
         response: expect.objectContaining({
           status: 429,
           data: expect.objectContaining({
-            error: 'AI Rate limit exceeded'
-          })
-        })
+            error: 'AI Rate limit exceeded',
+          }),
+        }),
       });
 
-      expect(axios.post).toHaveBeenCalledWith(
-        `${API_BASE_URL}/api/ai/chat`,
-        {
-          message: 'Test message',
-          userId: 'test-user'
-        }
-      );
+      expect(axios.post).toHaveBeenCalledWith(`${API_BASE_URL}/api/ai/chat`, {
+        message: 'Test message',
+        userId: 'test-user',
+      });
     });
 
     test('should handle AI service unavailable', async () => {
       mockedAxios.post.mockRejectedValueOnce({
         response: {
           status: 500,
-          data: { error: 'AI service unavailable' }
-        }
+          data: { error: 'AI service unavailable' },
+        },
       });
 
-      await expect(axios.post(`${API_BASE_URL}/api/ai/chat`, {
-        message: 'Test message',
-        userId: 'test-user'
-      })).rejects.toMatchObject({
-        response: expect.objectContaining({
-          status: 500
+      await expect(
+        axios.post(`${API_BASE_URL}/api/ai/chat`, {
+          message: 'Test message',
+          userId: 'test-user',
         })
+      ).rejects.toMatchObject({
+        response: expect.objectContaining({
+          status: 500,
+        }),
       });
     });
   });
@@ -175,17 +176,14 @@ describe('Rate Limits Tests', () => {
       const response = await axios.post(`${API_BASE_URL}/api/payment/create-payment-link`, {
         amount: 100,
         currency: 'USD',
-        description: 'Test payment'
+        description: 'Test payment',
       });
 
-      expect(axios.post).toHaveBeenCalledWith(
-        `${API_BASE_URL}/api/payment/create-payment-link`,
-        {
-          amount: 100,
-          currency: 'USD',
-          description: 'Test payment'
-        }
-      );
+      expect(axios.post).toHaveBeenCalledWith(`${API_BASE_URL}/api/payment/create-payment-link`, {
+        amount: 100,
+        currency: 'USD',
+        description: 'Test payment',
+      });
       expect(response.status).toBe(200);
       expect(response.data).toEqual(mockPaymentResponse.data);
     });
@@ -194,21 +192,23 @@ describe('Rate Limits Tests', () => {
       mockedAxios.post.mockRejectedValueOnce({
         response: {
           status: 429,
-          data: { error: 'Payment rate limit exceeded', retryAfter: 3600 }
-        }
+          data: { error: 'Payment rate limit exceeded', retryAfter: 3600 },
+        },
       });
 
-      await expect(axios.post(`${API_BASE_URL}/api/payment/create-payment-link`, {
-        amount: 100,
-        currency: 'USD',
-        description: 'Test payment'
-      })).rejects.toMatchObject({
+      await expect(
+        axios.post(`${API_BASE_URL}/api/payment/create-payment-link`, {
+          amount: 100,
+          currency: 'USD',
+          description: 'Test payment',
+        })
+      ).rejects.toMatchObject({
         response: expect.objectContaining({
           status: 429,
           data: expect.objectContaining({
-            error: 'Payment rate limit exceeded'
-          })
-        })
+            error: 'Payment rate limit exceeded',
+          }),
+        }),
       });
     });
 
@@ -216,18 +216,20 @@ describe('Rate Limits Tests', () => {
       mockedAxios.post.mockRejectedValueOnce({
         response: {
           status: 400,
-          data: { error: 'Invalid payment amount' }
-        }
+          data: { error: 'Invalid payment amount' },
+        },
       });
 
-      await expect(axios.post(`${API_BASE_URL}/api/payment/create-payment-link`, {
-        amount: -100,
-        currency: 'USD',
-        description: 'Invalid payment'
-      })).rejects.toMatchObject({
-        response: expect.objectContaining({
-          status: 400
+      await expect(
+        axios.post(`${API_BASE_URL}/api/payment/create-payment-link`, {
+          amount: -100,
+          currency: 'USD',
+          description: 'Invalid payment',
         })
+      ).rejects.toMatchObject({
+        response: expect.objectContaining({
+          status: 400,
+        }),
       });
     });
   });
@@ -236,7 +238,7 @@ describe('Rate Limits Tests', () => {
     test('should handle analytics requests within limit', async () => {
       const mockAnalyticsResponse = {
         status: 200,
-        data: { success: true, events: 1 }
+        data: { success: true, events: 1 },
       };
 
       mockedAxios.post.mockResolvedValueOnce(mockAnalyticsResponse);
@@ -244,17 +246,14 @@ describe('Rate Limits Tests', () => {
       const response = await axios.post(`${API_BASE_URL}/api/analytics/events`, {
         type: 'test_event',
         userId: 'test-user',
-        payload: { test: true }
+        payload: { test: true },
       });
 
-      expect(axios.post).toHaveBeenCalledWith(
-        `${API_BASE_URL}/api/analytics/events`,
-        {
-          type: 'test_event',
-          userId: 'test-user',
-          payload: { test: true }
-        }
-      );
+      expect(axios.post).toHaveBeenCalledWith(`${API_BASE_URL}/api/analytics/events`, {
+        type: 'test_event',
+        userId: 'test-user',
+        payload: { test: true },
+      });
       expect(response.status).toBe(200);
       expect(response.data).toEqual(mockAnalyticsResponse.data);
     });
@@ -263,21 +262,23 @@ describe('Rate Limits Tests', () => {
       mockedAxios.post.mockRejectedValueOnce({
         response: {
           status: 429,
-          data: { error: 'Analytics rate limit exceeded', retryAfter: 60 }
-        }
+          data: { error: 'Analytics rate limit exceeded', retryAfter: 60 },
+        },
       });
 
-      await expect(axios.post(`${API_BASE_URL}/api/analytics/events`, {
-        type: 'test_event',
-        userId: 'test-user',
-        payload: { test: true }
-      })).rejects.toMatchObject({
+      await expect(
+        axios.post(`${API_BASE_URL}/api/analytics/events`, {
+          type: 'test_event',
+          userId: 'test-user',
+          payload: { test: true },
+        })
+      ).rejects.toMatchObject({
         response: expect.objectContaining({
           status: 429,
           data: expect.objectContaining({
-            error: 'Analytics rate limit exceeded'
-          })
-        })
+            error: 'Analytics rate limit exceeded',
+          }),
+        }),
       });
     });
   });
@@ -301,7 +302,7 @@ describe('Rate Limits Tests', () => {
       const responseWithoutHeaders = {
         status: 200,
         headers: {},
-        data: { status: 'healthy' }
+        data: { status: 'healthy' },
       };
 
       mockedAxios.get.mockResolvedValueOnce(responseWithoutHeaders);
@@ -317,13 +318,17 @@ describe('Rate Limits Tests', () => {
   describe('Rate Limit Reset Functionality', () => {
     test('should decrement remaining counter correctly', async () => {
       const responses = [
-        { ...mockHealthResponse, headers: { ...mockHealthResponse.headers, 'ratelimit-remaining': '100' } },
-        { ...mockHealthResponse, headers: { ...mockHealthResponse.headers, 'ratelimit-remaining': '99' } }
+        {
+          ...mockHealthResponse,
+          headers: { ...mockHealthResponse.headers, 'ratelimit-remaining': '100' },
+        },
+        {
+          ...mockHealthResponse,
+          headers: { ...mockHealthResponse.headers, 'ratelimit-remaining': '99' },
+        },
       ];
 
-      mockedAxios.get
-        .mockResolvedValueOnce(responses[0])
-        .mockResolvedValueOnce(responses[1]);
+      mockedAxios.get.mockResolvedValueOnce(responses[0]).mockResolvedValueOnce(responses[1]);
 
       const response1 = await axios.get(`${API_BASE_URL}/api/health`);
       const response2 = await axios.get(`${API_BASE_URL}/api/health`);
@@ -338,7 +343,7 @@ describe('Rate Limits Tests', () => {
     test('should handle non-numeric remaining values', async () => {
       const responseWithInvalidRemaining = {
         ...mockHealthResponse,
-        headers: { ...mockHealthResponse.headers, 'ratelimit-remaining': 'invalid' }
+        headers: { ...mockHealthResponse.headers, 'ratelimit-remaining': 'invalid' },
       };
 
       mockedAxios.get.mockResolvedValueOnce(responseWithInvalidRemaining);
@@ -377,8 +382,7 @@ describe('Rate Limits Tests', () => {
       const networkError = new Error('Network Error');
       mockedAxios.get.mockRejectedValueOnce(networkError);
 
-      await expect(axios.get(`${API_BASE_URL}/api/health`))
-        .rejects.toThrow('Network Error');
+      await expect(axios.get(`${API_BASE_URL}/api/health`)).rejects.toThrow('Network Error');
 
       expect(axios.get).toHaveBeenCalledWith(`${API_BASE_URL}/api/health`);
     });
@@ -388,8 +392,7 @@ describe('Rate Limits Tests', () => {
       timeoutError.code = 'ECONNABORTED';
       mockedAxios.get.mockRejectedValueOnce(timeoutError);
 
-      await expect(axios.get(`${API_BASE_URL}/api/health`))
-        .rejects.toThrow('Timeout');
+      await expect(axios.get(`${API_BASE_URL}/api/health`)).rejects.toThrow('Timeout');
 
       expect(axios.get).toHaveBeenCalledWith(`${API_BASE_URL}/api/health`);
     });
@@ -397,23 +400,23 @@ describe('Rate Limits Tests', () => {
 
   describe('Concurrent Requests', () => {
     test('should handle multiple concurrent requests', async () => {
-      const responses = Array(5).fill(null).map((_, i) => ({
-        ...mockHealthResponse,
-        headers: { ...mockHealthResponse.headers, 'ratelimit-remaining': `${100 - i}` }
-      }));
+      const responses = Array(5)
+        .fill(null)
+        .map((_, i) => ({
+          ...mockHealthResponse,
+          headers: { ...mockHealthResponse.headers, 'ratelimit-remaining': `${100 - i}` },
+        }));
 
-      mockedAxios.get.mockImplementation(() =>
-        Promise.resolve(responses.shift())
-      );
+      mockedAxios.get.mockImplementation(() => Promise.resolve(responses.shift()));
 
-      const requests = Array(5).fill(null).map(() =>
-        axios.get(`${API_BASE_URL}/api/health`)
-      );
+      const requests = Array(5)
+        .fill(null)
+        .map(() => axios.get(`${API_BASE_URL}/api/health`));
 
       const results = await Promise.all(requests);
 
       expect(results).toHaveLength(5);
-      results.forEach(response => {
+      results.forEach((response) => {
         expect(response.status).toBe(200);
       });
       expect(axios.get).toHaveBeenCalledTimes(5);

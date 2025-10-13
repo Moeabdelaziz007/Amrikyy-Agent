@@ -15,7 +15,7 @@ const generalLimiter = rateLimit({
   message: {
     success: false,
     error: 'Too many requests from this IP, please try again later.',
-    retryAfter: '15 minutes'
+    retryAfter: '15 minutes',
   },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
@@ -24,9 +24,9 @@ const generalLimiter = rateLimit({
     res.status(429).json({
       success: false,
       error: 'Too many requests, please slow down.',
-      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000)
+      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000),
     });
-  }
+  },
 });
 
 /**
@@ -39,7 +39,7 @@ const aiLimiter = rateLimit({
   message: {
     success: false,
     error: 'Too many AI requests. Please wait before making more requests.',
-    retryAfter: '1 minute'
+    retryAfter: '1 minute',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -51,9 +51,9 @@ const aiLimiter = rateLimit({
       error: 'AI request limit exceeded. Please wait before trying again.',
       retryAfter: Math.ceil(req.rateLimit.resetTime / 1000),
       limit: 10,
-      window: '1 minute'
+      window: '1 minute',
     });
-  }
+  },
 });
 
 /**
@@ -66,7 +66,7 @@ const paymentLimiter = rateLimit({
   message: {
     success: false,
     error: 'Too many payment requests. Please try again later.',
-    retryAfter: '1 hour'
+    retryAfter: '1 hour',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -76,9 +76,9 @@ const paymentLimiter = rateLimit({
     res.status(429).json({
       success: false,
       error: 'Payment request limit exceeded. Please contact support if you need assistance.',
-      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000)
+      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000),
     });
-  }
+  },
 });
 
 /**
@@ -91,7 +91,7 @@ const authLimiter = rateLimit({
   message: {
     success: false,
     error: 'Too many authentication attempts. Please try again later.',
-    retryAfter: '15 minutes'
+    retryAfter: '15 minutes',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -101,9 +101,9 @@ const authLimiter = rateLimit({
     res.status(429).json({
       success: false,
       error: 'Too many authentication attempts. Account temporarily locked.',
-      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000)
+      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000),
     });
-  }
+  },
 });
 
 /**
@@ -116,7 +116,7 @@ const webhookLimiter = rateLimit({
   message: {
     success: false,
     error: 'Webhook rate limit exceeded.',
-    retryAfter: '1 minute'
+    retryAfter: '1 minute',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -125,9 +125,9 @@ const webhookLimiter = rateLimit({
     res.status(429).json({
       success: false,
       error: 'Webhook rate limit exceeded.',
-      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000)
+      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000),
     });
-  }
+  },
 });
 
 /**
@@ -140,7 +140,7 @@ const analyticsLimiter = rateLimit({
   message: {
     success: false,
     error: 'Analytics rate limit exceeded.',
-    retryAfter: '1 minute'
+    retryAfter: '1 minute',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -149,9 +149,9 @@ const analyticsLimiter = rateLimit({
     res.status(429).json({
       success: false,
       error: 'Too many analytics events. Please slow down.',
-      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000)
+      retryAfter: Math.ceil(req.rateLimit.resetTime / 1000),
     });
-  }
+  },
 });
 
 /**
@@ -164,7 +164,7 @@ const multimodalLimiter = rateLimit({
   message: {
     success: false,
     error: 'Multimodal AI request limit exceeded.',
-    retryAfter: '1 hour'
+    retryAfter: '1 hour',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -175,9 +175,9 @@ const multimodalLimiter = rateLimit({
       error: 'Image/video analysis limit exceeded. Please try again later.',
       retryAfter: Math.ceil(req.rateLimit.resetTime / 1000),
       limit: 20,
-      window: '1 hour'
+      window: '1 hour',
     });
-  }
+  },
 });
 
 /**
@@ -189,11 +189,11 @@ const createCustomLimiter = (options = {}) => {
     max: options.max || 100,
     message: options.message || {
       success: false,
-      error: 'Rate limit exceeded.'
+      error: 'Rate limit exceeded.',
     },
     standardHeaders: true,
     legacyHeaders: false,
-    ...options
+    ...options,
   });
 };
 
@@ -205,5 +205,5 @@ module.exports = {
   webhookLimiter,
   analyticsLimiter,
   multimodalLimiter,
-  createCustomLimiter
+  createCustomLimiter,
 };

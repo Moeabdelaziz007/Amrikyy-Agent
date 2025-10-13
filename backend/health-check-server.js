@@ -15,90 +15,103 @@ const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  
+
   if (req.method === 'OPTIONS') {
     res.writeHead(200);
     res.end();
     return;
   }
-  
+
   // Route handling
   if (req.url === '/health' || req.url === '/') {
     try {
       const health = healthMonitor.getHealth();
-      
+
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({
-        success: true,
-        ...health
-      }, null, 2));
+      res.end(
+        JSON.stringify(
+          {
+            success: true,
+            ...health,
+          },
+          null,
+          2
+        )
+      );
     } catch (error) {
       logger.error('Health check endpoint error', error);
       res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({
-        success: false,
-        error: error.message
-      }));
+      res.end(
+        JSON.stringify({
+          success: false,
+          error: error.message,
+        })
+      );
     }
-  }
-  
-  else if (req.url === '/metrics') {
+  } else if (req.url === '/metrics') {
     try {
       const metrics = healthMonitor.exportMetrics();
       const conversationStats = conversationManager.getStatistics();
-      
+
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({
-        success: true,
-        system: metrics,
-        conversations: conversationStats
-      }, null, 2));
+      res.end(
+        JSON.stringify(
+          {
+            success: true,
+            system: metrics,
+            conversations: conversationStats,
+          },
+          null,
+          2
+        )
+      );
     } catch (error) {
       logger.error('Metrics endpoint error', error);
       res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({
-        success: false,
-        error: error.message
-      }));
+      res.end(
+        JSON.stringify({
+          success: false,
+          error: error.message,
+        })
+      );
     }
-  }
-  
-  else if (req.url === '/status') {
+  } else if (req.url === '/status') {
     try {
       const summary = healthMonitor.getMetricsSummary();
-      
+
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({
-        success: true,
-        ...summary
-      }, null, 2));
+      res.end(
+        JSON.stringify(
+          {
+            success: true,
+            ...summary,
+          },
+          null,
+          2
+        )
+      );
     } catch (error) {
       logger.error('Status endpoint error', error);
       res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({
-        success: false,
-        error: error.message
-      }));
+      res.end(
+        JSON.stringify({
+          success: false,
+          error: error.message,
+        })
+      );
     }
-  }
-  
-  else if (req.url === '/ping') {
+  } else if (req.url === '/ping') {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.end('pong');
-  }
-  
-  else {
+  } else {
     res.writeHead(404, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({
-      success: false,
-      error: 'Not found',
-      availableEndpoints: [
-        '/health',
-        '/metrics',
-        '/status',
-        '/ping'
-      ]
-    }));
+    res.end(
+      JSON.stringify({
+        success: false,
+        error: 'Not found',
+        availableEndpoints: ['/health', '/metrics', '/status', '/ping'],
+      })
+    );
   }
 });
 

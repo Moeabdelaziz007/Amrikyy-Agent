@@ -10,7 +10,7 @@ const { EventEmitter } = require('events');
 jest.mock('../../utils/logger');
 jest.mock('../../utils/healthMonitor');
 jest.mock('../../database/supabase');
-jest.mock('../../src/ai/zaiClient');
+jest.mock('../../src/ai/keloClient');
 jest.mock('../../src/ai/geminiClient');
 jest.mock('axios');
 
@@ -19,7 +19,7 @@ const app = require('../../server');
 const logger = require('../../utils/logger');
 const healthMonitor = require('../../utils/healthMonitor');
 const SupabaseDB = require('../../database/supabase');
-const ZaiClient = require('../../src/ai/zaiClient');
+const KeloClient = require('../../src/ai/keloClient');
 const GeminiClient = require('../../src/ai/geminiClient');
 const axios = require('axios');
 
@@ -38,9 +38,7 @@ describe('Error Scenario Testing Suite', () => {
       // Mock axios timeout
       axios.get.mockRejectedValue(new Error('Timeout'));
 
-      const response = await request(app)
-        .post('/api/ai/chat')
-        .send({ message: 'Test message' });
+      const response = await request(app).post('/api/ai/chat').send({ message: 'Test message' });
 
       expect(response.status).toBe(503); // Service Unavailable
       expect(response.body).toHaveProperty('error');
@@ -69,8 +67,7 @@ describe('Error Scenario Testing Suite', () => {
         return Promise.resolve({ data: { success: true } });
       });
 
-      const response = await request(app)
-        .get('/api/external-data');
+      const response = await request(app).get('/api/external-data');
 
       expect(callCount).toBe(3); // Should retry twice
       expect(response.status).toBe(200);
@@ -79,8 +76,7 @@ describe('Error Scenario Testing Suite', () => {
     test('should handle DNS resolution failures', async () => {
       axios.get.mockRejectedValue(new Error('getaddrinfo ENOTFOUND api.example.com'));
 
-      const response = await request(app)
-        .get('/api/external-service');
+      const response = await request(app).get('/api/external-service');
 
       expect(response.status).toBe(502);
       expect(response.body.error).toMatch(/DNS|resolution|ENOTFOUND/i);
@@ -90,12 +86,11 @@ describe('Error Scenario Testing Suite', () => {
   describe('Database Connection Failures', () => {
     test('should handle database connection timeouts', async () => {
       const mockDb = {
-        getTravelOffers: jest.fn().mockRejectedValue(new Error('Connection timeout'))
+        getTravelOffers: jest.fn().mockRejectedValue(new Error('Connection timeout')),
       };
       SupabaseDB.mockImplementation(() => mockDb);
 
-      const response = await request(app)
-        .get('/api/trips');
+      const response = await request(app).get('/api/trips');
 
       expect(response.status).toBe(503);
       expect(response.body).toHaveProperty('error');
@@ -104,12 +99,11 @@ describe('Error Scenario Testing Suite', () => {
 
     test('should handle database connection pool exhaustion', async () => {
       const mockDb = {
-        getTravelOffers: jest.fn().mockRejectedValue(new Error('connection pool exhausted'))
+        getTravelOffers: jest.fn().mockRejectedValue(new Error('connection pool exhausted')),
       };
       SupabaseDB.mockImplementation(() => mockDb);
 
-      const response = await request(app)
-        .get('/api/trips');
+      const response = await request(app).get('/api/trips');
 
       expect(response.status).toBe(503);
       expect(response.body.error).toContain('pool');
@@ -117,12 +111,11 @@ describe('Error Scenario Testing Suite', () => {
 
     test('should handle database query timeouts', async () => {
       const mockDb = {
-        getUserProfile: jest.fn().mockRejectedValue(new Error('Query timeout'))
+        getUserProfile: jest.fn().mockRejectedValue(new Error('Query timeout')),
       };
       SupabaseDB.mockImplementation(() => mockDb);
 
-      const response = await request(app)
-        .get('/api/user/profile');
+      const response = await request(app).get('/api/user/profile');
 
       expect(response.status).toBe(504); // Gateway Timeout
       expect(response.body.error).toContain('timeout');
@@ -130,7 +123,9 @@ describe('Error Scenario Testing Suite', () => {
 
     test('should handle database constraint violations', async () => {
       const mockDb = {
-        createTrip: jest.fn().mockRejectedValue(new Error('duplicate key value violates unique constraint'))
+        createTrip: jest
+          .fn()
+          .mockRejectedValue(new Error('duplicate key value violates unique constraint')),
       };
       SupabaseDB.mockImplementation(() => mockDb);
 
@@ -143,17 +138,17 @@ describe('Error Scenario Testing Suite', () => {
     });
 
     test('should recover from temporary database outages', async () => {
-      let callCount = 0;
+      const callCount = 0;
       const mockDb = {
-        getTravelOffers: jest.fn()
+        getTravelOffers: jest
+          .fn()
           .mockImplementationOnce(() => Promise.reject(new Error('Connection lost')))
           .mockImplementationOnce(() => Promise.reject(new Error('Connection lost')))
-          .mockImplementationOnce(() => Promise.resolve([{ id: 1, title: 'Recovered Trip' }]))
+          .mockImplementationOnce(() => Promise.resolve([{ id: 1, title: 'Recovered Trip' }])),
       };
       SupabaseDB.mockImplementation(() => mockDb);
 
-      const response = await request(app)
-        .get('/api/trips');
+      const response = await request(app).get('/api/trips');
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveLength(1);
@@ -162,13 +157,11 @@ describe('Error Scenario Testing Suite', () => {
 
   describe('External API Timeouts', () => {
     test('should handle AI service timeouts', async () => {
-      ZaiClient.mockImplementation(() => ({
-        chat: jest.fn().mockRejectedValue(new Error('Request timeout'))
+      KeloClient.mockImplementation(() => ({
+        chat: jest.fn().mockRejectedValue(new Error('Request timeout')),
       }));
 
-      const response = await request(app)
-        .post('/api/ai/chat')
-        .send({ message: 'Hello' });
+      const response = await request(app).post('/api/ai/chat').send({ message: 'Hello' });
 
       expect(response.status).toBe(504);
       expect(response.body.error).toContain('timeout');
@@ -224,9 +217,7 @@ describe('Error Scenario Testing Suite', () => {
     });
 
     test('should validate required fields', async () => {
-      const response = await request(app)
-        .post('/api/trips')
-        .send({}); // Missing required fields
+      const response = await request(app).post('/api/trips').send({}); // Missing required fields
 
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('errors');
@@ -234,13 +225,11 @@ describe('Error Scenario Testing Suite', () => {
     });
 
     test('should validate data types', async () => {
-      const response = await request(app)
-        .post('/api/trips')
-        .send({
-          destination: 123, // Should be string
-          budget: 'not-a-number', // Should be number
-          startDate: 'invalid-date'
-        });
+      const response = await request(app).post('/api/trips').send({
+        destination: 123, // Should be string
+        budget: 'not-a-number', // Should be number
+        startDate: 'invalid-date',
+      });
 
       expect(response.status).toBe(400);
       expect(response.body.errors.length).toBeGreaterThan(0);
@@ -249,9 +238,7 @@ describe('Error Scenario Testing Suite', () => {
     test('should handle extremely large payloads', async () => {
       const largePayload = 'x'.repeat(10 * 1024 * 1024); // 10MB
 
-      const response = await request(app)
-        .post('/api/trips')
-        .send({ description: largePayload });
+      const response = await request(app).post('/api/trips').send({ description: largePayload });
 
       expect(response.status).toBe(413); // Payload Too Large
     });
@@ -262,7 +249,7 @@ describe('Error Scenario Testing Suite', () => {
         '@example.com',
         'user@',
         'user.example.com',
-        'user@.com'
+        'user@.com',
       ];
 
       for (const email of invalidEmails) {
@@ -276,17 +263,10 @@ describe('Error Scenario Testing Suite', () => {
     });
 
     test('should validate URL formats', async () => {
-      const invalidUrls = [
-        'not-a-url',
-        'http://',
-        'https://',
-        'ftp://example.com'
-      ];
+      const invalidUrls = ['not-a-url', 'http://', 'https://', 'ftp://example.com'];
 
       for (const url of invalidUrls) {
-        const response = await request(app)
-          .post('/api/user/update')
-          .send({ website: url });
+        const response = await request(app).post('/api/user/update').send({ website: url });
 
         expect(response.status).toBe(400);
       }
@@ -297,7 +277,7 @@ describe('Error Scenario Testing Suite', () => {
         "'; DROP TABLE users; --",
         "' OR '1'='1",
         "admin'--",
-        "1; SELECT * FROM users--"
+        '1; SELECT * FROM users--',
       ];
 
       for (const payload of sqlInjectionPayloads) {
@@ -320,18 +300,18 @@ describe('Error Scenario Testing Suite', () => {
       }
 
       const responses = await Promise.all(promises);
-      const rateLimitedResponses = responses.filter(r => r.status === 429);
+      const rateLimitedResponses = responses.filter((r) => r.status === 429);
 
       expect(rateLimitedResponses.length).toBeGreaterThan(0);
     });
 
     test('should handle burst traffic', async () => {
-      const burstPromises = Array(50).fill().map(() =>
-        request(app).get('/api/health')
-      );
+      const burstPromises = Array(50)
+        .fill()
+        .map(() => request(app).get('/api/health'));
 
       const responses = await Promise.all(burstPromises);
-      const successResponses = responses.filter(r => r.status === 200);
+      const successResponses = responses.filter((r) => r.status === 200);
 
       expect(successResponses.length).toBeGreaterThan(40); // Allow some through
     });
@@ -358,8 +338,8 @@ describe('Error Scenario Testing Suite', () => {
         apiResponses.push(await request(app).get('/api/trips'));
       }
 
-      const healthRateLimited = healthResponses.filter(r => r.status === 429).length;
-      const apiRateLimited = apiResponses.filter(r => r.status === 429).length;
+      const healthRateLimited = healthResponses.filter((r) => r.status === 429).length;
+      const apiRateLimited = apiResponses.filter((r) => r.status === 429).length;
 
       // Different endpoints should have different rate limit behaviors
       expect(healthRateLimited).not.toBe(apiRateLimited);
@@ -377,12 +357,7 @@ describe('Error Scenario Testing Suite', () => {
     });
 
     test('should handle malformed JWT tokens', async () => {
-      const malformedTokens = [
-        'not-a-jwt',
-        'header.payload',
-        'header.payload.signature.extra',
-        ''
-      ];
+      const malformedTokens = ['not-a-jwt', 'header.payload', 'header.payload.signature.extra', ''];
 
       for (const token of malformedTokens) {
         const response = await request(app)
@@ -394,17 +369,14 @@ describe('Error Scenario Testing Suite', () => {
     });
 
     test('should handle missing authentication', async () => {
-      const response = await request(app)
-        .get('/api/user/profile');
+      const response = await request(app).get('/api/user/profile');
 
       expect(response.status).toBe(401);
       expect(response.body.error).toContain('auth');
     });
 
     test('should handle invalid API keys', async () => {
-      const response = await request(app)
-        .get('/api/admin/stats')
-        .set('X-API-Key', 'invalid-key');
+      const response = await request(app).get('/api/admin/stats').set('X-API-Key', 'invalid-key');
 
       expect(response.status).toBe(403);
       expect(response.body.error).toContain('key');
@@ -424,7 +396,7 @@ describe('Error Scenario Testing Suite', () => {
       }
 
       const responses = await Promise.all(promises);
-      const successResponses = responses.filter(r => r.status === 200 || r.status === 400);
+      const successResponses = responses.filter((r) => r.status === 200 || r.status === 400);
 
       expect(successResponses.length).toBeGreaterThan(80); // Should handle most requests
     });
@@ -447,8 +419,8 @@ describe('Error Scenario Testing Suite', () => {
       }
 
       const responses = await Promise.allSettled(promises);
-      const fulfilled = responses.filter(r => r.status === 'fulfilled').length;
-      const rejected = responses.filter(r => r.status === 'rejected').length;
+      const fulfilled = responses.filter((r) => r.status === 'fulfilled').length;
+      const rejected = responses.filter((r) => r.status === 'rejected').length;
 
       expect(fulfilled).toBeGreaterThan(800); // Should handle most connections
       expect(rejected).toBeLessThan(200); // Some may be rejected under extreme load
@@ -460,11 +432,10 @@ describe('Error Scenario Testing Suite', () => {
       // Mock all external services as failing
       axios.get.mockRejectedValue(new Error('Service down'));
       SupabaseDB.mockImplementation(() => ({
-        getTravelOffers: jest.fn().mockRejectedValue(new Error('DB down'))
+        getTravelOffers: jest.fn().mockRejectedValue(new Error('DB down')),
       }));
 
-      const response = await request(app)
-        .get('/health');
+      const response = await request(app).get('/health');
 
       // Health check should still work even if dependencies are down
       expect(response.status).toBe(200);
@@ -480,8 +451,7 @@ describe('Error Scenario Testing Suite', () => {
         return Promise.reject(new Error('Service down'));
       });
 
-      const response = await request(app)
-        .get('/api/composite-data');
+      const response = await request(app).get('/api/composite-data');
 
       expect(response.status).toBe(207); // Multi-Status
       expect(response.body).toHaveProperty('results');
@@ -495,13 +465,11 @@ describe('Error Scenario Testing Suite', () => {
       const corruptedPayloads = [
         { destination: '\u0000\u0001\u0002', budget: NaN },
         { destination: 'test', budget: Infinity },
-        { destination: 'test', budget: -Infinity }
+        { destination: 'test', budget: -Infinity },
       ];
 
       for (const payload of corruptedPayloads) {
-        const response = await request(app)
-          .post('/api/trips')
-          .send(payload);
+        const response = await request(app).post('/api/trips').send(payload);
 
         expect([400, 422]).toContain(response.status); // Bad Request or Unprocessable Entity
       }
@@ -513,30 +481,29 @@ describe('Error Scenario Testing Suite', () => {
           id: 1,
           destination: 'Test',
           budget: NaN, // Corrupted data
-          start_date: 'invalid-date'
-        })
+          start_date: 'invalid-date',
+        }),
       };
       SupabaseDB.mockImplementation(() => mockDb);
 
-      const response = await request(app)
-        .get('/api/trips/1');
+      const response = await request(app).get('/api/trips/1');
 
       expect(response.status).toBe(500);
       expect(response.body.error).toContain('corrupt');
     });
 
     test('should recover from temporary data inconsistencies', async () => {
-      let callCount = 0;
+      const callCount = 0;
       const mockDb = {
-        getTrip: jest.fn()
+        getTrip: jest
+          .fn()
           .mockImplementationOnce(() => Promise.resolve(null)) // Not found
           .mockImplementationOnce(() => Promise.reject(new Error('Inconsistent data')))
-          .mockImplementationOnce(() => Promise.resolve({ id: 1, destination: 'Recovered' }))
+          .mockImplementationOnce(() => Promise.resolve({ id: 1, destination: 'Recovered' })),
       };
       SupabaseDB.mockImplementation(() => mockDb);
 
-      const response = await request(app)
-        .get('/api/trips/1');
+      const response = await request(app).get('/api/trips/1');
 
       expect(response.status).toBe(200);
       expect(response.body.destination).toBe('Recovered');

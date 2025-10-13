@@ -8,7 +8,7 @@ const {
   cleanupTestData,
   createTestUser,
   generateTestTelegramId,
-  testSupabaseClient
+  testSupabaseClient,
 } = require('../utils/database-test-helpers');
 
 describe('Authentication Flows', () => {
@@ -38,9 +38,9 @@ describe('Authentication Flows', () => {
         options: {
           data: {
             full_name: 'Test User',
-            avatar_url: 'https://example.com/avatar.jpg'
-          }
-        }
+            avatar_url: 'https://example.com/avatar.jpg',
+          },
+        },
       });
 
       expect(error).toBeNull();
@@ -55,16 +55,16 @@ describe('Authentication Flows', () => {
         options: {
           data: {
             full_name: 'Trigger Test User',
-            avatar_url: 'https://example.com/trigger-avatar.jpg'
-          }
-        }
+            avatar_url: 'https://example.com/trigger-avatar.jpg',
+          },
+        },
       });
 
       expect(error).toBeNull();
       expect(data.user).toBeDefined();
 
       // Wait a moment for trigger to execute
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Check if profile was created by trigger
       const { data: profile } = await testSupabaseClient
@@ -84,7 +84,7 @@ describe('Authentication Flows', () => {
       // First registration
       const { data: firstUser, error: firstError } = await testSupabaseClient.auth.signUp({
         email,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       expect(firstError).toBeNull();
@@ -93,7 +93,7 @@ describe('Authentication Flows', () => {
       // Second registration with same email
       const { data: secondUser, error: secondError } = await testSupabaseClient.auth.signUp({
         email,
-        password: 'differentpassword123'
+        password: 'differentpassword123',
       });
 
       expect(secondError).toBeDefined();
@@ -103,7 +103,7 @@ describe('Authentication Flows', () => {
     it('should validate email format', async () => {
       const { data, error } = await testSupabaseClient.auth.signUp({
         email: 'invalid-email-format',
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       expect(error).toBeDefined();
@@ -113,7 +113,7 @@ describe('Authentication Flows', () => {
     it('should validate password strength', async () => {
       const { data, error } = await testSupabaseClient.auth.signUp({
         email: `weakpass${testTelegramId}@example.com`,
-        password: '123' // Too weak
+        password: '123', // Too weak
       });
 
       expect(error).toBeDefined();
@@ -131,9 +131,9 @@ describe('Authentication Flows', () => {
         password: 'testpassword123',
         options: {
           data: {
-            full_name: 'Login Test User'
-          }
-        }
+            full_name: 'Login Test User',
+          },
+        },
       });
 
       expect(error).toBeNull();
@@ -143,7 +143,7 @@ describe('Authentication Flows', () => {
     it('should login user successfully', async () => {
       const { data, error } = await testSupabaseClient.auth.signInWithPassword({
         email: `login${testTelegramId}@example.com`,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       expect(error).toBeNull();
@@ -156,7 +156,7 @@ describe('Authentication Flows', () => {
     it('should reject login with wrong password', async () => {
       const { data, error } = await testSupabaseClient.auth.signInWithPassword({
         email: `login${testTelegramId}@example.com`,
-        password: 'wrongpassword'
+        password: 'wrongpassword',
       });
 
       expect(error).toBeDefined();
@@ -166,7 +166,7 @@ describe('Authentication Flows', () => {
     it('should reject login with non-existent email', async () => {
       const { data, error } = await testSupabaseClient.auth.signInWithPassword({
         email: 'nonexistent@example.com',
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       expect(error).toBeDefined();
@@ -177,7 +177,7 @@ describe('Authentication Flows', () => {
       // Login first
       const { data: loginData } = await testSupabaseClient.auth.signInWithPassword({
         email: `login${testTelegramId}@example.com`,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       expect(loginData.session).toBeDefined();
@@ -194,7 +194,7 @@ describe('Authentication Flows', () => {
       // Login first
       await testSupabaseClient.auth.signInWithPassword({
         email: `login${testTelegramId}@example.com`,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       // Get current user
@@ -213,7 +213,7 @@ describe('Authentication Flows', () => {
       // Create and login a test user
       const { data, error } = await testSupabaseClient.auth.signUp({
         email: `session${testTelegramId}@example.com`,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       expect(error).toBeNull();
@@ -224,13 +224,13 @@ describe('Authentication Flows', () => {
       // Login first
       const { data: loginData } = await testSupabaseClient.auth.signInWithPassword({
         email: `session${testTelegramId}@example.com`,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       const originalToken = loginData.session.access_token;
 
       // Wait a moment then refresh
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const { data: refreshData, error } = await testSupabaseClient.auth.refreshSession();
 
@@ -244,7 +244,7 @@ describe('Authentication Flows', () => {
       // Login first
       await testSupabaseClient.auth.signInWithPassword({
         email: `session${testTelegramId}@example.com`,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       // Logout
@@ -270,7 +270,7 @@ describe('Authentication Flows', () => {
       // Create a test user for password reset tests
       const { data, error } = await testSupabaseClient.auth.signUp({
         email: `reset${testTelegramId}@example.com`,
-        password: 'originalpassword123'
+        password: 'originalpassword123',
       });
 
       expect(error).toBeNull();
@@ -281,7 +281,7 @@ describe('Authentication Flows', () => {
       const { error } = await testSupabaseClient.auth.resetPasswordForEmail(
         `reset${testTelegramId}@example.com`,
         {
-          redirectTo: 'http://localhost:3000/reset-password'
+          redirectTo: 'http://localhost:3000/reset-password',
         }
       );
 
@@ -289,9 +289,8 @@ describe('Authentication Flows', () => {
     });
 
     it('should handle password reset for non-existent email', async () => {
-      const { error } = await testSupabaseClient.auth.resetPasswordForEmail(
-        'nonexistent@example.com'
-      );
+      const { error } =
+        await testSupabaseClient.auth.resetPasswordForEmail('nonexistent@example.com');
 
       // This should not error as it would reveal if email exists
       expect(error).toBeNull();
@@ -301,12 +300,12 @@ describe('Authentication Flows', () => {
       // Login first
       await testSupabaseClient.auth.signInWithPassword({
         email: `reset${testTelegramId}@example.com`,
-        password: 'originalpassword123'
+        password: 'originalpassword123',
       });
 
       // Update password
       const { data, error } = await testSupabaseClient.auth.updateUser({
-        password: 'newpassword456'
+        password: 'newpassword456',
       });
 
       expect(error).toBeNull();
@@ -315,10 +314,11 @@ describe('Authentication Flows', () => {
       // Logout and login with new password
       await testSupabaseClient.auth.signOut();
 
-      const { data: loginData, error: loginError } = await testSupabaseClient.auth.signInWithPassword({
-        email: `reset${testTelegramId}@example.com`,
-        password: 'newpassword456'
-      });
+      const { data: loginData, error: loginError } =
+        await testSupabaseClient.auth.signInWithPassword({
+          email: `reset${testTelegramId}@example.com`,
+          password: 'newpassword456',
+        });
 
       expect(loginError).toBeNull();
       expect(loginData.user).toBeDefined();
@@ -332,12 +332,12 @@ describe('Authentication Flows', () => {
       // Create two test users for RLS testing
       const { data: data1, error: error1 } = await testSupabaseClient.auth.signUp({
         email: `rls1${testTelegramId}@example.com`,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       const { data: data2, error: error2 } = await testSupabaseClient.auth.signUp({
         email: `rls2${testTelegramId}@example.com`,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       expect(error1).toBeNull();
@@ -351,7 +351,7 @@ describe('Authentication Flows', () => {
       // Login as user1
       await testSupabaseClient.auth.signInWithPassword({
         email: `rls1${testTelegramId}@example.com`,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       // User1 should be able to see their own profile
@@ -378,20 +378,22 @@ describe('Authentication Flows', () => {
       // Login as user1
       await testSupabaseClient.auth.signInWithPassword({
         email: `rls1${testTelegramId}@example.com`,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       // Create trip for user1
       const { data: trip, error: tripError } = await testSupabaseClient
         .from('trips')
-        .insert([{
-          user_id: user1.id,
-          destination: 'RLS Test Destination',
-          start_date: new Date().toISOString().split('T')[0],
-          end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          budget: 1000,
-          status: 'planned'
-        }])
+        .insert([
+          {
+            user_id: user1.id,
+            destination: 'RLS Test Destination',
+            start_date: new Date().toISOString().split('T')[0],
+            end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            budget: 1000,
+            status: 'planned',
+          },
+        ])
         .select()
         .single();
 
@@ -403,7 +405,7 @@ describe('Authentication Flows', () => {
       await testSupabaseClient.auth.signOut();
       await testSupabaseClient.auth.signInWithPassword({
         email: `rls2${testTelegramId}@example.com`,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       // User2 should not be able to see user1's trip
@@ -420,34 +422,38 @@ describe('Authentication Flows', () => {
       // Login as user1
       await testSupabaseClient.auth.signInWithPassword({
         email: `rls1${testTelegramId}@example.com`,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       // Create trip for user1
       const { data: trip } = await testSupabaseClient
         .from('trips')
-        .insert([{
-          user_id: user1.id,
-          destination: 'Expense RLS Test',
-          start_date: new Date().toISOString().split('T')[0],
-          end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          budget: 1000,
-          status: 'planned'
-        }])
+        .insert([
+          {
+            user_id: user1.id,
+            destination: 'Expense RLS Test',
+            start_date: new Date().toISOString().split('T')[0],
+            end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            budget: 1000,
+            status: 'planned',
+          },
+        ])
         .select()
         .single();
 
       // Create expense for the trip
       const { data: expense } = await testSupabaseClient
         .from('expenses')
-        .insert([{
-          trip_id: trip.id,
-          user_id: user1.id,
-          category: 'food',
-          amount: 50,
-          description: 'RLS test expense',
-          date: new Date().toISOString().split('T')[0]
-        }])
+        .insert([
+          {
+            trip_id: trip.id,
+            user_id: user1.id,
+            category: 'food',
+            amount: 50,
+            description: 'RLS test expense',
+            date: new Date().toISOString().split('T')[0],
+          },
+        ])
         .select()
         .single();
 
@@ -457,7 +463,7 @@ describe('Authentication Flows', () => {
       await testSupabaseClient.auth.signOut();
       await testSupabaseClient.auth.signInWithPassword({
         email: `rls2${testTelegramId}@example.com`,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       // User2 should not be able to see user1's expense
@@ -478,7 +484,7 @@ describe('Authentication Flows', () => {
       // Create and login a test user
       const { data, error } = await testSupabaseClient.auth.signUp({
         email: `jwt${testTelegramId}@example.com`,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       expect(error).toBeNull();
@@ -489,7 +495,7 @@ describe('Authentication Flows', () => {
       // Login to get session
       const { data: loginData } = await testSupabaseClient.auth.signInWithPassword({
         email: `jwt${testTelegramId}@example.com`,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       expect(loginData.session).toBeDefined();
@@ -506,7 +512,7 @@ describe('Authentication Flows', () => {
       // Login first
       const { data: loginData } = await testSupabaseClient.auth.signInWithPassword({
         email: `jwt${testTelegramId}@example.com`,
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       // In a real scenario, you would wait for token expiration
@@ -526,8 +532,8 @@ describe('Authentication Flows', () => {
         preferences: {
           language: 'ar',
           currency: 'USD',
-          travel_style: 'budget'
-        }
+          travel_style: 'budget',
+        },
       };
 
       const profile = await createTestUser(telegramUserData);
@@ -543,7 +549,7 @@ describe('Authentication Flows', () => {
       const initialProfile = await createTestUser({
         telegram_id: testTelegramId,
         username: 'initial_username',
-        preferences: { language: 'ar' }
+        preferences: { language: 'ar' },
       });
 
       // Update the profile
@@ -554,9 +560,9 @@ describe('Authentication Flows', () => {
           preferences: {
             language: 'en',
             currency: 'EUR',
-            travel_style: 'luxury'
+            travel_style: 'luxury',
           },
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('telegram_id', testTelegramId)
         .select()
@@ -574,7 +580,7 @@ describe('Authentication Flows', () => {
     it('should handle malformed auth requests', async () => {
       // Test with missing email
       const { data, error } = await testSupabaseClient.auth.signUp({
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       expect(error).toBeDefined();
@@ -584,7 +590,7 @@ describe('Authentication Flows', () => {
     it('should handle malformed login requests', async () => {
       // Test with missing password
       const { data, error } = await testSupabaseClient.auth.signInWithPassword({
-        email: `malformed${testTelegramId}@example.com`
+        email: `malformed${testTelegramId}@example.com`,
       });
 
       expect(error).toBeDefined();
@@ -598,7 +604,7 @@ describe('Authentication Flows', () => {
       // Create user first
       await testSupabaseClient.auth.signUp({
         email,
-        password
+        password,
       });
 
       // Attempt concurrent logins
@@ -607,7 +613,7 @@ describe('Authentication Flows', () => {
         loginPromises.push(
           testSupabaseClient.auth.signInWithPassword({
             email,
-            password
+            password,
           })
         );
       }
@@ -628,14 +634,14 @@ describe('Authentication Flows', () => {
       // Create user first
       await testSupabaseClient.auth.signUp({
         email,
-        password
+        password,
       });
 
       // Rapid login/logout cycles
       for (let i = 0; i < 3; i++) {
         const { error: loginError } = await testSupabaseClient.auth.signInWithPassword({
           email,
-          password
+          password,
         });
         expect(loginError).toBeNull();
 

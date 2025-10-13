@@ -13,34 +13,34 @@ const mockSupabaseClient = {
       data: {
         id: 'test-id',
         name: 'Test User',
-        email: 'test@example.com'
+        email: 'test@example.com',
       },
-      error: null
+      error: null,
     }),
     order: jest.fn().mockReturnThis(),
     limit: jest.fn().mockResolvedValue({
       data: [
         { id: 1, title: 'Test Trip 1', price: 100 },
-        { id: 2, title: 'Test Trip 2', price: 200 }
+        { id: 2, title: 'Test Trip 2', price: 200 },
       ],
-      error: null
-    })
+      error: null,
+    }),
   })),
   auth: {
     signUp: jest.fn().mockResolvedValue({
       data: { user: { id: 'new-user-id' } },
-      error: null
+      error: null,
     }),
     signIn: jest.fn().mockResolvedValue({
       data: { user: { id: 'user-id' } },
-      error: null
+      error: null,
     }),
     signOut: jest.fn().mockResolvedValue({ error: null }),
     getUser: jest.fn().mockResolvedValue({
       data: { user: { id: 'user-id' } },
-      error: null
-    })
-  }
+      error: null,
+    }),
+  },
 };
 
 const mockSupabaseDB = jest.fn().mockImplementation(() => ({
@@ -52,7 +52,7 @@ const mockSupabaseDB = jest.fn().mockImplementation(() => ({
       price: 599,
       currency: 'USD',
       duration: 7,
-      description: 'Explore the historic city of Istanbul'
+      description: 'Explore the historic city of Istanbul',
     },
     {
       id: 2,
@@ -61,15 +61,15 @@ const mockSupabaseDB = jest.fn().mockImplementation(() => ({
       price: 1299,
       currency: 'USD',
       duration: 5,
-      description: 'Experience luxury in Dubai'
-    }
+      description: 'Experience luxury in Dubai',
+    },
   ]),
 
   createUser: jest.fn().mockResolvedValue({
     id: 'test-user-id',
     name: 'Test User',
     email: 'test@example.com',
-    created_at: new Date().toISOString()
+    created_at: new Date().toISOString(),
   }),
 
   getUserProfile: jest.fn().mockResolvedValue({
@@ -79,20 +79,20 @@ const mockSupabaseDB = jest.fn().mockImplementation(() => ({
     preferences: {
       language: 'ar',
       currency: 'USD',
-      travel_style: 'luxury'
-    }
+      travel_style: 'luxury',
+    },
   }),
 
   updateUserProfile: jest.fn().mockResolvedValue({
     id: 'test-user-id',
     name: 'Updated User',
-    email: 'test@example.com'
+    email: 'test@example.com',
   }),
 
   saveConversation: jest.fn().mockResolvedValue({
     id: 'conv-id',
     user_id: 'test-user-id',
-    messages: []
+    messages: [],
   }),
 
   getConversationHistory: jest.fn().mockResolvedValue([
@@ -100,15 +100,15 @@ const mockSupabaseDB = jest.fn().mockImplementation(() => ({
       id: 'msg-1',
       role: 'user',
       content: 'Hello',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     },
     {
       id: 'msg-2',
       role: 'assistant',
       content: 'Hi there!',
-      timestamp: new Date().toISOString()
-    }
-  ])
+      timestamp: new Date().toISOString(),
+    },
+  ]),
 }));
 
 describe('Database Mocks', () => {
@@ -120,5 +120,5 @@ describe('Database Mocks', () => {
 
 module.exports = {
   mockSupabaseClient,
-  mockSupabaseDB
+  mockSupabaseDB,
 };

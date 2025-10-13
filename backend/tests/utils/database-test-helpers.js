@@ -9,7 +9,7 @@ const { createClient } = require('@supabase/supabase-js');
 const TEST_SUPABASE_CONFIG = {
   url: process.env.TEST_SUPABASE_URL || 'http://localhost:54321',
   serviceRoleKey: process.env.TEST_SUPABASE_SERVICE_ROLE_KEY || 'test-service-role-key',
-  anonKey: process.env.TEST_SUPABASE_ANON_KEY || 'test-anon-key'
+  anonKey: process.env.TEST_SUPABASE_ANON_KEY || 'test-anon-key',
 };
 
 /**
@@ -23,9 +23,12 @@ let testSupabaseClient = null;
 const setupTestDatabase = async () => {
   try {
     // Skip database connection in test environment if no real Supabase configured
-    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY ||
-        process.env.SUPABASE_URL.includes('your_supabase') ||
-        process.env.SUPABASE_SERVICE_ROLE_KEY.includes('your_supabase')) {
+    if (
+      !process.env.SUPABASE_URL ||
+      !process.env.SUPABASE_SERVICE_ROLE_KEY ||
+      process.env.SUPABASE_URL.includes('your_supabase') ||
+      process.env.SUPABASE_SERVICE_ROLE_KEY.includes('your_supabase')
+    ) {
       console.log('⚠️ Skipping real database connection - using mock mode');
       testSupabaseClient = null;
       return null;
@@ -38,17 +41,28 @@ const setupTestDatabase = async () => {
       {
         auth: {
           autoRefreshToken: false,
-          persistSession: false
-        }
+          persistSession: false,
+        },
       }
     );
 
     // Create tables if they don't exist
-    const tables = ['profiles', 'messages', 'travel_offers', 'offer_interactions', 'trips', 'destinations', 'expenses', 'payments', 'ai_conversations'];
+    const tables = [
+      'profiles',
+      'messages',
+      'travel_offers',
+      'offer_interactions',
+      'trips',
+      'destinations',
+      'expenses',
+      'payments',
+      'ai_conversations',
+    ];
     for (const table of tables) {
       const { error } = await testSupabaseClient.from(table).select('count').limit(1);
-      //If the table doesn't exist, the error will contain "relation not found"
-      if (error?.message.includes('relation') && error.message.includes('not found')) await createTable(table);
+      // If the table doesn't exist, the error will contain "relation not found"
+      if (error?.message.includes('relation') && error.message.includes('not found'))
+        await createTable(table);
     }
 
     console.log('✅ Test database connection established');
@@ -60,7 +74,6 @@ const setupTestDatabase = async () => {
     return null;
   }
 };
-
 
 const createTable = async (table) => {
   console.log('Attempting to create table:', table);
@@ -84,48 +97,48 @@ const createTable = async (table) => {
         });
         break;
       case 'messages':
-          await testSupabaseClient.schema.hasTable('messages').then(async (exists) => {
-            if (!exists) {
-              await testSupabaseClient.schema.createTable('messages', (tableDef) => {
-                tableDef.uuid('id').primaryKey().default('uuid_generate_v4()');
-                tableDef.bigint('telegram_id');
-                tableDef.text('content');
-                tableDef.string('role');
-                tableDef.boolean('is_telegram');
-                tableDef.timestamp('created_at').default('now()');
-              });
-            }
-          });
+        await testSupabaseClient.schema.hasTable('messages').then(async (exists) => {
+          if (!exists) {
+            await testSupabaseClient.schema.createTable('messages', (tableDef) => {
+              tableDef.uuid('id').primaryKey().default('uuid_generate_v4()');
+              tableDef.bigint('telegram_id');
+              tableDef.text('content');
+              tableDef.string('role');
+              tableDef.boolean('is_telegram');
+              tableDef.timestamp('created_at').default('now()');
+            });
+          }
+        });
         break;
       case 'travel_offers':
-          await testSupabaseClient.schema.hasTable('travel_offers').then(async (exists) => {
-            if (!exists) {
-              await testSupabaseClient.schema.createTable('travel_offers', (tableDef) => {
-                tableDef.uuid('id').primaryKey().default('uuid_generate_v4()');
-                tableDef.string('title');
-                tableDef.string('destination');
-                tableDef.text('description');
-                tableDef.decimal('price');
-                tableDef.decimal('original_price');
-                tableDef.integer('discount_percentage');
-                tableDef.string('category');
-                tableDef.integer('duration_days');
-                tableDef.specificType('includes', 'text[]');
-                tableDef.string('image_url');
-                tableDef.boolean('is_active');
-                tableDef.integer('priority');
-                tableDef.timestamp('valid_until');
-                tableDef.timestamp('created_at').default('now()');
-              });
-            }
-          });
+        await testSupabaseClient.schema.hasTable('travel_offers').then(async (exists) => {
+          if (!exists) {
+            await testSupabaseClient.schema.createTable('travel_offers', (tableDef) => {
+              tableDef.uuid('id').primaryKey().default('uuid_generate_v4()');
+              tableDef.string('title');
+              tableDef.string('destination');
+              tableDef.text('description');
+              tableDef.decimal('price');
+              tableDef.decimal('original_price');
+              tableDef.integer('discount_percentage');
+              tableDef.string('category');
+              tableDef.integer('duration_days');
+              tableDef.specificType('includes', 'text[]');
+              tableDef.string('image_url');
+              tableDef.boolean('is_active');
+              tableDef.integer('priority');
+              tableDef.timestamp('valid_until');
+              tableDef.timestamp('created_at').default('now()');
+            });
+          }
+        });
         break;
-        // Add other table creation scripts here
+      // Add other table creation scripts here
     }
   } catch (e) {
     console.error('Error creating table:', table, e.message);
   }
-}
+};
 /**
  * Clean up all test data
  */
@@ -136,9 +149,23 @@ const cleanupTestData = async () => {
   }
 
   try {
-    const tables = ['offer_interactions', 'messages', 'travel_offers', 'expenses', 'trips', 'ai_conversations', 'payments', 'destinations', 'profiles', 'users'];
+    const tables = [
+      'offer_interactions',
+      'messages',
+      'travel_offers',
+      'expenses',
+      'trips',
+      'ai_conversations',
+      'payments',
+      'destinations',
+      'profiles',
+      'users',
+    ];
     for (const table of tables) {
-      await testSupabaseClient.from(table).delete().neq('id', '00000000-0000-0000-0000-000000000000');//This does not work for the users table since it does not have the id field, this will need to be fixed
+      await testSupabaseClient
+        .from(table)
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000'); // This does not work for the users table since it does not have the id field, this will need to be fixed
     }
 
     console.log('✅ Test data cleanup completed');
@@ -164,12 +191,12 @@ const createTestUser = async (overrides = {}) => {
       language: 'ar',
       currency: 'USD',
       travel_style: 'budget',
-      ...overrides.preferences
+      ...overrides.preferences,
     },
     travel_history: [],
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-    ...overrides
+    ...overrides,
   };
 
   try {
@@ -200,12 +227,12 @@ const createTestTrip = async (userId, overrides = {}) => {
     destination: 'Test Destination',
     start_date: new Date().toISOString().split('T')[0],
     end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    budget: 1000.00,
+    budget: 1000.0,
     status: 'planned',
     image_url: 'https://example.com/trip.jpg',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-    ...overrides
+    ...overrides,
   };
 
   try {
@@ -246,7 +273,7 @@ const createTestTravelOffer = async (overrides = {}) => {
     priority: 5,
     valid_until: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
     created_at: new Date().toISOString(),
-    ...overrides
+    ...overrides,
   };
 
   try {
@@ -281,7 +308,7 @@ const createTestDestination = async (overrides = {}) => {
     best_time: 'Apr-Oct',
     description: 'A beautiful test destination for testing purposes',
     created_at: new Date().toISOString(),
-    ...overrides
+    ...overrides,
   };
 
   try {
@@ -311,11 +338,11 @@ const createTestExpense = async (tripId, userId, overrides = {}) => {
     trip_id: tripId,
     user_id: userId,
     category: 'food',
-    amount: 50.00,
+    amount: 50.0,
     description: 'Test meal expense',
     date: new Date().toISOString().split('T')[0],
     created_at: new Date().toISOString(),
-    ...overrides
+    ...overrides,
   };
 
   try {
@@ -346,7 +373,7 @@ const createTestMessage = async (userId, overrides = {}) => {
     content: 'Test message content',
     role: 'user',
     created_at: new Date().toISOString(),
-    ...overrides
+    ...overrides,
   };
 
   try {
@@ -374,14 +401,14 @@ const createTestPayment = async (userId, overrides = {}) => {
 
   const testPaymentData = {
     user_id: userId,
-    amount: 100.00,
+    amount: 100.0,
     currency: 'USD',
     status: 'completed',
     stripe_session_id: `test_session_${Date.now()}`,
     description: 'Test payment for trip booking',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-    ...overrides
+    ...overrides,
   };
 
   try {
@@ -473,5 +500,5 @@ module.exports = {
   generateTestTelegramId,
   testSupabaseClient,
 
-  TEST_SUPABASE_CONFIG
+  TEST_SUPABASE_CONFIG,
 };

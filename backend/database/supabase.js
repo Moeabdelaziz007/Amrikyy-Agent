@@ -8,21 +8,21 @@ const { createClient } = require('@supabase/supabase-js');
 class SupabaseDB {
   constructor() {
     // Check if Supabase is configured
-    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY || 
-        process.env.SUPABASE_URL.includes('your_supabase') || 
-        process.env.SUPABASE_SERVICE_ROLE_KEY.includes('your_supabase')) {
+    if (
+      !process.env.SUPABASE_URL ||
+      !process.env.SUPABASE_SERVICE_ROLE_KEY ||
+      process.env.SUPABASE_URL.includes('your_supabase') ||
+      process.env.SUPABASE_SERVICE_ROLE_KEY.includes('your_supabase')
+    ) {
       console.log('⚠️ Supabase not configured - using in-memory storage');
       this.supabase = null;
       this.memoryStorage = {
         profiles: new Map(),
         messages: new Map(),
-        offers: this.getDefaultOffers()
+        offers: this.getDefaultOffers(),
       };
     } else {
-      this.supabase = createClient(
-        process.env.SUPABASE_URL,
-        process.env.SUPABASE_SERVICE_ROLE_KEY
-      );
+      this.supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
       this.memoryStorage = null;
       console.log('✅ Supabase client initialized');
     }
@@ -35,43 +35,49 @@ class SupabaseDB {
         title: 'عرض تركيا الخاص - إسطنبول وبورصة',
         destination: 'تركيا',
         description: 'رحلة شاملة لمدة 7 أيام تشمل إسطنبول وبورصة مع جولات سياحية يومية',
-        price: 2499.00,
-        original_price: 3500.00,
+        price: 2499.0,
+        original_price: 3500.0,
         discount_percentage: 29,
         category: 'family',
         duration_days: 7,
-        includes: ['طيران ذهاب وعودة', 'إقامة 5 نجوم', 'وجبات الإفطار', 'جولات سياحية', 'مرشد عربي'],
+        includes: [
+          'طيران ذهاب وعودة',
+          'إقامة 5 نجوم',
+          'وجبات الإفطار',
+          'جولات سياحية',
+          'مرشد عربي',
+        ],
         is_active: true,
-        priority: 10
+        priority: 10,
       },
       {
         id: '2',
         title: 'عرض ماليزيا الذهبي',
         destination: 'ماليزيا',
         description: 'استكشف كوالالمبور ولنكاوي مع أفضل الفنادق والجولات',
-        price: 3299.00,
-        original_price: 4200.00,
+        price: 3299.0,
+        original_price: 4200.0,
         discount_percentage: 21,
         category: 'luxury',
         duration_days: 10,
         includes: ['طيران درجة أولى', 'فنادق 5 نجوم', 'جميع الوجبات', 'جولات خاصة', 'تأمين شامل'],
         is_active: true,
-        priority: 9
+        priority: 9,
       },
       {
         id: '3',
         title: 'مغامرة دبي الاقتصادية',
         destination: 'الإمارات',
         description: 'عطلة نهاية أسبوع في دبي بأسعار لا تقاوم',
-        price: 1299.00,
-        original_price: 1800.00,
+        price: 1299.0,
+        original_price: 1800.0,
         discount_percentage: 28,
         category: 'budget',
         duration_days: 4,
         includes: ['طيران اقتصادي', 'فندق 4 نجوم', 'إفطار', 'تذاكر برج خليفة'],
         is_active: true,
-        priority: 8
-      }
+        priority: 8,
+      },
     ];
   }
 
@@ -82,7 +88,7 @@ class SupabaseDB {
     if (!this.supabase) {
       return this.memoryStorage.profiles.get(telegramId) || null;
     }
-    
+
     try {
       const { data, error } = await this.supabase
         .from('profiles')
@@ -113,24 +119,26 @@ class SupabaseDB {
         preferences: userData.preferences || {},
         travel_history: [],
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       };
       this.memoryStorage.profiles.set(telegramId, profile);
       return profile;
     }
-    
+
     try {
       const { data, error } = await this.supabase
         .from('profiles')
-        .insert([{
-          telegram_id: telegramId,
-          username: userData.username || null,
-          avatar_url: userData.avatar_url || null,
-          preferences: userData.preferences || {},
-          travel_history: [],
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }])
+        .insert([
+          {
+            telegram_id: telegramId,
+            username: userData.username || null,
+            avatar_url: userData.avatar_url || null,
+            preferences: userData.preferences || {},
+            travel_history: [],
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          },
+        ])
         .select()
         .single();
 
@@ -153,13 +161,13 @@ class SupabaseDB {
       this.memoryStorage.profiles.set(telegramId, updated);
       return updated;
     }
-    
+
     try {
       const { data, error } = await this.supabase
         .from('profiles')
         .update({
           ...updates,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('telegram_id', telegramId)
         .select()
@@ -186,22 +194,24 @@ class SupabaseDB {
         content: message,
         role: isUser ? 'user' : 'assistant',
         is_telegram: true,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
       this.memoryStorage.messages.get(telegramId).push(msg);
       return msg;
     }
-    
+
     try {
       const { data, error } = await this.supabase
         .from('messages')
-        .insert([{
-          telegram_id: telegramId,
-          content: message,
-          role: isUser ? 'user' : 'assistant',
-          is_telegram: true,
-          created_at: new Date().toISOString()
-        }])
+        .insert([
+          {
+            telegram_id: telegramId,
+            content: message,
+            role: isUser ? 'user' : 'assistant',
+            is_telegram: true,
+            created_at: new Date().toISOString(),
+          },
+        ])
         .select()
         .single();
 
@@ -219,13 +229,13 @@ class SupabaseDB {
   async getConversationHistory(telegramId, limit = 20) {
     if (!this.supabase) {
       const messages = this.memoryStorage.messages.get(telegramId) || [];
-      return messages.slice(-limit).map(msg => ({
+      return messages.slice(-limit).map((msg) => ({
         message: msg.content,
         is_user: msg.role === 'user',
-        timestamp: msg.created_at
+        timestamp: msg.created_at,
       }));
     }
-    
+
     try {
       const { data, error } = await this.supabase
         .from('messages')
@@ -236,14 +246,16 @@ class SupabaseDB {
         .limit(limit);
 
       if (error) throw error;
-      
+
       // Convert to expected format
-      const formatted = data ? data.reverse().map(msg => ({
-        message: msg.content,
-        is_user: msg.role === 'user',
-        timestamp: msg.created_at
-      })) : [];
-      
+      const formatted = data
+        ? data.reverse().map((msg) => ({
+            message: msg.content,
+            is_user: msg.role === 'user',
+            timestamp: msg.created_at,
+          }))
+        : [];
+
       return formatted;
     } catch (error) {
       console.error('Error getting conversation history:', error);
@@ -303,11 +315,11 @@ class SupabaseDB {
       const travelHistory = profile.travel_history || [];
       travelHistory.push({
         ...tripData,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
-      return await this.updateUserProfile(telegramId, { 
-        travel_history: travelHistory 
+      return await this.updateUserProfile(telegramId, {
+        travel_history: travelHistory,
       });
     } catch (error) {
       console.error('Error adding to travel history:', error);
@@ -320,25 +332,25 @@ class SupabaseDB {
    */
   async getTravelOffers(filters = {}) {
     if (!this.supabase) {
-      let offers = this.memoryStorage.offers.filter(o => o.is_active);
-      
+      let offers = this.memoryStorage.offers.filter((o) => o.is_active);
+
       if (filters.destination) {
-        offers = offers.filter(o => 
+        offers = offers.filter((o) =>
           o.destination.toLowerCase().includes(filters.destination.toLowerCase())
         );
       }
-      
+
       if (filters.maxPrice) {
-        offers = offers.filter(o => o.price <= filters.maxPrice);
+        offers = offers.filter((o) => o.price <= filters.maxPrice);
       }
-      
+
       if (filters.category) {
-        offers = offers.filter(o => o.category === filters.category);
+        offers = offers.filter((o) => o.category === filters.category);
       }
-      
+
       return offers.sort((a, b) => b.priority - a.priority).slice(0, 10);
     }
-    
+
     try {
       let query = this.supabase
         .from('travel_offers')
@@ -382,7 +394,7 @@ class SupabaseDB {
       // Extract user preferences
       const filters = {
         maxPrice: preferences.budget_max || null,
-        category: preferences.travel_style || null
+        category: preferences.travel_style || null,
       };
 
       // Get offers matching preferences
@@ -390,12 +402,12 @@ class SupabaseDB {
 
       // If user has travel history, prioritize similar destinations
       if (travelHistory.length > 0) {
-        const visitedDestinations = travelHistory.map(t => t.destination);
+        const visitedDestinations = travelHistory.map((t) => t.destination);
         offers = offers.sort((a, b) => {
-          const aMatch = visitedDestinations.some(d => 
+          const aMatch = visitedDestinations.some((d) =>
             a.destination.toLowerCase().includes(d.toLowerCase())
           );
-          const bMatch = visitedDestinations.some(d => 
+          const bMatch = visitedDestinations.some((d) =>
             b.destination.toLowerCase().includes(d.toLowerCase())
           );
           return bMatch - aMatch;
@@ -429,31 +441,33 @@ class SupabaseDB {
         is_active: offerData.is_active !== undefined ? offerData.is_active : true,
         priority: offerData.priority || 0,
         valid_until: offerData.validUntil || offerData.valid_until || null,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
       this.memoryStorage.offers.push(offer);
       return offer;
     }
-    
+
     try {
       const { data, error } = await this.supabase
         .from('travel_offers')
-        .insert([{
-          title: offerData.title,
-          destination: offerData.destination,
-          description: offerData.description,
-          price: offerData.price,
-          original_price: offerData.originalPrice || offerData.original_price || offerData.price,
-          discount_percentage: offerData.discountPercentage || offerData.discount_percentage || 0,
-          category: offerData.category || 'general',
-          duration_days: offerData.durationDays || offerData.duration_days || 7,
-          includes: offerData.includes || [],
-          image_url: offerData.imageUrl || offerData.image_url || null,
-          is_active: offerData.is_active !== undefined ? offerData.is_active : true,
-          priority: offerData.priority || 0,
-          valid_until: offerData.validUntil || offerData.valid_until || null,
-          created_at: new Date().toISOString()
-        }])
+        .insert([
+          {
+            title: offerData.title,
+            destination: offerData.destination,
+            description: offerData.description,
+            price: offerData.price,
+            original_price: offerData.originalPrice || offerData.original_price || offerData.price,
+            discount_percentage: offerData.discountPercentage || offerData.discount_percentage || 0,
+            category: offerData.category || 'general',
+            duration_days: offerData.durationDays || offerData.duration_days || 7,
+            includes: offerData.includes || [],
+            image_url: offerData.imageUrl || offerData.image_url || null,
+            is_active: offerData.is_active !== undefined ? offerData.is_active : true,
+            priority: offerData.priority || 0,
+            valid_until: offerData.validUntil || offerData.valid_until || null,
+            created_at: new Date().toISOString(),
+          },
+        ])
         .select()
         .single();
 
@@ -475,7 +489,7 @@ class SupabaseDB {
         telegram_id: telegramId,
         offer_id: offerId,
         interaction_type: interactionType, // 'view', 'click', 'book'
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
       if (!this.memoryStorage.interactions) {
         this.memoryStorage.interactions = [];
@@ -483,16 +497,18 @@ class SupabaseDB {
       this.memoryStorage.interactions.push(interaction);
       return interaction;
     }
-    
+
     try {
       const { data, error } = await this.supabase
         .from('offer_interactions')
-        .insert([{
-          telegram_id: telegramId,
-          offer_id: offerId,
-          interaction_type: interactionType, // 'view', 'click', 'book'
-          timestamp: new Date().toISOString()
-        }])
+        .insert([
+          {
+            telegram_id: telegramId,
+            offer_id: offerId,
+            interaction_type: interactionType, // 'view', 'click', 'book'
+            timestamp: new Date().toISOString(),
+          },
+        ])
         .select()
         .single();
 
@@ -512,7 +528,7 @@ class SupabaseDB {
       const profile = await this.getUserProfile(telegramId);
       const conversations = await this.getConversationHistory(telegramId, 100);
       const interactions = (this.memoryStorage.interactions || []).filter(
-        i => i.telegram_id === telegramId
+        (i) => i.telegram_id === telegramId
       );
 
       return {
@@ -520,14 +536,14 @@ class SupabaseDB {
         totalConversations: conversations.length,
         totalInteractions: interactions.length,
         travelHistory: profile?.travel_history || [],
-        preferences: profile?.preferences || {}
+        preferences: profile?.preferences || {},
       };
     }
-    
+
     try {
       const profile = await this.getUserProfile(telegramId);
       const conversations = await this.getConversationHistory(telegramId, 100);
-      
+
       const { data: interactions, error } = await this.supabase
         .from('offer_interactions')
         .select('*')
@@ -540,7 +556,7 @@ class SupabaseDB {
         totalConversations: conversations.length,
         totalInteractions: interactions?.length || 0,
         travelHistory: profile?.travel_history || [],
-        preferences: profile?.preferences || {}
+        preferences: profile?.preferences || {},
       };
     } catch (error) {
       console.error('Error getting user analytics:', error);
@@ -554,15 +570,18 @@ class SupabaseDB {
   async searchOffers(query) {
     if (!this.supabase) {
       const searchTerm = query.toLowerCase();
-      return this.memoryStorage.offers.filter(offer => 
-        offer.is_active && (
-          offer.title.toLowerCase().includes(searchTerm) ||
-          offer.destination.toLowerCase().includes(searchTerm) ||
-          offer.description.toLowerCase().includes(searchTerm)
+      return this.memoryStorage.offers
+        .filter(
+          (offer) =>
+            offer.is_active &&
+            (offer.title.toLowerCase().includes(searchTerm) ||
+              offer.destination.toLowerCase().includes(searchTerm) ||
+              offer.description.toLowerCase().includes(searchTerm))
         )
-      ).sort((a, b) => b.priority - a.priority).slice(0, 10);
+        .sort((a, b) => b.priority - a.priority)
+        .slice(0, 10);
     }
-    
+
     try {
       const { data, error } = await this.supabase
         .from('travel_offers')
