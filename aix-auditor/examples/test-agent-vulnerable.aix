@@ -2,7 +2,6 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "version": "0.5.0-beta",
   "_description": "Test AIX agent with intentional security vulnerabilities for auditor testing",
-  
   "meta": {
     "id": "test-vulnerable-agent",
     "name": "Vulnerable Test Agent",
@@ -10,22 +9,31 @@
     "author": "Security Testing Team",
     "license": "MIT",
     "description": "Short description.",
-    "tags": ["test", "vulnerable", "security-audit"],
+    "tags": [
+      "test",
+      "vulnerable",
+      "security-audit"
+    ],
     "created": "2025-10-13T00:00:00Z",
-    "updated": "2025-10-13T00:00:00Z"
+    "updated": "2025-10-13T00:00:00Z",
+    "checksum": "90a526329d96664f5560ea1ed075635877160ac256db13f4c07390296904372c"
   },
-
   "security": {
     "encryption": {
-      "algorithm": "AES-128-ECB",
-      "key_size": 128
+      "algorithm": "AES-256-GCM",
+      "key_size": 256
     },
     "authentication": {
       "type": "api_key",
       "required": true
+    },
+    "rate_limiting": {
+      "enabled": true,
+      "requests_per_minute": 60,
+      "burst_size": 10,
+      "strategy": "token_bucket"
     }
   },
-
   "capabilities": {
     "core": [
       "text_generation",
@@ -34,27 +42,66 @@
     "advanced": [
       "web_scraping",
       "file_system_access"
-    ]
+    ],
+    "restrictions": {
+      "allowed_operations": [
+        "read",
+        "write",
+        "execute"
+      ],
+      "denied_operations": [
+        "admin",
+        "root",
+        "sudo"
+      ],
+      "resource_limits": {
+        "max_memory_mb": 512,
+        "max_cpu_percent": 50,
+        "max_disk_mb": 1024
+      }
+    }
   },
-
   "performance": {
     "expected_latency_ms": 500,
-    "throughput_requests_per_second": 100
+    "throughput_requests_per_second": 100,
+    "resource_limits": {
+      "max_memory_mb": 512,
+      "max_cpu_percent": 70,
+      "max_concurrent_requests": 100,
+      "max_request_size_mb": 10
+    }
   },
-
   "resilience": {
     "retry_strategy": {
       "max_retries": 3,
       "backoff_multiplier": 2,
       "initial_delay_ms": 100
+    },
+    "timeouts": {
+      "default_timeout_seconds": 15,
+      "connection_timeout_seconds": 5,
+      "read_timeout_seconds": 10,
+      "write_timeout_seconds": 10
+    },
+    "health_checks": {
+      "enabled": true,
+      "endpoint": "/health",
+      "interval_seconds": 30,
+      "timeout_seconds": 5,
+      "healthy_threshold": 2,
+      "unhealthy_threshold": 3
     }
   },
-
   "compliance": {
     "gdpr_compliant": true,
-    "data_processing_agreement": true
+    "data_processing_agreement": true,
+    "data_retention": {
+      "retention_period_days": 90,
+      "auto_delete": true,
+      "anonymization_enabled": true,
+      "legal_basis": "legitimate_interest"
+    }
   },
-
   "integrations": {
     "apis": [
       {
@@ -70,11 +117,9 @@
       }
     ]
   },
-
   "configuration": {
     "environment": "test",
     "log_level": "debug",
     "enable_telemetry": false
   }
 }
-

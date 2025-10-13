@@ -39,9 +39,6 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "yaml": "^2.3.4"
-  },
-  "devDependencies": {},
-  "peerDependencies": {}
+    "yaml": "^2.8.1"
+  }
 }
-
