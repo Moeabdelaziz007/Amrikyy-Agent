@@ -24,7 +24,7 @@ class AdvancedTelegramBot {
     });
 
     // Initialize AI components
-    this.zaiClient = new ZaiClient();
+    this.keloClient = new KeloClient();
     this.mayaPersona = new MayaPersona();
     this.mcpTools = new MCPTools();
     this.userProfiling = new UserProfilingSystem();
@@ -428,7 +428,7 @@ class AdvancedTelegramBot {
 
       // Get AI response with timeout
       const aiResponse = await Promise.race([
-        this.zaiClient.chatCompletion(messages, {
+        this.keloClient.chatCompletion(messages, {
           maxTokens: 800,
           temperature: 0.7,
           enableKvCacheOffload: true
@@ -998,7 +998,7 @@ ${offer.valid_until ? `⏰ <b>العرض ساري حتى:</b> ${new Date(offer.v
       current_goal: 'destination_info'
     });
 
-    const aiResponse = await this.zaiClient.chatCompletion([
+    const aiResponse = await this.keloClient.chatCompletion([
       { role: 'system', content: systemPrompt },
       { role: 'user', content: `أريد معلومات عن ${destination} للسفر` }
     ], { maxTokens: 800 });

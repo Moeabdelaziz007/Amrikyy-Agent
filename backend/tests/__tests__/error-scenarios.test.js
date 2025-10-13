@@ -10,7 +10,7 @@ const { EventEmitter } = require('events');
 jest.mock('../../utils/logger');
 jest.mock('../../utils/healthMonitor');
 jest.mock('../../database/supabase');
-jest.mock('../../src/ai/zaiClient');
+jest.mock('../../src/ai/keloClient');
 jest.mock('../../src/ai/geminiClient');
 jest.mock('axios');
 
@@ -19,7 +19,7 @@ const app = require('../../server');
 const logger = require('../../utils/logger');
 const healthMonitor = require('../../utils/healthMonitor');
 const SupabaseDB = require('../../database/supabase');
-const ZaiClient = require('../../src/ai/zaiClient');
+const KeloClient = require('../../src/ai/keloClient');
 const GeminiClient = require('../../src/ai/geminiClient');
 const axios = require('axios');
 

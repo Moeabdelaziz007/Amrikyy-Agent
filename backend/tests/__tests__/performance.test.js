@@ -12,7 +12,7 @@ const v8 = require('v8');
 jest.mock('../../utils/logger');
 jest.mock('../../utils/healthMonitor');
 jest.mock('../../database/supabase');
-jest.mock('../../src/ai/zaiClient');
+jest.mock('../../src/ai/keloClient');
 
 // Import after mocking
 const app = require('../../server');
