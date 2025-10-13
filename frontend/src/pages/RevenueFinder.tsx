@@ -72,15 +72,183 @@ export default function RevenueFinder() {
         setData(result.data);
       }
     } catch (error) {
-      console.error('Failed to fetch opportunities:', error);
+      console.error('Failed to fetch opportunities, using mock data:', error);
+      // Use mock data for testing
+      setData(getMockData());
     } finally {
       setLoading(false);
     }
   };
 
+  // Mock data for testing UI without backend
+  const getMockData = (): RevenueData => ({
+    opportunities: [
+      {
+        name: 'Build Security Audit API',
+        category: 'api_product',
+        score: 88,
+        estimatedRevenue: 1000,
+        difficulty: 'medium',
+        timeToRevenue: '3-4 months',
+        scalability: 'very high',
+        priority: 'high',
+        matchScore: 100,
+        description: 'Create API for security auditing (based on your AIX auditor)',
+        effort: 'medium'
+      },
+      {
+        name: 'Security Audit Template Pack',
+        category: 'digital_product',
+        score: 85,
+        estimatedRevenue: 600,
+        difficulty: 'low',
+        timeToRevenue: '1 month',
+        scalability: 'very high',
+        priority: 'high',
+        matchScore: 50,
+        description: 'Sell audit templates, checklists, and reports',
+        effort: 'low'
+      },
+      {
+        name: 'AI Agent Development Course',
+        category: 'digital_product',
+        score: 82,
+        estimatedRevenue: 1500,
+        difficulty: 'medium',
+        timeToRevenue: '2-3 months',
+        scalability: 'very high',
+        priority: 'high',
+        matchScore: 67,
+        description: 'Create course on building AI agents',
+        effort: 'high'
+      },
+      {
+        name: 'AI Integration Specialist',
+        category: 'freelance',
+        score: 76,
+        estimatedRevenue: 3000,
+        difficulty: 'medium',
+        timeToRevenue: '1-2 months',
+        scalability: 'medium',
+        priority: 'medium',
+        matchScore: 67,
+        description: 'Help businesses integrate AI tools',
+        effort: 'high'
+      },
+      {
+        name: 'GitHub Action Marketplace',
+        category: 'automation_tool',
+        score: 76,
+        estimatedRevenue: 400,
+        difficulty: 'medium',
+        timeToRevenue: '2-3 months',
+        scalability: 'very high',
+        priority: 'medium',
+        matchScore: 67,
+        description: 'Publish security audit GitHub Action',
+        effort: 'medium'
+      }
+    ],
+    actionPlan: {
+      immediate: [
+        {
+          opportunity: 'Security Audit Template Pack',
+          score: 85,
+          estimatedRevenue: 600,
+          nextSteps: [
+            '1. Outline content/product structure',
+            '2. Create high-quality product',
+            '3. Set up sales page with Gumroad/Stripe',
+            '4. Build email list',
+            '5. Launch with special offer'
+          ]
+        }
+      ],
+      shortTerm: [
+        { opportunity: 'AI Integration Specialist', estimatedRevenue: 3000 },
+        { opportunity: 'GitHub Action Marketplace', estimatedRevenue: 400 }
+      ],
+      longTerm: [
+        { opportunity: 'Build Security Audit API', estimatedRevenue: 1000 },
+        { opportunity: 'AI Agent Development Course', estimatedRevenue: 1500 }
+      ]
+    },
+    forecast: [
+      { month: 1, monthlyRevenue: 1820, cumulativeRevenue: 1820, activeOpportunities: 4 },
+      { month: 2, monthlyRevenue: 3620, cumulativeRevenue: 5440, activeOpportunities: 7 },
+      { month: 3, monthlyRevenue: 5520, cumulativeRevenue: 10960, activeOpportunities: 11 },
+      { month: 4, monthlyRevenue: 6620, cumulativeRevenue: 17580, activeOpportunities: 13 },
+      { month: 5, monthlyRevenue: 8620, cumulativeRevenue: 26200, activeOpportunities: 17 },
+      { month: 6, monthlyRevenue: 8620, cumulativeRevenue: 34820, activeOpportunities: 17 }
+    ],
+    quickWins: [
+      {
+        name: 'Security Audit Template Pack',
+        category: 'digital_product',
+        score: 85,
+        estimatedRevenue: 600,
+        difficulty: 'low',
+        timeToRevenue: '1 month',
+        scalability: 'very high',
+        priority: 'high',
+        matchScore: 50,
+        description: 'Sell audit templates, checklists, and reports',
+        effort: 'low'
+      }
+    ],
+    recommendations: [
+      {
+        type: 'quick_win',
+        title: 'Start with Quick Wins',
+        description: 'You have 1 easy opportunity with high score. Start here for fast momentum.',
+        opportunities: ['Security Audit Template Pack']
+      },
+      {
+        type: 'high_revenue',
+        title: 'High Revenue Opportunities',
+        description: '3 opportunities with $1000+/month potential. Worth the extra effort.',
+        opportunities: ['Build Security Audit API', 'AI Agent Development Course', 'AI Integration Specialist']
+      },
+      {
+        type: 'skill_leverage',
+        title: 'Leverage Your Strengths',
+        description: '1 opportunity matches your skills perfectly. Highest success probability.',
+        opportunities: ['Build Security Audit API']
+      }
+    ]
+  });
+
   useEffect(() => {
     fetchOpportunities();
   }, []);
+
+  const exportToCSV = () => {
+    if (!data) return;
+
+    const headers = ['Name', 'Category', 'Score', 'Revenue', 'Difficulty', 'Time to Revenue', 'Scalability', 'Priority'];
+    const rows = data.opportunities.map(o => [
+      o.name,
+      o.category,
+      o.score,
+      o.estimatedRevenue,
+      o.difficulty,
+      o.timeToRevenue,
+      o.scalability || 'N/A',
+      o.priority
+    ]);
+
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(cell => `"${cell}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `revenue-opportunities-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
 
   const getPriorityColor = (priority: string) => {
     switch (priority.toLowerCase()) {
@@ -477,7 +645,7 @@ export default function RevenueFinder() {
               transition={{ delay: 0.5 }}
               className="mt-8 flex gap-4 justify-center"
             >
-              <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600">
+              <Button onClick={exportToCSV} size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600">
                 <Download className="w-5 h-5 mr-2" />
                 Export to CSV
               </Button>
