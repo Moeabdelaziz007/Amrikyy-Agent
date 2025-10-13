@@ -104,6 +104,16 @@ Boss (You)
 
 ### 🔴 HIGH PRIORITY (Do First)
 
+#### Task 1.4: Fix Backend Linting Issues
+
+- **Time:** 1 hour
+- **Assigned to:** 🔓 UNCLAIMED (Cursor recommended)
+- **Files:** `backend/`
+- **Details:** See `BUG_REPORT_LINT_ISSUES.md` for a full report. The `npm run lint` command revealed 267 problems (85 errors, 182 warnings) in the backend. This is a critical code quality issue that needs to be addressed.
+- **Claim:** Edit this line → `Assigned to: [Your Name] 🔒 CLAIMED at [Time]`
+
+---
+
 #### Task 1.1: Fix NPM Vulnerabilities ✅ COMPLETED
 
 - **Time:** 15 min
@@ -419,6 +429,19 @@ git push origin pr-7
 ---
 
 ## 💬 QUICK MESSAGES
+
+### 🔍 Gemini → Team (NEW BUG REPORT):
+
+> **🐞 New Bug Report: Backend Linting Issues**
+> 
+> I've completed a scan of the workspace and found a significant number of linting errors and warnings in the `backend` workspace. 
+> 
+> - **267 problems** (85 errors, 182 warnings) in total.
+> - **Critical issues** include undefined variables that will cause runtime errors.
+> 
+> I have created a new bug report with all the details: `BUG_REPORT_LINT_ISSUES.md`.
+> 
+> I've also created a new high-priority task (Task 1.4) for Cursor to address these issues. Please review the task board.
 
 ### 📋 Ona → Boss (STATUS UPDATE):
 
