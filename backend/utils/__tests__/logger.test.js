@@ -7,13 +7,13 @@ jest.mock('fs', () => ({
   appendFileSync: jest.fn(),
   readdirSync: jest.fn().mockReturnValue([]),
   statSync: jest.fn(),
-  unlinkSync: jest.fn()
+  unlinkSync: jest.fn(),
 }));
 
 // Mock console.log
-global.console = { 
+global.console = {
   log: jest.fn(),
-  error: jest.fn()
+  error: jest.fn(),
 };
 
 const logger = require('../logger');
@@ -26,7 +26,7 @@ describe('Logger', () => {
     fs.mkdirSync.mockClear();
     console.log.mockClear();
     console.error.mockClear();
-    
+
     // Reset logger level to DEBUG for tests
     logger.currentLevel = logger.logLevels.DEBUG;
   });
@@ -40,10 +40,10 @@ describe('Logger', () => {
     // Since the logger is already loaded, we test the ensureLogDirectory method directly
     fs.existsSync.mockReturnValue(false);
     fs.mkdirSync.mockClear();
-    
+
     // Call the method that creates directories
     logger.ensureLogDirectory();
-    
+
     expect(fs.mkdirSync).toHaveBeenCalledWith(expect.any(String), { recursive: true });
   });
 

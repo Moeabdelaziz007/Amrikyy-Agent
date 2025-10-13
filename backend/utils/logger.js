@@ -12,22 +12,22 @@ class Logger {
       ERROR: 0,
       WARN: 1,
       INFO: 2,
-      DEBUG: 3
+      DEBUG: 3,
     };
-    
-    this.currentLevel = process.env.LOG_LEVEL 
-      ? this.logLevels[process.env.LOG_LEVEL.toUpperCase()] 
+
+    this.currentLevel = process.env.LOG_LEVEL
+      ? this.logLevels[process.env.LOG_LEVEL.toUpperCase()]
       : this.logLevels.INFO;
-    
+
     this.logDir = path.join(__dirname, '../logs');
     this.ensureLogDirectory();
-    
+
     this.colors = {
       ERROR: '\x1b[31m', // Red
-      WARN: '\x1b[33m',  // Yellow
-      INFO: '\x1b[36m',  // Cyan
+      WARN: '\x1b[33m', // Yellow
+      INFO: '\x1b[36m', // Cyan
       DEBUG: '\x1b[90m', // Gray
-      RESET: '\x1b[0m'
+      RESET: '\x1b[0m',
     };
   }
 
@@ -45,14 +45,14 @@ class Logger {
       level,
       message,
       meta,
-      formatted: `[${timestamp}] [${level}] ${message} ${metaStr}`
+      formatted: `[${timestamp}] [${level}] ${message} ${metaStr}`,
     };
   }
 
   writeToFile(level, formattedLog) {
     const logFile = path.join(this.logDir, `${level.toLowerCase()}.log`);
     const allLogsFile = path.join(this.logDir, 'all.log');
-    
+
     try {
       fs.appendFileSync(logFile, formattedLog.formatted + '\n');
       fs.appendFileSync(allLogsFile, formattedLog.formatted + '\n');
@@ -67,11 +67,11 @@ class Logger {
     }
 
     const formattedLog = this.formatMessage(level, message, meta);
-    
+
     // Console output with colors
     const color = this.colors[level] || this.colors.RESET;
     console.log(`${color}${formattedLog.formatted}${this.colors.RESET}`);
-    
+
     // File output
     this.writeToFile(level, formattedLog);
   }
@@ -79,11 +79,13 @@ class Logger {
   error(message, error = null, meta = {}) {
     const errorMeta = {
       ...meta,
-      error: error ? {
-        message: error.message,
-        stack: error.stack,
-        name: error.name
-      } : null
+      error: error
+        ? {
+            message: error.message,
+            stack: error.stack,
+            name: error.name,
+          }
+        : null,
     };
     this.log('ERROR', message, errorMeta);
   }
@@ -105,7 +107,7 @@ class Logger {
     this.info(`API ${method} ${url}`, {
       ...meta,
       status,
-      duration_ms: duration
+      duration_ms: duration,
     });
   }
 
@@ -113,7 +115,7 @@ class Logger {
     this.info(`User action: ${action}`, {
       ...meta,
       user_id: userId,
-      action
+      action,
     });
   }
 
@@ -122,7 +124,7 @@ class Logger {
       ...meta,
       user_id: userId,
       direction,
-      message_length: message.length
+      message_length: message.length,
     });
   }
 
@@ -131,19 +133,19 @@ class Logger {
     this.log(level, `Performance: ${operation}`, {
       ...meta,
       duration_ms: duration,
-      slow: duration > 1000
+      slow: duration > 1000,
     });
   }
 
   // Rotate logs (keep last 7 days)
   rotateLogs() {
     const files = fs.readdirSync(this.logDir);
-    const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-    
-    files.forEach(file => {
+    const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+
+    files.forEach((file) => {
       const filePath = path.join(this.logDir, file);
       const stats = fs.statSync(filePath);
-      
+
       if (stats.mtimeMs < sevenDaysAgo) {
         fs.unlinkSync(filePath);
         this.info(`Rotated old log file: ${file}`);
@@ -156,8 +158,11 @@ class Logger {
 const logger = new Logger();
 
 // Rotate logs daily
-setInterval(() => {
-  logger.rotateLogs();
-}, 24 * 60 * 60 * 1000);
+setInterval(
+  () => {
+    logger.rotateLogs();
+  },
+  24 * 60 * 60 * 1000
+);
 
 module.exports = logger;

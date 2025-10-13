@@ -11,8 +11,8 @@ const regionProfiles = {
     dateFormat: 'DD/MM/YYYY',
     travelTips: [
       'Respect local customs and prayer times when visiting religious sites.',
-      'Dress modestly in conservative areas and religious landmarks.'
-    ]
+      'Dress modestly in conservative areas and religious landmarks.',
+    ],
   },
   en: {
     language: 'English',
@@ -21,8 +21,8 @@ const regionProfiles = {
     dateFormat: 'MM/DD/YYYY',
     travelTips: [
       'Check tipping customs for restaurants and taxis.',
-      'Consider travel insurance for medical and trip cancellations.'
-    ]
+      'Consider travel insurance for medical and trip cancellations.',
+    ],
   },
   fr: {
     language: 'French',
@@ -31,9 +31,9 @@ const regionProfiles = {
     dateFormat: 'DD/MM/YYYY',
     travelTips: [
       'Learn a few basic phrases in French to ease interactions.',
-      'Be mindful of local lunch hours when planning visits.'
-    ]
-  }
+      'Be mindful of local lunch hours when planning visits.',
+    ],
+  },
 };
 
 function getCultureProfile(regionOrLang = 'ar') {
@@ -44,15 +44,14 @@ function getCultureProfile(regionOrLang = 'ar') {
 function buildCulturalSystemPrompt(regionOrLang = 'ar') {
   const profile = getCultureProfile(regionOrLang);
   const lines = [
-    `You must adapt your answers to the following cultural profile:`,
+    'You must adapt your answers to the following cultural profile:',
     `- Preferred language: ${profile.language}`,
     `- Tone: ${profile.tone}`,
     `- Currency: ${profile.currency}`,
     `- Date format: ${profile.dateFormat}`,
-    `- Local travel tips to consider: ${profile.travelTips.join('; ')}`
+    `- Local travel tips to consider: ${profile.travelTips.join('; ')}`,
   ];
   return lines.join('\n');
 }
 
 module.exports = { getCultureProfile, buildCulturalSystemPrompt };
-

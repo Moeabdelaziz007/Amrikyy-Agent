@@ -13,7 +13,7 @@ const Tools = {
       date,
       forecast: 'Sunny intervals with light breeze',
       temperatureC: 24,
-      precipitationChance: 10
+      precipitationChance: 10,
     };
   },
 
@@ -31,9 +31,10 @@ const Tools = {
       const apiUrl = process.env.API_URL || `http://localhost:${process.env.PORT || 5000}`;
       const res = await fetch(`${apiUrl}/api/destinations`);
       const data = await res.json();
-      const items = (data.destinations || []).filter((d) =>
-        d.name.toLowerCase().includes(query.toLowerCase()) ||
-        (d.country || '').toLowerCase().includes(query.toLowerCase())
+      const items = (data.destinations || []).filter(
+        (d) =>
+          d.name.toLowerCase().includes(query.toLowerCase()) ||
+          (d.country || '').toLowerCase().includes(query.toLowerCase())
       );
       return { query, results: items };
     } catch (e) {
@@ -49,10 +50,10 @@ const Tools = {
       advisories: [
         'Keep copies of important documents and store originals securely.',
         'Avoid unlicensed taxis; use reputable transport services.',
-        'Stay aware of local customs and dress codes in religious sites.'
-      ]
+        'Stay aware of local customs and dress codes in religious sites.',
+      ],
     };
-  }
+  },
 };
 
 /**
@@ -63,25 +64,34 @@ function getToolSchemas() {
     {
       name: 'getWeather',
       description: 'Get simple weather forecast for a destination and date',
-      parameters: { type: 'object', properties: { destination: { type: 'string' }, date: { type: 'string' } } }
+      parameters: {
+        type: 'object',
+        properties: { destination: { type: 'string' }, date: { type: 'string' } },
+      },
     },
     {
       name: 'convertCurrency',
       description: 'Convert an amount from one currency to another (approximate)',
-      parameters: { type: 'object', properties: { amount: { type: 'number' }, from: { type: 'string' }, to: { type: 'string' } } }
+      parameters: {
+        type: 'object',
+        properties: {
+          amount: { type: 'number' },
+          from: { type: 'string' },
+          to: { type: 'string' },
+        },
+      },
     },
     {
       name: 'searchDestinations',
       description: 'Search destinations by name or country',
-      parameters: { type: 'object', properties: { query: { type: 'string' } } }
+      parameters: { type: 'object', properties: { query: { type: 'string' } } },
     },
     {
       name: 'getSafetyInfo',
       description: 'Get safety advisories for a destination',
-      parameters: { type: 'object', properties: { destination: { type: 'string' } } }
-    }
+      parameters: { type: 'object', properties: { destination: { type: 'string' } } },
+    },
   ];
 }
 
 module.exports = { Tools, getToolSchemas };
-

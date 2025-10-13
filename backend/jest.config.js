@@ -1,4 +1,3 @@
-
 module.exports = {
   testEnvironment: 'node',
   testMatch: ['**/__tests__/**/*.js', '**/?(*.)+(spec|test).js'],
@@ -7,7 +6,7 @@ module.exports = {
     'routes/**/*.js',
     'middleware/**/*.js',
     'utils/**/*.js',
-    '!**/node_modules/**'
+    '!**/node_modules/**',
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
@@ -15,5 +14,5 @@ module.exports = {
   verbose: true,
   clearMocks: true,
   resetMocks: true,
-  restoreMocks: true
+  restoreMocks: true,
 };

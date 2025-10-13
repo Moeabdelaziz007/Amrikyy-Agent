@@ -15,9 +15,7 @@ app.use('/api/aladdin', aladdinRoutes);
 describe('Aladdin Routes', () => {
   describe('GET /api/aladdin/health', () => {
     test('should return health status', async () => {
-      const response = await request(app)
-        .get('/api/aladdin/health')
-        .expect(200);
+      const response = await request(app).get('/api/aladdin/health').expect(200);
 
       expect(response.body).toHaveProperty('success', true);
       expect(response.body).toHaveProperty('message', 'Aladdin agent is running');
@@ -26,9 +24,7 @@ describe('Aladdin Routes', () => {
     });
 
     test('should return valid timestamp format', async () => {
-      const response = await request(app)
-        .get('/api/aladdin/health')
-        .expect(200);
+      const response = await request(app).get('/api/aladdin/health').expect(200);
 
       const timestamp = response.body.timestamp;
       expect(timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
@@ -41,7 +37,7 @@ describe('Aladdin Routes', () => {
         .post('/api/aladdin/hunt')
         .send({
           budget: 1000,
-          preferences: { category: 'travel' }
+          preferences: { category: 'travel' },
         })
         .expect(200);
 
@@ -63,10 +59,7 @@ describe('Aladdin Routes', () => {
     });
 
     test('should validate budget is required', async () => {
-      const response = await request(app)
-        .post('/api/aladdin/hunt')
-        .send({})
-        .expect(400);
+      const response = await request(app).post('/api/aladdin/hunt').send({}).expect(400);
 
       expect(response.body).toHaveProperty('success', false);
       expect(response.body).toHaveProperty('error');
@@ -94,10 +87,7 @@ describe('Aladdin Routes', () => {
     });
 
     test('should validate budget is not zero', async () => {
-      const response = await request(app)
-        .post('/api/aladdin/hunt')
-        .send({ budget: 0 })
-        .expect(400);
+      const response = await request(app).post('/api/aladdin/hunt').send({ budget: 0 }).expect(400);
 
       expect(response.body).toHaveProperty('success', false);
     });
@@ -126,9 +116,7 @@ describe('Aladdin Routes', () => {
 
   describe('GET /api/aladdin/opportunities', () => {
     test('should return list of opportunities', async () => {
-      const response = await request(app)
-        .get('/api/aladdin/opportunities')
-        .expect(200);
+      const response = await request(app).get('/api/aladdin/opportunities').expect(200);
 
       expect(response.body).toHaveProperty('success', true);
       expect(response.body).toHaveProperty('data');
@@ -144,9 +132,9 @@ describe('Aladdin Routes', () => {
 
       expect(response.body.success).toBe(true);
       const opportunities = response.body.data.opportunities;
-      
+
       if (opportunities.length > 0) {
-        opportunities.forEach(opp => {
+        opportunities.forEach((opp) => {
           expect(opp.category).toBe('travel');
         });
       }
@@ -160,8 +148,8 @@ describe('Aladdin Routes', () => {
 
       expect(response.body.success).toBe(true);
       const opportunities = response.body.data.opportunities;
-      
-      opportunities.forEach(opp => {
+
+      opportunities.forEach((opp) => {
         const returnValue = opp.potentialSaving || opp.potentialReturn || 0;
         expect(returnValue).toBeGreaterThanOrEqual(minReturn);
       });
@@ -176,21 +164,17 @@ describe('Aladdin Routes', () => {
     });
 
     test('should return total count matching filtered results', async () => {
-      const response = await request(app)
-        .get('/api/aladdin/opportunities')
-        .expect(200);
+      const response = await request(app).get('/api/aladdin/opportunities').expect(200);
 
       const { opportunities, total } = response.body.data;
       expect(total).toBe(opportunities.length);
     });
 
     test('should return opportunities with required fields', async () => {
-      const response = await request(app)
-        .get('/api/aladdin/opportunities')
-        .expect(200);
+      const response = await request(app).get('/api/aladdin/opportunities').expect(200);
 
       const opportunities = response.body.data.opportunities;
-      
+
       if (opportunities.length > 0) {
         const opp = opportunities[0];
         expect(opp).toHaveProperty('id');
@@ -207,7 +191,7 @@ describe('Aladdin Routes', () => {
         .post('/api/aladdin/analyze')
         .send({
           opportunityId: 1,
-          userProfile: { riskTolerance: 'medium' }
+          userProfile: { riskTolerance: 'medium' },
         })
         .expect(200);
 
@@ -221,10 +205,7 @@ describe('Aladdin Routes', () => {
     });
 
     test('should require opportunity ID', async () => {
-      const response = await request(app)
-        .post('/api/aladdin/analyze')
-        .send({})
-        .expect(400);
+      const response = await request(app).post('/api/aladdin/analyze').send({}).expect(400);
 
       expect(response.body).toHaveProperty('success', false);
       expect(response.body.error).toContain('Opportunity ID');
@@ -276,9 +257,7 @@ describe('Aladdin Routes', () => {
 
   describe('GET /api/aladdin/stats', () => {
     test('should return agent statistics', async () => {
-      const response = await request(app)
-        .get('/api/aladdin/stats')
-        .expect(200);
+      const response = await request(app).get('/api/aladdin/stats').expect(200);
 
       expect(response.body).toHaveProperty('success', true);
       expect(response.body).toHaveProperty('data');
@@ -290,9 +269,7 @@ describe('Aladdin Routes', () => {
     });
 
     test('should return numeric statistics', async () => {
-      const response = await request(app)
-        .get('/api/aladdin/stats')
-        .expect(200);
+      const response = await request(app).get('/api/aladdin/stats').expect(200);
 
       const stats = response.body.data;
       expect(typeof stats.totalHunts).toBe('number');
@@ -303,9 +280,7 @@ describe('Aladdin Routes', () => {
     });
 
     test('should return success rate between 0 and 1', async () => {
-      const response = await request(app)
-        .get('/api/aladdin/stats')
-        .expect(200);
+      const response = await request(app).get('/api/aladdin/stats').expect(200);
 
       const successRate = response.body.data.successRate;
       expect(successRate).toBeGreaterThanOrEqual(0);
@@ -313,13 +288,11 @@ describe('Aladdin Routes', () => {
     });
 
     test('should return top categories array', async () => {
-      const response = await request(app)
-        .get('/api/aladdin/stats')
-        .expect(200);
+      const response = await request(app).get('/api/aladdin/stats').expect(200);
 
       const topCategories = response.body.data.topCategories;
       expect(Array.isArray(topCategories)).toBe(true);
-      
+
       if (topCategories.length > 0) {
         const category = topCategories[0];
         expect(category).toHaveProperty('name');
@@ -328,9 +301,7 @@ describe('Aladdin Routes', () => {
     });
 
     test('should calculate average return correctly', async () => {
-      const response = await request(app)
-        .get('/api/aladdin/stats')
-        .expect(200);
+      const response = await request(app).get('/api/aladdin/stats').expect(200);
 
       expect(response.body.data).toHaveProperty('averageReturnPerHunt');
       expect(typeof response.body.data.averageReturnPerHunt).toBe('number');
@@ -347,9 +318,7 @@ describe('Aladdin Routes', () => {
     });
 
     test('should return 404 for non-existent routes', async () => {
-      const response = await request(app)
-        .get('/api/aladdin/nonexistent')
-        .expect(404);
+      const response = await request(app).get('/api/aladdin/nonexistent').expect(404);
     });
 
     test('should handle server errors gracefully', async () => {
@@ -370,7 +339,7 @@ describe('Aladdin Routes', () => {
       const endpoints = [
         { method: 'get', path: '/api/aladdin/health' },
         { method: 'get', path: '/api/aladdin/opportunities' },
-        { method: 'get', path: '/api/aladdin/stats' }
+        { method: 'get', path: '/api/aladdin/stats' },
       ];
 
       for (const endpoint of endpoints) {
@@ -380,10 +349,7 @@ describe('Aladdin Routes', () => {
     });
 
     test('all error responses should have success: false', async () => {
-      const response = await request(app)
-        .post('/api/aladdin/hunt')
-        .send({})
-        .expect(400);
+      const response = await request(app).post('/api/aladdin/hunt').send({}).expect(400);
 
       expect(response.body.success).toBe(false);
     });

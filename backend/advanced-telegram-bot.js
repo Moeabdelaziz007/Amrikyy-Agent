@@ -4,7 +4,7 @@
  */
 
 const TelegramBot = require('node-telegram-bot-api');
-const ZaiClient = require('./src/ai/zaiClient');
+const KeloClient = require('./src/ai/keloClient');
 const MayaPersona = require('./src/ai/mayaPersona');
 const MCPTools = require('./src/ai/mcpTools');
 const UserProfilingSystem = require('./src/ai/userProfiling');
@@ -13,22 +13,22 @@ require('dotenv').config();
 
 class AdvancedTelegramBot {
   constructor() {
-    this.bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { 
+    this.bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, {
       polling: true,
       request: {
         agentOptions: {
           keepAlive: true,
-          family: 4
-        }
-      }
+          family: 4,
+        },
+      },
     });
 
     // Initialize AI components
-    this.zaiClient = new ZaiClient();
+    this.keloClient = new KeloClient();
     this.mayaPersona = new MayaPersona();
     this.mcpTools = new MCPTools();
     this.userProfiling = new UserProfilingSystem();
-    
+
     // Initialize Supabase for persistent memory
     this.db = new SupabaseDB();
 
@@ -42,12 +42,12 @@ class AdvancedTelegramBot {
       activeConversations: 0,
       totalMessages: 0,
       successfulBookings: 0,
-      errors: 0
+      errors: 0,
     };
 
     this.setupBotHandlers();
     this.startPeriodicTasks();
-    
+
     console.log('🤖 Advanced Maya Telegram Bot initialized successfully!');
     console.log('💾 Supabase persistent memory enabled!');
   }
@@ -133,12 +133,12 @@ class AdvancedTelegramBot {
    */
   handleBotError(error) {
     console.error('🔧 Attempting to recover from error...');
-    
+
     // Log error for monitoring
     this.stats.errors = (this.stats.errors || 0) + 1;
     this.stats.lastError = {
       message: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     // If too many errors, restart polling
@@ -154,7 +154,7 @@ class AdvancedTelegramBot {
   async restartBot() {
     try {
       await this.bot.stopPolling();
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       await this.bot.startPolling();
       this.stats.errors = 0;
       console.log('✅ Bot polling restarted successfully');
@@ -190,12 +190,12 @@ class AdvancedTelegramBot {
     try {
       // Get or create user profile from Supabase
       let userProfile = await this.db.getUserProfile(telegramId);
-      
+
       if (!userProfile) {
         // Create new user in Supabase
         userProfile = await this.db.createUserProfile(telegramId, {
           name: userName,
-          username: msg.from.username
+          username: msg.from.username,
         });
         console.log(`✅ New user created: ${userName} (${telegramId})`);
       } else {
@@ -203,12 +203,12 @@ class AdvancedTelegramBot {
       }
 
       // Also create in memory profiling system
-      let memoryProfile = this.userProfiling.getProfile(userId);
+      const memoryProfile = this.userProfiling.getProfile(userId);
       if (!memoryProfile) {
         await this.userProfiling.createUserProfile(userId, {
           name: userName,
           telegramId: msg.from.id,
-          username: msg.from.username
+          username: msg.from.username,
         });
       }
 
@@ -217,12 +217,12 @@ class AdvancedTelegramBot {
         stage: 'welcome',
         lastActivity: new Date(),
         context: {},
-        turnCount: 0
+        turnCount: 0,
       });
 
       // Generate personalized welcome message
       const welcomeMessage = await this.generatePersonalizedWelcome(userProfile, userName);
-      
+
       // Send welcome message with advanced keyboard
       await this.bot.sendMessage(chatId, welcomeMessage, {
         parse_mode: 'HTML',
@@ -230,41 +230,46 @@ class AdvancedTelegramBot {
           inline_keyboard: [
             [
               { text: '🚀 تخطيط رحلة جديدة', callback_data: 'new_trip' },
-              { text: '💰 تحليل الميزانية', callback_data: 'budget_analysis' }
+              { text: '💰 تحليل الميزانية', callback_data: 'budget_analysis' },
             ],
             [
               { text: '🌍 نصائح الوجهات', callback_data: 'destination_tips' },
-              { text: '🌤️ حالة الطقس', callback_data: 'weather_check' }
+              { text: '🌤️ حالة الطقس', callback_data: 'weather_check' },
             ],
             [
               { text: '👤 ملفي الشخصي', callback_data: 'my_profile' },
-              { text: '⚙️ الإعدادات', callback_data: 'settings' }
+              { text: '⚙️ الإعدادات', callback_data: 'settings' },
             ],
             [
               { text: '💳 الدفع الآمن', callback_data: 'payment_system' },
-              { text: '❓ المساعدة الذكية', callback_data: 'smart_help' }
+              { text: '❓ المساعدة الذكية', callback_data: 'smart_help' },
             ],
             [
-              { text: '🌐 فتح التطبيق الكامل', web_app: { url: process.env.WEB_APP_URL || 'http://localhost:3000' } }
-            ]
-          ]
-        }
+              {
+                text: '🌐 فتح التطبيق الكامل',
+                web_app: { url: process.env.WEB_APP_URL || 'http://localhost:3000' },
+              },
+            ],
+          ],
+        },
       });
 
       // Update statistics
       this.stats.totalUsers++;
       this.stats.activeConversations++;
-
     } catch (error) {
       console.error('Error in start command:', error);
-      await this.bot.sendMessage(chatId, 'مرحباً! أنا مايا، مساعدتك الذكية للسفر. كيف يمكنني مساعدتك اليوم؟');
+      await this.bot.sendMessage(
+        chatId,
+        'مرحباً! أنا مايا، مساعدتك الذكية للسفر. كيف يمكنني مساعدتك اليوم؟'
+      );
     }
   }
 
   /**
    * Handle AI conversation with advanced processing
    */
-   async handleAIConversation(msg) {
+  async handleAIConversation(msg) {
     const chatId = msg.chat.id;
     const userId = msg.from.id.toString();
     const message = msg.text;
@@ -276,11 +281,11 @@ class AdvancedTelegramBot {
       // Get or create user profile from Supabase
       const telegramId = msg.from.id;
       let userProfile = await this.db.getUserProfile(telegramId);
-      
+
       if (!userProfile) {
         userProfile = await this.db.createUserProfile(telegramId, {
           name: msg.from.first_name,
-          username: msg.from.username
+          username: msg.from.username,
         });
       }
 
@@ -289,43 +294,42 @@ class AdvancedTelegramBot {
       if (!memoryProfile) {
         await this.userProfiling.createUserProfile(userId, {
           name: msg.from.first_name,
-          telegramId: msg.from.id
+          telegramId: msg.from.id,
         });
         memoryProfile = this.userProfiling.getProfile(userId);
       }
 
       // Get conversation history from Supabase (last 20 messages)
       const dbHistory = await this.db.getConversationHistory(telegramId, 20);
-      let conversationHistory = dbHistory.map(msg => ({
+      const conversationHistory = dbHistory.map((msg) => ({
         role: msg.is_user ? 'user' : 'assistant',
         content: msg.message,
-        timestamp: msg.timestamp
+        timestamp: msg.timestamp,
       }));
-      
+
       // Check for repetitive questions (loop detection)
       const recentMessages = conversationHistory.slice(-6);
-      const repetitionCount = recentMessages.filter(m => 
-        m.role === 'assistant' && this.isSimilarQuestion(m.content, message)
+      const repetitionCount = recentMessages.filter(
+        (m) => m.role === 'assistant' && this.isSimilarQuestion(m.content, message)
       ).length;
 
       if (repetitionCount >= 2) {
-        await this.bot.sendMessage(chatId, 
+        await this.bot.sendMessage(
+          chatId,
           '🔄 يبدو أننا نكرر نفس الموضوع. دعني أساعدك بطريقة مختلفة:\n\n' +
-          '• اكتب "إنهاء" لإنهاء المحادثة الحالية\n' +
-          '• اكتب "مساعدة" للحصول على خيارات جديدة\n' +
-          '• أو اسألني سؤالاً مختلفاً تماماً',
+            '• اكتب "إنهاء" لإنهاء المحادثة الحالية\n' +
+            '• اكتب "مساعدة" للحصول على خيارات جديدة\n' +
+            '• أو اسألني سؤالاً مختلفاً تماماً',
           {
             reply_markup: {
               inline_keyboard: [
                 [
                   { text: '✅ إنهاء المحادثة', callback_data: 'end_conversation' },
-                  { text: '🔄 بداية جديدة', callback_data: 'new_conversation' }
+                  { text: '🔄 بداية جديدة', callback_data: 'new_conversation' },
                 ],
-                [
-                  { text: '💡 اقتراحات أخرى', callback_data: 'other_suggestions' }
-                ]
-              ]
-            }
+                [{ text: '💡 اقتراحات أخرى', callback_data: 'other_suggestions' }],
+              ],
+            },
           }
         );
         return;
@@ -333,53 +337,58 @@ class AdvancedTelegramBot {
 
       // Check for conversation end keywords
       const endKeywords = ['إنهاء', 'انهاء', 'توقف', 'كفاية', 'شكرا وداعا', 'end', 'stop', 'bye'];
-      if (endKeywords.some(keyword => message.toLowerCase().includes(keyword))) {
+      if (endKeywords.some((keyword) => message.toLowerCase().includes(keyword))) {
         // Clear conversation from Supabase (optional - or just mark as ended)
         await this.db.clearOldConversations(telegramId);
         this.userStates.delete(userId);
-        
-        await this.bot.sendMessage(chatId, 
+
+        await this.bot.sendMessage(
+          chatId,
           '✅ تم إنهاء المحادثة بنجاح!\n\n' +
-          '🌟 يسعدني مساعدتك في أي وقت. اكتب /start للبدء من جديد أو اسألني أي سؤال!',
+            '🌟 يسعدني مساعدتك في أي وقت. اكتب /start للبدء من جديد أو اسألني أي سؤال!',
           {
             reply_markup: {
               inline_keyboard: [
                 [
                   { text: '🚀 بداية جديدة', callback_data: 'new_trip' },
-                  { text: '📊 ملفي الشخصي', callback_data: 'my_profile' }
-                ]
-              ]
-            }
+                  { text: '📊 ملفي الشخصي', callback_data: 'my_profile' },
+                ],
+              ],
+            },
           }
         );
         return;
       }
 
       // Limit conversation turns to prevent infinite loops
-      const userState = this.userStates.get(userId) || { stage: 'general', lastActivity: new Date(), context: {}, turnCount: 0 };
+      const userState = this.userStates.get(userId) || {
+        stage: 'general',
+        lastActivity: new Date(),
+        context: {},
+        turnCount: 0,
+      };
       userState.turnCount = (userState.turnCount || 0) + 1;
       userState.lastActivity = new Date();
 
       // After 15 turns in same context, suggest wrapping up
       if (userState.turnCount >= 15 && userState.context.currentGoal) {
-        await this.bot.sendMessage(chatId, 
+        await this.bot.sendMessage(
+          chatId,
           '⏰ لقد تحدثنا كثيراً حول هذا الموضوع!\n\n' +
-          'هل تريد:\n' +
-          '• إتمام الحجز الآن؟\n' +
-          '• البدء في موضوع جديد؟\n' +
-          '• إنهاء المحادثة؟',
+            'هل تريد:\n' +
+            '• إتمام الحجز الآن؟\n' +
+            '• البدء في موضوع جديد؟\n' +
+            '• إنهاء المحادثة؟',
           {
             reply_markup: {
               inline_keyboard: [
                 [
                   { text: '💳 إتمام الحجز', callback_data: 'complete_booking' },
-                  { text: '🔄 موضوع جديد', callback_data: 'new_topic' }
+                  { text: '🔄 موضوع جديد', callback_data: 'new_topic' },
                 ],
-                [
-                  { text: '✅ إنهاء', callback_data: 'end_conversation' }
-                ]
-              ]
-            }
+                [{ text: '✅ إنهاء', callback_data: 'end_conversation' }],
+              ],
+            },
           }
         );
         userState.turnCount = 0;
@@ -388,61 +397,67 @@ class AdvancedTelegramBot {
       }
 
       this.userStates.set(userId, userState);
-      
+
       // Analyze conversation for insights
       const conversationAnalysis = await this.userProfiling.analyzeConversation(userId, {
-        messages: [{ content: message, timestamp: new Date().toISOString() }]
+        messages: [{ content: message, timestamp: new Date().toISOString() }],
       });
 
       // Get user analytics for smarter responses
       const analytics = await this.db.getUserAnalytics(telegramId);
-      
+
       // Enhanced system prompt with conversation control and user history
       let systemPrompt = this.mayaPersona.generateSystemPrompt({
         user_name: memoryProfile?.basicInfo?.name || msg.from.first_name,
         user_preferences: memoryProfile?.preferences || {},
         conversation_history: conversationHistory,
         current_goal: userState.context.currentGoal || '',
-        cultural_background: memoryProfile?.personalization?.culturalBackground || 'arabic'
+        cultural_background: memoryProfile?.personalization?.culturalBackground || 'arabic',
       });
 
       // Add user history context
       if (analytics && analytics.travelHistory && analytics.travelHistory.length > 0) {
-        const recentTrips = analytics.travelHistory.slice(-3).map(t => t.destination).join(', ');
+        const recentTrips = analytics.travelHistory
+          .slice(-3)
+          .map((t) => t.destination)
+          .join(', ');
         systemPrompt += `\n\nUSER HISTORY: User has previously traveled to: ${recentTrips}. Use this to make better recommendations.`;
       }
 
       if (analytics && analytics.preferences) {
-        const prefs = Object.entries(analytics.preferences).map(([k, v]) => `${k}: ${v}`).join(', ');
+        const prefs = Object.entries(analytics.preferences)
+          .map(([k, v]) => `${k}: ${v}`)
+          .join(', ');
         systemPrompt += `\nUSER PREFERENCES: ${prefs}`;
       }
 
-      systemPrompt += '\n\nIMPORTANT: Be concise and actionable. After providing information, ask ONE clear question or offer specific options. Avoid asking multiple questions in a row. If user seems satisfied, offer to complete the booking or move to next step.';
+      systemPrompt +=
+        '\n\nIMPORTANT: Be concise and actionable. After providing information, ask ONE clear question or offer specific options. Avoid asking multiple questions in a row. If user seems satisfied, offer to complete the booking or move to next step.';
 
       // Prepare messages for AI
       const messages = [
         { role: 'system', content: systemPrompt },
         ...conversationHistory.slice(-10),
-        { role: 'user', content: message }
+        { role: 'user', content: message },
       ];
 
       // Get AI response with timeout
       const aiResponse = await Promise.race([
-        this.zaiClient.chatCompletion(messages, {
+        this.keloClient.chatCompletion(messages, {
           maxTokens: 800,
           temperature: 0.7,
-          enableKvCacheOffload: true
+          enableKvCacheOffload: true,
         }),
-        new Promise((_, reject) => 
+        new Promise((_, reject) =>
           setTimeout(() => reject(new Error('AI response timeout')), 30000)
-        )
+        ),
       ]);
 
       if (aiResponse.success) {
         // Save conversation to Supabase
         await this.db.saveConversationMessage(telegramId, message, true);
         await this.db.saveConversationMessage(telegramId, aiResponse.content, false);
-        
+
         // Update local history
         conversationHistory.push(
           { role: 'user', content: message, timestamp: new Date().toISOString() },
@@ -451,8 +466,8 @@ class AdvancedTelegramBot {
 
         // Detect if conversation should end
         const shouldEnd = this.shouldEndConversation(aiResponse.content, message);
-        
-        let responseMessage = aiResponse.content;
+
+        const responseMessage = aiResponse.content;
         let replyMarkup = null;
 
         if (shouldEnd) {
@@ -460,12 +475,10 @@ class AdvancedTelegramBot {
             inline_keyboard: [
               [
                 { text: '✅ نعم، إتمام الحجز', callback_data: 'confirm_booking' },
-                { text: '🔄 تعديل الخيارات', callback_data: 'modify_options' }
+                { text: '🔄 تعديل الخيارات', callback_data: 'modify_options' },
               ],
-              [
-                { text: '❌ إلغاء', callback_data: 'cancel_booking' }
-              ]
-            ]
+              [{ text: '❌ إلغاء', callback_data: 'cancel_booking' }],
+            ],
           };
         } else {
           const toolSuggestions = this.detectToolSuggestions(aiResponse.content);
@@ -477,22 +490,23 @@ class AdvancedTelegramBot {
         // Send response
         await this.bot.sendMessage(chatId, responseMessage, {
           parse_mode: 'HTML',
-          reply_markup: replyMarkup
+          reply_markup: replyMarkup,
         });
 
         // Track user behavior
         await this.userProfiling.trackUserBehavior(userId, {
           action: 'message_sent',
           context: { message_length: message.length, response_time: Date.now() },
-          satisfaction: null
+          satisfaction: null,
         });
 
         this.stats.totalMessages++;
-
       } else {
-        await this.bot.sendMessage(chatId, 'عذراً، حدث خطأ في معالجة رسالتك. يرجى المحاولة مرة أخرى.');
+        await this.bot.sendMessage(
+          chatId,
+          'عذراً، حدث خطأ في معالجة رسالتك. يرجى المحاولة مرة أخرى.'
+        );
       }
-
     } catch (error) {
       console.error('Error in AI conversation:', error);
       await this.bot.sendMessage(chatId, 'عذراً، واجهت مشكلة تقنية. كيف يمكنني مساعدتك؟');
@@ -503,11 +517,15 @@ class AdvancedTelegramBot {
    * Check if two messages are asking similar questions
    */
   isSimilarQuestion(msg1, msg2) {
-    const normalize = (str) => str.toLowerCase().replace(/[^\w\s]/g, '').trim();
+    const normalize = (str) =>
+      str
+        .toLowerCase()
+        .replace(/[^\w\s]/g, '')
+        .trim();
     const words1 = normalize(msg1).split(/\s+/);
     const words2 = normalize(msg2).split(/\s+/);
-    
-    const commonWords = words1.filter(w => words2.includes(w) && w.length > 3);
+
+    const commonWords = words1.filter((w) => words2.includes(w) && w.length > 3);
     return commonWords.length >= 3;
   }
 
@@ -521,21 +539,15 @@ class AdvancedTelegramBot {
       'جاهز للحجز',
       'ready to book',
       'proceed with booking',
-      'confirm booking'
-    ];
-    
-    const userConfirmation = [
-      'نعم',
-      'موافق',
-      'أكيد',
-      'yes',
-      'ok',
-      'sure',
-      'proceed'
+      'confirm booking',
     ];
 
-    return endIndicators.some(ind => aiResponse.toLowerCase().includes(ind)) ||
-           userConfirmation.some(conf => userMessage.toLowerCase().includes(conf));
+    const userConfirmation = ['نعم', 'موافق', 'أكيد', 'yes', 'ok', 'sure', 'proceed'];
+
+    return (
+      endIndicators.some((ind) => aiResponse.toLowerCase().includes(ind)) ||
+      userConfirmation.some((conf) => userMessage.toLowerCase().includes(conf))
+    );
   }
 
   /**
@@ -544,28 +556,28 @@ class AdvancedTelegramBot {
   async generatePersonalizedWelcome(userProfile, userName) {
     const welcomeMessages = [
       `🌍 مرحباً ${userName}! أنا مايا، خبيرة السفر الشخصية الخاصة بك ✨\n\n`,
-      `🎯 أنا هنا لمساعدتك في تخطيط رحلة مثالية تناسب تفضيلاتك وميزانيتك\n\n`,
-      `🧠 ذكائي الاصطناعي المتقدم يساعدني في:\n`,
-      `• 📍 اقتراح أفضل الوجهات\n`,
-      `• 💰 تحليل ميزانيتك بذكاء\n`,
-      `• 🏨 العثور على أفضل الإقامات\n`,
-      `• 🍽️ توصيات المطاعم الحلال\n`,
-      `• ⏰ أوقات الصلاة في وجهتك\n`,
-      `• 🌤️ حالة الطقس المحدثة\n`,
-      `• 🛡️ نصائح الأمان والسفر\n\n`,
-      `💬 تحدث معي بشكل طبيعي وسأساعدك في كل شيء!\n\n`,
-      `🚀 ما الذي تود التخطيط له اليوم؟`
+      '🎯 أنا هنا لمساعدتك في تخطيط رحلة مثالية تناسب تفضيلاتك وميزانيتك\n\n',
+      '🧠 ذكائي الاصطناعي المتقدم يساعدني في:\n',
+      '• 📍 اقتراح أفضل الوجهات\n',
+      '• 💰 تحليل ميزانيتك بذكاء\n',
+      '• 🏨 العثور على أفضل الإقامات\n',
+      '• 🍽️ توصيات المطاعم الحلال\n',
+      '• ⏰ أوقات الصلاة في وجهتك\n',
+      '• 🌤️ حالة الطقس المحدثة\n',
+      '• 🛡️ نصائح الأمان والسفر\n\n',
+      '💬 تحدث معي بشكل طبيعي وسأساعدك في كل شيء!\n\n',
+      '🚀 ما الذي تود التخطيط له اليوم؟',
     ];
 
     // Add personalized touches based on user profile
     if (userProfile.preferences.travelStyle === 'luxury') {
-      welcomeMessages.push(`\n💎 أرى أنك تحب السفر الفاخر - لدي توصيات رائعة لك!`);
+      welcomeMessages.push('\n💎 أرى أنك تحب السفر الفاخر - لدي توصيات رائعة لك!');
     } else if (userProfile.preferences.travelStyle === 'budget') {
-      welcomeMessages.push(`\n💡 سأساعدك في العثور على أفضل العروض والتوفير!`);
+      welcomeMessages.push('\n💡 سأساعدك في العثور على أفضل العروض والتوفير!');
     }
 
     if (userProfile.personalization.religiousRequirements.includes('halal_food')) {
-      welcomeMessages.push(`\n🕌 سأتأكد من توفر الطعام الحلال في جميع توصياتي!`);
+      welcomeMessages.push('\n🕌 سأتأكد من توفر الطعام الحلال في جميع توصياتي!');
     }
 
     return welcomeMessages.join('');
@@ -584,17 +596,18 @@ class AdvancedTelegramBot {
       stage: 'trip_planning',
       lastActivity: new Date(),
       context: { currentGoal: 'trip_planning' },
-      turnCount: 0
+      turnCount: 0,
     });
 
     // Get personalized offers from Supabase
     const offers = await this.db.getPersonalizedOffers(telegramId);
-    
+
     let offersText = '';
     if (offers && offers.length > 0) {
       offersText = '\n\n🔥 <b>عروض خاصة لك:</b>\n\n';
       offers.slice(0, 3).forEach((offer, idx) => {
-        const discount = offer.discount_percentage > 0 ? ` 🏷️ خصم ${offer.discount_percentage}%` : '';
+        const discount =
+          offer.discount_percentage > 0 ? ` 🏷️ خصم ${offer.discount_percentage}%` : '';
         offersText += `${idx + 1}. <b>${offer.destination}</b> - ${offer.title}\n`;
         offersText += `   💰 ${offer.price} ريال${discount}\n`;
         offersText += `   ⏱️ ${offer.duration_days} أيام\n\n`;
@@ -620,22 +633,24 @@ ${offersText}
       [
         { text: '🇹🇷 تركيا', callback_data: 'destination_turkey' },
         { text: '🇲🇾 ماليزيا', callback_data: 'destination_malaysia' },
-        { text: '🇹🇭 تايلاند', callback_data: 'destination_thailand' }
+        { text: '🇹🇭 تايلاند', callback_data: 'destination_thailand' },
       ],
       [
         { text: '🇦🇪 الإمارات', callback_data: 'destination_uae' },
         { text: '🇪🇬 مصر', callback_data: 'destination_egypt' },
-        { text: '🇲🇦 المغرب', callback_data: 'destination_morocco' }
-      ]
+        { text: '🇲🇦 المغرب', callback_data: 'destination_morocco' },
+      ],
     ];
 
     // Add offer buttons if available
     if (offers && offers.length > 0) {
       offers.slice(0, 2).forEach((offer, idx) => {
-        keyboard.push([{
-          text: `⭐ ${offer.destination} - ${offer.price} ريال`,
-          callback_data: `offer_${offer.id}`
-        }]);
+        keyboard.push([
+          {
+            text: `⭐ ${offer.destination} - ${offer.price} ريال`,
+            callback_data: `offer_${offer.id}`,
+          },
+        ]);
       });
     }
 
@@ -643,7 +658,7 @@ ${offersText}
 
     await this.bot.sendMessage(chatId, tripMessage, {
       parse_mode: 'HTML',
-      reply_markup: { inline_keyboard: keyboard }
+      reply_markup: { inline_keyboard: keyboard },
     });
   }
 
@@ -676,17 +691,15 @@ ${offersText}
         inline_keyboard: [
           [
             { text: '💸 تحليل تكلفة رحلة', callback_data: 'analyze_trip_cost' },
-            { text: '📊 مقارنة الوجهات', callback_data: 'compare_destinations' }
+            { text: '📊 مقارنة الوجهات', callback_data: 'compare_destinations' },
           ],
           [
             { text: '🎯 وجهات تناسب ميزانيتي', callback_data: 'budget_destinations' },
-            { text: '💡 نصائح التوفير', callback_data: 'saving_tips' }
+            { text: '💡 نصائح التوفير', callback_data: 'saving_tips' },
           ],
-          [
-            { text: '📈 تخطيط ميزانية', callback_data: 'budget_planning' }
-          ]
-        ]
-      }
+          [{ text: '📈 تخطيط ميزانية', callback_data: 'budget_planning' }],
+        ],
+      },
     });
   }
 
@@ -715,10 +728,10 @@ ${offersText}
         inline_keyboard: [
           [
             { text: '🌍 مدن شائعة', callback_data: 'weather_popular_cities' },
-            { text: '📱 حفظ موقعي', callback_data: 'weather_save_location' }
-          ]
-        ]
-      }
+            { text: '📱 حفظ موقعي', callback_data: 'weather_save_location' },
+          ],
+        ],
+      },
     });
   }
 
@@ -738,14 +751,13 @@ ${offersText}
       if (data === 'end_conversation') {
         this.conversationHistory.set(userId, []);
         this.userStates.delete(userId);
-        await this.bot.sendMessage(chatId, 
+        await this.bot.sendMessage(
+          chatId,
           '✅ تم إنهاء المحادثة!\n\n🌟 يسعدني مساعدتك في أي وقت. اكتب /start للبدء من جديد.',
           {
             reply_markup: {
-              inline_keyboard: [[
-                { text: '🚀 بداية جديدة', callback_data: 'new_trip' }
-              ]]
-            }
+              inline_keyboard: [[{ text: '🚀 بداية جديدة', callback_data: 'new_trip' }]],
+            },
           }
         );
         return;
@@ -757,23 +769,20 @@ ${offersText}
         userState.turnCount = 0;
         userState.context = {};
         this.userStates.set(userId, userState);
-        await this.bot.sendMessage(chatId, 
-          '🔄 بداية جديدة! كيف يمكنني مساعدتك؟',
-          {
-            reply_markup: {
-              inline_keyboard: [
-                [
-                  { text: '🚀 تخطيط رحلة', callback_data: 'new_trip' },
-                  { text: '💰 تحليل ميزانية', callback_data: 'budget_analysis' }
-                ],
-                [
-                  { text: '🌍 وجهات سياحية', callback_data: 'destination_tips' },
-                  { text: '💳 الدفع', callback_data: 'payment_system' }
-                ]
-              ]
-            }
-          }
-        );
+        await this.bot.sendMessage(chatId, '🔄 بداية جديدة! كيف يمكنني مساعدتك؟', {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                { text: '🚀 تخطيط رحلة', callback_data: 'new_trip' },
+                { text: '💰 تحليل ميزانية', callback_data: 'budget_analysis' },
+              ],
+              [
+                { text: '🌍 وجهات سياحية', callback_data: 'destination_tips' },
+                { text: '💳 الدفع', callback_data: 'payment_system' },
+              ],
+            ],
+          },
+        });
         return;
       }
 
@@ -783,9 +792,9 @@ ${offersText}
       }
 
       if (data === 'modify_options') {
-        await this.bot.sendMessage(chatId, 
-          '✏️ ما الذي تريد تعديله؟\n\n' +
-          'أخبرني بالتفاصيل التي تريد تغييرها.'
+        await this.bot.sendMessage(
+          chatId,
+          '✏️ ما الذي تريد تعديله؟\n\n' + 'أخبرني بالتفاصيل التي تريد تغييرها.'
         );
         return;
       }
@@ -793,18 +802,16 @@ ${offersText}
       if (data === 'cancel_booking') {
         this.conversationHistory.set(userId, []);
         this.userStates.delete(userId);
-        await this.bot.sendMessage(chatId, 
-          '❌ تم إلغاء العملية.\n\n' +
-          'هل تريد البدء من جديد؟',
-          {
-            reply_markup: {
-              inline_keyboard: [[
+        await this.bot.sendMessage(chatId, '❌ تم إلغاء العملية.\n\n' + 'هل تريد البدء من جديد؟', {
+          reply_markup: {
+            inline_keyboard: [
+              [
                 { text: '🚀 نعم، بداية جديدة', callback_data: 'new_trip' },
-                { text: '📊 عرض ملفي', callback_data: 'my_profile' }
-              ]]
-            }
-          }
-        );
+                { text: '📊 عرض ملفي', callback_data: 'my_profile' },
+              ],
+            ],
+          },
+        });
         return;
       }
 
@@ -835,7 +842,6 @@ ${offersText}
         // Default handling
         await this.handleGenericCallback(chatId, userId, data);
       }
-
     } catch (error) {
       console.error('Error handling callback query:', error);
       await this.bot.sendMessage(chatId, 'عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.');
@@ -866,9 +872,10 @@ ${offersText}
       await this.db.trackOfferInteraction(telegramId, offerId, 'click');
 
       const includes = Array.isArray(offer.includes) ? offer.includes.join('\n• ') : '';
-      const discount = offer.discount_percentage > 0 
-        ? `\n🏷️ <b>خصم خاص:</b> ${offer.discount_percentage}% (السعر الأصلي: ${offer.original_price} ريال)` 
-        : '';
+      const discount =
+        offer.discount_percentage > 0
+          ? `\n🏷️ <b>خصم خاص:</b> ${offer.discount_percentage}% (السعر الأصلي: ${offer.original_price} ريال)`
+          : '';
 
       const offerMessage = `
 🌟 <b>${offer.title}</b>
@@ -894,14 +901,14 @@ ${offer.valid_until ? `⏰ <b>العرض ساري حتى:</b> ${new Date(offer.v
           inline_keyboard: [
             [
               { text: '✅ نعم، احجز الآن', callback_data: `book_offer_${offerId}` },
-              { text: '💬 أريد تعديلات', callback_data: `customize_offer_${offerId}` }
+              { text: '💬 أريد تعديلات', callback_data: `customize_offer_${offerId}` },
             ],
             [
               { text: '📋 عروض أخرى', callback_data: 'show_more_offers' },
-              { text: '🔙 رجوع', callback_data: 'new_trip' }
-            ]
-          ]
-        }
+              { text: '🔙 رجوع', callback_data: 'new_trip' },
+            ],
+          ],
+        },
       });
 
       // Update user state
@@ -910,10 +917,9 @@ ${offer.valid_until ? `⏰ <b>العرض ساري حتى:</b> ${new Date(offer.v
         ...userState.context,
         selectedOffer: offerId,
         destination: offer.destination,
-        budget: offer.price
+        budget: offer.price,
       };
       this.userStates.set(userId, userState);
-
     } catch (error) {
       console.error('Error handling offer selection:', error);
       await this.bot.sendMessage(chatId, 'عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.');
@@ -927,29 +933,34 @@ ${offer.valid_until ? `⏰ <b>العرض ساري حتى:</b> ${new Date(offer.v
     const telegramId = parseInt(userId);
     const userState = this.userStates.get(userId);
 
-    await this.bot.sendMessage(chatId, 
+    await this.bot.sendMessage(
+      chatId,
       '✅ ممتاز! دعني أجهز تفاصيل الحجز...\n\n' +
-      '📋 ملخص الحجز:\n' +
-      '• الوجهة: ' + (userState?.context?.destination || 'غير محدد') + '\n' +
-      '• التاريخ: ' + (userState?.context?.date || 'غير محدد') + '\n' +
-      '• الميزانية: ' + (userState?.context?.budget || 'غير محدد') + '\n\n' +
-      '💳 اختر طريقة الدفع:',
+        '📋 ملخص الحجز:\n' +
+        '• الوجهة: ' +
+        (userState?.context?.destination || 'غير محدد') +
+        '\n' +
+        '• التاريخ: ' +
+        (userState?.context?.date || 'غير محدد') +
+        '\n' +
+        '• الميزانية: ' +
+        (userState?.context?.budget || 'غير محدد') +
+        '\n\n' +
+        '💳 اختر طريقة الدفع:',
       {
         reply_markup: {
           inline_keyboard: [
             [
               { text: '💳 بطاقة ائتمان', callback_data: 'payment_credit_card' },
-              { text: '🏦 تحويل بنكي', callback_data: 'payment_bank_transfer' }
+              { text: '🏦 تحويل بنكي', callback_data: 'payment_bank_transfer' },
             ],
             [
               { text: '📱 Apple Pay', callback_data: 'payment_apple_pay' },
-              { text: '💰 PayPal', callback_data: 'payment_paypal' }
+              { text: '💰 PayPal', callback_data: 'payment_paypal' },
             ],
-            [
-              { text: '🔙 رجوع', callback_data: 'modify_options' }
-            ]
-          ]
-        }
+            [{ text: '🔙 رجوع', callback_data: 'modify_options' }],
+          ],
+        },
       }
     );
 
@@ -958,7 +969,7 @@ ${offer.valid_until ? `⏰ <b>العرض ساري حتى:</b> ${new Date(offer.v
       await this.db.addToTravelHistory(telegramId, {
         destination: userState.context.destination,
         budget: userState.context.budget,
-        date: userState.context.date || new Date().toISOString()
+        date: userState.context.date || new Date().toISOString(),
       });
     }
 
@@ -979,31 +990,43 @@ ${offer.valid_until ? `⏰ <b>العرض ساري حتى:</b> ${new Date(offer.v
    */
   async handleDestinationSelection(chatId, userId, data) {
     const destinationMap = {
-      'destination_turkey': 'تركيا',
-      'destination_malaysia': 'ماليزيا',
-      'destination_thailand': 'تايلاند',
-      'destination_uae': 'الإمارات',
-      'destination_egypt': 'مصر',
-      'destination_morocco': 'المغرب'
+      destination_turkey: 'تركيا',
+      destination_malaysia: 'ماليزيا',
+      destination_thailand: 'تايلاند',
+      destination_uae: 'الإمارات',
+      destination_egypt: 'مصر',
+      destination_morocco: 'المغرب',
     };
 
     const destination = destinationMap[data] || 'وجهة أخرى';
 
     // Get user profile for personalized recommendations
     const userProfile = this.userProfiling.getProfile(userId);
-    
+
     // Generate personalized response using AI
     const systemPrompt = this.mayaPersona.generateSystemPrompt({
       user_preferences: userProfile?.preferences || {},
-      current_goal: 'destination_info'
+      current_goal: 'destination_info',
     });
 
-    const aiResponse = await this.zaiClient.chatCompletion([
+<<<<<<< Current (Your changes)
+    const aiResponse = await this.keloClient.chatCompletion(
+      [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: `أريد معلومات عن ${destination} للسفر` },
+      ],
+      { maxTokens: 800 }
+    );
+=======
+    const aiResponse = await this.keloClient.chatCompletion([
       { role: 'system', content: systemPrompt },
       { role: 'user', content: `أريد معلومات عن ${destination} للسفر` }
     ], { maxTokens: 800 });
+>>>>>>> Incoming (Background Agent changes)
 
-    let responseMessage = aiResponse.success ? aiResponse.content : `ممتاز! ${destination} وجهة رائعة. كيف يمكنني مساعدتك أكثر؟`;
+    const responseMessage = aiResponse.success
+      ? aiResponse.content
+      : `ممتاز! ${destination} وجهة رائعة. كيف يمكنني مساعدتك أكثر؟`;
 
     // Add quick actions
     await this.bot.sendMessage(chatId, responseMessage, {
@@ -1012,18 +1035,18 @@ ${offer.valid_until ? `⏰ <b>العرض ساري حتى:</b> ${new Date(offer.v
         inline_keyboard: [
           [
             { text: `🏨 فنادق في ${destination}`, callback_data: `hotels_${data}` },
-            { text: `🍽️ مطاعم حلال في ${destination}`, callback_data: `restaurants_${data}` }
+            { text: `🍽️ مطاعم حلال في ${destination}`, callback_data: `restaurants_${data}` },
           ],
           [
             { text: `🌤️ طقس ${destination}`, callback_data: `weather_${destination}` },
-            { text: `📋 خطة رحلة لـ ${destination}`, callback_data: `itinerary_${data}` }
+            { text: `📋 خطة رحلة لـ ${destination}`, callback_data: `itinerary_${data}` },
           ],
           [
             { text: '💳 حجز فوري', callback_data: `book_${data}` },
-            { text: '💰 تحليل التكلفة', callback_data: `cost_${data}` }
-          ]
-        ]
-      }
+            { text: '💰 تحليل التكلفة', callback_data: `cost_${data}` },
+          ],
+        ],
+      },
     });
   }
 
@@ -1032,19 +1055,19 @@ ${offer.valid_until ? `⏰ <b>العرض ساري حتى:</b> ${new Date(offer.v
    */
   detectToolSuggestions(response) {
     const toolSuggestions = [];
-    
+
     if (response.includes('طقس') || response.includes('درجة حرارة')) {
       toolSuggestions.push('weather');
     }
-    
+
     if (response.includes('فندق') || response.includes('إقامة')) {
       toolSuggestions.push('accommodation');
     }
-    
+
     if (response.includes('مطعم') || response.includes('طعام')) {
       toolSuggestions.push('restaurants');
     }
-    
+
     if (response.includes('صلاة') || response.includes('مسجد')) {
       toolSuggestions.push('prayer_times');
     }
@@ -1057,15 +1080,15 @@ ${offer.valid_until ? `⏰ <b>العرض ساري حتى:</b> ${new Date(offer.v
    */
   createToolKeyboard(tools) {
     const keyboard = [];
-    
-    tools.forEach(tool => {
+
+    tools.forEach((tool) => {
       const toolButtons = {
-        'weather': { text: '🌤️ حالة الطقس', callback_data: 'tool_weather' },
-        'accommodation': { text: '🏨 الفنادق', callback_data: 'tool_accommodation' },
-        'restaurants': { text: '🍽️ المطاعم', callback_data: 'tool_restaurants' },
-        'prayer_times': { text: '🕌 أوقات الصلاة', callback_data: 'tool_prayer_times' }
+        weather: { text: '🌤️ حالة الطقس', callback_data: 'tool_weather' },
+        accommodation: { text: '🏨 الفنادق', callback_data: 'tool_accommodation' },
+        restaurants: { text: '🍽️ المطاعم', callback_data: 'tool_restaurants' },
+        prayer_times: { text: '🕌 أوقات الصلاة', callback_data: 'tool_prayer_times' },
       };
-      
+
       if (toolButtons[tool]) {
         keyboard.push([toolButtons[tool]]);
       }
@@ -1079,19 +1102,28 @@ ${offer.valid_until ? `⏰ <b>العرض ساري حتى:</b> ${new Date(offer.v
    */
   startPeriodicTasks() {
     // Clean up old conversation history every hour
-    setInterval(() => {
-      this.cleanupConversationHistory();
-    }, 60 * 60 * 1000);
+    setInterval(
+      () => {
+        this.cleanupConversationHistory();
+      },
+      60 * 60 * 1000
+    );
 
     // Update user activity status every 5 minutes
-    setInterval(() => {
-      this.updateUserActivity();
-    }, 5 * 60 * 1000);
+    setInterval(
+      () => {
+        this.updateUserActivity();
+      },
+      5 * 60 * 1000
+    );
 
     // Send periodic insights to users
-    setInterval(() => {
-      this.sendPeriodicInsights();
-    }, 24 * 60 * 60 * 1000); // Daily
+    setInterval(
+      () => {
+        this.sendPeriodicInsights();
+      },
+      24 * 60 * 60 * 1000
+    ); // Daily
   }
 
   /**
@@ -1099,12 +1131,10 @@ ${offer.valid_until ? `⏰ <b>العرض ساري حتى:</b> ${new Date(offer.v
    */
   cleanupConversationHistory() {
     const cutoffTime = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 days ago
-    
+
     for (const [userId, history] of this.conversationHistory.entries()) {
-      const filteredHistory = history.filter(msg => 
-        new Date(msg.timestamp) > cutoffTime
-      );
-      
+      const filteredHistory = history.filter((msg) => new Date(msg.timestamp) > cutoffTime);
+
       if (filteredHistory.length === 0) {
         this.conversationHistory.delete(userId);
       } else {
@@ -1119,14 +1149,14 @@ ${offer.valid_until ? `⏰ <b>العرض ساري حتى:</b> ${new Date(offer.v
   updateUserActivity() {
     const now = new Date();
     const inactiveThreshold = 30 * 60 * 1000; // 30 minutes
-    
+
     for (const [userId, state] of this.userStates.entries()) {
       if (now - state.lastActivity > inactiveThreshold) {
         this.userStates.delete(userId);
         this.activeSessions.delete(userId);
       }
     }
-    
+
     this.stats.activeConversations = this.activeSessions.size;
   }
 
@@ -1145,7 +1175,7 @@ ${offer.valid_until ? `⏰ <b>العرض ساري حتى:</b> ${new Date(offer.v
     return {
       ...this.stats,
       activeUsers: this.userStates.size,
-      totalProfiles: this.userProfiling.getAllProfiles().length
+      totalProfiles: this.userProfiling.getAllProfiles().length,
     };
   }
 
@@ -1158,7 +1188,10 @@ ${offer.valid_until ? `⏰ <b>العرض ساري حتى:</b> ${new Date(offer.v
 
     const userProfile = this.userProfiling.getProfile(userId);
     if (!userProfile) {
-      await this.bot.sendMessage(chatId, 'لم يتم العثور على ملفك الشخصي. يرجى استخدام /start أولاً.');
+      await this.bot.sendMessage(
+        chatId,
+        'لم يتم العثور على ملفك الشخصي. يرجى استخدام /start أولاً.'
+      );
       return;
     }
 
@@ -1177,12 +1210,18 @@ ${offer.valid_until ? `⏰ <b>العرض ساري حتى:</b> ${new Date(offer.v
 • 💰 الميزانية: ${userProfile.preferences.budgetRange}
 
 🌍 <b>الوجهات المفضلة:</b>
-${userProfile.travelHistory.favoritePlaces.length > 0 ? 
-  userProfile.travelHistory.favoritePlaces.join(', ') : 'لم يتم تحديد أي وجهات بعد'}
+${
+  userProfile.travelHistory.favoritePlaces.length > 0
+    ? userProfile.travelHistory.favoritePlaces.join(', ')
+    : 'لم يتم تحديد أي وجهات بعد'
+}
 
 📈 <b>نصائح مخصصة:</b>
-${userProfile.personalization.interests.length > 0 ? 
-  `• مهتم بـ: ${userProfile.personalization.interests.join(', ')}` : ''}
+${
+  userProfile.personalization.interests.length > 0
+    ? `• مهتم بـ: ${userProfile.personalization.interests.join(', ')}`
+    : ''
+}
 `;
 
     await this.bot.sendMessage(chatId, profileMessage, {
@@ -1191,14 +1230,14 @@ ${userProfile.personalization.interests.length > 0 ?
         inline_keyboard: [
           [
             { text: '✏️ تعديل التفضيلات', callback_data: 'edit_preferences' },
-            { text: '📊 إحصائيات مفصلة', callback_data: 'detailed_stats' }
+            { text: '📊 إحصائيات مفصلة', callback_data: 'detailed_stats' },
           ],
           [
             { text: '🎯 تحديث الأهداف', callback_data: 'update_goals' },
-            { text: '📱 مشاركة الملف', callback_data: 'share_profile' }
-          ]
-        ]
-      }
+            { text: '📱 مشاركة الملف', callback_data: 'share_profile' },
+          ],
+        ],
+      },
     });
   }
 
@@ -1239,17 +1278,15 @@ ${userProfile.personalization.interests.length > 0 ?
         inline_keyboard: [
           [
             { text: '🌍 تغيير اللغة', callback_data: 'change_language' },
-            { text: '🔔 إعدادات الإشعارات', callback_data: 'notification_settings' }
+            { text: '🔔 إعدادات الإشعارات', callback_data: 'notification_settings' },
           ],
           [
             { text: '🎨 تخصيص المحادثة', callback_data: 'customize_chat' },
-            { text: '💾 حفظ الإعدادات', callback_data: 'save_settings' }
+            { text: '💾 حفظ الإعدادات', callback_data: 'save_settings' },
           ],
-          [
-            { text: '🔄 إعادة تعيين', callback_data: 'reset_settings' }
-          ]
-        ]
-      }
+          [{ text: '🔄 إعادة تعيين', callback_data: 'reset_settings' }],
+        ],
+      },
     });
   }
 
@@ -1291,14 +1328,14 @@ ${userProfile.personalization.interests.length > 0 ?
         inline_keyboard: [
           [
             { text: '💳 إنشاء رابط دفع', callback_data: 'create_payment_link' },
-            { text: '📊 تاريخ المدفوعات', callback_data: 'payment_history' }
+            { text: '📊 تاريخ المدفوعات', callback_data: 'payment_history' },
           ],
           [
             { text: '🔒 الأمان والحماية', callback_data: 'payment_security' },
-            { text: '❓ مساعدة الدفع', callback_data: 'payment_help' }
-          ]
-        ]
-      }
+            { text: '❓ مساعدة الدفع', callback_data: 'payment_help' },
+          ],
+        ],
+      },
     });
   }
 
@@ -1352,18 +1389,18 @@ ${userProfile.personalization.interests.length > 0 ?
         inline_keyboard: [
           [
             { text: '🚀 تخطيط رحلة', callback_data: 'new_trip' },
-            { text: '💰 تحليل الميزانية', callback_data: 'budget_analysis' }
+            { text: '💰 تحليل الميزانية', callback_data: 'budget_analysis' },
           ],
           [
             { text: '🌤️ حالة الطقس', callback_data: 'weather_check' },
-            { text: '👤 ملفي الشخصي', callback_data: 'my_profile' }
+            { text: '👤 ملفي الشخصي', callback_data: 'my_profile' },
           ],
           [
             { text: '💬 أمثلة على الاستخدام', callback_data: 'usage_examples' },
-            { text: '📞 الدعم الفني', callback_data: 'technical_support' }
-          ]
-        ]
-      }
+            { text: '📞 الدعم الفني', callback_data: 'technical_support' },
+          ],
+        ],
+      },
     });
   }
 
@@ -1376,8 +1413,8 @@ ${userProfile.personalization.interests.length > 0 ?
 
     const userProfile = this.userProfiling.getProfile(userId);
     const recommendations = await this.userProfiling.generatePersonalizedRecommendations(
-      userId, 
-      'general', 
+      userId,
+      'general',
       {}
     );
 
@@ -1386,19 +1423,22 @@ ${userProfile.personalization.interests.length > 0 ?
 🎯 <b>توصيات مخصصة لك</b>
 
 📍 <b>الوجهات المقترحة:</b>
-${recommendations.recommendations.destinations.slice(0, 3).map(dest => 
-  `• ${dest.name} (${dest.score}/100) - ${dest.reason}`
-).join('\n')}
+${recommendations.recommendations.destinations
+  .slice(0, 3)
+  .map((dest) => `• ${dest.name} (${dest.score}/100) - ${dest.reason}`)
+  .join('\n')}
 
 🎨 <b>أنشطة مناسبة لك:</b>
-${recommendations.recommendations.activities.slice(0, 3).map(activity => 
-  `• ${activity.name} - ${activity.description}`
-).join('\n')}
+${recommendations.recommendations.activities
+  .slice(0, 3)
+  .map((activity) => `• ${activity.name} - ${activity.description}`)
+  .join('\n')}
 
 🏨 <b>نوع الإقامة المناسب:</b>
-${recommendations.recommendations.accommodations.slice(0, 2).map(acc => 
-  `• ${acc.type} - ${acc.reason}`
-).join('\n')}
+${recommendations.recommendations.accommodations
+  .slice(0, 2)
+  .map((acc) => `• ${acc.type} - ${acc.reason}`)
+  .join('\n')}
 
 📊 <b>درجة التخصيص: ${recommendations.personalizationScore}/100</b>
 `;
@@ -1409,14 +1449,14 @@ ${recommendations.recommendations.accommodations.slice(0, 2).map(acc =>
           inline_keyboard: [
             [
               { text: '📍 تفاصيل الوجهات', callback_data: 'destination_details' },
-              { text: '🎯 خطة رحلة', callback_data: 'create_itinerary' }
+              { text: '🎯 خطة رحلة', callback_data: 'create_itinerary' },
             ],
             [
               { text: '💰 حساب التكلفة', callback_data: 'calculate_cost' },
-              { text: '🔄 توصيات جديدة', callback_data: 'new_recommendations' }
-            ]
-          ]
-        }
+              { text: '🔄 توصيات جديدة', callback_data: 'new_recommendations' },
+            ],
+          ],
+        },
       });
     } else {
       await this.bot.sendMessage(chatId, 'أخبرني عن تفضيلاتك وسأقدم لك توصيات مخصصة!');

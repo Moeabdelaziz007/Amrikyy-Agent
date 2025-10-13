@@ -12,7 +12,7 @@ const v8 = require('v8');
 jest.mock('../../utils/logger');
 jest.mock('../../utils/healthMonitor');
 jest.mock('../../database/supabase');
-jest.mock('../../src/ai/zaiClient');
+jest.mock('../../src/ai/keloClient');
 
 // Import after mocking
 const app = require('../../server');
@@ -53,7 +53,7 @@ class PerformanceTestUtils {
       p99: this.calculatePercentile(times, 99),
       totalTime: endTotal - startTotal,
       iterations,
-      requestsPerSecond: iterations / ((endTotal - startTotal) / 1000)
+      requestsPerSecond: iterations / ((endTotal - startTotal) / 1000),
     };
   }
 
@@ -79,10 +79,11 @@ class PerformanceTestUtils {
 
     return {
       totalRequests: userCount * requestsPerUser,
-      totalTime: Math.max(...userResults.map(r => r.totalTime)),
-      averageResponseTime: userResults.reduce((sum, r) => sum + r.averageTime, 0) / userResults.length,
-      successRate: userResults.filter(r => r.successCount === requestsPerUser).length / userCount,
-      userResults
+      totalTime: Math.max(...userResults.map((r) => r.totalTime)),
+      averageResponseTime:
+        userResults.reduce((sum, r) => sum + r.averageTime, 0) / userResults.length,
+      successRate: userResults.filter((r) => r.successCount === requestsPerUser).length / userCount,
+      userResults,
     };
   }
 
@@ -103,7 +104,7 @@ class PerformanceTestUtils {
         }
 
         // Add random delay to simulate real user behavior
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 100));
+        await new Promise((resolve) => setTimeout(resolve, Math.random() * 100));
       } catch (error) {
         // Request failed
       }
@@ -117,7 +118,7 @@ class PerformanceTestUtils {
       averageTime: times.length > 0 ? times.reduce((a, b) => a + b, 0) / times.length : 0,
       successCount,
       requestCount,
-      successRate: successCount / requestCount
+      successRate: successCount / requestCount,
     };
   }
 
@@ -144,21 +145,21 @@ class PerformanceTestUtils {
         rss: finalMemory.rss - initialMemory.rss,
         heapTotal: finalMemory.heapTotal - initialMemory.heapTotal,
         heapUsed: finalMemory.heapUsed - initialMemory.heapUsed,
-        external: finalMemory.external - initialMemory.external
+        external: finalMemory.external - initialMemory.external,
       },
       heapStats: {
         min: Math.min(...heapStats),
         max: Math.max(...heapStats),
-        average: heapStats.reduce((a, b) => a + b, 0) / heapStats.length
+        average: heapStats.reduce((a, b) => a + b, 0) / heapStats.length,
       },
-      iterations
+      iterations,
     };
   }
 
   static async loadTest(endpoint, targetRPS, durationSeconds = 60) {
     const results = [];
     const startTime = Date.now();
-    const endTime = startTime + (durationSeconds * 1000);
+    const endTime = startTime + durationSeconds * 1000;
     let requestCount = 0;
     let successCount = 0;
     let errorCount = 0;
@@ -182,7 +183,7 @@ class PerformanceTestUtils {
           request(app)
             .get(endpoint)
             .timeout(5000)
-            .then(response => {
+            .then((response) => {
               if (response.status >= 200 && response.status < 300) {
                 successCount++;
               } else {
@@ -211,7 +212,7 @@ class PerformanceTestUtils {
           successCount,
           errorCount,
           successRate: successCount / requestCount,
-          averageResponseTime: 1000 / actualRPS // Approximate
+          averageResponseTime: 1000 / actualRPS, // Approximate
         });
       });
     });
@@ -264,7 +265,7 @@ describe('Performance Testing Suite', () => {
     test('should handle burst traffic for API endpoints', async () => {
       const results = await PerformanceTestUtils.loadTest('/api/trips', 30, 15);
 
-      expect(results.successRate).toBeGreaterThan(0.90);
+      expect(results.successRate).toBeGreaterThan(0.9);
       expect(results.errorCount).toBeLessThan(results.totalRequests * 0.1); // Less than 10% errors
     });
 
@@ -279,12 +280,9 @@ describe('Performance Testing Suite', () => {
 
   describe('Memory Usage Monitoring', () => {
     test('should not have memory leaks in health checks', async () => {
-      const memoryUsage = await PerformanceTestUtils.monitorMemoryUsage(
-        async () => {
-          await request(app).get('/health');
-        },
-        100
-      );
+      const memoryUsage = await PerformanceTestUtils.monitorMemoryUsage(async () => {
+        await request(app).get('/health');
+      }, 100);
 
       // Memory usage should not grow significantly
       expect(memoryUsage.difference.heapUsed).toBeLessThan(10 * 1024 * 1024); // Less than 10MB growth
@@ -292,13 +290,10 @@ describe('Performance Testing Suite', () => {
     });
 
     test('should maintain stable memory usage under load', async () => {
-      const memoryUsage = await PerformanceTestUtils.monitorMemoryUsage(
-        async () => {
-          await request(app).get('/api/trips');
-          await new Promise(resolve => setTimeout(resolve, 10)); // Simulate processing time
-        },
-        200
-      );
+      const memoryUsage = await PerformanceTestUtils.monitorMemoryUsage(async () => {
+        await request(app).get('/api/trips');
+        await new Promise((resolve) => setTimeout(resolve, 10)); // Simulate processing time
+      }, 200);
 
       expect(memoryUsage.difference.heapUsed).toBeLessThan(20 * 1024 * 1024); // Less than 20MB growth
     });
@@ -316,7 +311,7 @@ describe('Performance Testing Suite', () => {
     test('should handle 100 concurrent users on API endpoints', async () => {
       const results = await PerformanceTestUtils.simulateConcurrentUsers('/api/trips', 100, 3);
 
-      expect(results.successRate).toBeGreaterThan(0.90);
+      expect(results.successRate).toBeGreaterThan(0.9);
       expect(results.averageResponseTime).toBeLessThan(1000); // Under 1 second average
     });
 
@@ -325,13 +320,11 @@ describe('Performance Testing Suite', () => {
       const userPromises = [];
 
       for (let i = 0; i < 20; i++) {
-        userPromises.push(
-          PerformanceTestUtils.simulateUserLoad('/health', 10, i)
-        );
+        userPromises.push(PerformanceTestUtils.simulateUserLoad('/health', 10, i));
       }
 
       const userResults = await Promise.all(userPromises);
-      const allSuccessful = userResults.every(result => result.successRate === 1.0);
+      const allSuccessful = userResults.every((result) => result.successRate === 1.0);
 
       expect(allSuccessful).toBe(true);
     });
@@ -355,10 +348,11 @@ describe('Performance Testing Suite', () => {
     test('should handle database connection stress', async () => {
       // Mock database stress scenario
       const mockDb = {
-        getTravelOffers: jest.fn()
+        getTravelOffers: jest
+          .fn()
           .mockResolvedValueOnce([]) // Normal response
           .mockRejectedValueOnce(new Error('Connection timeout')) // Stress scenario
-          .mockResolvedValueOnce([]) // Recovery
+          .mockResolvedValueOnce([]), // Recovery
       };
 
       // This would test database resilience under stress
@@ -371,11 +365,16 @@ describe('Performance Testing Suite', () => {
       const endpoints = [
         { path: '/health', sla: 100 },
         { path: '/api/trips', sla: 300 },
-        { path: '/api/auth/status', sla: 200 }
+        { path: '/api/auth/status', sla: 200 },
       ];
 
       for (const endpoint of endpoints) {
-        const results = await PerformanceTestUtils.measureResponseTime(endpoint.path, 'GET', null, 20);
+        const results = await PerformanceTestUtils.measureResponseTime(
+          endpoint.path,
+          'GET',
+          null,
+          20
+        );
 
         expect(results.p95).toBeLessThan(endpoint.sla);
         expect(results.average).toBeLessThan(endpoint.sla * 0.8); // 80% of SLA for average

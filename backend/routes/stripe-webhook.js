@@ -26,7 +26,10 @@ router.post('/webhook', async (req, res) => {
         .eq('stripe_session_id', session.id);
     }
 
-    if (event.type === 'checkout.session.async_payment_failed' || event.type === 'payment_intent.payment_failed') {
+    if (
+      event.type === 'checkout.session.async_payment_failed' ||
+      event.type === 'payment_intent.payment_failed'
+    ) {
       const session = event.data.object;
       await supabase
         .from('payments')
@@ -41,4 +44,3 @@ router.post('/webhook', async (req, res) => {
 });
 
 module.exports = router;
-

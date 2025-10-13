@@ -11,7 +11,7 @@ const crypto = require('crypto');
 jest.mock('../../utils/logger');
 jest.mock('../../utils/healthMonitor');
 jest.mock('../../database/supabase');
-jest.mock('../../src/ai/zaiClient');
+jest.mock('../../src/ai/keloClient');
 jest.mock('jsonwebtoken');
 jest.mock('crypto');
 
@@ -223,7 +223,7 @@ describe('Enhanced Authentication Testing Suite', () => {
         .set('Cookie', `sessionId=${sessions[0]}`)
         .send({
           currentPassword: 'testpass',
-          newPassword: 'newtestpass123'
+          newPassword: 'newtestpass123',
         });
 
       expect(changeResponse.status).toBe(200);
@@ -280,7 +280,7 @@ describe('Enhanced Authentication Testing Suite', () => {
         type: 'mobile',
         os: 'iOS',
         browser: 'Safari',
-        ip: '192.168.1.1'
+        ip: '192.168.1.1',
       };
 
       const response = await request(app)
@@ -300,7 +300,7 @@ describe('Enhanced Authentication Testing Suite', () => {
       expect(devicesResponse.body.devices).toContainEqual(
         expect.objectContaining({
           type: 'mobile',
-          os: 'iOS'
+          os: 'iOS',
         })
       );
     });
@@ -391,12 +391,10 @@ describe('Enhanced Authentication Testing Suite', () => {
       // Generate a valid reset token
       const resetToken = crypto.randomBytes(32).toString('hex');
 
-      const response = await request(app)
-        .post('/api/auth/reset-password')
-        .send({
-          token: resetToken,
-          newPassword: 'newpassword123'
-        });
+      const response = await request(app).post('/api/auth/reset-password').send({
+        token: resetToken,
+        newPassword: 'newpassword123',
+      });
 
       expect([200, 400]).toContain(response.status);
     });
@@ -405,12 +403,10 @@ describe('Enhanced Authentication Testing Suite', () => {
       // Mock expired token
       const expiredToken = 'expired_reset_token';
 
-      const response = await request(app)
-        .post('/api/auth/reset-password')
-        .send({
-          token: expiredToken,
-          newPassword: 'newpassword123'
-        });
+      const response = await request(app).post('/api/auth/reset-password').send({
+        token: expiredToken,
+        newPassword: 'newpassword123',
+      });
 
       expect(response.status).toBe(400);
       expect(response.body.error).toContain('expired');
@@ -420,20 +416,16 @@ describe('Enhanced Authentication Testing Suite', () => {
       const resetToken = crypto.randomBytes(32).toString('hex');
 
       // First use
-      await request(app)
-        .post('/api/auth/reset-password')
-        .send({
-          token: resetToken,
-          newPassword: 'newpassword123'
-        });
+      await request(app).post('/api/auth/reset-password').send({
+        token: resetToken,
+        newPassword: 'newpassword123',
+      });
 
       // Second use should fail
-      const secondResponse = await request(app)
-        .post('/api/auth/reset-password')
-        .send({
-          token: resetToken,
-          newPassword: 'anotherpassword123'
-        });
+      const secondResponse = await request(app).post('/api/auth/reset-password').send({
+        token: resetToken,
+        newPassword: 'anotherpassword123',
+      });
 
       expect(secondResponse.status).toBe(400);
       expect(secondResponse.body.error).toContain('used');
@@ -444,12 +436,10 @@ describe('Enhanced Authentication Testing Suite', () => {
       const weakPasswords = ['123', 'weak', 'password'];
 
       for (const password of weakPasswords) {
-        const response = await request(app)
-          .post('/api/auth/reset-password')
-          .send({
-            token: resetToken,
-            newPassword: password
-          });
+        const response = await request(app).post('/api/auth/reset-password').send({
+          token: resetToken,
+          newPassword: password,
+        });
 
         expect([400, 422]).toContain(response.status);
         expect(response.body.errors).toContain('password');
@@ -462,15 +452,11 @@ describe('Enhanced Authentication Testing Suite', () => {
       // Make multiple reset requests quickly
       const requests = [];
       for (let i = 0; i < 10; i++) {
-        requests.push(
-          request(app)
-            .post('/api/auth/forgot-password')
-            .send({ email })
-        );
+        requests.push(request(app).post('/api/auth/forgot-password').send({ email }));
       }
 
       const responses = await Promise.all(requests);
-      const rateLimited = responses.filter(r => r.status === 429).length;
+      const rateLimited = responses.filter((r) => r.status === 429).length;
 
       expect(rateLimited).toBeGreaterThan(0);
     });
@@ -478,8 +464,7 @@ describe('Enhanced Authentication Testing Suite', () => {
 
   describe('Social Authentication Flows', () => {
     test('should initiate Google OAuth flow', async () => {
-      const response = await request(app)
-        .get('/api/auth/google');
+      const response = await request(app).get('/api/auth/google');
 
       expect(response.status).toBe(302); // Redirect
       expect(response.headers.location).toMatch(/accounts\.google\.com/);
@@ -505,8 +490,8 @@ describe('Enhanced Authentication Testing Suite', () => {
           profile: {
             id: 'google_123',
             email: 'newuser@gmail.com',
-            name: 'New User'
-          }
+            name: 'New User',
+          },
         });
 
       expect(response.status).toBe(201);
@@ -516,21 +501,17 @@ describe('Enhanced Authentication Testing Suite', () => {
 
     test('should link social account to existing user', async () => {
       // First create a regular account
-      await request(app)
-        .post('/api/auth/register')
-        .send({
-          email: 'existing@example.com',
-          password: 'testpass123'
-        });
+      await request(app).post('/api/auth/register').send({
+        email: 'existing@example.com',
+        password: 'testpass123',
+      });
 
       // Then link social account
-      const response = await request(app)
-        .post('/api/auth/link-social')
-        .send({
-          provider: 'google',
-          token: 'mock_social_token',
-          email: 'existing@example.com'
-        });
+      const response = await request(app).post('/api/auth/link-social').send({
+        provider: 'google',
+        token: 'mock_social_token',
+        email: 'existing@example.com',
+      });
 
       expect(response.status).toBe(200);
       expect(response.body.message).toContain('linked');
@@ -544,8 +525,8 @@ describe('Enhanced Authentication Testing Suite', () => {
           token: 'mock_social_token',
           profile: {
             id: 'google_123',
-            email: 'linked@example.com'
-          }
+            email: 'linked@example.com',
+          },
         });
 
       expect(response.status).toBe(200);
@@ -559,7 +540,7 @@ describe('Enhanced Authentication Testing Suite', () => {
         .send({
           provider: 'google',
           token: 'expired_social_token',
-          profile: { id: 'google_123' }
+          profile: { id: 'google_123' },
         });
 
       expect(response.status).toBe(401);
@@ -570,8 +551,7 @@ describe('Enhanced Authentication Testing Suite', () => {
       const providers = ['google', 'facebook', 'github', 'twitter'];
 
       for (const provider of providers) {
-        const response = await request(app)
-          .get(`/api/auth/${provider}`);
+        const response = await request(app).get(`/api/auth/${provider}`);
 
         expect([200, 302]).toContain(response.status);
       }
@@ -581,7 +561,7 @@ describe('Enhanced Authentication Testing Suite', () => {
       const errorScenarios = [
         { error: 'access_denied', description: 'User denied access' },
         { error: 'invalid_request', description: 'Invalid OAuth request' },
-        { error: 'server_error', description: 'OAuth provider error' }
+        { error: 'server_error', description: 'OAuth provider error' },
       ];
 
       for (const scenario of errorScenarios) {
@@ -626,26 +606,22 @@ describe('Enhanced Authentication Testing Suite', () => {
 
     test('should require 2FA code for login when enabled', async () => {
       // Login without 2FA code
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send({
-          username: '2fauser',
-          password: 'testpass',
-          require2FA: true
-        });
+      const response = await request(app).post('/api/auth/login').send({
+        username: '2fauser',
+        password: 'testpass',
+        require2FA: true,
+      });
 
       expect(response.status).toBe(202); // Partial success, 2FA required
       expect(response.body.requires2FA).toBe(true);
     });
 
     test('should complete login with valid 2FA code', async () => {
-      const sessionResponse = await request(app)
-        .post('/api/auth/login')
-        .send({
-          username: '2fauser',
-          password: 'testpass',
-          require2FA: true
-        });
+      const sessionResponse = await request(app).post('/api/auth/login').send({
+        username: '2fauser',
+        password: 'testpass',
+        require2FA: true,
+      });
 
       const sessionId = sessionResponse.body.sessionId;
       const totpCode = '123456';
@@ -663,9 +639,7 @@ describe('Enhanced Authentication Testing Suite', () => {
       const invalidCodes = ['000000', '999999', '123', ''];
 
       for (const code of invalidCodes) {
-        const response = await request(app)
-          .post('/api/auth/verify-2fa-login')
-          .send({ code });
+        const response = await request(app).post('/api/auth/verify-2fa-login').send({ code });
 
         expect(response.status).toBe(401);
         expect(response.body.error).toContain('code');

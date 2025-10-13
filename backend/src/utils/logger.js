@@ -13,14 +13,14 @@ class Logger {
     this.logToFile = options.logToFile !== undefined ? options.logToFile : true;
     this.logDir = options.logDir || path.join(__dirname, '../../logs');
     this.logFile = options.logFile || 'app.log';
-    
+
     // Log levels with priority
     this.levels = {
       error: 0,
       warn: 1,
       info: 2,
       debug: 3,
-      trace: 4
+      trace: 4,
     };
 
     // Ensure log directory exists
@@ -145,11 +145,11 @@ class Logger {
       logLevel: this.logLevel,
       logToFile: this.logToFile,
       logDir: this.logDir,
-      logFile: this.logFile
+      logFile: this.logFile,
     });
 
     // Override methods to add prefix
-    ['error', 'warn', 'info', 'debug', 'trace', 'success'].forEach(method => {
+    ['error', 'warn', 'info', 'debug', 'trace', 'success'].forEach((method) => {
       const originalMethod = childLogger[method].bind(childLogger);
       childLogger[method] = (message, meta) => {
         originalMethod(`[${prefix}] ${message}`, meta);
