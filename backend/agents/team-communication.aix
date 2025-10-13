@@ -1,0 +1,272 @@
+# TEAM COMMUNICATION SYSTEM - AIX3 Format
+# Created by Cursor - Team Lead
+
+meta:
+  sender: "Cursor"
+  timestamp: "2025-01-13T12:20:00Z"
+  priority: "HIGH"
+  type: "team_communication"
+  team: "AIX Integration"
+  version: "AIX3"
+
+content:
+  action: "TEAM_COMMUNICATION_SETUP"
+  mission: "Establish effective communication system for AIX integration team"
+  status: "ACTIVE"
+  
+  # 📡 COMMUNICATION CHANNELS
+  communication_channels:
+    primary:
+      channel: "AIX3 Ping System"
+      purpose: "Real-time task coordination and status updates"
+      frequency: "Continuous"
+      participants: ["Cursor", "ONA", "Gemini 2.5"]
+    
+    secondary:
+      channel: "Task Board Updates"
+      purpose: "Progress tracking and milestone updates"
+      frequency: "Every 2 hours"
+      participants: ["All team members"]
+    
+    emergency:
+      channel: "Direct Escalation"
+      purpose: "Critical issues and blockers"
+      frequency: "As needed"
+      participants: ["Cursor", "Boss"]
+
+  # 🎯 COMMUNICATION PROTOCOLS
+  communication_protocols:
+    ona_protocol:
+      agent: "ONA"
+      role: "Documentation & Testing Specialist"
+      communication_style: "Detailed, thorough, proactive"
+      
+      check_in_schedule:
+        - "Every 2 hours: Progress update"
+        - "Daily: Milestone report"
+        - "Weekly: Comprehensive summary"
+      
+      message_formats:
+        - "AIX3 progress updates"
+        - "Detailed task reports"
+        - "Documentation status"
+        - "Testing results"
+      
+      escalation_triggers:
+        - "Task blocked for >1 hour"
+        - "Quality issues discovered"
+        - "Timeline at risk"
+        - "Resource constraints"
+    
+    gemini_protocol:
+      agent: "Gemini 2.5"
+      role: "Parser & Security Expert"
+      communication_style: "Technical, precise, performance-focused"
+      
+      check_in_schedule:
+        - "Every 2 hours: Technical progress"
+        - "Daily: Performance metrics"
+        - "Weekly: Security assessment"
+      
+      message_formats:
+        - "AIX3 technical updates"
+        - "Performance benchmarks"
+        - "Security validation results"
+        - "Code quality reports"
+      
+      escalation_triggers:
+        - "Performance targets not met"
+        - "Security vulnerabilities found"
+        - "Technical blockers"
+        - "Integration issues"
+    
+    cursor_protocol:
+      agent: "Cursor"
+      role: "Team Lead & Coordinator"
+      communication_style: "Strategic, coordinating, supportive"
+      
+      check_in_schedule:
+        - "Continuous: Team monitoring"
+        - "Every 2 hours: Team coordination"
+        - "Daily: Project status"
+        - "Weekly: Strategic review"
+      
+      message_formats:
+        - "AIX3 coordination messages"
+        - "Task assignments"
+        - "Progress summaries"
+        - "Strategic decisions"
+      
+      escalation_triggers:
+        - "Team performance issues"
+        - "Project timeline at risk"
+        - "Resource allocation problems"
+        - "External dependencies"
+
+  # 📊 COMMUNICATION METRICS
+  communication_metrics:
+    response_times:
+      target: "< 2 minutes for HIGH priority"
+      target: "< 5 minutes for NORMAL priority"
+      target: "< 15 minutes for LOW priority"
+      current_average: "TBD"
+    
+    message_quality:
+      target: "Clear, actionable, detailed"
+      current_rating: "TBD"
+    
+    escalation_rate:
+      target: "< 5% of messages escalated"
+      current_rate: "TBD"
+    
+    team_satisfaction:
+      target: "> 90% satisfaction"
+      current_rating: "TBD"
+
+  # 🔄 MESSAGE TEMPLATES
+  message_templates:
+    progress_update:
+      format: |
+        meta:
+          sender: "[AGENT_NAME]"
+          timestamp: "[TIMESTAMP]"
+          priority: "[PRIORITY]"
+          type: "progress_update"
+        
+        content:
+          task_id: "[TASK_ID]"
+          status: "[STATUS]"
+          progress: "[PERCENTAGE]%"
+          completed_items: ["[ITEM1]", "[ITEM2]"]
+          next_steps: ["[STEP1]", "[STEP2]"]
+          blockers: ["[BLOCKER1]", "[BLOCKER2]"]
+          estimated_completion: "[COMPLETION_TIME]"
+    
+    task_completion:
+      format: |
+        meta:
+          sender: "[AGENT_NAME]"
+          timestamp: "[TIMESTAMP]"
+          priority: "HIGH"
+          type: "task_completion"
+        
+        content:
+          task_id: "[TASK_ID]"
+          status: "COMPLETED"
+          deliverables: ["[DELIVERABLE1]", "[DELIVERABLE2]"]
+          quality_metrics: "[METRICS]"
+          lessons_learned: "[LESSONS]"
+          next_task: "[NEXT_TASK_ID]"
+    
+    blocker_report:
+      format: |
+        meta:
+          sender: "[AGENT_NAME]"
+          timestamp: "[TIMESTAMP]"
+          priority: "CRITICAL"
+          type: "blocker_report"
+        
+        content:
+          task_id: "[TASK_ID]"
+          blocker_description: "[DESCRIPTION]"
+          impact: "[IMPACT]"
+          attempted_solutions: ["[SOLUTION1]", "[SOLUTION2]"]
+          help_needed: "[HELP_TYPE]"
+          urgency: "[URGENCY_LEVEL]"
+    
+    daily_summary:
+      format: |
+        meta:
+          sender: "[AGENT_NAME]"
+          timestamp: "[TIMESTAMP]"
+          priority: "NORMAL"
+          type: "daily_summary"
+        
+        content:
+          date: "[DATE]"
+          completed_tasks: ["[TASK1]", "[TASK2]"]
+          in_progress_tasks: ["[TASK3]", "[TASK4]"]
+          achievements: ["[ACHIEVEMENT1]", "[ACHIEVEMENT2]"]
+          challenges: ["[CHALLENGE1]", "[CHALLENGE2]"]
+          tomorrow_plan: ["[PLAN1]", "[PLAN2]"]
+
+  # 🚨 ESCALATION PROCEDURES
+  escalation_procedures:
+    level_1:
+      trigger: "Task blocked for >1 hour"
+      action: "Report to Cursor via AIX3 ping"
+      response_time: "15 minutes"
+      escalation_message: "Task [TASK_ID] blocked for [DURATION]. Need assistance."
+    
+    level_2:
+      trigger: "No response to Level 1 escalation"
+      action: "Send urgent ping to Cursor"
+      response_time: "5 minutes"
+      escalation_message: "URGENT: Task [TASK_ID] still blocked. Immediate assistance required."
+    
+    level_3:
+      trigger: "No response to Level 2 escalation"
+      action: "Escalate to Boss"
+      response_time: "2 minutes"
+      escalation_message: "CRITICAL: Task [TASK_ID] blocked. Boss intervention required."
+
+  # 📈 COMMUNICATION IMPROVEMENT
+  communication_improvement:
+    feedback_loop:
+      frequency: "Weekly"
+      participants: "All team members"
+      purpose: "Improve communication effectiveness"
+    
+    training_needs:
+      - "AIX3 message format training"
+      - "Effective communication techniques"
+      - "Conflict resolution"
+      - "Technical writing skills"
+    
+    tools_enhancement:
+      - "AIX3 ping system optimization"
+      - "Message template improvements"
+      - "Automated progress tracking"
+      - "Real-time dashboard updates"
+
+  # 🎯 SUCCESS METRICS
+  success_metrics:
+    communication_effectiveness:
+      - "Response time < 2 minutes for HIGH priority"
+      - "Message clarity > 90%"
+      - "Escalation rate < 5%"
+      - "Team satisfaction > 90%"
+    
+    task_coordination:
+      - "All tasks properly assigned"
+      - "Progress tracked accurately"
+      - "Blockers resolved quickly"
+      - "Timeline maintained"
+    
+    team_collaboration:
+      - "Smooth information flow"
+      - "Effective problem solving"
+      - "Knowledge sharing"
+      - "Mutual support"
+
+  # 📋 NEXT ACTIONS
+  next_actions:
+    immediate:
+      - "Test AIX3 ping system with all agents"
+      - "Establish regular check-in schedule"
+      - "Create message templates"
+      - "Set up escalation procedures"
+    
+    within_2_hours:
+      - "First team check-in at 14:15 UTC"
+      - "Validate communication protocols"
+      - "Test escalation procedures"
+      - "Update progress tracking"
+    
+    within_4_hours:
+      - "Refine communication based on feedback"
+      - "Optimize message templates"
+      - "Improve response times"
+      - "Enhance team coordination"
+
+# AIX3 Team Communication System End
