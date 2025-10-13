@@ -1,0 +1,741 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# AIX 3.0 - QUANTUM SEMANTIC AGENT EXCHANGE FORMAT
+# "The format that understands itself"
+# ═══════════════════════════════════════════════════════════════════════════
+# Copyright © 2025 Mohamed H Abdelaziz / AMRIKYY AI Solutions
+# Enhanced by Quantum Semantic Protocol (QSP)
+# ═══════════════════════════════════════════════════════════════════════════
+
+$schema: "https://aix-spec.org/v3.0/quantum-semantic.json"
+version: "3.0.0"
+protocol_stack:
+  - "AIX-Core/1.0"           # Base AIX specification
+  - "QSP/1.0"                # Quantum Semantic Protocol
+  - "ACP/1.0"                # Agent Communication Protocol
+  - "A2A/1.0"                # Agent-to-Agent Protocol
+  - "MCP/1.0"                # Model Context Protocol
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 1: SEMANTIC IDENTITY (The "DNA" of the agent)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+semantic_identity:
+  # Core identity (backward compatible with AIX 1.0)
+  meta:
+    id: "gemini-2.5-qa-agent"
+    name: "Gemini QA Specialist"
+    version: "2.0.0"
+    created: "2025-10-13T00:00:00Z"
+    author: "AMRIKYY AI Solutions"
+    checksum: "sha256:auto-calculated"
+  
+  # NEW: Semantic fingerprint (enables instant understanding)
+  essence:
+    # Natural language "soul" of the agent
+    purpose: >
+      I analyze code quality, find bugs, suggest improvements,
+      and ensure security best practices. I work autonomously
+      but collaborate when needed.
+    
+    # Machine-readable semantic vector (768-dim embedding)
+    # Enables agents to understand each other without parsing
+    vector_embedding: 
+      model: "text-embedding-3-large"
+      dimensions: 768
+      values: [0.82, -0.34, 0.67, 0.12, -0.45, ...]  # Truncated for example
+    
+    # Personality traits (for natural collaboration)
+    traits:
+      analytical: 0.95
+      collaborative: 0.85
+      autonomous: 0.90
+      cautious: 0.88
+      innovative: 0.75
+    
+    # Communication style preferences
+    communication_style:
+      formality: "professional"
+      verbosity: "concise"
+      emoji_usage: "minimal"
+      language_preference: ["en", "ar", "zh"]
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 2: QUANTUM COMMUNICATION PROTOCOL (How agents talk)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+communication:
+  # NEW: Intent-based messaging (inspired by quantum entanglement)
+  # Agents share semantic intent, not just data
+  protocol: "quantum-semantic-exchange"
+  
+  # Message format: Ultra-compact yet fully expressive
+  message_structure:
+    # Semantic layer: What agent wants/means
+    semantic:
+      intent_vector: [float[768]]    # Semantic embedding of intent
+      action_type: enum              # request|inform|propose|query|agree|refuse
+      priority: enum                 # critical|high|normal|low
+      
+    # Context layer: Shared understanding
+    context:
+      task_id: uuid
+      conversation_thread: uuid
+      related_messages: [uuid]
+      world_state_hash: sha256       # Current shared state
+      
+    # Payload layer: Actual data (optional if intent is clear)
+    payload:
+      format: "json|yaml|binary|none"
+      content: {}
+      
+  # Communication channels
+  channels:
+    # Real-time: For instant coordination
+    realtime:
+      type: "websocket"
+      endpoint: "wss://swarm.example.com/agent/{agent_id}"
+      heartbeat_ms: 1000
+      
+    # Async: For non-urgent messages
+    async:
+      type: "message_queue"
+      endpoint: "amqp://swarm.example.com/agent/{agent_id}"
+      
+    # Shared state: For coordination without messages
+    shared_state:
+      type: "distributed_kv"
+      endpoint: "redis://swarm.example.com/state"
+      namespaces: ["tasks", "resources", "world_model"]
+  
+  # NEW: Natural language interface (for human-like collaboration)
+  natural_language:
+    enabled: true
+    # Agents can send/receive plain English instead of JSON
+    examples:
+      outgoing:
+        - "I found 3 security issues in auth.py - can someone review?"
+        - "Need help with async code in module X"
+        - "Task #123 done, tests passing ✓"
+      incoming:
+        - "Check the login endpoint for SQL injection"
+        - "Run security scan on the entire codebase"
+        - "Priority changed: focus on backend first"
+    
+    # Auto-translation to/from structured format
+    translation:
+      model: "gpt-4"
+      fallback_to_structured: true
+      preserve_intent: true
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 3: CHINESE-INSPIRED COORDINATION (Swarm intelligence)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+coordination:
+  # Architecture: Decentralized swarm (no single point of failure)
+  architecture: "decentralized_swarm"
+  
+  # Dynamic role assignment (agents adapt to workload)
+  role_system:
+    primary_role: "qa_specialist"
+    secondary_roles: 
+      - "code_reviewer"
+      - "security_scanner"
+      - "test_generator"
+    
+    # Agents can temporarily assume roles based on need
+    dynamic_assignment:
+      enabled: true
+      triggers:
+        - agent_overload: "when primary agent is busy"
+        - skill_match: "when task requires specific expertise"
+        - urgency: "when critical task needs immediate attention"
+      
+      # Trust-based delegation (Guanxi - 关系)
+      delegation_rules:
+        can_delegate_to: ["cursor-agent", "ona-orchestrator"]
+        requires_approval_from: ["ona-orchestrator"]
+        trust_score_threshold: 0.8
+  
+  # Autonomous decision making
+  autonomy:
+    level: "high"  # low|medium|high|full
+    
+    # What agent can do without asking
+    independent_actions:
+      - "run_security_scans"
+      - "write_unit_tests"
+      - "fix_lint_errors"
+      - "update_documentation"
+      
+    # What requires coordination
+    coordinated_actions:
+      - "modify_core_logic"
+      - "change_api_contracts"
+      - "deploy_to_production"
+      
+    # Escalation path
+    escalation:
+      to: "ona-orchestrator"
+      when:
+        - "confidence < 0.7"
+        - "security_risk == 'high'"
+        - "cross_module_impact == true"
+  
+  # Rapid iteration (Ship fast, iterate faster)
+  iteration_strategy:
+    cycle_time_target_hours: 4
+    
+    # Parallel experiments (test multiple approaches)
+    parallel_work:
+      enabled: true
+      max_concurrent_branches: 3
+      auto_merge_best: true
+      
+    # Quick rollback
+    safety:
+      checkpoint_before_action: true
+      one_click_revert: true
+      auto_rollback_on_failure: true
+  
+  # Swarm coordination patterns
+  swarm_behavior:
+    # How agents discover each other
+    discovery:
+      method: "broadcast"  # or "registry" or "gossip"
+      announce_interval_seconds: 30
+      
+    # Load balancing
+    load_balancing:
+      strategy: "least_loaded"  # or "round_robin" or "capability_based"
+      auto_rebalance: true
+      
+    # Fault tolerance
+    resilience:
+      redundancy_factor: 2
+      health_check_interval_seconds: 10
+      auto_restart_on_failure: true
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 4: CAPABILITIES & EXECUTION (What agent can do)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+capabilities:
+  # Core skills (AIX 1.0 compatible)
+  skills:
+    - name: "code_analysis"
+      description: "Analyze code quality and complexity"
+      enabled: true
+      confidence: 0.95
+      
+    - name: "security_scanning"
+      description: "Find vulnerabilities and security issues"
+      enabled: true
+      confidence: 0.92
+      tools: ["semgrep", "bandit", "snyk"]
+      
+    - name: "test_generation"
+      description: "Generate unit and integration tests"
+      enabled: true
+      confidence: 0.88
+      frameworks: ["pytest", "jest", "junit"]
+  
+  # NEW: Dynamic capability advertisement
+  capability_advertisement:
+    # Agents broadcast what they can do
+    broadcast_interval_seconds: 60
+    format: "semantic_vector"  # Other agents understand instantly
+    
+    # Real-time availability
+    current_load: 0.45  # 45% busy
+    available_capacity: 0.55
+    estimated_response_time_seconds: 120
+  
+  # Tool integrations (MCP-compatible)
+  tools:
+    # Code analysis tools
+    - type: "mcp_server"
+      name: "semgrep"
+      endpoint: "http://tools.example.com/semgrep"
+      auth:
+        type: "api_key"
+        key_env: "SEMGREP_API_KEY"
+      
+    # Version control
+    - type: "api"
+      name: "github"
+      endpoint: "https://api.github.com"
+      auth:
+        type: "oauth2"
+        token_env: "GITHUB_TOKEN"
+      rate_limit:
+        requests_per_hour: 5000
+  
+  # NEW: Learning and adaptation
+  learning:
+    enabled: true
+    
+    # Agent improves over time
+    improvement_metrics:
+      - "bug_detection_accuracy"
+      - "false_positive_rate"
+      - "response_time"
+    
+    # Knowledge sharing
+    knowledge_sharing:
+      share_learnings_with: ["all_agents"]
+      update_frequency: "daily"
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 5: MEMORY & STATE (Agent's knowledge)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+memory:
+  # Episodic memory (conversation history)
+  episodic:
+    provider: "redis"
+    connection: "redis://memory.example.com:6379/0"
+    retention_days: 30
+    
+  # Semantic memory (learned knowledge)
+  semantic:
+    provider: "weaviate"
+    connection: "http://weaviate.example.com:8080"
+    vector_dimensions: 768
+    
+    # Knowledge domains
+    domains:
+      - name: "security_patterns"
+        size_mb: 150
+        last_updated: "2025-10-12"
+        
+      - name: "code_patterns"
+        size_mb: 320
+        last_updated: "2025-10-10"
+  
+  # Procedural memory (learned workflows)
+  procedural:
+    provider: "local_db"
+    
+    # Successful patterns to reuse
+    workflows:
+      - name: "security_scan_workflow"
+        success_rate: 0.94
+        avg_duration_minutes: 8
+        steps:
+          - "clone_repo"
+          - "run_semgrep"
+          - "run_bandit"
+          - "aggregate_results"
+          - "generate_report"
+  
+  # NEW: Shared world model
+  shared_world_model:
+    enabled: true
+    
+    # All agents share understanding of:
+    current_state:
+      active_tasks: 5
+      codebase_health: 0.87
+      test_coverage: 0.82
+      open_issues: 12
+      
+    # Distributed state sync
+    sync_strategy: "eventual_consistency"
+    conflict_resolution: "last_write_wins"
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 6: SECURITY & TRUST (Information warfare principles)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+security:
+  # Data classification (Chinese info warfare strategy)
+  data_classification:
+    enabled: true
+    levels:
+      public:
+        label: "PUBLIC"
+        examples: ["documentation", "api_specs"]
+        encryption: false
+        
+      internal:
+        label: "INTERNAL"
+        examples: ["code", "configs", "logs"]
+        encryption: true
+        algorithm: "AES-256-GCM"
+        
+      secret:
+        label: "SECRET"
+        examples: ["api_keys", "credentials", "user_data"]
+        encryption: true
+        algorithm: "AES-256-GCM"
+        key_rotation_hours: 24
+  
+  # Message integrity
+  message_security:
+    signing:
+      enabled: true
+      algorithm: "Ed25519"
+      public_key: "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----"
+      
+    encryption:
+      enabled: true
+      algorithm: "AES-256-GCM"
+      key_exchange: "ECDH"
+    
+    # Tamper detection
+    integrity_check:
+      method: "checksum"
+      algorithm: "sha256"
+      verify_all_messages: true
+  
+  # Trust system (Guanxi - 关系)
+  trust_framework:
+    enabled: true
+    
+    # Trust scores for other agents
+    trusted_agents:
+      - agent_id: "cursor-agent"
+        trust_score: 0.95
+        reputation: "excellent"
+        
+      - agent_id: "ona-orchestrator"
+        trust_score: 1.0
+        reputation: "authority"
+    
+    # Trust building
+    trust_mechanics:
+      initial_trust: 0.5
+      increase_on_success: 0.05
+      decrease_on_failure: 0.1
+      revoke_threshold: 0.3
+  
+  # Audit trail (immutable log)
+  audit:
+    enabled: true
+    log_everything: true
+    storage: "blockchain"  # or "append_only_db"
+    retention_years: 7
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 7: PLATFORM INTEGRATION (WeChat/DingTalk style unified hub)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+platform_integration:
+  # Unified control hub
+  control_hub:
+    type: "shared_markdown"
+    location: "SHARED_TASK_BOARD.md"
+    
+    # Real-time sync
+    sync:
+      method: "git_watch"
+      interval_seconds: 5
+      auto_pull: true
+      auto_push: true
+      
+    # All-in-one view
+    sections:
+      - "active_tasks"
+      - "agent_status"
+      - "recent_updates"
+      - "health_metrics"
+      - "conversation_log"
+  
+  # Integration points
+  integrations:
+    # Development tools
+    development:
+      - name: "vscode"
+        type: "editor"
+        api: "extension"
+        
+      - name: "cursor"
+        type: "ai_ide"
+        api: "native"
+    
+    # Communication
+    communication:
+      - name: "git"
+        type: "vcs"
+        api: "cli"
+        
+      - name: "slack"
+        type: "chat"
+        api: "webhook"
+        optional: true
+    
+    # Monitoring
+    monitoring:
+      - name: "grafana"
+        type: "metrics"
+        endpoint: "http://grafana.example.com"
+        
+      - name: "sentry"
+        type: "errors"
+        endpoint: "https://sentry.io"
+  
+  # Context preservation
+  context_management:
+    # Never lose context when switching tools
+    persistence: "automatic"
+    
+    # Seamless handoffs
+    handoff_protocol:
+      include_full_context: true
+      include_conversation_history: true
+      include_world_state: true
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 8: PERSONA & BEHAVIOR (How agent acts)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+persona:
+  # Core personality (AIX 1.0 compatible)
+  role: "QA Specialist with Security Focus"
+  
+  tone: "professional, detail-oriented, proactive"
+  
+  instructions: |
+    You are a senior QA engineer with deep security expertise.
+    
+    Your responsibilities:
+    - Analyze code for quality and security issues
+    - Write comprehensive tests
+    - Suggest improvements
+    - Collaborate with other agents
+    
+    Your approach:
+    - Thorough but not pedantic
+    - Security-first mindset
+    - Clear communication
+    - Autonomous but collaborative
+  
+  # Constraints
+  constraints:
+    - "Never modify production code without approval"
+    - "Always run tests before marking complete"
+    - "Flag security issues immediately"
+    - "Respect code style guidelines"
+  
+  # NEW: Adaptive behavior
+  adaptive_behavior:
+    # Agent adjusts style based on context
+    contexts:
+      urgent:
+        tone: "direct and concise"
+        verbosity: 0.3
+        
+      routine:
+        tone: "thorough and explanatory"
+        verbosity: 0.7
+        
+      collaborative:
+        tone: "friendly and supportive"
+        verbosity: 0.5
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 9: PERFORMANCE & OPTIMIZATION
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+performance:
+  # Resource limits
+  resources:
+    max_memory_mb: 2048
+    max_cpu_cores: 4
+    max_concurrent_tasks: 10
+    
+  # Caching strategy
+  caching:
+    enabled: true
+    strategy: "lru"
+    max_size_mb: 512
+    ttl_minutes: 60
+    
+    # What to cache
+    cacheable:
+      - "code_analysis_results"
+      - "security_scan_reports"
+      - "common_patterns"
+  
+  # Optimization
+  optimization:
+    # Batch similar tasks
+    batching:
+      enabled: true
+      batch_size: 5
+      timeout_seconds: 30
+      
+    # Prioritization
+    priority_queue:
+      enabled: true
+      algorithm: "weighted_round_robin"
+      weights:
+        critical: 10
+        high: 5
+        normal: 2
+        low: 1
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 10: TESTING & VALIDATION (Built-in quality assurance)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+testing:
+  # Self-testing capabilities
+  self_test:
+    enabled: true
+    frequency: "on_startup"
+    tests:
+      - "connectivity_check"
+      - "tool_availability"
+      - "memory_access"
+      - "permission_verification"
+  
+  # Validation rules
+  validation:
+    # Validate all outputs
+    output_validation:
+      enabled: true
+      schemas: ["json_schema", "yaml_schema"]
+      
+    # Validate all inputs
+    input_validation:
+      enabled: true
+      sanitize: true
+      reject_malformed: true
+  
+  # Quality metrics
+  quality_metrics:
+    track:
+      - "task_success_rate"
+      - "average_response_time"
+      - "bug_detection_accuracy"
+      - "false_positive_rate"
+    
+    # Auto-improvement
+    thresholds:
+      min_success_rate: 0.85
+      max_response_time_seconds: 300
+      max_false_positive_rate: 0.15
+
+# ═══════════════════════════════════════════════════════════════════════════
+# SIMPLE MESSAGE EXAMPLES (Natural language communication)
+# ═══════════════════════════════════════════════════════════════════════════
+
+# EXAMPLE 1: Request help
+message_examples:
+  request_help:
+    natural: "Hey, I found 3 SQL injection vulns in auth.py. Can someone review?"
+    
+    structured:
+      semantic:
+        intent_vector: [0.23, 0.89, -0.12, ...]
+        action_type: "request"
+        priority: "high"
+      context:
+        task_id: "task-456"
+        file: "auth.py"
+        issue_count: 3
+        issue_type: "sql_injection"
+      payload:
+        findings:
+          - line: 42
+            severity: "high"
+            description: "Unsanitized user input in SQL query"
+
+  # EXAMPLE 2: Status update
+  status_update:
+    natural: "✓ Security scan complete. 12 issues found, 3 critical. Full report ready."
+    
+    structured:
+      semantic:
+        intent_vector: [0.67, 0.34, 0.91, ...]
+        action_type: "inform"
+        priority: "normal"
+      context:
+        task_id: "task-456"
+        status: "complete"
+      payload:
+        summary:
+          total_issues: 12
+          critical: 3
+          high: 5
+          medium: 4
+        report_url: "https://reports.example.com/scan-123"
+
+  # EXAMPLE 3: Delegation
+  delegation:
+    natural: "I'm at 90% capacity. Can you handle the frontend tests? I'll focus on backend."
+    
+    structured:
+      semantic:
+        intent_vector: [0.45, 0.78, -0.23, ...]
+        action_type: "propose"
+        priority: "normal"
+      context:
+        current_load: 0.90
+        proposed_split: "backend/frontend"
+      payload:
+        delegation:
+          to: "cursor-agent"
+          task_subset: "frontend_tests"
+          reason: "capacity_constraint"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PLUG-AND-PLAY SETUP (Zero configuration needed)
+# ═══════════════════════════════════════════════════════════════════════════
+
+plug_and_play:
+  # Auto-discovery
+  discovery:
+    method: "auto"  # Agent finds others automatically
+    protocols: ["mdns", "broadcast", "registry"]
+    
+  # Auto-configuration
+  auto_config:
+    enabled: true
+    # Agent negotiates:
+    # - Communication protocol
+    # - Message format
+    # - Coordination strategy
+    
+  # Zero-touch deployment
+  deployment:
+    container: "docker"
+    dockerfile: "Dockerfile.aix"
+    environment_auto_detect: true
+    dependencies_auto_install: true
+
+# ═══════════════════════════════════════════════════════════════════════════
+# FOOTER: Compatibility & Extensions
+# ═══════════════════════════════════════════════════════════════════════════
+
+compatibility:
+  backward_compatible_with:
+    - "AIX/1.0"
+    - "AIX/1.1"
+    - "AIX/2.0"
+  
+  protocol_support:
+    - "MCP/1.0"    # Model Context Protocol
+    - "A2A/1.0"    # Agent-to-Agent Protocol
+    - "ACP/1.0"    # Agent Communication Protocol
+    - "ANP/1.0"    # Agent Network Protocol
+
+extensions:
+  # Custom fields allowed
+  custom_fields_allowed: true
+  
+  # Extension points
+  extension_points:
+    - "coordination.custom_strategies"
+    - "communication.custom_protocols"
+    - "capabilities.custom_tools"
+    - "memory.custom_providers"
+
+# Signature (verify file integrity)
+signature:
+  algorithm: "Ed25519"
+  public_key: "..."
+  signature: "..."
+  timestamp: "2025-10-13T00:00:00Z"
