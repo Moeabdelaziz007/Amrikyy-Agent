@@ -5,16 +5,47 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Separator } from '@/components/ui/separator';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useTripStore } from '@/store/tripStore';
 import { mockFlights, mockHotels, mockActivities } from '@/lib/mockApi';
+import { InteractiveStarRating } from '@/components/InteractiveStarRating';
+import { ResultCardSkeleton } from '@/components/LoadingSkeleton';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 export default function Results() {
   const navigate = useNavigate();
   const { selectedItems, addSelectedItem, removeSelectedItem, getTotalCost } = useTripStore();
   const [activeTab, setActiveTab] = useState('flights');
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Filter states
+  const [priceRange, setPriceRange] = useState([0, 2000]);
+  const [starFilter, setStarFilter] = useState(0);
+  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+
+  const amenities = [
+    { id: 'wifi', name: 'Free WiFi', count: 145 },
+    { id: 'pool', name: 'Swimming Pool', count: 98 },
+    { id: 'parking', name: 'Free Parking', count: 112 },
+    { id: 'breakfast', name: 'Breakfast Included', count: 87 },
+    { id: 'gym', name: 'Fitness Center', count: 76 },
+  ];
 
   const isItemSelected = (id: string) => selectedItems.some(item => item.id === id);
+  
+  const toggleAmenity = (amenityId: string) => {
+    setSelectedAmenities(prev =>
+      prev.includes(amenityId)
+        ? prev.filter(id => id !== amenityId)
+        : [...prev, amenityId]
+    );
+  };
 
   const handleToggleItem = (item: any, type: 'flight' | 'hotel' | 'activity') => {
     if (isItemSelected(item.id)) {
@@ -40,6 +71,63 @@ export default function Results() {
     navigate('/checkout');
   };
 
+  // Filter Panel Component
+  const FilterPanel = () => (
+    <Card className="p-6 space-y-6">
+      {/* Price Range */}
+      <div>
+        <Label className="text-base font-semibold mb-4 block">Price Range</Label>
+        <Slider
+          value={priceRange}
+          onValueChange={setPriceRange}
+          min={0}
+          max={2000}
+          step={50}
+          className="mt-4"
+        />
+        <div className="flex justify-between text-sm text-muted-foreground mt-2">
+          <span>${priceRange[0]}</span>
+          <span>${priceRange[1]}</span>
+        </div>
+      </div>
+      
+      <Separator />
+      
+      {/* Star Rating */}
+      <div>
+        <Label className="text-base font-semibold mb-3 block">Minimum Rating</Label>
+        <InteractiveStarRating
+          value={starFilter}
+          onChange={setStarFilter}
+          size="lg"
+        />
+      </div>
+      
+      <Separator />
+      
+      {/* Amenities */}
+      <div>
+        <Label className="text-base font-semibold mb-3 block">Amenities</Label>
+        <div className="space-y-3">
+          {amenities.map(amenity => (
+            <label key={amenity.id} className="flex items-center gap-3 cursor-pointer group">
+              <Checkbox
+                checked={selectedAmenities.includes(amenity.id)}
+                onCheckedChange={() => toggleAmenity(amenity.id)}
+              />
+              <span className="text-sm flex-1 group-hover:text-primary transition-colors">
+                {amenity.name}
+              </span>
+              <Badge variant="secondary" className="text-xs">
+                {amenity.count}
+              </Badge>
+            </label>
+          ))}
+        </div>
+      </div>
+    </Card>
+  );
+
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -50,6 +138,36 @@ export default function Results() {
           </h1>
           <p className="text-muted-foreground">Select your preferred options for the perfect trip</p>
         </div>
+
+        {/* Mobile Filter Button */}
+        <div className="lg:hidden mb-4">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" className="w-full">
+                <Filter className="w-4 h-4 mr-2" />
+                Filters
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="h-[80vh] overflow-y-auto">
+              <div className="py-4">
+                <h3 className="text-lg font-semibold mb-4">Filters</h3>
+                <FilterPanel />
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+
+        {/* Main Content with Sidebar */}
+        <div className="grid lg:grid-cols-4 gap-6">
+          {/* Filter Sidebar - Desktop Only */}
+          <aside className="hidden lg:block lg:col-span-1">
+            <div className="sticky top-4">
+              <FilterPanel />
+            </div>
+          </aside>
+
+          {/* Results */}
+          <main className="lg:col-span-3">
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -233,6 +351,8 @@ export default function Results() {
             ))}
           </TabsContent>
         </Tabs>
+          </main>
+        </div>
       </div>
 
       {/* Sticky Bottom Bar */}

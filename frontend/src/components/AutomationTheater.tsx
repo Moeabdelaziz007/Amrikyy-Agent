@@ -1,668 +1,424 @@
-import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  X,
-  Pause,
-  Play,
-  Brain,
-  Heart,
-  Users,
-  Sparkles,
-  MousePointer,
-  Clock,
+  Bot,
   CheckCircle2,
-  AlertCircle,
+  Clock,
   Loader2,
+  MousePointer2,
+  Eye,
+  ChevronRight,
+  ChevronLeft,
+  Sparkles,
+  Search,
+  Edit3,
+  MousePointerClick,
+  Award,
 } from 'lucide-react';
 
-// ===== Types =====
-interface UserMessage {
-  id: number;
+interface Action {
+  id: string;
+  type: 'typing' | 'clicking' | 'analyzing' | 'waiting' | 'success';
   description: string;
-  timestamp: string;
-  status: string;
+  timestamp: Date;
+  screenshot?: string;
+  status: 'pending' | 'in-progress' | 'completed';
+  estimatedTime?: number;
 }
 
-interface Hotel {
-  id: number;
-  name: string;
-  rating: number;
-  price: number;
-  aiScore: number;
+interface CursorPosition {
+  x: number;
+  y: number;
 }
 
-type Phase = 'intro' | 'running' | 'results';
-type EmotionalState = 'متحمس' | 'متوتر' | 'مرتبك' | 'محايد';
-
-interface EmotionConfig {
-  icon: string;
-  color: string;
-  message: string;
+interface HighlightBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  label?: string;
 }
 
-// ===== Error Boundary =====
-class ErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { hasError: boolean; error: Error | null }
-> {
-  constructor(props: { children: React.ReactNode }) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
+const mockActions: Action[] = [
+  {
+    id: '1',
+    type: 'clicking',
+    description: 'Opening Booking.com to start your search...',
+    timestamp: new Date(),
+    status: 'completed',
+  },
+  {
+    id: '2',
+    type: 'typing',
+    description: 'Filling in Cairo as destination and your dates...',
+    timestamp: new Date(),
+    status: 'completed',
+  },
+  {
+    id: '3',
+    type: 'analyzing',
+    description: 'Found 243 hotels! Now filtering by your $150/night budget...',
+    timestamp: new Date(),
+    status: 'in-progress',
+    estimatedTime: 45,
+  },
+  {
+    id: '4',
+    type: 'analyzing',
+    description: 'Comparing top-rated options - This could take 30 seconds...',
+    timestamp: new Date(),
+    status: 'pending',
+  },
+  {
+    id: '5',
+    type: 'success',
+    description: 'Done! Here are my top recommendations based on value and ratings.',
+    timestamp: new Date(),
+    status: 'pending',
+  },
+];
 
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error };
-  }
+const actionIcons = {
+  typing: Edit3,
+  clicking: MousePointerClick,
+  analyzing: Search,
+  waiting: Clock,
+  success: Award,
+};
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('AutomationTheater Error:', error, errorInfo);
-  }
+export function AutomationTheater() {
+  const [actions, setActions] = useState<Action[]>(mockActions);
+  const [currentActionIndex, setCurrentActionIndex] = useState(2);
+  const [progress, setProgress] = useState(45);
+  const [cursorPosition, setCursorPosition] = useState<CursorPosition>({ x: 50, y: 50 });
+  const [showClickRipple, setShowClickRipple] = useState(false);
+  const [highlightBoxes, setHighlightBoxes] = useState<HighlightBox[]>([]);
+  const [showAiVision, setShowAiVision] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState(45);
+  const [showDealBadge, setShowDealBadge] = useState(false);
 
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center p-4">
-          <div className="text-center max-w-md">
-            <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-white mb-2">حدث خطأ</h2>
-            <p className="text-gray-400 mb-4">عذراً، حدث خطأ في عرض الأتمتة</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-all"
-            >
-              إعادة المحاولة
-            </button>
-          </div>
-        </div>
-      );
-    }
+  // Simulate cursor movement - Optimized timing
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCursorPosition({
+        x: Math.random() * 80 + 10,
+        y: Math.random() * 70 + 15,
+      });
 
-    return this.props.children;
-  }
-}
+      // Occasionally show click ripple
+      if (Math.random() > 0.8) {
+        setShowClickRipple(true);
+        setTimeout(() => setShowClickRipple(false), 800);
+      }
 
-// ===== Emotional Indicator Component =====
-const EmotionalIndicator = memo(
-  ({ emotionalState }: { emotionalState: EmotionalState }) => {
-    const emotionConfig: Record<EmotionalState, EmotionConfig> = useMemo(
-      () => ({
-        متحمس: {
-          icon: '🎉',
-          color: 'from-yellow-500 to-orange-500',
-          message: 'أشعر بحماسك! دعني أجد لك أفضل الأماكن!',
-        },
-        متوتر: {
-          icon: '😌',
-          color: 'from-blue-500 to-cyan-500',
-          message: 'لا تقلق، سأتعامل مع كل شيء بسرعة',
-        },
-        مرتبك: {
-          icon: '🤝',
-          color: 'from-purple-500 to-pink-500',
-          message: 'دعني أرشدك خطوة بخطوة',
-        },
-        محايد: {
-          icon: '🤖',
-          color: 'from-gray-500 to-gray-600',
-          message: 'جاهز لمساعدتك',
-        },
-      }),
-      []
-    );
+      // Occasionally show AI vision
+      if (Math.random() > 0.85) {
+        setShowAiVision(true);
+        setHighlightBoxes([
+          { x: 20, y: 30, width: 30, height: 8, label: 'Search Button' },
+          { x: 55, y: 45, width: 35, height: 12, label: 'Hotel Card' },
+        ]);
+        setTimeout(() => {
+          setShowAiVision(false);
+          setHighlightBoxes([]);
+        }, 1500);
+      }
+    }, 2500);
 
-    const config = emotionConfig[emotionalState] || emotionConfig['محايد'];
+    return () => clearInterval(interval);
+  }, []);
 
-    return (
+  // Simulate progress and time countdown
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress((prev) => Math.min(prev + 1, 100));
+      setTimeRemaining((prev) => Math.max(prev - 1, 0));
+
+      if (Math.random() > 0.9) {
+        setShowDealBadge(true);
+        setTimeout(() => setShowDealBadge(false), 3000);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const currentAction = actions[currentActionIndex];
+  const ActionIcon = currentAction ? actionIcons[currentAction.type] : Bot;
+
+  return (
+    <div className="fixed inset-0 bg-gradient-to-br from-black via-gray-950 to-black overflow-hidden">
+      {/* Top Bar */}
       <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className={`absolute top-20 right-6 bg-gradient-to-r ${config.color} p-4 rounded-2xl shadow-2xl max-w-xs z-10`}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        className="absolute top-0 left-0 right-0 h-16 bg-white/5 backdrop-blur-xl border-b border-white/10 flex items-center justify-between px-6 z-30"
       >
         <div className="flex items-center gap-3">
           <motion.div
-            animate={{ rotate: [0, 10, -10, 0] }}
+            animate={{ scale: [1, 1.2, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="text-3xl"
           >
-            {config.icon}
+            <Bot className="w-6 h-6 text-blue-500" />
           </motion.div>
-          <div>
-            <p className="text-white font-bold text-sm">الذكاء العاطفي نشط</p>
-            <p className="text-white/80 text-xs mt-1">{config.message}</p>
-          </div>
-        </div>
-      </motion.div>
-    );
-  }
-);
-
-EmotionalIndicator.displayName = 'EmotionalIndicator';
-
-// ===== Browser Viewport Component =====
-const BrowserViewport = memo(({ screenshot }: { screenshot: string }) => (
-  <div className="flex-1 bg-gradient-to-br from-gray-900 to-black rounded-3xl border-2 border-gray-800 overflow-hidden shadow-2xl">
-    {/* شريط المتصفح */}
-    <div className="bg-gray-800/90 backdrop-blur-sm p-4 flex items-center gap-3 border-b border-gray-700">
-      <div className="flex gap-2">
-        <div className="w-3 h-3 rounded-full bg-red-500" />
-        <div className="w-3 h-3 rounded-full bg-yellow-500" />
-        <div className="w-3 h-3 rounded-full bg-green-500" />
-      </div>
-      <div className="flex-1 bg-gray-900/50 rounded-lg px-4 py-2 flex items-center gap-2">
-        <Sparkles className="w-4 h-4 text-blue-400" />
-        <span className="text-sm text-gray-300 font-mono">
-          booking.com/search/cairo...
-        </span>
-      </div>
-    </div>
-
-    {/* محتوى الشاشة */}
-    <div className="relative h-[500px] bg-gradient-to-br from-gray-950 to-gray-900 flex items-center justify-center">
-      {screenshot ? (
-        <motion.img
-          key={screenshot}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          src={screenshot}
-          className="w-full h-full object-contain"
-          alt="Browser screenshot"
-        />
-      ) : (
-        <div className="text-center space-y-4">
+          <h1 className="text-xl font-bold text-white">Amrikyy AI Agent</h1>
           <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-          >
-            <Brain className="w-16 h-16 text-blue-500 mx-auto" />
-          </motion.div>
-          <p className="text-gray-400 text-lg">AI يحلل خياراتك...</p>
-          <div className="flex gap-2 justify-center">
-            {[0, 1, 2].map((i) => (
-              <motion.div
-                key={i}
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.2 }}
-                className="w-2 h-2 rounded-full bg-blue-500"
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* مؤشر الماوس المتحرك */}
-      <motion.div
-        animate={{
-          x: [100, 200, 300, 200],
-          y: [100, 150, 100, 50],
-        }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute pointer-events-none"
-      >
-        <MousePointer className="w-6 h-6 text-blue-400 drop-shadow-lg" />
-        <motion.div
-          animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
-          transition={{ duration: 1, repeat: Infinity }}
-          className="absolute -inset-2 rounded-full bg-blue-400"
-        />
-      </motion.div>
-    </div>
-  </div>
-));
-
-BrowserViewport.displayName = 'BrowserViewport';
-
-// ===== Narration Card Component =====
-const NarrationCard = memo(
-  ({
-    currentAction,
-    progress,
-  }: {
-    currentAction: string;
-    progress: number;
-  }) => (
-    <motion.div
-      initial={{ y: 100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      className="mx-auto max-w-3xl"
-    >
-      <div className="bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 p-6 shadow-2xl">
-        <div className="flex items-center gap-4">
-          <motion.div
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-            className="p-4 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20"
-          >
-            <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
-          </motion.div>
-          <div className="flex-1">
-            <p className="text-white font-bold text-xl">
-              {currentAction || 'جاري التحضير...'}
-            </p>
-            <p className="text-gray-400 text-sm mt-2">
-              أنا أعمل على إيجاد أفضل الخيارات لك
-            </p>
-          </div>
-          <div className="text-right">
-            <Clock className="w-5 h-5 text-gray-400 mb-1" />
-            <p className="text-xs text-gray-400">~ 45 ثانية</p>
-          </div>
-        </div>
-
-        {/* شريط التقدم */}
-        <div className="mt-6 h-2 bg-gray-800/50 rounded-full overflow-hidden">
-          <motion.div
-            className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.5 }}
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="w-2 h-2 rounded-full bg-green-500"
           />
+          <span className="text-sm text-white/60">Active</span>
         </div>
-        <p className="text-xs text-gray-400 mt-2 text-center">
-          {Math.round(progress)}% مكتمل
-        </p>
-      </div>
-    </motion.div>
-  )
-);
 
-NarrationCard.displayName = 'NarrationCard';
-
-// ===== Action Timeline Component =====
-const ActionTimeline = memo(({ actions }: { actions: UserMessage[] }) => (
-  <div className="w-96 bg-gradient-to-br from-gray-900 to-black rounded-3xl p-6 border-2 border-gray-800 shadow-2xl">
-    <div className="flex items-center gap-2 mb-6">
-      <Clock className="w-6 h-6 text-blue-400" />
-      <h3 className="text-xl font-bold text-white">الجدول الزمني</h3>
-    </div>
-    <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
-      <AnimatePresence>
-        {actions.map((action, index) => (
-          <motion.div
-            key={action.id}
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: index * 0.1 }}
-            className="relative pl-8 pb-4 border-l-2 border-blue-500/50"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-green-500 border-2 border-gray-900"
-            />
-            <div className="p-3 rounded-xl bg-gradient-to-r from-gray-800/50 to-gray-900/50 border border-gray-700/50">
-              <p className="text-sm text-white font-medium">
-                {action.description}
-              </p>
-              <p className="text-xs text-gray-500 mt-1">
-                {new Date(action.timestamp).toLocaleTimeString('ar-EG')}
-              </p>
-            </div>
-          </motion.div>
-        ))}
-      </AnimatePresence>
-    </div>
-  </div>
-));
-
-ActionTimeline.displayName = 'ActionTimeline';
-
-// ===== Hotel Discovery Cards Component =====
-const HotelDiscoveryCards = memo(
-  ({ discoveredHotels }: { discoveredHotels: Hotel[] }) => (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="absolute bottom-32 left-6 right-6"
-    >
-      <div className="flex gap-4 overflow-x-auto pb-4">
-        <AnimatePresence>
-          {discoveredHotels.map((hotel, index) => (
-            <motion.div
-              key={hotel.id}
-              initial={{ scale: 0, rotate: -10 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: index * 0.3, type: 'spring' }}
-              className="min-w-[280px] bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/20 shadow-2xl"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h4 className="text-white font-bold">{hotel.name}</h4>
-                  <div className="flex items-center gap-1 mt-1">
-                    <span className="text-yellow-400">⭐</span>
-                    <span className="text-sm text-gray-300">
-                      {hotel.rating.toFixed(1)}
-                    </span>
-                  </div>
-                </div>
-                <div
-                  className={`px-3 py-1 rounded-full ${
-                    hotel.aiScore > 90
-                      ? 'bg-green-500/20 text-green-400'
-                      : 'bg-blue-500/20 text-blue-400'
-                  }`}
-                >
-                  <p className="text-xs font-bold">
-                    AI: {Math.round(hotel.aiScore)}
-                  </p>
-                </div>
-              </div>
-              <div className="bg-black/20 rounded-lg p-3 mb-3">
-                <p className="text-2xl font-bold text-white">
-                  ${Math.round(hotel.price)}
-                </p>
-                <p className="text-xs text-gray-400">لكل ليلة</p>
-              </div>
-              <button
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-2 rounded-lg font-medium transition-all"
-                aria-label={`عرض تفاصيل ${hotel.name}`}
-              >
-                عرض التفاصيل
-              </button>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
-    </motion.div>
-  )
-);
-
-HotelDiscoveryCards.displayName = 'HotelDiscoveryCards';
-
-// ===== المكون الرئيسي: مسرح الأتمتة =====
-function AutomationTheater() {
-  const [phase, setPhase] = useState<Phase>('intro');
-  const [emotionalState, setEmotionalState] = useState<EmotionalState>('محايد');
-  const [currentAction, setCurrentAction] = useState('');
-  const [progress, setProgress] = useState(0);
-  const [screenshot, setScreenshot] = useState('');
-  const [isPaused, setIsPaused] = useState(false);
-  const [actions, setActions] = useState<UserMessage[]>([]);
-  const [discoveredHotels, setDiscoveredHotels] = useState<Hotel[]>([]);
-
-  // محاكاة بيانات الرحلة
-  const tripData = useMemo(
-    () => ({
-      destination: 'القاهرة',
-      checkIn: '20 ديسمبر',
-      checkOut: '27 ديسمبر',
-      budget: 150,
-      travelers: 2,
-    }),
-    []
-  );
-
-  // كشف العاطفة من رسائل المستخدم (محاكاة)
-  useEffect(() => {
-    const emotions: EmotionalState[] = ['متحمس', 'متوتر', 'مرتبك', 'محايد'];
-    const randomEmotion = emotions[Math.floor(Math.random() * emotions.length)];
-    setEmotionalState(randomEmotion);
-  }, []);
-
-  // محاكاة تقدم الأتمتة - WITH PROPER CLEANUP
-  useEffect(() => {
-    if (phase !== 'running' || isPaused) return;
-
-    let mounted = true;
-    const timeoutIds: NodeJS.Timeout[] = [];
-
-    const automationSteps = [
-      { action: 'فتح Booking.com...', duration: 2000 },
-      { action: 'إدخال الوجهة: القاهرة', duration: 1500 },
-      { action: 'تحديد التواريخ: 20-27 ديسمبر', duration: 1500 },
-      { action: 'البحث عن الفنادق المتاحة...', duration: 3000 },
-      { action: 'وجدت 234 فندق! جاري التصفية...', duration: 2000 },
-      { action: 'تطبيق حد الميزانية: 150$ لليلة', duration: 2000 },
-      { action: 'تحليل التقييمات والمراجعات...', duration: 4000 },
-      { action: 'مقارنة وسائل الراحة...', duration: 3000 },
-      { action: 'اكتشفت 3 فنادق رائعة! 🎉', duration: 2000 },
-    ];
-
-    let currentStep = 0;
-    let currentProgress = 0;
-
-    const runAutomation = () => {
-      if (!mounted || currentStep >= automationSteps.length) {
-        if (mounted && currentStep >= automationSteps.length) {
-          const finalTimeout = setTimeout(() => {
-            if (mounted) setPhase('results');
-          }, 1000);
-          timeoutIds.push(finalTimeout);
-        }
-        return;
-      }
-
-      const step = automationSteps[currentStep];
-
-      if (mounted) {
-        setCurrentAction(step.action);
-
-        // إضافة للجدول الزمني
-        setActions((prev) => [
-          ...prev,
-          {
-            id: Date.now(),
-            description: step.action,
-            timestamp: new Date().toISOString(),
-            status: 'completed',
-          },
-        ]);
-
-        currentProgress += 100 / automationSteps.length;
-        setProgress(Math.min(currentProgress, 100));
-
-        // محاكاة اكتشاف فنادق
-        if (currentStep >= 6) {
-          setDiscoveredHotels((prev) => {
-            if (prev.length < 3) {
-              return [
-                ...prev,
-                {
-                  id: prev.length + 1,
-                  name: `فندق رائع ${prev.length + 1}`,
-                  rating: 4.5 + Math.random() * 0.5,
-                  price: 120 + Math.random() * 60,
-                  aiScore: 80 + Math.random() * 20,
-                },
-              ];
-            }
-            return prev;
-          });
-        }
-      }
-
-      currentStep++;
-
-      const timeoutId = setTimeout(runAutomation, step.duration);
-      timeoutIds.push(timeoutId);
-    };
-
-    runAutomation();
-
-    // CLEANUP FUNCTION - يمسح كل الـ timeouts
-    return () => {
-      mounted = false;
-      timeoutIds.forEach(clearTimeout);
-    };
-  }, [phase, isPaused]);
-
-  // Memoized handlers
-  const handleStart = useCallback(() => setPhase('running'), []);
-  const handleTogglePause = useCallback(() => setIsPaused((prev) => !prev), []);
-
-  // واجهة البداية
-  if (phase === 'intro') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center p-4">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="text-center max-w-2xl"
-        >
-          <motion.div
-            animate={{ rotate: [0, 360] }}
-            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-            className="w-32 h-32 mx-auto mb-8"
-          >
-            <Brain className="w-full h-full text-blue-500" />
-          </motion.div>
-          <h1 className="text-5xl font-bold text-white mb-4">وكيل أمريكي AI</h1>
-          <p className="text-xl text-gray-400 mb-8">
-            دعني أجد لك أفضل الفنادق في {tripData.destination}
-          </p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleStart}
-            className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-lg font-bold rounded-2xl shadow-2xl"
-            aria-label="ابدأ البحث الذكي عن الفنادق"
-          >
-            ابدأ البحث الذكي ✨
-          </motion.button>
-        </motion.div>
-      </div>
-    );
-  }
-
-  // واجهة الأتمتة
-  if (phase === 'running') {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="fixed inset-0 z-50 bg-gradient-to-br from-black via-gray-900 to-black"
-      >
-        {/* الشريط العلوي */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-800/50 backdrop-blur-sm">
-          <div className="flex items-center gap-3">
-            <motion.div
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="w-3 h-3 rounded-full bg-blue-500 shadow-lg shadow-blue-500/50"
-            />
-            <h2 className="text-2xl font-bold text-white">وكيل أمريكي AI</h2>
+        <div className="flex items-center gap-4">
+          <div className="text-sm text-white/60">
+            Progress: <span className="text-white font-semibold">{progress}%</span>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleTogglePause}
-              className="p-3 rounded-xl bg-gray-800/50 hover:bg-gray-700/50 text-white transition-all"
-              aria-label={isPaused ? 'استئناف' : 'إيقاف مؤقت'}
-            >
-              {isPaused ? (
-                <Play className="w-5 h-5" />
-              ) : (
-                <Pause className="w-5 h-5" />
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* المؤشر العاطفي */}
-        <EmotionalIndicator emotionalState={emotionalState} />
-
-        {/* المحتوى الرئيسي */}
-        <div className="h-[calc(100vh-200px)] flex gap-6 p-6">
-          <BrowserViewport screenshot={screenshot} />
-          <ActionTimeline actions={actions} />
-        </div>
-
-        {/* بطاقات الاكتشاف */}
-        {discoveredHotels.length > 0 && (
-          <HotelDiscoveryCards discoveredHotels={discoveredHotels} />
-        )}
-
-        {/* بطاقة الشرح */}
-        <div className="absolute bottom-6 left-0 right-0 px-6">
-          <NarrationCard currentAction={currentAction} progress={progress} />
         </div>
       </motion.div>
-    );
-  }
 
-  // واجهة النتائج
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-8"
-    >
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', duration: 0.8 }}
-          className="text-center mb-12"
-        >
-          <CheckCircle2 className="w-24 h-24 text-green-500 mx-auto mb-4" />
-          <h1 className="text-5xl font-bold text-white mb-4">
-            🎉 وجدت إقامتك المثالية!
-          </h1>
-          <p className="text-xl text-gray-400">
-            حللت 234 فندق في 47 ثانية ووجدت هذه الجواهر
-          </p>
-        </motion.div>
+      {/* Main Content Area */}
+      <div className="pt-16 pb-32 px-6 h-full flex items-center justify-center">
+        <div className="relative w-full max-w-6xl aspect-video">
+          {/* Browser Viewport */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative w-full h-full bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
+          >
+            {/* Mock Screenshot Background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-950/20 via-purple-950/20 to-gray-950/20" />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {discoveredHotels.map((hotel, index) => (
+            {/* Mock Browser Content */}
+            <div className="absolute inset-0 p-8 flex flex-col gap-4 opacity-30">
+              <div className="h-12 bg-white/10 rounded-lg" />
+              <div className="grid grid-cols-3 gap-4 flex-1">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="bg-white/10 rounded-lg" />
+                ))}
+              </div>
+            </div>
+
+            {/* Animated Cursor */}
             <motion.div
-              key={hotel.id}
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: index * 0.2 }}
-              className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-6 border-2 border-gray-700 hover:border-blue-500 transition-all"
+              animate={{
+                x: `${cursorPosition.x}%`,
+                y: `${cursorPosition.y}%`,
+              }}
+              transition={{ type: 'spring', damping: 20, stiffness: 100 }}
+              className="absolute pointer-events-none z-20"
             >
-              <div className="mb-4">
-                <h3 className="text-2xl font-bold text-white mb-2">
-                  {hotel.name}
-                </h3>
-                <div className="flex items-center gap-2">
-                  <span className="text-yellow-400">⭐⭐⭐⭐⭐</span>
-                  <span className="text-gray-300">
-                    {hotel.rating.toFixed(1)}
-                  </span>
-                </div>
-              </div>
+              <MousePointer2 className="w-6 h-6 text-blue-400 filter drop-shadow-lg" />
 
-              <div className="bg-black/30 rounded-2xl p-4 mb-4">
-                <p className="text-4xl font-bold text-white">
-                  ${Math.round(hotel.price)}
-                </p>
-                <p className="text-gray-400">لكل ليلة</p>
-              </div>
+              {/* Click Ripple */}
+              <AnimatePresence>
+                {showClickRipple && (
+                  <>
+                    {[1, 2, 3].map((i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ scale: 0, opacity: 0.8 }}
+                        animate={{ scale: i * 1.5, opacity: 0 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.6, delay: i * 0.1 }}
+                        className="absolute top-0 left-0 w-8 h-8 border-2 border-blue-400 rounded-full"
+                      />
+                    ))}
+                  </>
+                )}
+              </AnimatePresence>
+            </motion.div>
 
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-400">نقاط AI</span>
-                  <span className="text-sm font-bold text-green-400">
-                    {Math.round(hotel.aiScore)}/100
-                  </span>
-                </div>
-                <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-blue-500 to-green-500"
-                    style={{ width: `${hotel.aiScore}%` }}
-                  />
-                </div>
-              </div>
+            {/* Highlight Boxes */}
+            <AnimatePresence>
+              {highlightBoxes.map((box, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  style={{
+                    left: `${box.x}%`,
+                    top: `${box.y}%`,
+                    width: `${box.width}%`,
+                    height: `${box.height}%`,
+                  }}
+                  className="absolute border-2 border-blue-500 rounded-lg bg-blue-500/10 backdrop-blur-sm z-10"
+                >
+                  {box.label && (
+                    <motion.div
+                      initial={{ y: -10, opacity: 0 }}
+                      animate={{ y: -8, opacity: 1 }}
+                      className="absolute -top-6 left-0 px-2 py-1 bg-blue-500 text-white text-xs rounded font-medium"
+                    >
+                      {box.label}
+                    </motion.div>
+                  )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
 
-              <button
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-3 rounded-xl font-bold transition-all"
-                aria-label={`احجز ${hotel.name} الآن`}
+            {/* AI Vision Overlay */}
+            <AnimatePresence>
+              {showAiVision && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute top-4 right-4 flex items-center gap-2 px-4 py-2 bg-purple-500/20 backdrop-blur-xl border border-purple-500/30 rounded-full z-20"
+                >
+                  <Eye className="w-4 h-4 text-purple-400" />
+                  <span className="text-sm text-purple-200 font-medium">AI Vision Active</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Great Deal Badge */}
+            <AnimatePresence>
+              {showDealBadge && (
+                <motion.div
+                  initial={{ scale: 0, rotate: -10 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  exit={{ scale: 0, rotate: 10 }}
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30"
+                >
+                  <div className="px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl shadow-2xl flex items-center gap-3">
+                    <Sparkles className="w-6 h-6 text-white" />
+                    <span className="text-xl font-bold text-white">Great Price Found!</span>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                    >
+                      <Sparkles className="w-6 h-6 text-white" />
+                    </motion.div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Narration Card (Bottom Floating) */}
+      <motion.div
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-3xl px-6 z-40"
+      >
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl">
+          <div className="flex items-center gap-4 mb-4">
+            {/* Action Icon */}
+            <motion.div
+              animate={{ rotate: [0, 5, -5, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0"
+            >
+              <ActionIcon className="w-6 h-6 text-white" />
+            </motion.div>
+
+            {/* Description */}
+            <div className="flex-1">
+              <motion.p
+                key={currentAction?.description}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-white text-lg font-medium"
               >
-                احجز الآن
-              </button>
+                {currentAction?.description}
+              </motion.p>
+            </div>
+
+            {/* Time Remaining */}
+            <div className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-xl">
+              <Clock className="w-4 h-4 text-blue-400" />
+              <span className="text-sm text-white/80 font-medium">{timeRemaining}s</span>
+            </div>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
+            <motion.div
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.5 }}
+              className="absolute left-0 top-0 h-full bg-gradient-to-r from-blue-500 to-purple-500"
+            />
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Action Timeline (Right Sidebar) */}
+      <motion.div
+        initial={{ x: 400 }}
+        animate={{ x: sidebarCollapsed ? 340 : 0 }}
+        className="absolute top-16 right-0 bottom-0 w-96 bg-white/5 backdrop-blur-xl border-l border-white/10 p-6 overflow-y-auto z-20"
+      >
+        {/* Collapse Button */}
+        <button
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          className="absolute -left-10 top-6 w-10 h-10 bg-white/5 backdrop-blur-xl border border-white/10 rounded-l-xl flex items-center justify-center hover:bg-white/10 transition-colors"
+        >
+          {sidebarCollapsed ? (
+            <ChevronLeft className="w-5 h-5 text-white/60" />
+          ) : (
+            <ChevronRight className="w-5 h-5 text-white/60" />
+          )}
+        </button>
+
+        <h2 className="text-lg font-bold text-white mb-6">Action Timeline</h2>
+
+        <div className="space-y-4">
+          {actions.map((action, index) => (
+            <motion.div
+              key={action.id}
+              initial={{ x: 50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: index * 0.1 }}
+              className={`relative pl-8 pb-6 ${
+                index < actions.length - 1 ? 'border-l-2 border-white/10' : ''
+              }`}
+            >
+              {/* Status Icon */}
+              <div
+                className={`absolute -left-3 top-0 w-6 h-6 rounded-full flex items-center justify-center ${
+                  action.status === 'completed'
+                    ? 'bg-green-500'
+                    : action.status === 'in-progress'
+                    ? 'bg-blue-500'
+                    : 'bg-white/20'
+                }`}
+              >
+                {action.status === 'completed' ? (
+                  <CheckCircle2 className="w-4 h-4 text-white" />
+                ) : action.status === 'in-progress' ? (
+                  <Loader2 className="w-4 h-4 text-white animate-spin" />
+                ) : (
+                  <div className="w-2 h-2 rounded-full bg-white/40" />
+                )}
+              </div>
+
+              {/* Content */}
+              <div
+                className={`p-4 rounded-xl ${
+                  action.status === 'in-progress'
+                    ? 'bg-blue-500/10 border border-blue-500/30'
+                    : 'bg-white/5'
+                }`}
+              >
+                <div className="flex items-start gap-3 mb-2">
+                  {React.createElement(actionIcons[action.type], {
+                    className: 'w-4 h-4 text-white/60 flex-shrink-0 mt-0.5',
+                  })}
+                  <p className="text-sm text-white/80 flex-1">{action.description}</p>
+                </div>
+                <div className="text-xs text-white/40">
+                  {action.timestamp.toLocaleTimeString()}
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
-      </div>
-    </motion.div>
-  );
-}
-
-// Wrap with ErrorBoundary
-export default function AutomationTheaterWithBoundary() {
-  return (
-    <ErrorBoundary>
-      <AutomationTheater />
-    </ErrorBoundary>
+      </motion.div>
+    </div>
   );
 }

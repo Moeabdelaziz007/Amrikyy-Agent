@@ -1,9 +1,15 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Shield, Sparkles, Clock, Star, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Shield, Sparkles, Clock, Star, CheckCircle2, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { countries } from '@/lib/mockApi';
 import { useTripStore } from '@/store/tripStore';
+import { PageTransition } from '@/components/PageTransition';
+import { ParallaxLayer } from '@/components/ParallaxLayer';
+import { MagneticButton } from '@/components/MagneticButton';
+import { CountUp } from '@/components/CountUp';
+import { motion } from 'framer-motion';
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -57,48 +63,156 @@ export default function Landing() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-hero opacity-10 animate-gradient-shift" style={{ backgroundSize: '200% 200%' }} />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-          <div className="text-center space-y-8 animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-card rounded-full border border-primary/20 animate-float">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">AI-Powered Travel Planning</span>
+    <PageTransition>
+      <div className="min-h-screen bg-background">
+        {/* Hero Section - Enhanced */}
+        <section className="relative h-screen overflow-hidden">
+          {/* Animated mesh gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 animate-gradient-shift" style={{ backgroundSize: '200% 200%' }} />
+          
+          {/* Floating geometric shapes */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <motion.div
+              animate={{
+                x: [0, 100, 0],
+                y: [0, -100, 0],
+                rotate: [0, 180, 360]
+              }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="absolute top-20 left-20 w-32 h-32 bg-primary/10 rounded-full blur-3xl"
+            />
+            <motion.div
+              animate={{
+                x: [0, -80, 0],
+                y: [0, 120, 0],
+                rotate: [0, -180, -360]
+              }}
+              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+              className="absolute top-40 right-40 w-40 h-40 bg-secondary/10 rounded-full blur-3xl"
+            />
+            <motion.div
+              animate={{
+                x: [0, 60, 0],
+                y: [0, -80, 0],
+                rotate: [0, 90, 180]
+              }}
+              transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+              className="absolute bottom-40 right-60 w-36 h-36 bg-accent/10 rounded-full blur-3xl"
+            />
+          </div>
+          
+          {/* Hero content */}
+          <ParallaxLayer speed={0.5}>
+            <div className="relative z-10 h-screen flex items-center justify-center">
+              <div className="text-center space-y-8 max-w-5xl mx-auto px-4">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8 }}
+                >
+                  <Badge className="mb-6 backdrop-blur-xl bg-white/10 border-white/20 text-foreground px-4 py-2">
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    AI-Powered Travel Planning
+                  </Badge>
+                  
+                  <h1 className="text-5xl sm:text-6xl lg:text-8xl font-bold mb-6 leading-tight">
+                    Your Journey Starts
+                    <br />
+                    <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent animate-gradient-x">
+                      With Intelligence
+                    </span>
+                  </h1>
+                  
+                  <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+                    Experience AI-powered recommendations for Egypt, Saudi Arabia, and UAE. 
+                    Plan smarter, travel better.
+                  </p>
+                  
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <MagneticButton
+                      size="lg"
+                      onClick={() => navigate('/plan')}
+                      className="bg-gradient-primary hover:shadow-glow transition-all duration-300 text-lg px-8"
+                    >
+                      Start Planning
+                      <ArrowRight className="ml-2 w-5 h-5" />
+                    </MagneticButton>
+                    <MagneticButton
+                      variant="outline"
+                      size="lg"
+                      className="text-lg px-8"
+                    >
+                      Watch Demo
+                    </MagneticButton>
+                  </div>
+                </motion.div>
+              </div>
             </div>
-            <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
-              <span className="block mb-2">Your Journey Starts</span>
-              <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-                With Intelligence
-              </span>
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Experience the future of travel with AI-powered recommendations for Egypt, Saudi Arabia, and the UAE. 
-              Plan smarter, travel better.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button
-                onClick={() => navigate('/plan')}
-                size="lg"
-                className="bg-gradient-primary hover:shadow-glow transition-all duration-300 text-lg px-8"
+          </ParallaxLayer>
+          
+          {/* Scroll indicator */}
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
+          >
+            <ChevronDown className="w-8 h-8 text-muted-foreground" />
+          </motion.div>
+        </section>
+
+        {/* Trust Indicators Section - NEW */}
+        <section className="py-20 bg-muted/30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
               >
-                Start Planning
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="text-lg px-8"
+                <CountUp 
+                  end={50000} 
+                  suffix="+" 
+                  className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+                  duration={2.5}
+                />
+                <p className="text-muted-foreground mt-2 text-lg">Happy Travelers</p>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
               >
-                Watch Demo
-              </Button>
+                <CountUp 
+                  end={98} 
+                  suffix="%" 
+                  className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent"
+                  duration={2.5}
+                />
+                <p className="text-muted-foreground mt-2 text-lg">Satisfaction Rate</p>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+              >
+                <CountUp 
+                  end={150} 
+                  suffix="+" 
+                  className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent"
+                  duration={2.5}
+                />
+                <p className="text-muted-foreground mt-2 text-lg">Destinations</p>
+              </motion.div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Features Section */}
+        {/* Features Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-16 animate-fade-in-up">
           <h2 className="text-3xl lg:text-4xl font-bold mb-4">Why Choose Amrikyy?</h2>
@@ -230,6 +344,7 @@ export default function Landing() {
           </Button>
         </div>
       </section>
-    </div>
+      </div>
+    </PageTransition>
   );
 }

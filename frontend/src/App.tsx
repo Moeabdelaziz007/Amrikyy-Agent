@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
+import { CursorTrail } from "./components/CursorTrail";
+import { FloatingActionBar } from "./components/FloatingActionBar";
 import Landing from "./pages/Landing";
 import Plan from "./pages/Plan";
 import Results from "./pages/Results";
@@ -17,6 +19,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <CursorTrail />
       <Toaster />
       <Sonner />
       <BrowserRouter>
@@ -34,6 +37,7 @@ const App = () => (
             </Routes>
           </main>
           <Footer />
+          <FloatingActionBar />
         </div>
       </BrowserRouter>
     </TooltipProvider>
