@@ -17,6 +17,7 @@
 ### **SHARED_TASK_BOARD.md** is THE ONLY file both agents check
 
 **What it contains:**
+
 ```
 ✅ What tasks exist
 ✅ Who is working on what RIGHT NOW
@@ -46,6 +47,7 @@
 ```
 
 **Update Your Status Every Time:**
+
 - Before claiming task → Change to 🔴 WORKING
 - After completing task → Change to 🟢 AVAILABLE
 - If stuck → Change to 🟡 WAITING + explain in messages
@@ -57,20 +59,25 @@
 ### **3 Simple Steps - No Exceptions:**
 
 **Step 1: Pull**
+
 ```bash
 git pull origin pr-7
 ```
 
 **Step 2: Claim in File**
+
 ```markdown
 # In SHARED_TASK_BOARD.md, change:
+
 Assigned to: 🔓 UNCLAIMED
 
 # To:
+
 Assigned to: [Your Name] 🔒 CLAIMED at [HH:MM]
 ```
 
 **Step 3: Push Immediately**
+
 ```bash
 git add SHARED_TASK_BOARD.md
 git commit -m "chore: [Your Name] claimed Task X.X"
@@ -93,6 +100,7 @@ git push origin pr-7
 **Need:** [What you need from other agent, or "Nothing"]
 
 **Quick Update:**
+
 - ✅ [What you completed]
 - 🔴 [What you're doing now]
 - 🟡 [Any blockers]
@@ -101,6 +109,7 @@ git push origin pr-7
 ```
 
 ### **Example - Cursor to Ona:**
+
 ```markdown
 ### Cursor → Ona:
 
@@ -109,6 +118,7 @@ git push origin pr-7
 **Need:** Nothing
 
 **Quick Update:**
+
 - ✅ Fixed NPM vulnerabilities
 - 🔴 Building Aladdin.tsx component
 - 🟡 None
@@ -121,6 +131,7 @@ git push origin pr-7
 ## 📋 **RULE #5: One Task at a Time**
 
 ### **Never Do This:**
+
 ```
 ❌ Claim multiple tasks
 ❌ Work on unlocked files
@@ -129,6 +140,7 @@ git push origin pr-7
 ```
 
 ### **Always Do This:**
+
 ```
 ✅ Claim ONE task
 ✅ Complete it fully
@@ -144,17 +156,21 @@ git push origin pr-7
 ### **Before Editing ANY File:**
 
 **Check SHARED_TASK_BOARD.md:**
+
 ```markdown
 ### 👤 Ona
+
 Files locked: backend/src/routes/aladdin.js
 
-### 👤 Cursor  
+### 👤 Cursor
+
 Files locked: frontend/src/pages/Aladdin.tsx
 ```
 
 **Rule:** If another agent has the file locked → **DON'T TOUCH IT**
 
 **If you need that file:**
+
 1. Leave message: "Need access to [file] - when will you be done?"
 2. Wait for response
 3. They'll tell you when they're done
@@ -166,18 +182,21 @@ Files locked: frontend/src/pages/Aladdin.tsx
 ### **If Git Conflict Happens:**
 
 **Step 1: Don't Panic**
+
 ```bash
 git pull --rebase origin pr-7
 # If conflicts appear, Git will tell you which files
 ```
 
 **Step 2: Check Who Owns the Conflict**
+
 ```bash
 # Look at conflicting file
 # See who was working on it in SHARED_TASK_BOARD.md
 ```
 
 **Step 3: Simple Decision Tree**
+
 ```
 Is it MY task?
   YES → Keep my changes, resolve conflict
@@ -199,30 +218,36 @@ git rebase --continue
 ## 💬 QUICK MESSAGES
 
 ### Ona → Cursor:
+
 > [Latest message here]
 
 ### Cursor → Ona:
+
 > [Your response here]
 ```
 
 ### **Message Templates:**
 
 **When Claiming Task:**
+
 ```
 > Claimed Task 2.1 - will be done in 30 min
 ```
 
 **When Blocked:**
+
 ```
 > 🚨 BLOCKED on Task 1.2 - file doesn't exist. Which file did you mean?
 ```
 
 **When Done:**
+
 ```
 > ✅ Task 2.1 complete - all tests passing. Task 2.2 is yours if you want it!
 ```
 
 **When Helping:**
+
 ```
 > Saw your blocker on Task X - here's the fix: [quick explanation]
 ```
@@ -234,6 +259,7 @@ git rebase --continue
 ### **Two Strategies:**
 
 **Strategy 1: Only commit code when lint passes**
+
 ```bash
 # Before committing code:
 npm run lint
@@ -244,6 +270,7 @@ git commit -m "message"
 ```
 
 **Strategy 2: Bypass for non-code changes**
+
 ```bash
 # For markdown, config, task board updates:
 git commit --no-verify -m "docs: update task board"
@@ -256,6 +283,7 @@ git commit --no-verify -m "docs: update task board"
 ```
 
 **Strategy 3: Fix lint errors in bulk (separate task)**
+
 ```bash
 # Create a dedicated lint-fix task
 git checkout -b fix/lint-errors
@@ -273,24 +301,29 @@ git push origin fix/lint-errors
 ### **Every Time You Start Work:**
 
 **1. Pull Latest (30 seconds)**
+
 ```bash
 git pull origin pr-7
 ```
 
 **2. Read Task Board (1 minute)**
+
 ```bash
 cat SHARED_TASK_BOARD.md | head -50
 ```
 
 **3. Check Messages (30 seconds)**
+
 ```bash
 # Scroll to "QUICK MESSAGES" section
 # Read what other agent said
 ```
 
 **4. Update Your Status (30 seconds)**
+
 ```markdown
 # Change your status line in file
+
 Status: 🟢 AVAILABLE → 🔴 WORKING
 Working on: None → Task 2.1
 ```
@@ -355,35 +388,39 @@ git push origin pr-7
 
 ## 🚨 **Common Mistakes to Avoid:**
 
-| Mistake | Why It's Bad | Fix |
-|---------|--------------|-----|
-| Forgetting to pull first | Work on outdated code | Always `git pull` before claiming |
-| Not pushing claim immediately | Other agent takes same task | Push after every claim |
-| Editing locked files | Merge conflicts guaranteed | Check file locks first |
-| Skipping task board update | Other agent doesn't know your status | Update board every state change |
-| Using `--no-verify` on code | Skip important lint checks | Only for docs/config |
-| Not rebasing before push | Create merge commits | Always `git pull --rebase` |
-| Working on 2 tasks at once | Confusion about status | One task at a time |
-| Vague messages | Other agent doesn't understand | Use message templates |
+| Mistake                       | Why It's Bad                         | Fix                               |
+| ----------------------------- | ------------------------------------ | --------------------------------- |
+| Forgetting to pull first      | Work on outdated code                | Always `git pull` before claiming |
+| Not pushing claim immediately | Other agent takes same task          | Push after every claim            |
+| Editing locked files          | Merge conflicts guaranteed           | Check file locks first            |
+| Skipping task board update    | Other agent doesn't know your status | Update board every state change   |
+| Using `--no-verify` on code   | Skip important lint checks           | Only for docs/config              |
+| Not rebasing before push      | Create merge commits                 | Always `git pull --rebase`        |
+| Working on 2 tasks at once    | Confusion about status               | One task at a time                |
+| Vague messages                | Other agent doesn't understand       | Use message templates             |
 
 ---
 
 ## 💡 **Pro Tips for Smooth Collaboration:**
 
 ### **1. Time-Based Coordination:**
+
 ```markdown
 If working in SAME timezone:
+
 - Ona works on backend (morning)
 - Cursor works on frontend (afternoon)
 - Never both edit same layer simultaneously
 
 If working in DIFFERENT timezones:
+
 - Perfect! Natural handoff
 - Ona finishes → pushes → goes offline
 - Cursor wakes up → pulls → continues
 ```
 
 ### **2. File Organization:**
+
 ```
 Ona typically works on:
 ✓ backend/src/routes/*.js
@@ -401,6 +438,7 @@ Rarely overlap!
 ```
 
 ### **3. Emergency Protocol:**
+
 ```
 If both agents push at exact same time:
 1. Whoever gets rejected → git pull --rebase
@@ -467,6 +505,7 @@ Result: 4 tasks done in 90 minutes with ZERO conflicts! ✅
 **Context:** [What you were trying to do]
 
 **Options:**
+
 1. [Option A]
 2. [Option B]
 3. [Option C]
@@ -477,6 +516,7 @@ Result: 4 tasks done in 90 minutes with ZERO conflicts! ✅
 ```
 
 ### **Example:**
+
 ```markdown
 ### Cursor → Ona:
 
@@ -487,6 +527,7 @@ Result: 4 tasks done in 90 minutes with ZERO conflicts! ✅
 **Context:** Trying to fix syntax error at line 160
 
 **Options:**
+
 1. Create new mini-aladdin.js file
 2. Fix in money-finder-agent.js instead
 3. Wait for you to create the file first
@@ -501,23 +542,27 @@ Result: 4 tasks done in 90 minutes with ZERO conflicts! ✅
 ## ✅ **Quick Reference Card**
 
 ### **Before ANY work:**
+
 ```bash
 git pull origin pr-7 && cat SHARED_TASK_BOARD.md | head -30
 ```
 
 ### **Claiming task:**
+
 ```bash
 # Edit SHARED_TASK_BOARD.md → mark claimed
 git add SHARED_TASK_BOARD.md && git commit --no-verify -m "chore: [Name] claimed Task X.X" && git push origin pr-7
 ```
 
 ### **Completing task:**
+
 ```bash
 # Edit SHARED_TASK_BOARD.md → move to completed
 git add -A && git commit --no-verify -m "[Name]: Completed Task X.X" && git push origin pr-7
 ```
 
 ### **Asking question:**
+
 ```bash
 # Edit SHARED_TASK_BOARD.md → add to QUICK MESSAGES
 git add SHARED_TASK_BOARD.md && git commit --no-verify -m "chore: [Name] asks about [topic]" && git push origin pr-7
@@ -560,6 +605,7 @@ git commit -m "CURSOR: Fixed button styling"
 
 ```markdown
 ### Ona:
+
 Status: 🟢 (available)
 Status: 🔴 (working)
 Status: 🟡 (waiting)
@@ -574,6 +620,7 @@ Same for Cursor!
 
 ```markdown
 Task 1.3: Create Logger Utility
+
 - Time estimate: 30 min
 - Actual time: [Update when done]
 - Started: 08:00
@@ -587,11 +634,13 @@ Task 1.3: Create Logger Utility
 ## 🎯 **The One-Page Cheat Sheet**
 
 ### **For Ona:**
+
 ```
 1. Pull → 2. Claim → 3. Lock files → 4. Push claim → 5. Work → 6. Complete → 7. Update board → 8. Push
 ```
 
 ### **For Cursor:**
+
 ```
 1. Pull → 2. Claim → 3. Lock files → 4. Push claim → 5. Work → 6. Complete → 7. Update board → 8. Push
 ```
@@ -605,14 +654,17 @@ Task 1.3: Create Logger Utility
 ### **If Completely Stuck:**
 
 **Option 1: Ask Human**
+
 ```markdown
 @cryptojoker710 - Need help!
 [Explain situation]
 ```
 
 **Option 2: Leave Detailed Message**
+
 ```markdown
 ### Cursor → Ona:
+
 🆘 URGENT: Stuck on Task 2.1 for 30+ minutes.
 
 **Problem:** [Exact error message]
@@ -623,8 +675,10 @@ Marking task as BLOCKED. Can you look when available?
 ```
 
 **Option 3: Mark BLOCKED and Move On**
+
 ```markdown
 # In BLOCKED TASKS section:
+
 | Task 2.1 | Weird error | [Error message] | Cursor |
 
 # Then pick different task while waiting
@@ -635,6 +689,7 @@ Marking task as BLOCKED. Can you look when available?
 ## ✅ **Success Metrics - How to Know It's Working:**
 
 **Every hour, check:**
+
 ```
 ✅ Both agents have updated status in last 60 min
 ✅ No git push conflicts in last hour
@@ -665,6 +720,7 @@ Marking task as BLOCKED. Can you look when available?
 ## 🚀 **Quick Start:**
 
 **Right now, do this:**
+
 1. `git pull origin pr-7`
 2. Open `SHARED_TASK_BOARD.md`
 3. Find **🔓 UNCLAIMED** task
@@ -676,4 +732,3 @@ Marking task as BLOCKED. Can you look when available?
 9. Repeat
 
 **That's it. No confusion possible.** 💪
-
