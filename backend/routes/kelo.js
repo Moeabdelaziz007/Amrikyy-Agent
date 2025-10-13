@@ -6,10 +6,10 @@
 
 const express = require('express');
 const router = express.Router();
-const KeloCodeClient = require('../src/ai/keloCodeClient');
+const OpenRouterClient = require('../src/ai/openRouterClient');
 
-// Initialize Kelo Code client (optimized for free/budget models)
-const keloClient = new KeloCodeClient();
+// Initialize OpenRouter client (access to multiple AI models)
+const keloClient = new OpenRouterClient();
 
 /**
  * POST /api/kelo/chat

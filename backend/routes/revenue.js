@@ -5,10 +5,10 @@
 
 const express = require('express');
 const router = express.Router();
-const MoonshotClient = require('../src/ai/moonshotClient');
+const OpenRouterClient = require('../src/ai/openRouterClient');
 
-// Initialize Moonshot AI client
-const moonshotClient = new MoonshotClient();
+// Initialize OpenRouter AI client
+const openRouterClient = new OpenRouterClient();
 
 /**
  * GET /api/revenue/opportunities
@@ -50,9 +50,10 @@ router.get('/opportunities', async (req, res) => {
       }
     ];
 
-    const aiResponse = await moonshotClient.chatCompletion(messages, {
+    const aiResponse = await openRouterClient.chatCompletion(messages, {
       maxTokens: 2000,
-      temperature: 0.3
+      temperature: 0.3,
+      budget: 'free' // Use free model for revenue opportunities
     });
 
     // Parse AI response and structure opportunities
@@ -124,9 +125,10 @@ router.post('/analyze', async (req, res) => {
       }
     ];
 
-    const aiResponse = await moonshotClient.chatCompletion(messages, {
+    const aiResponse = await openRouterClient.chatCompletion(messages, {
       maxTokens: 2500,
-      temperature: 0.2
+      temperature: 0.2,
+      budget: 'budget' // Use budget model for analysis
     });
 
     const analysis = parseRevenueAnalysis(aiResponse);
@@ -189,9 +191,10 @@ router.get('/forecast', async (req, res) => {
       }
     ];
 
-    const aiResponse = await moonshotClient.chatCompletion(messages, {
+    const aiResponse = await openRouterClient.chatCompletion(messages, {
       maxTokens: 2000,
-      temperature: 0.1
+      temperature: 0.1,
+      budget: 'free' // Use free model for forecasting
     });
 
     const forecast = parseRevenueForecast(aiResponse);
@@ -221,12 +224,12 @@ router.get('/forecast', async (req, res) => {
  */
 router.get('/health', async (req, res) => {
   try {
-    const moonshotHealth = await moonshotClient.healthCheck();
+    const openRouterHealth = await openRouterClient.healthCheck();
     
     res.json({
       success: true,
       status: 'healthy',
-      moonshot_ai: moonshotHealth,
+      openrouter_ai: openRouterHealth,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
