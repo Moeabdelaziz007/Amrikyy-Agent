@@ -261,6 +261,10 @@ app.use('/api/telegram', miniappRoutes);
 const aiRoutes = require('./routes/ai');
 app.use('/api/ai', aiRoutes);
 
+// Aladdin Agent routes - Mini-Aladdin Multi-Agent System
+const aladdinRoutes = require('./src/routes/aladdin');
+app.use('/api/aladdin', aladdinRoutes);
+
 // Enhanced AI routes (vLLM + Quantum)
 app.post('/api/enhanced-ai/chat', async (req, res) => {
   try {
