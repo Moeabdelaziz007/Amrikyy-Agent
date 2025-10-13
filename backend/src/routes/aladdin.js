@@ -6,11 +6,11 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const router = express.Router();
-const { logger } = require('../utils/logger');
+const logger = require('../utils/logger');
 const { MiniAladdin } = require('../agents/mini-aladdin');
 
-// Create child logger
-const log = logger.child('AladdinRoutes');
+// Use logger directly (no child method available)
+const log = logger;
 
 // Rate limiters for different endpoints
 const huntLimiter = rateLimit({
