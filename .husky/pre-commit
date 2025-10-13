@@ -1,0 +1,43 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit checks..."
+
+# Run linter
+echo "📝 Linting code..."
+npm run lint --if-present || {
+  echo "❌ Linting failed. Fix errors before committing."
+  exit 1
+}
+
+# Run AIX security audit on changed .aix files
+echo "🔐 Checking AIX security..."
+AIX_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(aix|aix\.json)$' || true)
+
+if [ -n "$AIX_FILES" ]; then
+  for file in $AIX_FILES; do
+    if [ -f "$file" ]; then
+      echo "  Auditing: $file"
+      node aix-auditor/bin/aix-audit.js "$file" --strict || {
+        echo "❌ Security issues found in $file"
+        echo "💡 Run: node aix-auditor/bin/aix-audit.js $file --fix"
+        exit 1
+      }
+    fi
+  done
+fi
+
+# Check for sensitive data
+echo "🔒 Checking for sensitive data..."
+if git diff --cached --name-only | xargs grep -E '(password|secret|api[_-]?key|token|credentials).*=.*["\047][^"\047]+["\047]' 2>/dev/null; then
+  echo "⚠️  Warning: Potential secrets detected in staged files!"
+  echo "Please review before committing."
+  read -p "Continue anyway? (y/N) " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    exit 1
+  fi
+fi
+
+echo "✅ Pre-commit checks passed!"
+

@@ -1,44 +1,76 @@
 {
   "name": "amrikyy-platform",
   "version": "1.0.0",
-  "description": "AI Automation Platform (Frontend + Backend) powered by Amrikyy - Currently featuring Travel Services",
+  "description": "AI-powered travel booking platform with crypto payments and enterprise compliance",
   "private": true,
   "workspaces": [
+    "backend",
     "frontend",
-    "backend"
+    "aix-auditor"
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
     "build": "npm run build:frontend && npm run build:backend",
-    "build:frontend": "cd frontend && npm run build",
     "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
     "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
-    "start:frontend": "cd frontend && npm run start",
-    "start:backend": "cd backend && npm run start",
-    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install"
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm run preview",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "lint:backend": "cd backend && npm run lint --if-present",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:fix": "npm run lint:backend -- --fix && npm run lint:frontend -- --fix",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install && cd ../aix-auditor && npm install",
+    "aix-audit": "node aix-auditor/bin/aix-audit.js",
+    "aix-audit:fix": "node aix-auditor/bin/aix-audit.js --fix",
+    "aix-audit:amrikyy": "node aix-auditor/bin/aix-audit.js amrikyy-agent.aix.json",
+    "aix-audit:all": "node aix-auditor/bin/aix-audit.js amrikyy-agent.aix.json && node aix-auditor/bin/aix-audit.js aix-auditor/examples/test-agent-vulnerable.aix && node aix-auditor/bin/aix-audit.js aix-auditor/examples/perfect-secure-agent.aix",
+    "prepare": "husky install",
+    "postinstall": "npm run prepare --if-present"
   },
   "devDependencies": {
-    "@vitejs/plugin-react-swc": "^4.1.0",
     "concurrently": "^8.2.0",
-    "pm2": "^6.0.13",
-    "vite": "^7.1.9"
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0"
+  },
+  "dependencies": {
+    "@sentry/node": "^7.100.0",
+    "pm2": "^5.3.0"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ],
+    "*.{aix,aix.json}": [
+      "node aix-auditor/bin/aix-audit.js"
+    ]
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Moeabdelaziz007/maya-travel-agent.git"
   },
   "keywords": [
-    "ai",
-    "automation",
-    "platform",
-    "amrikyy",
     "travel",
-    "quantum",
-    "react",
-    "nodejs"
+    "ai",
+    "crypto",
+    "blockchain",
+    "booking",
+    "aix",
+    "security"
   ],
-  "author": "Amrikyy Team",
-  "license": "MIT",
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
-  "dependencies": {
-    "@sentry/node": "^10.19.0"
-  }
+  "author": "Mohamed H Abdelaziz <moe@amrikyy.com>",
+  "license": "MIT"
 }

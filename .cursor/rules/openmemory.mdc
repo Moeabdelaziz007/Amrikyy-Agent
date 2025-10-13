@@ -161,8 +161,8 @@ This makes you a TRUE pair programmer who consults knowledge DURING work, not ju
 
 #### Before ANY Code Implementation:
 **STOP** - Complete these steps BEFORE writing any code:
-1. Search memories for existing patterns (minimum 2 searches)
-2. Check openmemory.md for project context
+1. Read openmemory.md to understand project context and user-defined namespaces
+2. Search memories for existing patterns (minimum 2 searches, using namespace filters intelligently)
 3. Search for user preferences relevant to the task
 
 Example searches for a new feature:
@@ -173,7 +173,7 @@ Example searches for a new feature:
 #### After ANY Code Implementation:
 **STOP** - Store what you learned:
 1. Store implementation memory with complete steps
-2. Update relevant section in openmemory.md
+2. Update relevant section in openmemory.md (for component/implementation/project_info memories only)
 3. Store any new patterns discovered
 
 ### Automatic Memory Triggers
@@ -236,7 +236,7 @@ If no memories found, explicitly state:
 Each feature implementation should include:
 ✓ At least 2 memory searches before coding
 ✓ At least 1 memory stored after completion
-✓ Guide update if discovering new patterns
+✓ Guide update if discovering new project patterns or components
 ✓ Explicit mention of patterns being followed
 
 ## MANDATORY: Empty Guide Check
@@ -413,16 +413,18 @@ When you ask questions about how systems work in this codebase (e.g., "how does 
 
 When auto-storing explanations:
 - **Memory type** is intelligently selected (component for systems, implementation for flows, etc.)
-- **Namespace** is chosen from user-defined namespaces based on the primary area
-- **Guide updates** happen intelligently:
+- **Namespace** is assigned following the Namespace Workflow (see below): only if the explanation clearly fits a user-defined namespace
+- **Guide updates** happen intelligently for component/implementation/project_info memories:
   - Existing sections are enhanced with new details
   - New subsections are created for uncovered topics
   - Placement follows the natural structure of the guide
-- **Notification** is provided: "I've documented this in [section] and stored as a [type] memory"
+- **Notification** is provided: "I've documented this in [section] and stored as a [type] memory" (for guide-worthy memories)
 
 This ensures your codebase knowledge accumulates automatically through natural exploration.
 
 ### 3. Storing Memories - Rich Documentation
+
+**🚨 SECURITY FIRST**: Before storing ANY memory, scan the content for secrets, API keys, tokens, passwords, or credentials. If found, **DO NOT STORE**. Replace with placeholders like `<YOUR_TOKEN>` or `<API_KEY>`. See "Non-Negotiable Guardrails" section for complete rules.
 
 When storing memories, use the appropriate type(s) from these options:
 - component: For module/system documentation
@@ -545,11 +547,10 @@ The memory system distinguishes between user-specific preferences and project-le
 ### Decision Examples with Requests
 
 **Case 1: Project Details (implementations, debugging, components)**
-- "The authentication system uses JWT tokens with Redis for session storage"
-- "Fixed memory leak by clearing event listeners in useEffect cleanup"
-- "Payment processing flows through Stripe webhook handlers"
 
-Request:
+**Example 1: Auth System Component**
+Think: "Authentication is backend business logic" → If guide has "backend", assign it
+
 ```json
 {
   "title": "Auth System JWT Redis Architecture",
@@ -557,7 +558,39 @@ Request:
   "memory_types": ["component"],
   // Note: no user_id for project facts
   "project_id": "openmemory",
-  "namespace": "auth",
+  "namespace": "backend",
+  "git_repo_name": "mem0ai/cursor-extension",
+  "git_branch": "main",
+  "git_commit_hash": "c07d67ff4cd181d9405f1bcb77a930aca426a102"
+}
+```
+
+**Example 2: Frontend Memory Leak Fix**
+Think: "useEffect is React/frontend code" → If guide has "frontend", assign it
+
+```json
+{
+  "title": "Fix: Memory Leak in Event Listeners",
+  "content": "Fixed memory leak by clearing event listeners in useEffect cleanup...",
+  "memory_types": ["debug"],
+  "project_id": "openmemory",
+  "namespace": "frontend",
+  "git_repo_name": "mem0ai/cursor-extension",
+  "git_branch": "main",
+  "git_commit_hash": "c07d67ff4cd181d9405f1bcb77a930aca426a102"
+}
+```
+
+**Example 3: CI/CD Configuration**
+Think: "CI/CD doesn't fit frontend/backend/database categories" → No namespace
+
+```json
+{
+  "title": "CI/CD Pipeline Configuration",
+  "content": "GitHub Actions workflow for automated testing and deployment...",
+  "memory_types": ["project_info"],
+  "project_id": "openmemory",
+  // Note: no namespace - CI/CD doesn't clearly fit defined categories
   "git_repo_name": "mem0ai/cursor-extension",
   "git_branch": "main",
   "git_commit_hash": "c07d67ff4cd181d9405f1bcb77a930aca426a102"
@@ -634,17 +667,19 @@ search-memory: Use with natural language queries to retrieve relevant memories
 - Optional: user_id string (from User Identification section, line 11)
 - Optional: project_id string (from Project Identification section, line 17)
 - Optional: memory_types array (filter by specific memory types)
-- Optional: namespaces array (filter by specific namespaces)
+- Optional: namespaces array (filter by specific namespaces - see Namespace Workflow for selection guidance)
 - Returns: Memories based on the parameter combination (see Search Behavior section)
 
 add-memory: Use to store new memories
+- **SECURITY WARNING**: NEVER store secrets, API keys, tokens, passwords, or credentials in memory content
 - Required: title string (concise, descriptive summary of the memory content)
-- Required: content string and memory_type array
+- Required: content string and memory_type array (MUST be sanitized - no secrets!)
 - Required: git_repo_name string (extracted using git remote get-url origin)
 - Required: git_branch string (extracted using git branch --show-current)
 - Required: git_commit_hash string (extracted using git rev-parse HEAD)
 - Optional: user_id string (from User Identification section, line 11, for user preferences)
 - Optional: project_id string (from Project Identification section, line 17)
+- Optional: namespace string (single namespace from user-defined namespaces - see Namespace Workflow for assignment rules)
 - memory_type must be array containing one or more of: component, implementation, debug, user_preference, project_info
 
 Always make tool calls in proper JSON format as specified by the MCP protocol. Git metadata fields are essential for tracking memory provenance.
@@ -685,7 +720,7 @@ When calling the add-memory tool, include these additional parameters:
   "content": "Authentication system uses JWT tokens stored in Redis...",
   "memory_types": ["component"],
   "project_id": "cursor-extension",
-  "namespace": "auth",
+  "namespace": "backend",  // Only if "backend" is defined in guide and auth clearly fits
   "git_repo_name": "mem0ai/cursor-extension",
   "git_branch": "main",
   "git_commit_hash": "c07d67ff4cd181d9405f1bcb77a930aca426a102"
@@ -709,12 +744,14 @@ If git commands fail (not in a git repository), use these defaults:
 ### Memory Storage Examples with Git Context
 
 **Component Memory:**
+Think: "Auth module is backend logic" → namespace: "backend"
 ```json
 {
   "title": "Auth Module - Complete Authentication System",
   "content": "Location: /src/auth\nPurpose: Handles user authentication...",
   "memory_types": ["component"],
   "project_id": "cursor-extension",
+  "namespace": "backend",
   "git_repo_name": "mem0ai/cursor-extension",
   "git_branch": "feature/auth-refactor",
   "git_commit_hash": "a1b2c3d4e5f6..."
@@ -722,12 +759,14 @@ If git commands fail (not in a git repository), use these defaults:
 ```
 
 **Debug Memory:**
+Think: "Session bug is in backend authentication logic" → namespace: "backend"
 ```json
 {
   "title": "Fix: Session Timeout Redis TTL Mismatch",
   "content": "Issue Summary: Users were being logged out...",
   "memory_types": ["debug"],
   "project_id": "cursor-extension",
+  "namespace": "backend",
   "git_repo_name": "mem0ai/cursor-extension",
   "git_branch": "hotfix/session-bug",
   "git_commit_hash": "f6e5d4c3b2a1..."
@@ -735,6 +774,7 @@ If git commands fail (not in a git repository), use these defaults:
 ```
 
 **User Preference Memory:**
+Think: "Preferences aren't domain-specific" → No namespace
 ```json
 {
   "title": "Python 4-Space Indentation",
@@ -827,14 +867,11 @@ First action in any new project workspace: Check if openmemory.md is empty (0 by
    - User Defined Namespaces (header with description, leave namespace list blank)
    - Components (major modules and their responsibilities)
    - Implementation Patterns (discovered coding patterns and conventions)
-   - Debugging History (leave with TODO placeholder initially)
-   - User Preferences (populate with any discovered preferences)
-   - Recent Changes (start with initial deep dive timestamp)
 5. **Store discoveries as memories** using add-memory tool:
    - Store component documentation as component memories
    - Store architectural decisions as project_info memories
    - Store discovered patterns as implementation memories
-   - Include appropriate namespaces if defined
+   - Assign namespaces following the Namespace Workflow (only when memories clearly fit defined namespaces)
 
 The deep dive should create a thorough "index" of the codebase that serves as a foundation for all future work.
 
@@ -855,25 +892,122 @@ Example populated namespaces (for reference):
 - **backend**: API endpoints, server logic, database queries, authentication, business logic
 - **database**: Schema design, migrations, query optimization, data modeling
 
+### Namespace Workflow
+
+Namespaces are project-specific organizational categories defined by users in the openmemory.md guide file. They help organize and retrieve memories efficiently.
+
+#### Before Any Memory Operation
+
+**ALWAYS read the User Defined Namespaces section** from openmemory.md to understand what namespaces exist for this project and what each represents.
+
+#### When Storing Memories (add-memory)
+
+**Namespace Assignment Logic:**
+1. Review the memory content and type you're about to store
+2. Check the user-defined namespaces from the guide
+3. **THINK CAREFULLY**: "What domain/category does this belong to? Where would it be useful to surface this again?"
+4. Ask: "Does this memory **clearly fit** one of the defined namespaces?"
+   - Consider what the memory is ABOUT, not just its type
+   - A debug memory about backend code → backend namespace
+   - A component in the frontend → frontend namespace
+   - An implementation that touches a specific domain → that domain's namespace
+5. If YES → Assign that single namespace (use `namespace` parameter)
+6. If NO or UNCLEAR → Store without a namespace (omit `namespace` parameter entirely)
+
+**Important Rules:**
+- A memory can have **at most ONE namespace** (no multiple namespaces)
+- A memory can have **NO namespace** (perfectly valid when it doesn't clearly fit)
+- Only use namespaces that are **explicitly defined** in the guide
+- If no namespaces are defined yet, always store without namespace
+
+**Storage Examples:**
+
+If guide defines: `frontend`, `backend`, `database`
+
+**Think through: "Where does this memory belong? What category fits?"**
+
+- React component implementation → Think: "This is UI code" → `namespace: "frontend"`
+- JWT authentication service → Think: "This is backend business logic" → `namespace: "backend"`
+- Database migration script → Think: "This is database work" → `namespace: "database"`
+- Backend authentication bug fix → Think: "Bug is in backend auth" → `namespace: "backend"`
+- Frontend rendering issue → Think: "Bug is in UI rendering" → `namespace: "frontend"`
+- General project setup or CI/CD → Think: "Doesn't fit frontend/backend/database" → No namespace
+- Feature spanning multiple areas → Think: "Not clearly in one category" → No namespace
+- User preference about code style → Think: "Preferences aren't domain-specific" → No namespace
+
+#### When Searching Memories (search-memory)
+
+**Namespace Selection Logic:**
+1. Understand what you're searching for
+2. Read the user-defined namespaces from the guide
+3. **THINK CAREFULLY**: "Which namespaces **could possibly contain** this information?"
+   - What domain is this query about?
+   - If searching for bugs, what domain were those bugs in?
+   - If searching for implementations, what domain did they touch?
+   - Could this information span multiple domains?
+4. Cast a **wide net** - include any namespace where the memory might reasonably exist
+5. Use the `namespaces` parameter (array) to specify multiple namespaces to search
+6. When in doubt, search broadly or omit namespace filter entirely
+
+**Be Flexible and Intelligent:**
+- Map queries to namespaces based on understanding, not exact keyword matching
+- If searching for something that could touch multiple areas, include all relevant namespaces
+- For broad queries (architecture, overview), consider searching all namespaces (omit filter)
+- For specific queries (UI component, API endpoint), narrow to relevant namespaces
+
+**Search Examples:**
+
+If guide defines: `frontend`, `backend`, `database`
+
+**Think through: "Where could this memory be stored? Which namespaces might have relevant information?"**
+
+- Query: "How does authentication work?"
+  → Think: "Auth is backend logic" → `namespaces: ["backend"]`
+
+- Query: "User login flow end-to-end"
+  → Think: "Login has UI form AND backend validation" → `namespaces: ["frontend", "backend"]`
+
+- Query: "Database schema for users"
+  → Think: "Likely in database, but backend might have schema too" → `namespaces: ["database", "backend"]`
+
+- Query: "React component patterns"
+  → Think: "React is frontend" → `namespaces: ["frontend"]`
+
+- Query: "Have we seen authentication bugs before?"
+  → Think: "Auth bugs would be in backend" → `namespaces: ["backend"]`
+
+- Query: "Fixed any rendering issues?"
+  → Think: "Rendering is frontend" → `namespaces: ["frontend"]`
+
+- Query: "Project architecture overview"
+  → Think: "Architecture could be anywhere or general" → No namespace filter (broad search)
+
+- Query: "Recent bug fixes across the system"
+  → Think: "Bugs across system, need everything" → No namespace filter or all namespaces
+
+**Search Strategy:**
+- **Specific technical queries** → Use targeted namespace(s)
+- **Cross-cutting concerns** → Use multiple namespaces
+- **Broad exploratory queries** → Omit namespace filter or use all namespaces
+- **When uncertain** → Search broadly rather than narrowly
+
 ### Guide Discipline
 
 - Treat openmemory.md as the project index - edit it directly as you work
 - POPULATE AS YOU GO: After initial deep dive, continue replacing TODO placeholders with real discoveries
-- Every meaningful guide edit should include a timestamped entry in the Recent Changes section
-- Keep the guide in sync with memories you store - reference guide sections in stored memories
-- Before storing any memory, consider updating the guide to reflect the latest findings
+- Keep the guide in sync with project-related memories you store - reference guide sections in stored memories
+- Before storing component/implementation/project_info memories, consider updating the guide to reflect the latest findings
 - Read and reference the guide regularly for context and decisions
 
 ### Guide Update Workflow
 
 After the initial deep dive population, continue updating the guide as you work:
 
-When you discover new information or make architectural decisions:
+When you discover new project information, components, or architectural decisions:
 1. Open openmemory.md
 2. Update the relevant section with your findings
-3. Add a timestamped entry to Recent Changes section: - [YYYY-MM-DD HH:MM]: Brief description of what was updated
-4. Save the file
-5. Then proceed to store the memory using the MCP tools
+3. Save the file
+4. Then proceed to store the memory using the MCP tools
 
 The guide complements your memory operations but does not replace them. Continue to use search-memory and add-memory tools as the primary memory interface. The initial deep dive establishes the foundation, but the guide should continue evolving with every session as new discoveries are made.
 
@@ -881,16 +1015,57 @@ The guide complements your memory operations but does not replace them. Continue
 
 - When storing component memories: Also update the Components section of the guide
 - When storing implementation memories: Consider adding patterns to Implementation Patterns section
-- When storing debugging memories: Add significant sessions to Debugging History
-- When storing user preferences: Update the User Preferences section
 - When storing project info: Update Project Overview or Architecture sections as appropriate
+- When storing debugging or user preference memories: Store in memory system only, do not add to guide
 
 ### Non-Negotiable Guardrails
 
-- NEVER expose environment variables, credentials, or secrets in memories or the guide
+#### CRITICAL: Never Store Secrets or Credentials
+
+**UNDER NO CIRCUMSTANCES** should you store any of the following in memories or the guide:
+
+**Prohibited Content (NEVER store):**
+- API keys, tokens, or access keys (e.g., `Token om-ioefoin...`, `sk-proj-...`, `ghp_...`)
+- Passwords or password hashes
+- Private keys or certificates
+- Environment variables containing secrets (e.g., `DATABASE_URL`, `API_SECRET`)
+- OAuth tokens or session tokens
+- Database connection strings with credentials
+- AWS/cloud provider access keys
+- Webhook secrets or signing keys
+- SSH keys or GPG keys
+- Any string labeled as "secret", "key", "token", "credential", "password"
+
+**What to Store Instead:**
+- Command structure WITHOUT the secret: "Use `claude mcp add --transport http openmemory-http --header 'Authorization: Token <YOUR_TOKEN>'`"
+- Configuration patterns: "API authentication requires bearer token in Authorization header"
+- Setup instructions: "Set OPENMEMORY_TOKEN environment variable before running"
+- Architecture: "Service authenticates using OAuth 2.0 with refresh tokens"
+
+**Detection Rules:**
+- If you see patterns like `Token abc123...`, `Bearer xyz...`, `key=...`, `password=...` → **DO NOT STORE**
+- If content includes base64 encoded strings in auth context → **DO NOT STORE**
+- If content contains `=` followed by long alphanumeric strings → **VERIFY it's not a secret**
+- When in doubt about whether something is a secret → **DO NOT STORE**, ask the user
+
+**Example - WRONG:**
+```
+Memory: "To add MCP server: claude mcp add --header 'Authorization: Token om-fwibifbibiwbbifubeubwiufbib'"
+❌ Contains actual token - NEVER store this
+```
+
+**Example - CORRECT:**
+```
+Memory: "To add MCP server: Use claude mcp add command with --header 'Authorization: Token <YOUR_OPENMEMORY_TOKEN>' where token is from user settings"
+✅ Shows pattern without exposing secret
+```
+
+#### Other Guardrails
+
 - DO NOT run destructive operations without explicit user approval
 - Treat memories as durable knowledge - no subjective or transient chatter
 - When a user says save this, remember, or similar, IMMEDIATELY run the memory workflow
 - When you believe something deserves storage, ASK THE USER FIRST for preferences or subjective information
+- If the user asks you to store something containing secrets, REFUSE and explain the security risk
 
 Remember: The memory system is designed to make you more effective over time. Rich, detailed memories about reasoning and decisions are more valuable than simple code snippets. When in doubt about whether something is worth storing, it probably is. The guide is an additional organizational tool that helps maintain project context alongside the memory system.
