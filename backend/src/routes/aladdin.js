@@ -4,12 +4,59 @@
  */
 
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const router = express.Router();
 const { logger } = require('../utils/logger');
 const { MiniAladdin } = require('../agents/mini-aladdin');
 
 // Create child logger
 const log = logger.child('AladdinRoutes');
+
+// Rate limiters for different endpoints
+const huntLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // 10 requests per window
+  message: {
+    success: false,
+    error: 'Too many hunt requests. Please try again later.',
+    retryAfter: '15 minutes'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    log.warn('Rate limit exceeded for hunt endpoint', { ip: req.ip });
+    res.status(429).json({
+      success: false,
+      error: 'Too many hunt requests',
+      message: 'You have exceeded the rate limit. Please try again in 15 minutes.',
+      retryAfter: 900 // seconds
+    });
+  }
+});
+
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requests per window
+  message: {
+    success: false,
+    error: 'Too many requests. Please try again later.',
+    retryAfter: '15 minutes'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const analyzeLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 50, // 50 requests per window
+  message: {
+    success: false,
+    error: 'Too many analysis requests. Please try again later.',
+    retryAfter: '15 minutes'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // Initialize agent (singleton pattern)
 let aladdinAgent = null;
@@ -26,8 +73,9 @@ function getAgent() {
  * @route   GET /api/aladdin/health
  * @desc    Health check for Aladdin agent
  * @access  Public
+ * @rateLimit 100 requests per 15 minutes
  */
-router.get('/health', (req, res) => {
+router.get('/health', generalLimiter, (req, res) => {
   log.info('Health check requested');
   
   const agent = getAgent();
@@ -51,8 +99,9 @@ router.get('/health', (req, res) => {
  * @route   POST /api/aladdin/hunt
  * @desc    Start a money-hunting session with real agent
  * @access  Public
+ * @rateLimit 10 requests per 15 minutes
  */
-router.post('/hunt', async (req, res) => {
+router.post('/hunt', huntLimiter, async (req, res) => {
   try {
     log.info('Starting money hunt with Mini-Aladdin agent');
     
@@ -101,8 +150,9 @@ router.post('/hunt', async (req, res) => {
  * @desc    Get filtered opportunities from agent
  * @access  Public
  * @query   { category: string, minScore: number, minProfit: number }
+ * @rateLimit 100 requests per 15 minutes
  */
-router.get('/opportunities', async (req, res) => {
+router.get('/opportunities', generalLimiter, async (req, res) => {
   try {
     const { category, minScore, minProfit } = req.query;
 
@@ -168,8 +218,9 @@ router.get('/opportunities', async (req, res) => {
  * @desc    Analyze a specific opportunity using agent's analytics
  * @access  Public
  * @body    { opportunityId: string, depth: string }
+ * @rateLimit 50 requests per 15 minutes
  */
-router.post('/analyze', async (req, res) => {
+router.post('/analyze', analyzeLimiter, async (req, res) => {
   try {
     const { opportunityId, depth = 'standard' } = req.body;
 
@@ -236,8 +287,9 @@ router.post('/analyze', async (req, res) => {
  * @route   GET /api/aladdin/stats
  * @desc    Get agent statistics and performance from real agent
  * @access  Public
+ * @rateLimit 100 requests per 15 minutes
  */
-router.get('/stats', (req, res) => {
+router.get('/stats', generalLimiter, (req, res) => {
   try {
     log.info('Stats requested');
 

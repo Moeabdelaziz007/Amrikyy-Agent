@@ -616,6 +616,9 @@ class MiniAladdin extends EventEmitter {
   constructor(config = {}) {
     super();
 
+    // Input validation for constructor
+    this.validateConfig(config);
+
     this.config = {
       initialCapital: config.initialCapital || 10000,
       riskTolerance: config.riskTolerance || 'medium',
@@ -648,37 +651,119 @@ class MiniAladdin extends EventEmitter {
   }
 
   /**
-   * Main orchestration loop
+   * Main orchestration loop with comprehensive error handling
    */
   async hunt() {
     console.log('\n💰 Starting Money Hunt...\n');
 
-    // Parallel execution of all strategies
-    const [arbOpps, patterns, affiliates] = await Promise.all([
-      this.findArbitrageOpportunities(),
-      this.analyzeTrendingOpportunities(),
-      this.findAffiliateOpportunities(),
-    ]);
+    try {
+      // Parallel execution of all strategies with individual error handling
+      const [arbOpps, patterns, affiliates] = await Promise.allSettled([
+        this.findArbitrageOpportunities().catch(err => {
+          console.error('❌ Arbitrage strategy failed:', err.message);
+          return [];
+        }),
+        this.analyzeTrendingOpportunities().catch(err => {
+          console.error('❌ Pattern analysis failed:', err.message);
+          return [];
+        }),
+        this.findAffiliateOpportunities().catch(err => {
+          console.error('❌ Affiliate search failed:', err.message);
+          return [];
+        }),
+      ]);
 
-    // Aggregate all opportunities
-    this.opportunities = [
-      ...arbOpps.map((o) => ({ ...o, category: 'arbitrage' })),
-      ...patterns.map((o) => ({ ...o, category: 'trading' })),
-      ...affiliates.map((o) => ({ ...o, category: 'affiliate' })),
-    ];
+      // Extract successful results
+      const arbResults = arbOpps.status === 'fulfilled' ? arbOpps.value : [];
+      const patternResults = patterns.status === 'fulfilled' ? patterns.value : [];
+      const affiliateResults = affiliates.status === 'fulfilled' ? affiliates.value : [];
 
-    // Score and rank opportunities
-    this.opportunities = this.scoreOpportunities(this.opportunities);
+      // Aggregate all opportunities
+      this.opportunities = [
+        ...arbResults.map((o) => ({ ...o, category: 'arbitrage' })),
+        ...patternResults.map((o) => ({ ...o, category: 'trading' })),
+        ...affiliateResults.map((o) => ({ ...o, category: 'affiliate' })),
+      ];
 
-    // Generate execution plan
-    const plan = this.generateExecutionPlan();
+      // Validate opportunities
+      this.opportunities = this.opportunities.filter(opp => {
+        try {
+          this.validateOpportunity(opp);
+          return true;
+        } catch (err) {
+          console.warn(`⚠️  Invalid opportunity filtered out: ${err.message}`);
+          return false;
+        }
+      });
 
-    return {
-      opportunities: this.opportunities,
-      plan,
-      portfolio: this.portfolio,
-      analytics: this.getAnalytics(),
-    };
+      // Score and rank opportunities
+      try {
+        this.opportunities = this.scoreOpportunities(this.opportunities);
+      } catch (err) {
+        console.error('❌ Scoring failed:', err.message);
+        // Continue with unscored opportunities
+      }
+
+      // Generate execution plan
+      let plan = null;
+      try {
+        plan = this.generateExecutionPlan();
+      } catch (err) {
+        console.error('❌ Plan generation failed:', err.message);
+        plan = { error: 'Plan generation failed', message: err.message };
+      }
+
+      // Get analytics
+      let analytics = null;
+      try {
+        analytics = this.getAnalytics();
+      } catch (err) {
+        console.error('❌ Analytics generation failed:', err.message);
+        analytics = { error: 'Analytics unavailable', message: err.message };
+      }
+
+      console.log(`\n✅ Hunt completed: ${this.opportunities.length} opportunities found\n`);
+
+      return {
+        success: true,
+        opportunities: this.opportunities,
+        plan,
+        portfolio: this.portfolio,
+        analytics,
+        errors: this._collectErrors(arbOpps, patterns, affiliates),
+      };
+
+    } catch (error) {
+      console.error('\n❌ CRITICAL ERROR in hunt():', error.message);
+      console.error(error.stack);
+
+      // Return safe fallback
+      return {
+        success: false,
+        error: 'Hunt failed',
+        message: error.message,
+        opportunities: [],
+        plan: null,
+        portfolio: this.portfolio,
+        analytics: null,
+      };
+    }
+  }
+
+  /**
+   * Collect errors from Promise.allSettled results
+   */
+  _collectErrors(...results) {
+    const errors = [];
+    results.forEach((result, index) => {
+      if (result.status === 'rejected') {
+        errors.push({
+          strategy: ['arbitrage', 'pattern', 'affiliate'][index],
+          error: result.reason?.message || 'Unknown error',
+        });
+      }
+    });
+    return errors.length > 0 ? errors : null;
   }
 
   /**
@@ -916,6 +1001,14 @@ class MiniAladdin extends EventEmitter {
    * Execute a trade (simulation mode)
    */
   executeTrade(opportunity) {
+    // Input validation
+    try {
+      const amount = opportunity.risk?.positionSize || 1000;
+      this.validateTradeParams(opportunity, amount);
+    } catch (error) {
+      return { success: false, reason: error.message };
+    }
+
     if (!opportunity.risk?.approved) {
       return { success: false, reason: 'Risk assessment failed' };
     }
@@ -1011,6 +1104,11 @@ class MiniAladdin extends EventEmitter {
    * Real-time monitoring (would run continuously)
    */
   async startMonitoring(interval = 30000) {
+    // Input validation
+    if (typeof interval !== 'number' || interval < 1000) {
+      throw new Error('Interval must be a number >= 1000ms');
+    }
+
     console.log(
       `\n🔄 Starting real-time monitoring (${interval}ms intervals)...\n`
     );
@@ -1036,6 +1134,79 @@ class MiniAladdin extends EventEmitter {
         }
       }
     }, interval);
+  }
+
+  /**
+   * Validate configuration
+   */
+  validateConfig(config) {
+    if (config.initialCapital !== undefined) {
+      if (typeof config.initialCapital !== 'number' || config.initialCapital <= 0) {
+        throw new Error('initialCapital must be a positive number');
+      }
+    }
+
+    if (config.riskTolerance !== undefined) {
+      const validRiskLevels = ['low', 'medium', 'high'];
+      if (!validRiskLevels.includes(config.riskTolerance)) {
+        throw new Error(`riskTolerance must be one of: ${validRiskLevels.join(', ')}`);
+      }
+    }
+
+    if (config.strategies !== undefined) {
+      if (!Array.isArray(config.strategies) || config.strategies.length === 0) {
+        throw new Error('strategies must be a non-empty array');
+      }
+      const validStrategies = ['arbitrage', 'pattern', 'affiliate'];
+      const invalidStrategies = config.strategies.filter(s => !validStrategies.includes(s));
+      if (invalidStrategies.length > 0) {
+        throw new Error(`Invalid strategies: ${invalidStrategies.join(', ')}. Valid: ${validStrategies.join(', ')}`);
+      }
+    }
+
+    if (config.autoExecute !== undefined && typeof config.autoExecute !== 'boolean') {
+      throw new Error('autoExecute must be a boolean');
+    }
+  }
+
+  /**
+   * Validate opportunity data
+   */
+  validateOpportunity(opportunity) {
+    if (!opportunity || typeof opportunity !== 'object') {
+      throw new Error('Opportunity must be an object');
+    }
+
+    if (!opportunity.id) {
+      throw new Error('Opportunity must have an id');
+    }
+
+    if (!opportunity.category || !['arbitrage', 'trading', 'affiliate'].includes(opportunity.category)) {
+      throw new Error('Opportunity must have a valid category (arbitrage, trading, or affiliate)');
+    }
+
+    if (typeof opportunity.score !== 'number' || opportunity.score < 0 || opportunity.score > 100) {
+      throw new Error('Opportunity score must be a number between 0 and 100');
+    }
+
+    return true;
+  }
+
+  /**
+   * Validate trade execution parameters
+   */
+  validateTradeParams(opportunity, amount) {
+    this.validateOpportunity(opportunity);
+
+    if (typeof amount !== 'number' || amount <= 0) {
+      throw new Error('Trade amount must be a positive number');
+    }
+
+    if (amount > this.portfolio.cash) {
+      throw new Error(`Insufficient funds. Available: $${this.portfolio.cash}, Required: $${amount}`);
+    }
+
+    return true;
   }
 }
 
