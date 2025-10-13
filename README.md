@@ -33,7 +33,7 @@ AI Automation Platform (Frontend + Backend) powered by Amrikyy - Currently featu
         ┌───────▼────────┐ ┌──────▼──────┐ ┌────────▼────────┐
         │   Frontend      │ │   Backend   │ │  Telegram Bot   │
         │   React + TS    │ │  Express.js │ │   Mini App      │
-        │   Port: 8080    │ │  Port: 5001 │ │                 │
+        │   Port: 8080    │ │  Port: 5000 │ │                 │
         └───────┬────────┘ └──────┬──────┘ └────────┬────────┘
                 │                  │                  │
                 └──────────────────┼──────────────────┘
@@ -86,10 +86,12 @@ User Request → Frontend → Backend API → AI/Database → External APIs
 - **JWT** - Authentication tokens
 
 ### AI & Intelligence
-- **Z.ai GLM-4.6** - Primary AI model
-- **OpenAI** - Fallback AI service
-- **Quantum DNA Engine** - Agent personalization
-- **QICS** - Intent classification system
+- **Z.ai GLM-4.6** - Primary AI model for travel recommendations and chat.
+- **OpenAI** - Fallback AI service.
+- **Mini-Aladdin** - A multi-agent system inspired by BlackRock's Aladdin for financial analysis and opportunity hunting. It includes specialized agents for Math, Market Analysis, and Risk Assessment.
+- **Enhanced Boss Agent** - An orchestration agent for complex trip planning and chat, with a skill-based architecture.
+- **Quantum DNA Engine** - Agent personalization.
+- **QICS** - Intent classification system.
 
 ### External Services
 - **Amadeus** - Flight & hotel search
@@ -129,54 +131,9 @@ cd .. && npm run dev
 
 ### Access the Application
 - **Frontend**: http://localhost:8080
-- **Backend API**: http://localhost:5001
-- **Health Check**: http://localhost:5001/api/health
+- **Backend API**: http://localhost:5000
+- **Health Check**: http://localhost:5000/api/health
 - **API Docs**: [API_REFERENCE.md](API_REFERENCE.md)
-
-### Development Commands
-
-#### Frontend Development
-```bash
-cd frontend
-
-# Start development server
-npm run dev
-
-# Run tests
-npm run test
-npm run test:ui
-npm run test:coverage
-
-# Linting and formatting
-npm run lint
-npm run lint:fix
-npm run format
-npm run format:check
-
-# Type checking
-npm run type-check
-
-# Build for production
-npm run build
-
-# E2E testing
-npm run e2e
-npm run e2e:ui
-
-# Accessibility testing
-npm run a11y-check
-```
-
-#### Backend Development
-```bash
-cd backend
-
-# Start development server
-npm run dev
-
-# Start production server
-npm run start
-```
 
 ### Development Commands
 
@@ -198,6 +155,12 @@ npm run build
 
 # Start production servers
 npm run start
+
+# Run tests for both frontend and backend
+npm run test
+
+# Run linting for both frontend and backend
+npm run lint
 ```
 
 ## 📁 Project Structure
@@ -231,6 +194,7 @@ amrikyy-agent/
 │   ├── server.js              # Main entry point
 │   └── package.json
 │
+├── aix-auditor/                 # AIX agent auditing tool
 ├── k6/                         # Load testing scripts
 ├── analytics/                  # DBT analytics models
 ├── docs/                       # Additional documentation
@@ -246,18 +210,12 @@ amrikyy-agent/
 
 ### Running Tests
 ```bash
-# Unit tests
-cd frontend && npm run test
-
-# E2E tests
-cd frontend && npm run e2e
-
-# All tests with coverage
-cd frontend && npm run test:coverage
+# Run all tests
+npm test
 ```
 
 ### Test Coverage
-We aim for >80% test coverage for critical components. Run `npm run test:coverage` to see current coverage.
+We aim for >80% test coverage for critical components. Run `npm run test:coverage` in the `frontend` directory to see current coverage.
 
 ## Troubleshooting
 
@@ -265,8 +223,8 @@ We aim for >80% test coverage for critical components. Run `npm run test:coverag
 
 1. **Port already in use**
    ```bash
-   # Kill processes on ports 3000 and 5000
-   lsof -ti:3000 | xargs kill -9
+   # Kill processes on ports 8080 and 5000
+   lsof -ti:8080 | xargs kill -9
    lsof -ti:5000 | xargs kill -9
    ```
 
@@ -286,12 +244,12 @@ We aim for >80% test coverage for critical components. Run `npm run test:coverag
 
 4. **Linting errors**
    ```bash
-   cd frontend && npm run lint:fix
+   npm run lint
    ```
 
 5. **Build failures**
    ```bash
-   cd frontend && npm run build
+   npm run build
    ```
 
 ## ⚡ Performance
@@ -435,51 +393,37 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 ## 📊 Project Status
 
 - ✅ **Planning & Design**: 100% Complete
-- ✅ **Frontend Development**: 100% Complete
+- ⚠️ **Frontend Development**: In Progress
 - ✅ **Backend Development**: 85% Complete
 - ⚠️ **Database Setup**: 80% Complete
 - ⚠️ **Testing**: 60% Complete
 - ❌ **Production Deployment**: 20% Complete
 - ❌ **User Validation**: 0% (Pending launch)
 
-**Overall Progress**: 78% Complete
+**Overall Progress**: 70% Complete
 
 ## 🗺️ Roadmap
 
-### Q1 2025 (Current)
-- [x] Core platform development
-- [x] AI integration (Z.ai)
-- [x] Payment processing
-- [x] Telegram mini app
-- [ ] Production deployment
-- [ ] Beta user testing
+### Q4 2025 (Current)
+- [ ] Complete Frontend Development
+- [ ] Finalize Backend Development
+- [ ] Full Test Coverage
+- [ ] Production Deployment
+- [ ] Beta User Testing
 
-### Q2 2025
+### Q1 2026
 - [ ] Mobile apps (iOS/Android)
 - [ ] Advanced analytics
 - [ ] Multi-language support
 - [ ] Partner integrations
 - [ ] White-label solution
 
-### Q3 2025
+### Q2 2026
 - [ ] Voice assistant
 - [ ] AR/VR experiences
 - [ ] Blockchain integration
 - [ ] NFT ticketing
 - [ ] DAO governance
-
-### Q4 2025
-- [ ] Global expansion
-- [ ] Enterprise features
-- [ ] API marketplace
-- [ ] Developer ecosystem
-- [ ] IPO preparation
-
-## 🏆 Awards & Recognition
-
-- 🥇 **Best AI Travel Platform** - TechCrunch Disrupt 2024 (Pending)
-- 🥈 **Innovation Award** - Web Summit 2024 (Pending)
-- 🥉 **Best Startup** - Startup Grind 2024 (Pending)
 
 ## 📈 Stats
 
@@ -552,6 +496,6 @@ Made with ❤️ by the Amrikyy Team
 
 ---
 
-**Last Updated**: January 15, 2025  
-**Version**: 1.0.0  
+**Last Updated**: October 13, 2025
+**Version**: 1.0.0
 **Status**: Active Development 🚧
