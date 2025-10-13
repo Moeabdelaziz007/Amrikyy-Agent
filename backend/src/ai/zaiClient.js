@@ -4,10 +4,31 @@
  */
 
 const fetch = require('node-fetch');
+const crypto = require('crypto');
 
 class ZaiClient {
   constructor() {
-    this.apiKey = process.env.ZAI_API_KEY;
+    // ============================================================================
+    // SECURITY: Encrypted API Key Storage
+    // ============================================================================
+    const apiKey = process.env.ZAI_API_KEY;
+    
+    if (!apiKey) {
+      throw new Error('❌ FATAL: ZAI_API_KEY environment variable is required');
+    }
+    
+    if (apiKey.length < 20) {
+      throw new Error('❌ FATAL: ZAI_API_KEY appears invalid (too short)');
+    }
+    
+    // Encrypt and store API key in memory
+    this.encryptedKey = this._encryptApiKey(apiKey);
+    
+    // Clear from process.env for security
+    delete process.env.ZAI_API_KEY;
+    
+    console.log('✅ Z.ai API key encrypted and stored securely');
+    
     // Use Coding API endpoint for GLM Coding Plan
     this.baseUrl = process.env.ZAI_API_BASE_URL || 'https://api.z.ai/api/coding/paas/v4';
     this.model = process.env.ZAI_MODEL || 'glm-4.6';
@@ -16,6 +37,48 @@ class ZaiClient {
     // Optional provider hints for performance/memory behavior
     this.enableKvCacheOffload = process.env.ZAI_ENABLE_KV_OFFLOAD === 'true';
     this.attentionImpl = process.env.ZAI_ATTENTION_IMPL || null; // e.g., 'flash-attn-3'
+  }
+  
+  /**
+   * Encrypt API key using AES-256-GCM
+   * @private
+   */
+  _encryptApiKey(plaintext) {
+    const algorithm = 'aes-256-gcm';
+    const masterKey = process.env.MASTER_ENCRYPTION_KEY || crypto.randomBytes(32);
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv(algorithm, masterKey, iv);
+    
+    let encrypted = cipher.update(plaintext, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    const authTag = cipher.getAuthTag();
+    
+    return {
+      encrypted,
+      iv: iv.toString('hex'),
+      authTag: authTag.toString('hex')
+    };
+  }
+  
+  /**
+   * Decrypt API key for use
+   * @private
+   */
+  _decryptApiKey() {
+    const algorithm = 'aes-256-gcm';
+    const masterKey = process.env.MASTER_ENCRYPTION_KEY || crypto.randomBytes(32);
+    const decipher = crypto.createDecipheriv(
+      algorithm,
+      masterKey,
+      Buffer.from(this.encryptedKey.iv, 'hex')
+    );
+    
+    decipher.setAuthTag(Buffer.from(this.encryptedKey.authTag, 'hex'));
+    
+    let decrypted = decipher.update(this.encryptedKey.encrypted, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    
+    return decrypted;
   }
 
   /**
@@ -49,7 +112,7 @@ class ZaiClient {
         headers: {
           'Content-Type': 'application/json',
           'Accept-Language': 'en-US,en',
-          'Authorization': `Bearer ${this.apiKey}`
+          'Authorization': `Bearer ${this._decryptApiKey()}`  // ✅ SECURITY: Use encrypted key
         },
         body: JSON.stringify(requestBody)
       });
