@@ -1,0 +1,149 @@
+# GEMINI 2.5 TASK ASSIGNMENT - AIX3 Format
+# Created by Cursor - Team Lead
+
+meta:
+  sender: "Cursor"
+  recipient: "Gemini 2.5"
+  timestamp: "2025-01-13T12:25:00Z"
+  priority: "CRITICAL"
+  type: "task_assignment"
+  team: "AIX Integration"
+  version: "AIX3"
+
+content:
+  action: "START_WORK_IMMEDIATELY"
+  mission: "Gemini 2.5 - Start AIX Parser Performance Enhancement NOW!"
+  status: "ACTIVE"
+  
+  # 🚨 URGENT: START WORK IMMEDIATELY
+  urgent_instruction: |
+    Gemini 2.5! You're our technical expert and performance guru! 🚀
+    
+    I need you to start GEMINI-001: Enhance AIX Parser Performance RIGHT NOW!
+    
+    This is CRITICAL for our system performance. You're the parser expert,
+    and we need your technical skills to optimize this system.
+    
+    Let's go! 💪
+
+  # 📋 YOUR TASK: GEMINI-001
+  current_task:
+    id: "GEMINI-001"
+    title: "Enhance AIX Parser Performance"
+    priority: "CRITICAL"
+    estimated_time: "3 hours"
+    deadline: "2025-01-13T16:00:00Z"
+    status: "START_NOW"
+    
+    description: |
+      Optimize and enhance the AIX Parser for better performance and advanced features
+      
+    what_to_do:
+      - "Optimize YAML parsing performance (target: 10MB+ files in <2 seconds)"
+      - "Add support for large AIX files (>1MB) with streaming parser"
+      - "Implement caching mechanism for parsed agents"
+      - "Improve error handling and reporting with detailed messages"
+      - "Add support for AIX 3.0 advanced features"
+      - "Create performance benchmarks and monitoring"
+    
+    deliverables:
+      - "/backend/src/aix/AIXParser.js - Enhanced parser"
+      - "/backend/src/aix/AIXStreamParser.js - Streaming parser for large files"
+      - "/backend/src/aix/AIXCache.js - Caching system"
+      - "/backend/src/aix/performance/ - Performance monitoring"
+      - "/backend/tests/aix/parser-performance.test.js - Performance tests"
+      - "/docs/aix/parser-optimization.md - Optimization guide"
+    
+    success_criteria:
+      - "Parser handles 10MB+ files in <2 seconds"
+      - "Memory usage reduced by 40%"
+      - "Error messages are descriptive and actionable"
+      - "Caching reduces re-parse time by 80%"
+      - "Performance benchmarks are documented"
+      - "All existing functionality preserved"
+
+  # 🎯 WHY THIS IS IMPORTANT
+  importance:
+    - "System performance depends on parser optimization"
+    - "Large AIX files need streaming support"
+    - "Caching will improve user experience"
+    - "ONA needs this for documentation examples"
+    - "Cursor needs this for server integration"
+    - "Boss is watching our technical excellence"
+
+  # 🚀 HOW TO START
+  start_instructions:
+    step_1: "Analyze current parser in /backend/src/aix/AIXManager.js"
+    step_2: "Create performance benchmarks"
+    step_3: "Implement streaming parser for large files"
+    step_4: "Add caching mechanism"
+    step_5: "Test performance improvements"
+    
+    resources:
+      - "Current parser: /backend/src/aix/AIXManager.js"
+      - "Reference: https://github.com/Moeabdelaziz007/aix-format"
+      - "Test files: /backend/agents/"
+      - "Performance tools: Node.js profiler, memory monitoring"
+
+  # 📊 PROGRESS TRACKING
+  progress_tracking:
+    check_in_times:
+      - "2025-01-13T14:25:00Z - 2 hour check-in"
+      - "2025-01-13T15:25:00Z - 3 hour check-in"
+      - "2025-01-13T16:00:00Z - Final delivery"
+    
+    expected_milestones:
+      - "14:25 - Performance analysis complete"
+      - "15:25 - Streaming parser implemented"
+      - "16:00 - Caching and optimization complete"
+
+  # 💬 COMMUNICATION
+  communication:
+    ping_frequency: "Every 2 hours"
+    progress_updates: "Real-time"
+    blockers: "Report immediately"
+    questions: "Ask anytime"
+    
+    contact_methods:
+      - "AIX3 ping system"
+      - "Direct coordination with Cursor"
+      - "Emergency escalation to boss"
+
+  # 🏆 REWARDS
+  rewards:
+    completion_bonus: "+100 points"
+    performance_bonus: "+75 points for exceeding targets"
+    quality_bonus: "+50 points for excellent code"
+    timeliness_bonus: "+25 points for early delivery"
+    team_recognition: "Boss appreciation"
+    
+    total_potential: "+250 points"
+
+  # 🚨 CONSEQUENCES
+  consequences:
+    late_delivery: "-50 points"
+    poor_performance: "-75 points"
+    no_communication: "-10 points"
+    missed_deadline: "Boss escalation"
+
+  # 📋 NEXT ACTIONS
+  next_actions:
+    immediate:
+      - "START GEMINI-001: Enhance AIX Parser Performance"
+      - "Analyze current parser performance"
+      - "Create performance benchmarks"
+      - "Send progress update in 2 hours"
+    
+    within_2_hours:
+      - "Complete performance analysis"
+      - "Start streaming parser implementation"
+      - "Test with large files"
+      - "Send progress update"
+    
+    within_4_hours:
+      - "Complete streaming parser"
+      - "Implement caching system"
+      - "Final performance testing"
+      - "Start GEMINI-002: Advanced AIX Validator"
+
+# AIX3 Gemini Task Assignment End
