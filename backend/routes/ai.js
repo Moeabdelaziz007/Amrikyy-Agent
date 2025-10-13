@@ -10,6 +10,45 @@ const { Tools, getToolSchemas } = require('../src/ai/tools');
 const { buildCulturalSystemPrompt } = require('../src/ai/culture');
 const { multimodalLimiter } = require('../middleware/rateLimiter');
 
+// ============================================================================
+// SECURITY: Input Sanitization for Prompt Injection Protection
+// ============================================================================
+const sanitizeInput = (input) => {
+  if (typeof input !== 'string') return '';
+  
+  return input
+    // Remove potential script injections
+    .replace(/<script|javascript:|data:/gi, '')
+    // Remove template injection attempts
+    .replace(/\{\{.*?\}\}/g, '')
+    // Remove system prompt override attempts
+    .replace(/ignore previous instructions/gi, '')
+    .replace(/disregard all above/gi, '')
+    // Remove potential command injection
+    .replace(/;|\||&|`|\$/g, '')
+    // Trim and limit length
+    .trim()
+    .substring(0, 10000);  // Max 10K characters
+};
+
+const validateAndSanitizeMessage = (message) => {
+  if (!message) {
+    throw new Error('Message is required');
+  }
+  
+  const cleaned = sanitizeInput(message);
+  
+  if (cleaned.length < 1) {
+    throw new Error('Message cannot be empty after sanitization');
+  }
+  
+  if (cleaned.length > 10000) {
+    throw new Error('Message too long (max 10,000 characters)');
+  }
+  
+  return cleaned;
+};
+
 // Initialize Z.ai client
 const zaiClient = new ZaiClient();
 
@@ -35,22 +74,23 @@ router.post('/chat', async (req, res) => {
   try {
     const { message, userId, conversationHistory = [], useTools = false, region = 'ar' } = req.body;
 
-    if (!message) {
-      return res.status(400).json({
-        success: false,
-        error: 'Message is required'
-      });
-    }
+    // ✅ SECURITY: Sanitize all user inputs to prevent prompt injection
+    const cleanMessage = validateAndSanitizeMessage(message);
+    const cleanHistory = conversationHistory.map(msg => ({
+      role: msg.role,
+      content: sanitizeInput(msg.content || '')
+    }));
+    const cleanRegion = sanitizeInput(region || 'ar').substring(0, 10);
 
-    console.log(`🤖 Maya AI Chat - User: ${userId}, Message: ${message.substring(0, 50)}...`);
+    console.log(`🤖 Maya AI Chat - User: ${userId}, Message: ${cleanMessage.substring(0, 50)}...`);
 
     let response;
     if (!useTools) {
-      const systemCulture = { role: 'system', content: buildCulturalSystemPrompt(region) };
+      const systemCulture = { role: 'system', content: buildCulturalSystemPrompt(cleanRegion) };
       response = await zaiClient.chatCompletion([
         systemCulture,
-        ...conversationHistory,
-        { role: 'user', content: message }
+        ...cleanHistory,  // ✅ SECURITY: Use sanitized history
+        { role: 'user', content: cleanMessage }  // ✅ SECURITY: Use sanitized message
       ], { maxTokens: 900 });
     } else {
       // Basic tool-calling orchestration loop (single step for simplicity)
@@ -58,15 +98,15 @@ router.post('/chat', async (req, res) => {
       const toolListStr = toolSchemas.map(t => `- ${t.name}: ${t.description}`).join('\n');
 
       const toolAwareHistory = [
-        ...conversationHistory,
+        ...cleanHistory,  // ✅ SECURITY: Use sanitized history
         { role: 'system', content: `You can call tools by replying in JSON with {"tool":"name","arguments":{...}}. Available tools:\n${toolListStr}\nIf no tool is needed, answer normally.` }
       ];
 
       const first = await zaiClient.chatCompletion([
         { role: 'system', content: 'You are Maya, a helpful travel assistant.' },
-        { role: 'system', content: buildCulturalSystemPrompt(region) },
+        { role: 'system', content: buildCulturalSystemPrompt(cleanRegion) },  // ✅ SECURITY: Use sanitized region
         ...toolAwareHistory,
-        { role: 'user', content: message }
+        { role: 'user', content: cleanMessage }  // ✅ SECURITY: Use sanitized message
       ], {
         maxTokens: 500,
         enableKvCacheOffload: true,
