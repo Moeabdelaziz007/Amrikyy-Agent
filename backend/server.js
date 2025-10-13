@@ -15,7 +15,7 @@ const {
   aiLimiter,
   paymentLimiter,
   webhookLimiter,
-  analyticsLimiter
+  analyticsLimiter,
 } = require('./middleware/rateLimiter');
 
 // Security middleware
@@ -23,10 +23,12 @@ app.use(helmet());
 app.use(compression());
 
 // CORS configuration
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    credentials: true,
+  })
+);
 
 // Stripe webhook requires raw body; mount raw parser just for that route
 app.use('/api/payment/webhook', bodyParser.raw({ type: 'application/json' }));
@@ -50,37 +52,37 @@ console.log('✅ Using Supabase as database (MongoDB not required)');
 
 // Routes
 app.get('/', (req, res) => {
-    res.json({
-        message: 'Maya Trips API Server',
-        version: '1.0.0',
-        status: 'running',
-        timestamp: new Date().toISOString()
-    });
+  res.json({
+    message: 'Maya Trips API Server',
+    version: '1.0.0',
+    status: 'running',
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Public API: ping
 app.get('/api/public/ping', (req, res) => {
-    res.json({ ok: true, ts: Date.now() });
+  res.json({ ok: true, ts: Date.now() });
 });
 
 // OpenAPI spec
 app.get('/api/openapi.json', (req, res) => {
-    try {
-        const spec = require('./openapi.json');
-        res.json(spec);
-    } catch (e) {
-        res.status(500).json({ error: 'Spec not found' });
-    }
+  try {
+    const spec = require('./openapi.json');
+    res.json(spec);
+  } catch (e) {
+    res.status(500).json({ error: 'Spec not found' });
+  }
 });
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-    res.json({
-        status: 'healthy',
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        memory: process.memoryUsage()
-    });
+  res.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+  });
 });
 
 // Aladdin Agent routes
@@ -89,75 +91,76 @@ app.use('/api/aladdin', aladdinRoutes);
 
 // Trip routes
 app.get('/api/trips', (req, res) => {
-    res.json({
-        trips: [],
-        message: 'Trips endpoint ready'
-    });
+  res.json({
+    trips: [],
+    message: 'Trips endpoint ready',
+  });
 });
 
 // AI Assistant routes
 app.post('/api/ai/chat', (req, res) => {
-    const { message } = req.body;
-    
-    // Placeholder AI response
-    res.json({
-        response: `مرحباً! أنا Maya، مساعد السفر الذكي الخاص بك. سأساعدك في تخطيط رحلتك المثالية. ${message}`,
-        timestamp: new Date().toISOString()
-    });
+  const { message } = req.body;
+
+  // Placeholder AI response
+  res.json({
+    response: `مرحباً! أنا Maya، مساعد السفر الذكي الخاص بك. سأساعدك في تخطيط رحلتك المثالية. ${message}`,
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Destinations routes
 app.get('/api/destinations', (req, res) => {
-    res.json({
-        destinations: [
-            {
-                id: 1,
-                name: 'Tokyo',
-                country: 'Japan',
-                image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400',
-                rating: 4.8,
-                priceRange: '$$$',
-                bestTime: 'Mar-May, Sep-Nov'
-            },
-            {
-                id: 2,
-                name: 'Paris',
-                country: 'France',
-                image: 'https://images.unsplash.com/photo-1502602898536-47ad22581b52?w=400',
-                rating: 4.9,
-                priceRange: '$$$$',
-                bestTime: 'Apr-Jun, Sep-Oct'
-            }
-        ]
-    });
+  res.json({
+    destinations: [
+      {
+        id: 1,
+        name: 'Tokyo',
+        country: 'Japan',
+        image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400',
+        rating: 4.8,
+        priceRange: '$$$',
+        bestTime: 'Mar-May, Sep-Nov',
+      },
+      {
+        id: 2,
+        name: 'Paris',
+        country: 'France',
+        image: 'https://images.unsplash.com/photo-1502602898536-47ad22581b52?w=400',
+        rating: 4.9,
+        priceRange: '$$$$',
+        bestTime: 'Apr-Jun, Sep-Oct',
+      },
+    ],
+  });
 });
 
 // Analytics ingestion (in-memory demo) with rate limiting
 const analyticsEvents = [];
 app.post('/api/analytics/events', analyticsLimiter, (req, res) => {
-    const { type, userId, payload } = req.body || {};
-    analyticsEvents.push({
-        type: type || 'unknown',
-        userId: userId || null,
-        payload: payload || {},
-        ts: Date.now(),
-        ua: req.headers['user-agent'] || ''
-    });
-    res.json({ success: true });
+  const { type, userId, payload } = req.body || {};
+  analyticsEvents.push({
+    type: type || 'unknown',
+    userId: userId || null,
+    payload: payload || {},
+    ts: Date.now(),
+    ua: req.headers['user-agent'] || '',
+  });
+  res.json({ success: true });
 });
 
 app.get('/api/analytics/summary', (req, res) => {
-    const byType = analyticsEvents.reduce((acc, ev) => {
-        acc[ev.type] = (acc[ev.type] || 0) + 1;
-        return acc;
-    }, {});
-    const total = analyticsEvents.length;
-    res.json({ total, byType, last10: analyticsEvents.slice(-10).reverse() });
+  const byType = analyticsEvents.reduce((acc, ev) => {
+    acc[ev.type] = (acc[ev.type] || 0) + 1;
+    return acc;
+  }, {});
+  const total = analyticsEvents.length;
+  res.json({ total, byType, last10: analyticsEvents.slice(-10).reverse() });
 });
 
-// Payment routes with rate limiting
+// Payment routes with rate limiting and revenue tracking
 const paymentRoutes = require('./routes/payment');
-app.use('/api/payment', paymentLimiter, paymentRoutes);
+const revenueTracker = require('./middleware/revenueTracker');
+app.use('/api/payment', paymentLimiter, revenueTracker.trackPaymentRevenue(), paymentRoutes);
 
 // Stripe webhook route with webhook rate limiting
 const stripeWebhook = require('./routes/stripe-webhook');
@@ -175,6 +178,20 @@ app.use('/api/ai', aiLimiter, aiRoutes);
 const whatsappRoutes = require('./routes/whatsapp');
 app.use('/api/whatsapp', webhookLimiter, whatsappRoutes);
 
+<<<<<<< Current (Your changes)
+// Revenue Analytics routes
+const revenueRoutes = require('./routes/revenue');
+app.use('/api/revenue', revenueRoutes);
+=======
+// Revenue API routes with analytics rate limiting
+const revenueRoutes = require('./routes/revenue');
+app.use('/api/revenue', analyticsLimiter, revenueRoutes);
+
+// Kelo AI API routes with AI rate limiting
+const keloRoutes = require('./routes/kelo');
+app.use('/api/kelo', aiLimiter, keloRoutes);
+>>>>>>> Incoming (Background Agent changes)
+
 // Advanced Telegram Bot (only start if token is provided)
 if (process.env.TELEGRAM_BOT_TOKEN) {
   const advancedTelegramBot = require('./advanced-telegram-bot');
@@ -188,26 +205,26 @@ if (process.env.TELEGRAM_BOT_TOKEN) {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({
-        error: 'Something went wrong!',
-        message: err.message
-    });
+  console.error(err.stack);
+  res.status(500).json({
+    error: 'Something went wrong!',
+    message: err.message,
+  });
 });
 
 // 404 handler
 app.use('*', (req, res) => {
-    res.status(404).json({
-        error: 'Route not found',
-        path: req.originalUrl
-    });
+  res.status(404).json({
+    error: 'Route not found',
+    path: req.originalUrl,
+  });
 });
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`🚀 Maya Trips server running on port ${PORT}`);
-    console.log(`📱 Frontend: http://localhost:3000`);
-    console.log(`🔧 Backend API: http://localhost:${PORT}`);
+  console.log(`🚀 Maya Trips server running on port ${PORT}`);
+  console.log('📱 Frontend: http://localhost:3000');
+  console.log(`🔧 Backend API: http://localhost:${PORT}`);
 });
 
 module.exports = app;

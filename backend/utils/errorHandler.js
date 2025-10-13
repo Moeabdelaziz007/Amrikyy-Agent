@@ -29,11 +29,11 @@ class ErrorHandler {
    */
   async handle(error, context = {}) {
     const errorInfo = this.analyzeError(error, context);
-    
+
     // Log error
     logger.error(errorInfo.message, error, {
       ...context,
-      ...errorInfo
+      ...errorInfo,
     });
 
     // Track error frequency
@@ -59,7 +59,7 @@ class ErrorHandler {
       message: error.message || 'An unexpected error occurred',
       recoverable: false,
       retryable: false,
-      context
+      context,
     };
 
     // Network errors
@@ -118,7 +118,7 @@ class ErrorHandler {
    */
   trackError(errorType) {
     const now = Date.now();
-    
+
     if (!this.errorCounts.has(errorType)) {
       this.errorCounts.set(errorType, []);
     }
@@ -127,7 +127,7 @@ class ErrorHandler {
     errors.push(now);
 
     // Remove old errors outside time window
-    const recentErrors = errors.filter(time => now - time < this.timeWindow);
+    const recentErrors = errors.filter((time) => now - time < this.timeWindow);
     this.errorCounts.set(errorType, recentErrors);
   }
 
@@ -146,7 +146,7 @@ class ErrorHandler {
     this.circuitBreakers.set(errorType, {
       triggered: true,
       timestamp: Date.now(),
-      resetAfter: 300000 // 5 minutes
+      resetAfter: 300000, // 5 minutes
     });
 
     // Auto-reset after timeout
@@ -191,7 +191,7 @@ class ErrorHandler {
       VALIDATION_ERROR: 'عذراً، البيانات المدخلة غير صحيحة. يرجى التحقق والمحاولة مرة أخرى.',
       TELEGRAM_ERROR: 'عذراً، حدث خطأ في إرسال الرسالة. يرجى المحاولة مرة أخرى.',
       RATE_LIMIT_ERROR: 'عذراً، تم تجاوز الحد المسموح من الطلبات. يرجى الانتظار قليلاً.',
-      UNKNOWN_ERROR: 'عذراً، حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.'
+      UNKNOWN_ERROR: 'عذراً، حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.',
     };
 
     return {
@@ -200,8 +200,8 @@ class ErrorHandler {
         type: errorInfo.type,
         message: arabicMessages[errorInfo.type] || arabicMessages.UNKNOWN_ERROR,
         recoverable: errorInfo.recoverable,
-        retryable: errorInfo.retryable
-      }
+        retryable: errorInfo.retryable,
+      },
     };
   }
 
@@ -210,13 +210,13 @@ class ErrorHandler {
    */
   async retry(operation, maxRetries = 3, baseDelay = 1000) {
     let lastError;
-    
+
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         return await operation();
       } catch (error) {
         lastError = error;
-        
+
         const errorInfo = this.analyzeError(error);
         if (!errorInfo.retryable) {
           throw error;
@@ -225,7 +225,7 @@ class ErrorHandler {
         if (attempt < maxRetries) {
           const delay = baseDelay * Math.pow(2, attempt - 1);
           logger.warn(`Retry attempt ${attempt}/${maxRetries} after ${delay}ms`, {
-            error: error.message
+            error: error.message,
           });
           await this.sleep(delay);
         }
@@ -241,9 +241,9 @@ class ErrorHandler {
   async withTimeout(operation, timeoutMs = 30000) {
     return Promise.race([
       operation(),
-      new Promise((_, reject) => 
+      new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Operation timed out')), timeoutMs)
-      )
+      ),
     ]);
   }
 
@@ -265,7 +265,7 @@ class ErrorHandler {
   setupGracefulShutdown(cleanupFn) {
     const shutdown = async (signal) => {
       logger.info(`Received ${signal}, starting graceful shutdown...`);
-      
+
       try {
         await cleanupFn();
         logger.info('Cleanup completed successfully');
@@ -278,7 +278,7 @@ class ErrorHandler {
 
     process.on('SIGTERM', () => shutdown('SIGTERM'));
     process.on('SIGINT', () => shutdown('SIGINT'));
-    
+
     process.on('uncaughtException', (error) => {
       logger.error('Uncaught Exception', error);
       shutdown('uncaughtException');
@@ -290,7 +290,7 @@ class ErrorHandler {
   }
 
   sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 
@@ -299,5 +299,5 @@ const errorHandler = new ErrorHandler();
 
 module.exports = {
   errorHandler,
-  AppError
+  AppError,
 };

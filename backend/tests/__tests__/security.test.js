@@ -9,7 +9,7 @@ const request = require('supertest');
 jest.mock('../../utils/logger');
 jest.mock('../../utils/healthMonitor');
 jest.mock('../../database/supabase');
-jest.mock('../../src/ai/zaiClient');
+jest.mock('../../src/ai/keloClient');
 jest.mock('crypto');
 
 // Import after mocking
@@ -31,60 +31,61 @@ describe('Security Testing Suite', () => {
       "'; DROP TABLE users; --",
       "' UNION SELECT * FROM users; --",
       "admin'--",
-      "1; SELECT * FROM information_schema.tables; --",
+      '1; SELECT * FROM information_schema.tables; --',
       "' OR 1=1; --",
       "')) OR (('1'='1",
       "1' ORDER BY 1; --",
       "1' UNION SELECT username, password FROM users; --",
-      "admin'; UPDATE users SET password='hacked' WHERE username='admin'; --"
+      "admin'; UPDATE users SET password='hacked' WHERE username='admin'; --",
     ];
 
-    test.each(sqlInjectionPayloads)('should prevent SQL injection via login: %s', async (payload) => {
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send({
+    test.each(sqlInjectionPayloads)(
+      'should prevent SQL injection via login: %s',
+      async (payload) => {
+        const response = await request(app).post('/api/auth/login').send({
           username: payload,
-          password: 'test'
+          password: 'test',
         });
 
-      expect([400, 401, 422]).toContain(response.status);
-      expect(response.body.error).toBeDefined();
-      expect(response.body.error).not.toContain('syntax');
-      expect(response.body.error).not.toContain('SQL');
-    });
+        expect([400, 401, 422]).toContain(response.status);
+        expect(response.body.error).toBeDefined();
+        expect(response.body.error).not.toContain('syntax');
+        expect(response.body.error).not.toContain('SQL');
+      }
+    );
 
-    test.each(sqlInjectionPayloads)('should prevent SQL injection via search: %s', async (payload) => {
-      const response = await request(app)
-        .get('/api/trips/search')
-        .query({ q: payload });
+    test.each(sqlInjectionPayloads)(
+      'should prevent SQL injection via search: %s',
+      async (payload) => {
+        const response = await request(app).get('/api/trips/search').query({ q: payload });
 
-      expect([400, 422]).toContain(response.status);
-      expect(response.body.error).toBeDefined();
-    });
+        expect([400, 422]).toContain(response.status);
+        expect(response.body.error).toBeDefined();
+      }
+    );
 
-    test.each(sqlInjectionPayloads)('should prevent SQL injection via user input: %s', async (payload) => {
-      const response = await request(app)
-        .post('/api/trips')
-        .send({
+    test.each(sqlInjectionPayloads)(
+      'should prevent SQL injection via user input: %s',
+      async (payload) => {
+        const response = await request(app).post('/api/trips').send({
           destination: payload,
-          budget: 1000
+          budget: 1000,
         });
 
-      expect([400, 422]).toContain(response.status);
-      expect(response.body.errors).toBeDefined();
-    });
+        expect([400, 422]).toContain(response.status);
+        expect(response.body.errors).toBeDefined();
+      }
+    );
 
     test('should handle complex SQL injection attempts', async () => {
       const complexPayloads = [
         "1' AND (SELECT COUNT(*) FROM information_schema.tables) > 0; --",
         "admin'; EXEC xp_cmdshell 'net user'; --",
-        "1' UNION SELECT NULL, CONCAT(username,':',password) FROM users; --"
+        "1' UNION SELECT NULL, CONCAT(username,':',password) FROM users; --",
       ];
 
       for (const payload of complexPayloads) {
-        const response = await request(app)
-          .post('/api/user/search')
-          .send({ query: payload });
+        const response = await request(app).post('/api/user/search').send({ query: payload });
 
         expect([400, 401, 403, 422]).toContain(response.status);
       }
@@ -102,16 +103,14 @@ describe('Security Testing Suite', () => {
       '<div onmouseover="alert(\'XSS\')">Hover me</div>',
       '<a href="javascript:alert(\'XSS\')">Click me</a>',
       '"><script>alert("XSS")</script>',
-      '\'><script>alert("XSS")</script>'
+      '\'><script>alert("XSS")</script>',
     ];
 
     test.each(xssPayloads)('should sanitize XSS in user input: %s', async (payload) => {
-      const response = await request(app)
-        .post('/api/user/profile')
-        .send({
-          bio: payload,
-          name: 'Test User'
-        });
+      const response = await request(app).post('/api/user/profile').send({
+        bio: payload,
+        name: 'Test User',
+      });
 
       expect(response.status).toBe(200);
 
@@ -124,9 +123,7 @@ describe('Security Testing Suite', () => {
     });
 
     test.each(xssPayloads)('should prevent XSS in search queries: %s', async (payload) => {
-      const response = await request(app)
-        .get('/api/search')
-        .query({ q: payload });
+      const response = await request(app).get('/api/search').query({ q: payload });
 
       expect(response.status).toBe(200);
 
@@ -139,13 +136,11 @@ describe('Security Testing Suite', () => {
       const encodedPayloads = [
         '%3Cscript%3Ealert(%22XSS%22)%3C/script%3E',
         '&#x3C;script&#x3E;alert(&#x22;XSS&#x22;)&#x3C;/script&#x3E;',
-        '\\u003cscript\\u003ealert(\\u0022XSS\\u0022)\\u003c/script\\u003e'
+        '\\u003cscript\\u003ealert(\\u0022XSS\\u0022)\\u003c/script\\u003e',
       ];
 
       for (const payload of encodedPayloads) {
-        const response = await request(app)
-          .post('/api/comments')
-          .send({ content: payload });
+        const response = await request(app).post('/api/comments').send({ content: payload });
 
         expect(response.status).toBe(200);
         const responseText = JSON.stringify(response.body);
@@ -158,12 +153,11 @@ describe('Security Testing Suite', () => {
       const domXssPayloads = [
         '#<img src=x onerror=alert(1)>',
         '?<script>alert(1)</script>',
-        'javascript:alert(document.cookie)//'
+        'javascript:alert(document.cookie)//',
       ];
 
       for (const payload of domXssPayloads) {
-        const response = await request(app)
-          .get(`/api/redirect?url=${encodeURIComponent(payload)}`);
+        const response = await request(app).get(`/api/redirect?url=${encodeURIComponent(payload)}`);
 
         expect([400, 403]).toContain(response.status);
       }
@@ -172,12 +166,10 @@ describe('Security Testing Suite', () => {
 
   describe('Cross-Site Request Forgery (CSRF) Protection', () => {
     test('should require CSRF token for state-changing operations', async () => {
-      const response = await request(app)
-        .post('/api/trips')
-        .send({
-          destination: 'Test Destination',
-          budget: 1000
-        });
+      const response = await request(app).post('/api/trips').send({
+        destination: 'Test Destination',
+        budget: 1000,
+      });
 
       // Should either require CSRF token or use alternative protection
       expect([400, 403]).toContain(response.status);
@@ -185,8 +177,7 @@ describe('Security Testing Suite', () => {
 
     test('should validate CSRF token when provided', async () => {
       // First get a valid CSRF token
-      const tokenResponse = await request(app)
-        .get('/api/csrf-token');
+      const tokenResponse = await request(app).get('/api/csrf-token');
 
       expect(tokenResponse.status).toBe(200);
       expect(tokenResponse.body.token).toBeDefined();
@@ -194,13 +185,10 @@ describe('Security Testing Suite', () => {
       const validToken = tokenResponse.body.token;
 
       // Use the token in a POST request
-      const response = await request(app)
-        .post('/api/trips')
-        .set('X-CSRF-Token', validToken)
-        .send({
-          destination: 'Test Destination',
-          budget: 1000
-        });
+      const response = await request(app).post('/api/trips').set('X-CSRF-Token', validToken).send({
+        destination: 'Test Destination',
+        budget: 1000,
+      });
 
       expect([200, 201]).toContain(response.status);
     });
@@ -210,25 +198,21 @@ describe('Security Testing Suite', () => {
         'invalid-token',
         '',
         '123456789',
-        crypto.randomBytes(32).toString('hex') // Random but not from server
+        crypto.randomBytes(32).toString('hex'), // Random but not from server
       ];
 
       for (const token of invalidTokens) {
-        const response = await request(app)
-          .post('/api/trips')
-          .set('X-CSRF-Token', token)
-          .send({
-            destination: 'Test Destination',
-            budget: 1000
-          });
+        const response = await request(app).post('/api/trips').set('X-CSRF-Token', token).send({
+          destination: 'Test Destination',
+          budget: 1000,
+        });
 
         expect([400, 403]).toContain(response.status);
       }
     });
 
     test('should enforce SameSite cookie policy', async () => {
-      const response = await request(app)
-        .get('/api/auth/status');
+      const response = await request(app).get('/api/auth/status');
 
       const setCookieHeader = response.headers['set-cookie'];
       if (setCookieHeader) {
@@ -239,11 +223,10 @@ describe('Security Testing Suite', () => {
 
   describe('Input Sanitization and Validation', () => {
     test('should sanitize HTML content', async () => {
-      const htmlContent = '<p>This is <strong>bold</strong> and <em>italic</em> text</p><script>alert("XSS")</script>';
+      const htmlContent =
+        '<p>This is <strong>bold</strong> and <em>italic</em> text</p><script>alert("XSS")</script>';
 
-      const response = await request(app)
-        .post('/api/content')
-        .send({ html: htmlContent });
+      const response = await request(app).post('/api/content').send({ html: htmlContent });
 
       expect(response.status).toBe(200);
 
@@ -260,7 +243,7 @@ describe('Security Testing Suite', () => {
         { name: 'test.exe', type: 'application/x-msdownload' },
         { name: 'test.php', type: 'application/x-php' },
         { name: 'test.jsp', type: 'application/jsp' },
-        { name: 'test.html', type: 'text/html' }
+        { name: 'test.html', type: 'text/html' },
       ];
 
       for (const file of maliciousFiles) {
@@ -279,12 +262,11 @@ describe('Security Testing Suite', () => {
         '/etc/passwd',
         'C:\\Windows\\System32\\config\\sam',
         '....//....//....//etc/passwd',
-        '%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd'
+        '%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd',
       ];
 
       for (const path of pathTraversalPayloads) {
-        const response = await request(app)
-          .get(`/api/files/${encodeURIComponent(path)}`);
+        const response = await request(app).get(`/api/files/${encodeURIComponent(path)}`);
 
         expect([400, 403, 404]).toContain(response.status);
       }
@@ -294,13 +276,11 @@ describe('Security Testing Suite', () => {
       const invalidJsonSchemas = [
         { destination: '', budget: 'not-a-number' }, // Empty required field, wrong type
         { destination: 'A'.repeat(1000), budget: -1000 }, // Too long, negative
-        { destination: 'Valid', budget: 1000, extraField: 'not-allowed' } // Extra field
+        { destination: 'Valid', budget: 1000, extraField: 'not-allowed' }, // Extra field
       ];
 
       for (const payload of invalidJsonSchemas) {
-        const response = await request(app)
-          .post('/api/trips')
-          .send(payload);
+        const response = await request(app).post('/api/trips').send(payload);
 
         expect([400, 422]).toContain(response.status);
         expect(response.body.errors).toBeDefined();
@@ -311,12 +291,10 @@ describe('Security Testing Suite', () => {
       const largePayload = {
         destination: 'Test',
         budget: 1000,
-        description: 'x'.repeat(1024 * 1024) // 1MB string
+        description: 'x'.repeat(1024 * 1024), // 1MB string
       };
 
-      const response = await request(app)
-        .post('/api/trips')
-        .send(largePayload);
+      const response = await request(app).post('/api/trips').send(largePayload);
 
       expect([400, 413]).toContain(response.status);
     });
@@ -329,12 +307,10 @@ describe('Security Testing Suite', () => {
 
       // Make multiple failed login attempts
       for (let i = 0; i < maxAttempts; i++) {
-        const response = await request(app)
-          .post('/api/auth/login')
-          .send({
-            username: 'nonexistent',
-            password: 'wrongpassword'
-          });
+        const response = await request(app).post('/api/auth/login').send({
+          username: 'nonexistent',
+          password: 'wrongpassword',
+        });
 
         if (response.status === 429) {
           blockedRequests++;
@@ -345,20 +321,14 @@ describe('Security Testing Suite', () => {
     });
 
     test('should implement secure password policies', async () => {
-      const weakPasswords = [
-        '123456',
-        'password',
-        '123456789',
-        'qwerty',
-        'abc123'
-      ];
+      const weakPasswords = ['123456', 'password', '123456789', 'qwerty', 'abc123'];
 
       for (const password of weakPasswords) {
         const response = await request(app)
           .post('/api/auth/register')
           .send({
             email: `test${Date.now()}@example.com`,
-            password: password
+            password: password,
           });
 
         expect([400, 422]).toContain(response.status);
@@ -368,12 +338,10 @@ describe('Security Testing Suite', () => {
 
     test('should prevent session fixation', async () => {
       // Login and get session
-      const loginResponse = await request(app)
-        .post('/api/auth/login')
-        .send({
-          username: 'testuser',
-          password: 'testpass'
-        });
+      const loginResponse = await request(app).post('/api/auth/login').send({
+        username: 'testuser',
+        password: 'testpass',
+      });
 
       expect(loginResponse.status).toBe(200);
 
@@ -395,7 +363,7 @@ describe('Security Testing Suite', () => {
       const endpoints = [
         { path: '/api/admin/users', method: 'GET', role: 'admin' },
         { path: '/api/admin/stats', method: 'GET', role: 'admin' },
-        { path: '/api/moderator/content', method: 'PUT', role: 'moderator' }
+        { path: '/api/moderator/content', method: 'PUT', role: 'moderator' },
       ];
 
       for (const endpoint of endpoints) {
@@ -410,28 +378,21 @@ describe('Security Testing Suite', () => {
 
   describe('API Security', () => {
     test('should implement rate limiting', async () => {
-      const requests = Array(100).fill().map(() =>
-        request(app).get('/api/health')
-      );
+      const requests = Array(100)
+        .fill()
+        .map(() => request(app).get('/api/health'));
 
       const responses = await Promise.all(requests);
-      const rateLimited = responses.filter(r => r.status === 429).length;
+      const rateLimited = responses.filter((r) => r.status === 429).length;
 
       expect(rateLimited).toBeGreaterThan(0);
     });
 
     test('should validate API keys', async () => {
-      const invalidKeys = [
-        '',
-        'invalid-key',
-        '123456789',
-        crypto.randomBytes(16).toString('hex')
-      ];
+      const invalidKeys = ['', 'invalid-key', '123456789', crypto.randomBytes(16).toString('hex')];
 
       for (const key of invalidKeys) {
-        const response = await request(app)
-          .get('/api/admin/stats')
-          .set('X-API-Key', key);
+        const response = await request(app).get('/api/admin/stats').set('X-API-Key', key);
 
         expect([401, 403]).toContain(response.status);
       }
@@ -462,8 +423,7 @@ describe('Security Testing Suite', () => {
     });
 
     test('should prevent HTTP parameter pollution', async () => {
-      const response = await request(app)
-        .get('/api/search?q=test&q=malicious');
+      const response = await request(app).get('/api/search?q=test&q=malicious');
 
       expect(response.status).toBe(200);
       // Should handle only one parameter, not both
@@ -472,8 +432,7 @@ describe('Security Testing Suite', () => {
 
   describe('Data Exposure Prevention', () => {
     test('should not expose sensitive information in errors', async () => {
-      const response = await request(app)
-        .get('/api/debug/internal-error');
+      const response = await request(app).get('/api/debug/internal-error');
 
       expect(response.status).toBe(500);
 
@@ -487,7 +446,7 @@ describe('Security Testing Suite', () => {
 
       const [validResponse, invalidResponse] = await Promise.all([
         request(app).post('/api/auth/login').send({ username: validUser, password: 'wrong' }),
-        request(app).post('/api/auth/login').send({ username: invalidUser, password: 'wrong' })
+        request(app).post('/api/auth/login').send({ username: invalidUser, password: 'wrong' }),
       ]);
 
       // Response times should be similar to prevent timing attacks
@@ -499,8 +458,7 @@ describe('Security Testing Suite', () => {
     });
 
     test('should not expose directory listings', async () => {
-      const response = await request(app)
-        .get('/api/files/');
+      const response = await request(app).get('/api/files/');
 
       expect([403, 404]).toContain(response.status);
     });
@@ -512,12 +470,11 @@ describe('Security Testing Suite', () => {
         'config/database.json',
         '.env',
         'package.json',
-        'server.js'
+        'server.js',
       ];
 
       for (const file of sensitiveFiles) {
-        const response = await request(app)
-          .get(`/api/files/${encodeURIComponent(file)}`);
+        const response = await request(app).get(`/api/files/${encodeURIComponent(file)}`);
 
         expect([403, 404]).toContain(response.status);
       }
@@ -532,7 +489,7 @@ describe('Security Testing Suite', () => {
       }
 
       // Check for randomness (basic statistical test)
-      const uniqueValues = new Set(values.map(v => v.toString('hex')));
+      const uniqueValues = new Set(values.map((v) => v.toString('hex')));
       expect(uniqueValues.size).toBe(1000); // All should be unique
     });
 
@@ -549,7 +506,7 @@ describe('Security Testing Suite', () => {
         .post('/api/auth/register')
         .send({
           email: `hash${Date.now()}@example.com`,
-          password: password
+          password: password,
         });
 
       expect(response.status).toBe(201);
@@ -563,7 +520,7 @@ describe('Security Testing Suite', () => {
       const malformedTokens = [
         'invalid.jwt.token',
         'header.payload.shortsignature',
-        'header.payload.extralongsignaturethatshouldfail'
+        'header.payload.extralongsignaturethatshouldfail',
       ];
 
       for (const token of malformedTokens) {

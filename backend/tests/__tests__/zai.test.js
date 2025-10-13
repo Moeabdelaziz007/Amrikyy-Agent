@@ -11,7 +11,7 @@ const mockedFetch = fetch;
 
 // Mock environment variables
 const mockEnv = {
-  ZAI_API_KEY: 'test-zai-api-key-12345'
+  ZAI_API_KEY: 'test-zai-api-key-12345',
 };
 
 describe('Z.ai API Connection Tests', () => {
@@ -33,23 +33,23 @@ describe('Z.ai API Connection Tests', () => {
       {
         name: 'Original configuration',
         baseUrl: 'https://api.z.ai/api/paas/v4',
-        model: 'glm-4.6'
+        model: 'glm-4.6',
       },
       {
         name: 'GLM-4 model',
         baseUrl: 'https://api.z.ai/api/paas/v4',
-        model: 'glm-4'
+        model: 'glm-4',
       },
       {
         name: 'V1 endpoint',
         baseUrl: 'https://api.z.ai/v1',
-        model: 'glm-4.6'
+        model: 'glm-4.6',
       },
       {
         name: 'OpenAI compatible endpoint',
         baseUrl: 'https://api.z.ai/v1',
-        model: 'glm-4'
-      }
+        model: 'glm-4',
+      },
     ];
 
     testCases.forEach(({ name, baseUrl, model }) => {
@@ -60,50 +60,53 @@ describe('Z.ai API Connection Tests', () => {
           headers: {
             entries: () => [
               ['content-type', 'application/json'],
-              ['x-ratelimit-limit', '100']
-            ]
+              ['x-ratelimit-limit', '100'],
+            ],
           },
-          text: () => Promise.resolve(JSON.stringify({
-            choices: [{
-              message: {
-                content: `مرحبا! كيف يمكنني مساعدتك في رحلتك إلى ${model}?`
-              }
-            }],
-            usage: {
-              prompt_tokens: 10,
-              completion_tokens: 20,
-              total_tokens: 30
-            }
-          }))
+          text: () =>
+            Promise.resolve(
+              JSON.stringify({
+                choices: [
+                  {
+                    message: {
+                      content: `مرحبا! كيف يمكنني مساعدتك في رحلتك إلى ${model}?`,
+                    },
+                  },
+                ],
+                usage: {
+                  prompt_tokens: 10,
+                  completion_tokens: 20,
+                  total_tokens: 30,
+                },
+              })
+            ),
         };
 
         mockedFetch.mockResolvedValueOnce(mockResponse);
 
         const requestBody = {
           model: model,
-          messages: [
-            { role: 'user', content: 'مرحبا' }
-          ],
+          messages: [{ role: 'user', content: 'مرحبا' }],
           max_tokens: 50,
-          temperature: 0.7
+          temperature: 0.7,
         };
 
         const response = await fetch(`${baseUrl}/chat/completions`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.ZAI_API_KEY}`
+            Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
           },
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify(requestBody),
         });
 
         expect(fetch).toHaveBeenCalledWith(`${baseUrl}/chat/completions`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.ZAI_API_KEY}`
+            Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
           },
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify(requestBody),
         });
 
         expect(response.ok).toBe(true);
@@ -125,14 +128,17 @@ describe('Z.ai API Connection Tests', () => {
           ok: false,
           status: 401,
           headers: {
-            entries: () => [['content-type', 'application/json']]
+            entries: () => [['content-type', 'application/json']],
           },
-          text: () => Promise.resolve(JSON.stringify({
-            error: {
-              message: 'Invalid API key',
-              type: 'authentication_error'
-            }
-          }))
+          text: () =>
+            Promise.resolve(
+              JSON.stringify({
+                error: {
+                  message: 'Invalid API key',
+                  type: 'authentication_error',
+                },
+              })
+            ),
         };
 
         mockedFetch.mockResolvedValueOnce(mockErrorResponse);
@@ -141,16 +147,16 @@ describe('Z.ai API Connection Tests', () => {
           model: model,
           messages: [{ role: 'user', content: 'مرحبا' }],
           max_tokens: 50,
-          temperature: 0.7
+          temperature: 0.7,
         };
 
         const response = await fetch(`${baseUrl}/chat/completions`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.ZAI_API_KEY}`
+            Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
           },
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify(requestBody),
         });
 
         expect(response.ok).toBe(false);
@@ -172,25 +178,27 @@ describe('Z.ai API Connection Tests', () => {
           model: model,
           messages: [{ role: 'user', content: 'مرحبا' }],
           max_tokens: 50,
-          temperature: 0.7
+          temperature: 0.7,
         };
 
-        await expect(fetch(`${baseUrl}/chat/completions`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.ZAI_API_KEY}`
-          },
-          body: JSON.stringify(requestBody)
-        })).rejects.toThrow('Network timeout');
+        await expect(
+          fetch(`${baseUrl}/chat/completions`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
+            },
+            body: JSON.stringify(requestBody),
+          })
+        ).rejects.toThrow('Network timeout');
 
         expect(fetch).toHaveBeenCalledWith(`${baseUrl}/chat/completions`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.ZAI_API_KEY}`
+            Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
           },
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify(requestBody),
         });
       });
     });
@@ -201,9 +209,12 @@ describe('Z.ai API Connection Tests', () => {
       const mockResponse = {
         ok: true,
         status: 200,
-        text: () => Promise.resolve(JSON.stringify({
-          choices: [{ message: { content: 'Response' } }]
-        }))
+        text: () =>
+          Promise.resolve(
+            JSON.stringify({
+              choices: [{ message: { content: 'Response' } }],
+            })
+          ),
       };
 
       mockedFetch.mockResolvedValueOnce(mockResponse);
@@ -212,14 +223,14 @@ describe('Z.ai API Connection Tests', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.ZAI_API_KEY}`
+          Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
         },
         body: JSON.stringify({
           model: 'glm-4.6',
           messages: [{ role: 'user', content: 'مرحبا' }],
           max_tokens: 50,
-          temperature: 0.7
-        })
+          temperature: 0.7,
+        }),
       });
 
       expect(fetch).toHaveBeenCalledWith(
@@ -228,8 +239,8 @@ describe('Z.ai API Connection Tests', () => {
           method: 'POST',
           headers: expect.objectContaining({
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.ZAI_API_KEY}`
-          })
+            Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
+          }),
         })
       );
     });
@@ -238,9 +249,12 @@ describe('Z.ai API Connection Tests', () => {
       const mockResponse = {
         ok: true,
         status: 200,
-        text: () => Promise.resolve(JSON.stringify({
-          choices: [{ message: { content: 'Response' } }]
-        }))
+        text: () =>
+          Promise.resolve(
+            JSON.stringify({
+              choices: [{ message: { content: 'Response' } }],
+            })
+          ),
       };
 
       mockedFetch.mockResolvedValueOnce(mockResponse);
@@ -249,25 +263,25 @@ describe('Z.ai API Connection Tests', () => {
         model: 'glm-4.6',
         messages: [
           { role: 'system', content: 'أنت مساعد رحلات مفيد' },
-          { role: 'user', content: 'أريد السفر إلى تركيا' }
+          { role: 'user', content: 'أريد السفر إلى تركيا' },
         ],
         max_tokens: 100,
-        temperature: 0.8
+        temperature: 0.8,
       };
 
       await fetch('https://api.z.ai/api/paas/v4/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.ZAI_API_KEY}`
+          Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
       });
 
       expect(fetch).toHaveBeenCalledWith(
         'https://api.z.ai/api/paas/v4/chat/completions',
         expect.objectContaining({
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify(requestBody),
         })
       );
     });
@@ -280,25 +294,27 @@ describe('Z.ai API Connection Tests', () => {
         object: 'chat.completion',
         created: 1677652288,
         model: 'glm-4.6',
-        choices: [{
-          index: 0,
-          message: {
-            role: 'assistant',
-            content: 'مرحبا! أهلاً وسهلاً بك. كيف يمكنني مساعدتك في رحلتك؟'
+        choices: [
+          {
+            index: 0,
+            message: {
+              role: 'assistant',
+              content: 'مرحبا! أهلاً وسهلاً بك. كيف يمكنني مساعدتك في رحلتك؟',
+            },
+            finish_reason: 'stop',
           },
-          finish_reason: 'stop'
-        }],
+        ],
         usage: {
           prompt_tokens: 15,
           completion_tokens: 25,
-          total_tokens: 40
-        }
+          total_tokens: 40,
+        },
       };
 
       const mockResponse = {
         ok: true,
         status: 200,
-        text: () => Promise.resolve(JSON.stringify(mockResponseData))
+        text: () => Promise.resolve(JSON.stringify(mockResponseData)),
       };
 
       mockedFetch.mockResolvedValueOnce(mockResponse);
@@ -307,13 +323,13 @@ describe('Z.ai API Connection Tests', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.ZAI_API_KEY}`
+          Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
         },
         body: JSON.stringify({
           model: 'glm-4.6',
           messages: [{ role: 'user', content: 'مرحبا' }],
-          max_tokens: 50
-        })
+          max_tokens: 50,
+        }),
       });
 
       const responseText = await response.text();
@@ -328,13 +344,16 @@ describe('Z.ai API Connection Tests', () => {
       const mockRateLimitResponse = {
         ok: false,
         status: 429,
-        text: () => Promise.resolve(JSON.stringify({
-          error: {
-            message: 'Rate limit exceeded. Please try again later.',
-            type: 'rate_limit_error',
-            retry_after: 60
-          }
-        }))
+        text: () =>
+          Promise.resolve(
+            JSON.stringify({
+              error: {
+                message: 'Rate limit exceeded. Please try again later.',
+                type: 'rate_limit_error',
+                retry_after: 60,
+              },
+            })
+          ),
       };
 
       mockedFetch.mockResolvedValueOnce(mockRateLimitResponse);
@@ -343,12 +362,12 @@ describe('Z.ai API Connection Tests', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.ZAI_API_KEY}`
+          Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
         },
         body: JSON.stringify({
           model: 'glm-4.6',
-          messages: [{ role: 'user', content: 'مرحبا' }]
-        })
+          messages: [{ role: 'user', content: 'مرحبا' }],
+        }),
       });
 
       expect(response.status).toBe(429);
@@ -365,12 +384,15 @@ describe('Z.ai API Connection Tests', () => {
       const mockServerErrorResponse = {
         ok: false,
         status: 500,
-        text: () => Promise.resolve(JSON.stringify({
-          error: {
-            message: 'Internal server error',
-            type: 'server_error'
-          }
-        }))
+        text: () =>
+          Promise.resolve(
+            JSON.stringify({
+              error: {
+                message: 'Internal server error',
+                type: 'server_error',
+              },
+            })
+          ),
       };
 
       mockedFetch.mockResolvedValueOnce(mockServerErrorResponse);
@@ -379,12 +401,12 @@ describe('Z.ai API Connection Tests', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.ZAI_API_KEY}`
+          Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
         },
         body: JSON.stringify({
           model: 'glm-4.6',
-          messages: [{ role: 'user', content: 'مرحبا' }]
-        })
+          messages: [{ role: 'user', content: 'مرحبا' }],
+        }),
       });
 
       expect(response.status).toBe(500);
@@ -408,9 +430,12 @@ describe('Z.ai API Connection Tests', () => {
       const mockResponse = {
         ok: false,
         status: 401,
-        text: () => Promise.resolve(JSON.stringify({
-          error: { message: 'Missing API key' }
-        }))
+        text: () =>
+          Promise.resolve(
+            JSON.stringify({
+              error: { message: 'Missing API key' },
+            })
+          ),
       };
 
       mockedFetch.mockResolvedValueOnce(mockResponse);
@@ -419,12 +444,12 @@ describe('Z.ai API Connection Tests', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer undefined'
+          Authorization: 'Bearer undefined',
         },
         body: JSON.stringify({
           model: 'glm-4.6',
-          messages: [{ role: 'user', content: 'مرحبا' }]
-        })
+          messages: [{ role: 'user', content: 'مرحبا' }],
+        }),
       });
 
       expect(response.status).toBe(401);
@@ -439,7 +464,7 @@ describe('Z.ai API Connection Tests', () => {
       const mockResponse = {
         ok: true,
         status: 200,
-        text: () => Promise.resolve('invalid json response')
+        text: () => Promise.resolve('invalid json response'),
       };
 
       mockedFetch.mockResolvedValueOnce(mockResponse);
@@ -448,12 +473,12 @@ describe('Z.ai API Connection Tests', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.ZAI_API_KEY}`
+          Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
         },
         body: JSON.stringify({
           model: 'glm-4.6',
-          messages: [{ role: 'user', content: 'مرحبا' }]
-        })
+          messages: [{ role: 'user', content: 'مرحبا' }],
+        }),
       });
 
       const responseText = await response.text();
@@ -465,7 +490,7 @@ describe('Z.ai API Connection Tests', () => {
       const mockResponse = {
         ok: true,
         status: 200,
-        text: () => Promise.resolve('')
+        text: () => Promise.resolve(''),
       };
 
       mockedFetch.mockResolvedValueOnce(mockResponse);
@@ -474,12 +499,12 @@ describe('Z.ai API Connection Tests', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.ZAI_API_KEY}`
+          Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
         },
         body: JSON.stringify({
           model: 'glm-4.6',
-          messages: [{ role: 'user', content: 'مرحبا' }]
-        })
+          messages: [{ role: 'user', content: 'مرحبا' }],
+        }),
       });
 
       const responseText = await response.text();
@@ -490,17 +515,19 @@ describe('Z.ai API Connection Tests', () => {
       const timeoutError = new Error('Request timeout');
       mockedFetch.mockRejectedValueOnce(timeoutError);
 
-      await expect(fetch('https://api.z.ai/api/paas/v4/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.ZAI_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: 'glm-4.6',
-          messages: [{ role: 'user', content: 'مرحبا' }]
+      await expect(
+        fetch('https://api.z.ai/api/paas/v4/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
+          },
+          body: JSON.stringify({
+            model: 'glm-4.6',
+            messages: [{ role: 'user', content: 'مرحبا' }],
+          }),
         })
-      })).rejects.toThrow('Request timeout');
+      ).rejects.toThrow('Request timeout');
     });
   });
 
@@ -514,16 +541,19 @@ describe('Z.ai API Connection Tests', () => {
         .mockResolvedValueOnce({
           ok: true,
           status: 200,
-          text: () => Promise.resolve(JSON.stringify({
-            choices: [{ message: { content: 'Success!' } }]
-          }))
+          text: () =>
+            Promise.resolve(
+              JSON.stringify({
+                choices: [{ message: { content: 'Success!' } }],
+              })
+            ),
         });
 
       const testCases = [
         { baseUrl: 'https://api.z.ai/api/paas/v4', model: 'glm-4.6' },
         { baseUrl: 'https://api.z.ai/api/paas/v4', model: 'glm-4' },
         { baseUrl: 'https://api.z.ai/v1', model: 'glm-4.6' },
-        { baseUrl: 'https://api.z.ai/v1', model: 'glm-4' }
+        { baseUrl: 'https://api.z.ai/v1', model: 'glm-4' },
       ];
 
       let successCount = 0;
@@ -533,13 +563,13 @@ describe('Z.ai API Connection Tests', () => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${process.env.ZAI_API_KEY}`
+              Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
             },
             body: JSON.stringify({
               model: testCase.model,
               messages: [{ role: 'user', content: 'مرحبا' }],
-              max_tokens: 50
-            })
+              max_tokens: 50,
+            }),
           });
 
           if (response.ok) {

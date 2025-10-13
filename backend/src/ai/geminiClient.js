@@ -1,66 +1,71 @@
 /**
- * Google Gemini API Client
- * Alternative AI provider for Maya Trips
+ * Kelo AI API Client
+ * Advanced AI provider for Maya Travel Agent
+ * Replaces Gemini 2.5 with enhanced capabilities
  */
 
 const fetch = require('node-fetch');
 
-class GeminiClient {
+class KeloClient {
   constructor() {
-    this.apiKey = process.env.GEMINI_API_KEY;
-    this.baseUrl = 'https://generativelanguage.googleapis.com/v1';
-    this.model = process.env.GEMINI_MODEL || 'gemini-2.0-flash'; // Updated to latest model
-    this.maxTokens = parseInt(process.env.GEMINI_MAX_TOKENS) || 2000;
-    this.temperature = parseFloat(process.env.GEMINI_TEMPERATURE) || 0.7;
+    this.apiKey = process.env.KELO_API_KEY;
+    this.baseUrl = process.env.KELO_BASE_URL || 'https://api.kelo.ai/v1';
+    this.model = process.env.KELO_MODEL || 'kelo-travel-pro';
+    this.maxTokens = parseInt(process.env.KELO_MAX_TOKENS) || 3000;
+    this.temperature = parseFloat(process.env.KELO_TEMPERATURE) || 0.7;
+    this.contextWindow = parseInt(process.env.KELO_CONTEXT_WINDOW) || 8000;
   }
 
   /**
-   * Send chat completion request to Gemini
+   * Send chat completion request to Kelo AI
    */
   async chatCompletion(messages, options = {}) {
     try {
-      // Convert messages to Gemini format
-      const contents = this.convertMessagesToGemini(messages);
+      // Convert messages to Kelo format
+      const contents = this.convertMessagesToKelo(messages);
       
       const requestBody = {
-        contents: contents,
-        generationConfig: {
-          temperature: options.temperature || this.temperature,
-          maxOutputTokens: options.maxTokens || this.maxTokens,
-          topP: 0.8,
-          topK: 40
-        }
+        model: this.model,
+        messages: contents,
+        max_tokens: options.maxTokens || this.maxTokens,
+        temperature: options.temperature || this.temperature,
+        top_p: 0.9,
+        frequency_penalty: 0.1,
+        presence_penalty: 0.1,
+        stream: false,
+        context_window: this.contextWindow
       };
 
-      const response = await fetch(
-        `${this.baseUrl}/models/${this.model}:generateContent?key=${this.apiKey}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(requestBody)
-        }
-      );
+      const response = await fetch(`${this.baseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.apiKey}`,
+          'X-Kelo-Version': '2024-12'
+        },
+        body: JSON.stringify(requestBody)
+      });
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Gemini API Error ${response.status}: ${errorText}`);
+        throw new Error(`Kelo API Error ${response.status}: ${errorText}`);
       }
 
       const data = await response.json();
       
       // Extract content from response
-      const content = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated';
+      const content = data.choices?.[0]?.message?.content || 'No response generated';
       
       return {
         success: true,
         data: data,
-        content: content
+        content: content,
+        usage: data.usage,
+        model: data.model
       };
 
     } catch (error) {
-      console.error('Gemini API Error:', error);
+      console.error('Kelo API Error:', error);
       return {
         success: false,
         error: error.message,
@@ -70,30 +75,17 @@ class GeminiClient {
   }
 
   /**
-   * Convert OpenAI-style messages to Gemini format
+   * Convert OpenAI-style messages to Kelo format
    */
-  convertMessagesToGemini(messages) {
-    const contents = [];
-    let systemInstruction = '';
-    
-    for (const msg of messages) {
-      if (msg.role === 'system') {
-        systemInstruction = msg.content;
-        continue;
+  convertMessagesToKelo(messages) {
+    return messages.map(msg => ({
+      role: msg.role,
+      content: msg.content,
+      metadata: {
+        timestamp: new Date().toISOString(),
+        source: 'maya-travel-agent'
       }
-      
-      contents.push({
-        role: msg.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: msg.content }]
-      });
-    }
-    
-    // Prepend system instruction to first user message if exists
-    if (systemInstruction && contents.length > 0 && contents[0].role === 'user') {
-      contents[0].parts[0].text = `${systemInstruction}\n\n${contents[0].parts[0].text}`;
-    }
-    
-    return contents;
+    }));
   }
 
   /**

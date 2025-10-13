@@ -17,7 +17,7 @@ const {
   getTestUser,
   deleteTestUser,
   generateTestTelegramId,
-  testSupabaseClient
+  testSupabaseClient,
 } = require('../utils/database-test-helpers');
 
 describe('Supabase Database Operations', () => {
@@ -72,7 +72,7 @@ describe('Supabase Database Operations', () => {
       const userData = {
         username: 'testuser',
         avatar_url: 'https://example.com/avatar.jpg',
-        preferences: { language: 'ar', currency: 'USD' }
+        preferences: { language: 'ar', currency: 'USD' },
       };
 
       const profile = await db.createUserProfile(testTelegramId, userData);
@@ -88,7 +88,7 @@ describe('Supabase Database Operations', () => {
       // Create a test user first
       const userData = {
         username: 'testuser',
-        avatar_url: 'https://example.com/avatar.jpg'
+        avatar_url: 'https://example.com/avatar.jpg',
       };
 
       await db.createUserProfile(testTelegramId, userData);
@@ -110,7 +110,7 @@ describe('Supabase Database Operations', () => {
       // Create initial profile
       const userData = {
         username: 'testuser',
-        preferences: { language: 'ar' }
+        preferences: { language: 'ar' },
       };
 
       await db.createUserProfile(testTelegramId, userData);
@@ -118,7 +118,7 @@ describe('Supabase Database Operations', () => {
       // Update the profile
       const updates = {
         username: 'updateduser',
-        preferences: { language: 'en', currency: 'EUR' }
+        preferences: { language: 'en', currency: 'EUR' },
       };
 
       const updatedProfile = await db.updateUserProfile(testTelegramId, updates);
@@ -131,15 +131,14 @@ describe('Supabase Database Operations', () => {
     it('should handle duplicate telegram_id on profile creation', async () => {
       const userData = {
         username: 'testuser',
-        preferences: { language: 'ar' }
+        preferences: { language: 'ar' },
       };
 
       // Create first profile
       await db.createUserProfile(testTelegramId, userData);
 
       // Try to create duplicate
-      await expect(db.createUserProfile(testTelegramId, userData))
-        .rejects.toThrow();
+      await expect(db.createUserProfile(testTelegramId, userData)).rejects.toThrow();
     });
   });
 
@@ -148,7 +147,7 @@ describe('Supabase Database Operations', () => {
       // Create a test user for conversation tests
       await createTestUser({
         telegram_id: testTelegramId,
-        username: 'conversation_user'
+        username: 'conversation_user',
       });
     });
 
@@ -215,14 +214,14 @@ describe('Supabase Database Operations', () => {
         title: 'Test Offer 1',
         destination: 'Test City 1',
         price: 500,
-        category: 'budget'
+        category: 'budget',
       });
 
       await createTestTravelOffer({
         title: 'Test Offer 2',
         destination: 'Test City 2',
         price: 1500,
-        category: 'luxury'
+        category: 'luxury',
       });
 
       const offers = await db.getTravelOffers();
@@ -236,13 +235,13 @@ describe('Supabase Database Operations', () => {
       await createTestTravelOffer({
         title: 'Istanbul Offer',
         destination: 'Istanbul, Turkey',
-        price: 800
+        price: 800,
       });
 
       await createTestTravelOffer({
         title: 'Dubai Offer',
         destination: 'Dubai, UAE',
-        price: 1200
+        price: 1200,
       });
 
       const istanbulOffers = await db.getTravelOffers({ destination: 'Istanbul' });
@@ -256,12 +255,12 @@ describe('Supabase Database Operations', () => {
     it('should filter offers by maximum price', async () => {
       await createTestTravelOffer({
         title: 'Budget Offer',
-        price: 500
+        price: 500,
       });
 
       await createTestTravelOffer({
         title: 'Luxury Offer',
-        price: 2000
+        price: 2000,
       });
 
       const budgetOffers = await db.getTravelOffers({ maxPrice: 1000 });
@@ -276,13 +275,13 @@ describe('Supabase Database Operations', () => {
       await createTestTravelOffer({
         title: 'Budget Trip',
         category: 'budget',
-        price: 400
+        price: 400,
       });
 
       await createTestTravelOffer({
         title: 'Luxury Trip',
         category: 'luxury',
-        price: 2000
+        price: 2000,
       });
 
       const budgetOffers = await db.getTravelOffers({ category: 'budget' });
@@ -305,7 +304,7 @@ describe('Supabase Database Operations', () => {
         durationDays: 5,
         includes: ['Flight', 'Hotel'],
         imageUrl: 'https://example.com/offer.jpg',
-        priority: 8
+        priority: 8,
       };
 
       const createdOffer = await db.createTravelOffer(offerData);
@@ -321,13 +320,13 @@ describe('Supabase Database Operations', () => {
       await createTestTravelOffer({
         title: 'Romantic Paris Getaway',
         destination: 'Paris, France',
-        description: 'Experience the city of love'
+        description: 'Experience the city of love',
       });
 
       await createTestTravelOffer({
         title: 'Tokyo Adventure',
         destination: 'Tokyo, Japan',
-        description: 'Explore modern and traditional Japan'
+        description: 'Explore modern and traditional Japan',
       });
 
       const parisOffers = await db.searchOffers('Paris');
@@ -345,7 +344,7 @@ describe('Supabase Database Operations', () => {
       await createTestUser({
         telegram_id: testTelegramId,
         username: 'preference_user',
-        preferences: { language: 'ar' }
+        preferences: { language: 'ar' },
       });
     });
 
@@ -362,7 +361,7 @@ describe('Supabase Database Operations', () => {
         destination: 'Paris, France',
         duration: 7,
         budget: 1500,
-        status: 'completed'
+        status: 'completed',
       };
 
       const result = await db.addToTravelHistory(testTelegramId, tripData);
@@ -378,7 +377,7 @@ describe('Supabase Database Operations', () => {
       // Add travel history
       await db.addToTravelHistory(testTelegramId, {
         destination: 'Paris, France',
-        status: 'completed'
+        status: 'completed',
       });
 
       // Set preferences
@@ -390,14 +389,14 @@ describe('Supabase Database Operations', () => {
         title: 'Budget Paris Trip',
         destination: 'Paris, France',
         price: 800,
-        category: 'budget'
+        category: 'budget',
       });
 
       await createTestTravelOffer({
         title: 'Expensive Tokyo Trip',
         destination: 'Tokyo, Japan',
         price: 2500,
-        category: 'luxury'
+        category: 'luxury',
       });
 
       const personalizedOffers = await db.getPersonalizedOffers(testTelegramId);
@@ -407,7 +406,7 @@ describe('Supabase Database Operations', () => {
       expect(personalizedOffers.length).toBeGreaterThan(0);
 
       // Should prioritize Paris offers due to travel history
-      const parisOffers = personalizedOffers.filter(offer =>
+      const parisOffers = personalizedOffers.filter((offer) =>
         offer.destination.toLowerCase().includes('paris')
       );
       expect(parisOffers.length).toBeGreaterThan(0);
@@ -422,16 +421,12 @@ describe('Supabase Database Operations', () => {
       testOffer = await createTestTravelOffer({
         title: 'Interaction Test Offer',
         destination: 'Test City',
-        price: 500
+        price: 500,
       });
     });
 
     it('should track offer interaction successfully', async () => {
-      const interaction = await db.trackOfferInteraction(
-        testTelegramId,
-        testOffer.id,
-        'view'
-      );
+      const interaction = await db.trackOfferInteraction(testTelegramId, testOffer.id, 'view');
 
       expect(interaction).toBeDefined();
       expect(interaction.telegram_id).toBe(testTelegramId);
@@ -466,9 +461,9 @@ describe('Supabase Database Operations', () => {
           {
             destination: 'Paris',
             status: 'completed',
-            timestamp: new Date().toISOString()
-          }
-        ]
+            timestamp: new Date().toISOString(),
+          },
+        ],
       });
 
       // Add some messages
@@ -514,7 +509,7 @@ describe('Supabase Database Operations', () => {
       // Try to create user with invalid data
       const invalidUserData = {
         username: null, // Should be string or null but testing edge case
-        preferences: 'invalid_preferences' // Should be object
+        preferences: 'invalid_preferences', // Should be object
       };
 
       // This should not throw but handle gracefully
@@ -529,7 +524,7 @@ describe('Supabase Database Operations', () => {
         promises.push(
           db.createUserProfile(testTelegramId + i, {
             username: `concurrent_user_${i}`,
-            preferences: { language: 'ar' }
+            preferences: { language: 'ar' },
           })
         );
       }
@@ -548,22 +543,21 @@ describe('Supabase Database Operations', () => {
     it('should enforce unique telegram_id constraint', async () => {
       const userData = {
         username: 'unique_test_user',
-        preferences: { language: 'ar' }
+        preferences: { language: 'ar' },
       };
 
       // Create first user
       await db.createUserProfile(testTelegramId, userData);
 
       // Try to create duplicate - should fail
-      await expect(db.createUserProfile(testTelegramId, userData))
-        .rejects.toThrow();
+      await expect(db.createUserProfile(testTelegramId, userData)).rejects.toThrow();
     });
 
     it('should handle null values appropriately', async () => {
       const userData = {
         username: null,
         avatar_url: null,
-        preferences: {}
+        preferences: {},
       };
 
       const profile = await db.createUserProfile(testTelegramId, userData);
@@ -577,7 +571,7 @@ describe('Supabase Database Operations', () => {
     it('should validate required fields for offers', async () => {
       const invalidOfferData = {
         // Missing required fields like title, destination, price
-        description: 'Invalid offer without required fields'
+        description: 'Invalid offer without required fields',
       };
 
       // Should handle missing required fields gracefully
@@ -598,7 +592,7 @@ describe('Supabase Database Operations', () => {
         bulkPromises.push(
           db.createUserProfile(testTelegramId + i, {
             username: `bulk_user_${i}`,
-            preferences: { language: 'ar' }
+            preferences: { language: 'ar' },
           })
         );
       }
@@ -614,7 +608,7 @@ describe('Supabase Database Operations', () => {
       // Create a user and add many messages
       await createTestUser({
         telegram_id: testTelegramId,
-        username: 'history_user'
+        username: 'history_user',
       });
 
       // Add 50 messages

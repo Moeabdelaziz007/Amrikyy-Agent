@@ -6,14 +6,14 @@
 const logger = require('../../utils/logger');
 const conversationManager = require('../../utils/conversationManager');
 const healthMonitor = require('../../utils/healthMonitor');
-const ZaiClient = require('../../src/ai/zaiClient');
+const KeloClient = require('../../src/ai/keloClient');
 const SupabaseDB = require('../../database/supabase');
 
 // Mock external dependencies
 jest.mock('../../utils/logger');
 jest.mock('../../utils/conversationManager');
 jest.mock('../../utils/healthMonitor');
-jest.mock('../../src/ai/zaiClient');
+jest.mock('../../src/ai/keloClient');
 jest.mock('../../database/supabase');
 
 describe('Bot Functionality Tests', () => {
@@ -53,8 +53,8 @@ describe('Bot Functionality Tests', () => {
         metadata: {
           sessionStart: Date.now(),
           messageCount: 0,
-          lastCommand: null
-        }
+          lastCommand: null,
+        },
       };
 
       // Mock the actual implementation since it's a complex class
@@ -77,7 +77,7 @@ describe('Bot Functionality Tests', () => {
         userId: testUserId,
         state: 'idle',
         history: [],
-        metadata: { messageCount: 0 }
+        metadata: { messageCount: 0 },
       };
 
       conversationManager.getContext = jest.fn().mockResolvedValue(mockContext);
@@ -96,7 +96,7 @@ describe('Bot Functionality Tests', () => {
         userId: testUserId,
         state: state,
         data: {},
-        lastActivity: Date.now()
+        lastActivity: Date.now(),
       };
 
       conversationManager.setState = jest.fn().mockResolvedValue(mockContext);
@@ -110,7 +110,7 @@ describe('Bot Functionality Tests', () => {
       const testUserId = 'test_user_123';
       const mockHistory = [
         { message: 'Hello', is_user: true, timestamp: new Date().toISOString() },
-        { message: 'Hi there!', is_user: false, timestamp: new Date().toISOString() }
+        { message: 'Hi there!', is_user: false, timestamp: new Date().toISOString() },
       ];
 
       conversationManager.getHistory = jest.fn().mockResolvedValue(mockHistory);
@@ -131,7 +131,7 @@ describe('Bot Functionality Tests', () => {
         sessionDuration: 300000,
         lastActivity: Date.now(),
         hasProfile: false,
-        dataCollected: 2
+        dataCollected: 2,
       };
 
       conversationManager.getSummary = jest.fn().mockResolvedValue(mockSummary);
@@ -167,8 +167,8 @@ describe('Bot Functionality Tests', () => {
         averageSessionDuration: 300000,
         stateDistribution: {
           idle: 3,
-          collecting_destination: 2
-        }
+          collecting_destination: 2,
+        },
       };
 
       conversationManager.getStatistics = jest.fn().mockReturnValue(mockStats);
@@ -186,11 +186,11 @@ describe('Bot Functionality Tests', () => {
     test('should get travel offers successfully', async () => {
       const mockOffers = [
         { id: 1, title: 'Test Trip 1', price: 100, destination: 'Turkey' },
-        { id: 2, title: 'Test Trip 2', price: 200, destination: 'Dubai' }
+        { id: 2, title: 'Test Trip 2', price: 200, destination: 'Dubai' },
       ];
 
       const mockDb = {
-        getTravelOffers: jest.fn().mockResolvedValue(mockOffers)
+        getTravelOffers: jest.fn().mockResolvedValue(mockOffers),
       };
 
       SupabaseDB.mockImplementation(() => mockDb);
@@ -210,7 +210,7 @@ describe('Bot Functionality Tests', () => {
       const mockError = new Error('Database connection failed');
 
       const mockDb = {
-        getTravelOffers: jest.fn().mockRejectedValue(mockError)
+        getTravelOffers: jest.fn().mockRejectedValue(mockError),
       };
 
       SupabaseDB.mockImplementation(() => mockDb);
@@ -227,7 +227,7 @@ describe('Bot Functionality Tests', () => {
       const mockHealthCheck = { status: 'healthy', timestamp: new Date() };
 
       const mockZaiClient = {
-        healthCheck: jest.fn().mockResolvedValue(mockHealthCheck)
+        healthCheck: jest.fn().mockResolvedValue(mockHealthCheck),
       };
 
       ZaiClient.mockImplementation(() => mockZaiClient);
@@ -244,7 +244,7 @@ describe('Bot Functionality Tests', () => {
       const mockHealthCheck = { status: 'unhealthy', error: 'API key invalid' };
 
       const mockZaiClient = {
-        healthCheck: jest.fn().mockResolvedValue(mockHealthCheck)
+        healthCheck: jest.fn().mockResolvedValue(mockHealthCheck),
       };
 
       ZaiClient.mockImplementation(() => mockZaiClient);
@@ -260,7 +260,7 @@ describe('Bot Functionality Tests', () => {
       const mockError = new Error('Network timeout');
 
       const mockZaiClient = {
-        healthCheck: jest.fn().mockRejectedValue(mockError)
+        healthCheck: jest.fn().mockRejectedValue(mockError),
       };
 
       ZaiClient.mockImplementation(() => mockZaiClient);
@@ -279,7 +279,7 @@ describe('Bot Functionality Tests', () => {
         uptime: 3600,
         memory: { used: 100, total: 1000 },
         timestamp: new Date(),
-        version: '1.0.0'
+        version: '1.0.0',
       };
 
       healthMonitor.getHealth = jest.fn().mockReturnValue(mockHealth);
@@ -300,7 +300,7 @@ describe('Bot Functionality Tests', () => {
         errorRate: 0.02,
         uptime: 99.9,
         totalRequests: 1000,
-        activeConnections: 10
+        activeConnections: 10,
       };
 
       healthMonitor.getMetricsSummary = jest.fn().mockReturnValue(mockMetrics);
@@ -317,13 +317,9 @@ describe('Bot Functionality Tests', () => {
 
   describe('Intent Analysis', () => {
     test('should analyze Arabic travel messages', () => {
-      const testMessages = [
-        'أريد السفر إلى تركيا',
-        'ما هي ميزانية الرحلة؟',
-        'متى أفضل وقت للسفر؟'
-      ];
+      const testMessages = ['أريد السفر إلى تركيا', 'ما هي ميزانية الرحلة؟', 'متى أفضل وقت للسفر؟'];
 
-      testMessages.forEach(message => {
+      testMessages.forEach((message) => {
         const intent = conversationManager.analyzeIntent(message);
         expect(intent).toBeDefined();
         expect(intent).toHaveProperty('destination');
@@ -397,7 +393,7 @@ describe('Bot Functionality Tests', () => {
         history: [],
         profile: null,
         lastActivity: Date.now(),
-        metadata: { sessionStart: Date.now(), messageCount: 0 }
+        metadata: { sessionStart: Date.now(), messageCount: 0 },
       };
 
       conversationManager.getContext = jest.fn().mockResolvedValue(mockContext);
@@ -411,13 +407,16 @@ describe('Bot Functionality Tests', () => {
         sessionDuration: 60000,
         lastActivity: Date.now(),
         hasProfile: false,
-        dataCollected: 1
+        dataCollected: 1,
       });
 
       // Test complete flow
       const context = await conversationManager.getContext(testUserId);
       await conversationManager.addMessage(testUserId, 'Hello', true);
-      await conversationManager.setState(testUserId, conversationManager.states.COLLECTING_DESTINATION);
+      await conversationManager.setState(
+        testUserId,
+        conversationManager.states.COLLECTING_DESTINATION
+      );
       const history = await conversationManager.getHistory(testUserId);
       const summary = await conversationManager.getSummary(testUserId);
 

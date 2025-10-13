@@ -12,7 +12,7 @@ class ConversationManager {
     this.activeConversations = new Map();
     this.conversationTimeout = 30 * 60 * 1000; // 30 minutes
     this.maxHistoryLength = 50;
-    
+
     // Conversation states
     this.states = {
       IDLE: 'idle',
@@ -22,9 +22,9 @@ class ConversationManager {
       COLLECTING_PREFERENCES: 'collecting_preferences',
       GENERATING_PLAN: 'generating_plan',
       PAYMENT_FLOW: 'payment_flow',
-      SUPPORT: 'support'
+      SUPPORT: 'support',
     };
-    
+
     // Start cleanup interval
     this.startCleanupInterval();
   }
@@ -54,8 +54,8 @@ class ConversationManager {
       metadata: {
         sessionStart: Date.now(),
         messageCount: 0,
-        lastCommand: null
-      }
+        lastCommand: null,
+      },
     };
 
     this.activeConversations.set(userId, context);
@@ -67,10 +67,10 @@ class ConversationManager {
    */
   async setState(userId, newState, data = {}) {
     const context = await this.getContext(userId);
-    
+
     logger.debug(`State transition: ${context.state} -> ${newState}`, {
       user_id: userId,
-      data
+      data,
     });
 
     context.state = newState;
@@ -86,16 +86,16 @@ class ConversationManager {
    */
   async addMessage(userId, message, isUser = true) {
     const context = await this.getContext(userId);
-    
+
     const messageObj = {
       message,
       is_user: isUser,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     // Add to context history
     context.history.push(messageObj);
-    
+
     // Trim history if too long
     if (context.history.length > this.maxHistoryLength) {
       context.history = context.history.slice(-this.maxHistoryLength);
@@ -128,7 +128,7 @@ class ConversationManager {
     context.history = [];
     context.state = this.states.IDLE;
     context.data = {};
-    
+
     logger.info('Conversation history cleared', { user_id: userId });
     return context;
   }
@@ -138,7 +138,7 @@ class ConversationManager {
    */
   async getSummary(userId) {
     const context = await this.getContext(userId);
-    
+
     return {
       userId,
       state: context.state,
@@ -146,7 +146,7 @@ class ConversationManager {
       sessionDuration: Date.now() - context.metadata.sessionStart,
       lastActivity: context.lastActivity,
       hasProfile: !!context.profile,
-      dataCollected: Object.keys(context.data).length
+      dataCollected: Object.keys(context.data).length,
     };
   }
 
@@ -155,30 +155,43 @@ class ConversationManager {
    */
   analyzeIntent(message) {
     const lowerMessage = message.toLowerCase();
-    
+
     // Destination intent
-    const destinations = ['تركيا', 'دبي', 'مصر', 'السعودية', 'ماليزيا', 'تايلاند', 'اليونان', 'إيطاليا'];
-    const foundDestination = destinations.find(dest => lowerMessage.includes(dest.toLowerCase()));
-    
+    const destinations = [
+      'تركيا',
+      'دبي',
+      'مصر',
+      'السعودية',
+      'ماليزيا',
+      'تايلاند',
+      'اليونان',
+      'إيطاليا',
+    ];
+    const foundDestination = destinations.find((dest) => lowerMessage.includes(dest.toLowerCase()));
+
     // Budget intent
     const budgetKeywords = ['ميزانية', 'سعر', 'تكلفة', 'كم', 'رخيص', 'غالي'];
-    const hasBudgetIntent = budgetKeywords.some(keyword => lowerMessage.includes(keyword));
-    
+    const hasBudgetIntent = budgetKeywords.some((keyword) => lowerMessage.includes(keyword));
+
     // Date intent
     const dateKeywords = ['متى', 'تاريخ', 'موعد', 'يوم', 'شهر', 'أسبوع'];
-    const hasDateIntent = dateKeywords.some(keyword => lowerMessage.includes(keyword));
-    
+    const hasDateIntent = dateKeywords.some((keyword) => lowerMessage.includes(keyword));
+
     // Activity intent
     const activityKeywords = ['شاطئ', 'جبال', 'تسوق', 'مغامرة', 'استرخاء', 'ثقافة', 'تاريخ'];
-    const foundActivity = activityKeywords.find(keyword => lowerMessage.includes(keyword));
-    
+    const foundActivity = activityKeywords.find((keyword) => lowerMessage.includes(keyword));
+
     return {
       destination: foundDestination || null,
       hasBudgetIntent,
       hasDateIntent,
       activity: foundActivity || null,
-      isQuestion: lowerMessage.includes('؟') || lowerMessage.includes('كيف') || lowerMessage.includes('ماذا'),
-      isGreeting: lowerMessage.includes('مرحبا') || lowerMessage.includes('السلام') || lowerMessage.includes('أهلا')
+      isQuestion:
+        lowerMessage.includes('؟') || lowerMessage.includes('كيف') || lowerMessage.includes('ماذا'),
+      isGreeting:
+        lowerMessage.includes('مرحبا') ||
+        lowerMessage.includes('السلام') ||
+        lowerMessage.includes('أهلا'),
     };
   }
 
@@ -196,24 +209,24 @@ class ConversationManager {
           return {
             action: 'collect_dates',
             nextState: this.states.COLLECTING_DATES,
-            data: { destination: intent.destination }
+            data: { destination: intent.destination },
           };
         }
         if (intent.hasBudgetIntent) {
           return {
             action: 'collect_budget',
-            nextState: this.states.COLLECTING_BUDGET
+            nextState: this.states.COLLECTING_BUDGET,
           };
         }
         if (intent.isGreeting) {
           return {
             action: 'greet',
-            nextState: this.states.IDLE
+            nextState: this.states.IDLE,
           };
         }
         return {
           action: 'ask_destination',
-          nextState: this.states.COLLECTING_DESTINATION
+          nextState: this.states.COLLECTING_DESTINATION,
         };
 
       case this.states.COLLECTING_DESTINATION:
@@ -221,45 +234,45 @@ class ConversationManager {
           return {
             action: 'collect_dates',
             nextState: this.states.COLLECTING_DATES,
-            data: { destination: intent.destination }
+            data: { destination: intent.destination },
           };
         }
         return {
           action: 'clarify_destination',
-          nextState: this.states.COLLECTING_DESTINATION
+          nextState: this.states.COLLECTING_DESTINATION,
         };
 
       case this.states.COLLECTING_DATES:
         return {
           action: 'collect_budget',
           nextState: this.states.COLLECTING_BUDGET,
-          data: { dates: message }
+          data: { dates: message },
         };
 
       case this.states.COLLECTING_BUDGET:
         return {
           action: 'collect_preferences',
           nextState: this.states.COLLECTING_PREFERENCES,
-          data: { budget: message }
+          data: { budget: message },
         };
 
       case this.states.COLLECTING_PREFERENCES:
         return {
           action: 'generate_plan',
           nextState: this.states.GENERATING_PLAN,
-          data: { preferences: message }
+          data: { preferences: message },
         };
 
       case this.states.GENERATING_PLAN:
         return {
           action: 'show_plan',
-          nextState: this.states.IDLE
+          nextState: this.states.IDLE,
         };
 
       default:
         return {
           action: 'default_response',
-          nextState: this.states.IDLE
+          nextState: this.states.IDLE,
         };
     }
   }
@@ -269,22 +282,22 @@ class ConversationManager {
    */
   async updateProfileFromConversation(userId) {
     const context = await this.getContext(userId);
-    
+
     if (!context.profile) {
       // Create new profile
       await this.db.createUserProfile(userId, {
-        preferences: context.data
+        preferences: context.data,
       });
     } else {
       // Update existing profile
       await this.db.updateUserProfile(userId, {
-        preferences: { ...context.profile.preferences, ...context.data }
+        preferences: { ...context.profile.preferences, ...context.data },
       });
     }
 
     logger.info('Profile updated from conversation', {
       user_id: userId,
-      data_keys: Object.keys(context.data)
+      data_keys: Object.keys(context.data),
     });
   }
 
@@ -306,21 +319,24 @@ class ConversationManager {
    * Cleanup inactive conversations
    */
   startCleanupInterval() {
-    setInterval(() => {
-      const now = Date.now();
-      let cleaned = 0;
+    setInterval(
+      () => {
+        const now = Date.now();
+        let cleaned = 0;
 
-      for (const [userId, context] of this.activeConversations.entries()) {
-        if (now - context.lastActivity > this.conversationTimeout) {
-          this.activeConversations.delete(userId);
-          cleaned++;
+        for (const [userId, context] of this.activeConversations.entries()) {
+          if (now - context.lastActivity > this.conversationTimeout) {
+            this.activeConversations.delete(userId);
+            cleaned++;
+          }
         }
-      }
 
-      if (cleaned > 0) {
-        logger.info(`Cleaned up ${cleaned} inactive conversations`);
-      }
-    }, 5 * 60 * 1000); // Every 5 minutes
+        if (cleaned > 0) {
+          logger.info(`Cleaned up ${cleaned} inactive conversations`);
+        }
+      },
+      5 * 60 * 1000
+    ); // Every 5 minutes
   }
 
   /**
@@ -335,17 +351,19 @@ class ConversationManager {
    */
   getStatistics() {
     const contexts = Array.from(this.activeConversations.values());
-    
+
     return {
       activeConversations: contexts.length,
       totalMessages: contexts.reduce((sum, ctx) => sum + ctx.metadata.messageCount, 0),
-      averageSessionDuration: contexts.length > 0
-        ? contexts.reduce((sum, ctx) => sum + (Date.now() - ctx.metadata.sessionStart), 0) / contexts.length
-        : 0,
+      averageSessionDuration:
+        contexts.length > 0
+          ? contexts.reduce((sum, ctx) => sum + (Date.now() - ctx.metadata.sessionStart), 0) /
+            contexts.length
+          : 0,
       stateDistribution: contexts.reduce((acc, ctx) => {
         acc[ctx.state] = (acc[ctx.state] || 0) + 1;
         return acc;
-      }, {})
+      }, {}),
     };
   }
 }

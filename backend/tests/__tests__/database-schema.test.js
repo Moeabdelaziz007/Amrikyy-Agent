@@ -12,7 +12,7 @@ const {
   createTestExpense,
   createTestTravelOffer,
   generateTestTelegramId,
-  testSupabaseClient
+  testSupabaseClient,
 } = require('../utils/database-test-helpers');
 
 describe('Database Schema Operations', () => {
@@ -46,14 +46,11 @@ describe('Database Schema Operations', () => {
         'expenses',
         'payments',
         'ai_conversations',
-        'users'
+        'users',
       ];
 
       for (const tableName of tables) {
-        const { data, error } = await testSupabaseClient
-          .from(tableName)
-          .select('count')
-          .limit(1);
+        const { data, error } = await testSupabaseClient.from(tableName).select('count').limit(1);
 
         // Should not get a "relation does not exist" error
         expect(error).not.toMatch(/relation .* does not exist/);
@@ -62,8 +59,9 @@ describe('Database Schema Operations', () => {
 
     it('should verify table structures and columns', async () => {
       // Test profiles table structure
-      const { data: profileColumns } = await testSupabaseClient
-        .rpc('get_table_columns', { table_name: 'profiles' });
+      const { data: profileColumns } = await testSupabaseClient.rpc('get_table_columns', {
+        table_name: 'profiles',
+      });
 
       // If the RPC function doesn't exist, we'll skip this detailed check
       // and rely on the basic table existence check above
@@ -81,29 +79,30 @@ describe('Database Schema Operations', () => {
     it('should enforce unique constraints on profiles.telegram_id', async () => {
       const userData = {
         telegram_id: testTelegramId,
-        username: 'unique_constraint_test'
+        username: 'unique_constraint_test',
       };
 
       // Create first profile
       await createTestUser(userData);
 
       // Try to create duplicate - should fail
-      await expect(createTestUser(userData))
-        .rejects.toThrow();
+      await expect(createTestUser(userData)).rejects.toThrow();
     });
 
     it('should enforce unique constraints on users.email', async () => {
       const { data: user1 } = await testSupabaseClient.auth.signUp({
         email: 'test@example.com',
-        password: 'testpassword123'
+        password: 'testpassword123',
       });
 
       if (user1?.user) {
         // Try to create another user with same email
-        await expect(testSupabaseClient.auth.signUp({
-          email: 'test@example.com',
-          password: 'differentpassword123'
-        })).rejects.toThrow();
+        await expect(
+          testSupabaseClient.auth.signUp({
+            email: 'test@example.com',
+            password: 'differentpassword123',
+          })
+        ).rejects.toThrow();
       }
     });
   });
@@ -116,12 +115,12 @@ describe('Database Schema Operations', () => {
       // Create test user and trip for relationship tests
       testUser = await createTestUser({
         telegram_id: testTelegramId,
-        username: 'relationship_test_user'
+        username: 'relationship_test_user',
       });
 
       testTrip = await createTestTrip(testUser.id, {
         destination: 'Test City',
-        budget: 1000
+        budget: 1000,
       });
     });
 
@@ -130,7 +129,7 @@ describe('Database Schema Operations', () => {
       const expense = await createTestExpense(testTrip.id, testUser.id, {
         category: 'food',
         amount: 50,
-        description: 'Test expense'
+        description: 'Test expense',
       });
 
       expect(expense).toBeDefined();
@@ -143,7 +142,7 @@ describe('Database Schema Operations', () => {
       await createTestExpense(testTrip.id, testUser.id, {
         category: 'accommodation',
         amount: 200,
-        description: 'Hotel booking'
+        description: 'Hotel booking',
       });
 
       // Delete the trip
@@ -171,7 +170,7 @@ describe('Database Schema Operations', () => {
         category: 'food',
         amount: 50,
         description: 'Invalid expense',
-        date: new Date().toISOString().split('T')[0]
+        date: new Date().toISOString().split('T')[0],
       };
 
       await expect(
@@ -184,7 +183,7 @@ describe('Database Schema Operations', () => {
     it('should enforce trip status check constraint', async () => {
       const testUser = await createTestUser({
         telegram_id: testTelegramId,
-        username: 'status_test_user'
+        username: 'status_test_user',
       });
 
       // Try to create trip with invalid status
@@ -196,18 +195,16 @@ describe('Database Schema Operations', () => {
         budget: 1000,
         status: 'invalid_status', // Should be one of: planned, ongoing, completed
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       };
 
-      await expect(
-        testSupabaseClient.from('trips').insert([invalidTripData])
-      ).rejects.toThrow();
+      await expect(testSupabaseClient.from('trips').insert([invalidTripData])).rejects.toThrow();
     });
 
     it('should enforce payment status check constraint', async () => {
       const testUser = await createTestUser({
         telegram_id: testTelegramId,
-        username: 'payment_test_user'
+        username: 'payment_test_user',
       });
 
       // Try to create payment with invalid status
@@ -217,7 +214,7 @@ describe('Database Schema Operations', () => {
         currency: 'USD',
         status: 'invalid_status', // Should be one of: created, pending, completed, failed, refunded
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       };
 
       await expect(
@@ -228,14 +225,14 @@ describe('Database Schema Operations', () => {
     it('should enforce message role check constraint', async () => {
       const testUser = await createTestUser({
         telegram_id: testTelegramId,
-        username: 'message_test_user'
+        username: 'message_test_user',
       });
 
       // Try to create message with invalid role
       const invalidMessageData = {
         user_id: testUser.id,
         content: 'Test message',
-        role: 'invalid_role' // Should be one of: user, assistant, system
+        role: 'invalid_role', // Should be one of: user, assistant, system
       };
 
       await expect(
@@ -249,7 +246,7 @@ describe('Database Schema Operations', () => {
       // Create test data for index performance tests
       const testUser = await createTestUser({
         telegram_id: testTelegramId,
-        username: 'index_test_user'
+        username: 'index_test_user',
       });
 
       // Create multiple trips for testing
@@ -259,7 +256,7 @@ describe('Database Schema Operations', () => {
           createTestTrip(testUser.id, {
             destination: `Test City ${i}`,
             status: i % 2 === 0 ? 'planned' : 'completed',
-            budget: 1000 + (i * 100)
+            budget: 1000 + i * 100,
           })
         );
       }
@@ -269,7 +266,7 @@ describe('Database Schema Operations', () => {
     it('should efficiently query trips by user_id using index', async () => {
       const testUser = await createTestUser({
         telegram_id: testTelegramId,
-        username: 'index_test_user_2'
+        username: 'index_test_user_2',
       });
 
       // Create trips for this user
@@ -278,7 +275,7 @@ describe('Database Schema Operations', () => {
         tripPromises.push(
           createTestTrip(testUser.id, {
             destination: `User Trip ${i}`,
-            status: 'planned'
+            status: 'planned',
           })
         );
       }
@@ -318,11 +315,11 @@ describe('Database Schema Operations', () => {
     it('should efficiently query expenses by trip_id using index', async () => {
       const testUser = await createTestUser({
         telegram_id: testTelegramId,
-        username: 'expense_index_test'
+        username: 'expense_index_test',
       });
 
       const testTrip = await createTestTrip(testUser.id, {
-        destination: 'Expense Test City'
+        destination: 'Expense Test City',
       });
 
       // Create multiple expenses
@@ -332,7 +329,7 @@ describe('Database Schema Operations', () => {
           createTestExpense(testTrip.id, testUser.id, {
             category: 'food',
             amount: 50 + i,
-            description: `Expense ${i}`
+            description: `Expense ${i}`,
           })
         );
       }
@@ -358,26 +355,28 @@ describe('Database Schema Operations', () => {
     it('should handle UUID data types correctly', async () => {
       const testUser = await createTestUser({
         telegram_id: testTelegramId,
-        username: 'uuid_test_user'
+        username: 'uuid_test_user',
       });
 
       const testTrip = await createTestTrip(testUser.id, {
-        destination: 'UUID Test City'
+        destination: 'UUID Test City',
       });
 
-      expect(testTrip.id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
+      expect(testTrip.id).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+      );
       expect(testTrip.user_id).toBe(testUser.id);
     });
 
     it('should handle decimal/numeric data types correctly', async () => {
       const testUser = await createTestUser({
         telegram_id: testTelegramId,
-        username: 'decimal_test_user'
+        username: 'decimal_test_user',
       });
 
       const testTrip = await createTestTrip(testUser.id, {
         destination: 'Decimal Test City',
-        budget: 1234.56
+        budget: 1234.56,
       });
 
       expect(testTrip.budget).toBe(1234.56);
@@ -385,7 +384,7 @@ describe('Database Schema Operations', () => {
       const expense = await createTestExpense(testTrip.id, testUser.id, {
         category: 'food',
         amount: 99.99,
-        description: 'Decimal test expense'
+        description: 'Decimal test expense',
       });
 
       expect(expense.amount).toBe(99.99);
@@ -396,13 +395,15 @@ describe('Database Schema Operations', () => {
 
       const testUser = await createTestUser({
         telegram_id: testTelegramId,
-        username: 'timestamp_test_user'
+        username: 'timestamp_test_user',
       });
 
       const afterCreate = new Date();
 
       expect(testUser.created_at).toBeDefined();
-      expect(new Date(testUser.created_at).getTime()).toBeGreaterThanOrEqual(beforeCreate.getTime());
+      expect(new Date(testUser.created_at).getTime()).toBeGreaterThanOrEqual(
+        beforeCreate.getTime()
+      );
       expect(new Date(testUser.created_at).getTime()).toBeLessThanOrEqual(afterCreate.getTime());
     });
 
@@ -411,7 +412,7 @@ describe('Database Schema Operations', () => {
         title: 'Array Test Offer',
         destination: 'Test City',
         includes: ['Flight', 'Hotel', 'Breakfast', 'Tours'],
-        is_active: true
+        is_active: true,
       });
 
       expect(Array.isArray(testOffer.includes)).toBe(true);
@@ -426,8 +427,9 @@ describe('Database Schema Operations', () => {
       // This test would require setting up different users and testing
       // that they can only access their own data
       // For now, we'll verify that RLS is enabled
-      const { data: rlsStatus } = await testSupabaseClient
-        .rpc('get_rls_status', { table_name: 'profiles' });
+      const { data: rlsStatus } = await testSupabaseClient.rpc('get_rls_status', {
+        table_name: 'profiles',
+      });
 
       // If RPC function doesn't exist, we'll skip this test
       if (rlsStatus === null) {
@@ -441,12 +443,12 @@ describe('Database Schema Operations', () => {
     it('should enforce RLS policies for trips table', async () => {
       const testUser = await createTestUser({
         telegram_id: testTelegramId,
-        username: 'rls_test_user'
+        username: 'rls_test_user',
       });
 
       // Create trip for user
       const testTrip = await createTestTrip(testUser.id, {
-        destination: 'RLS Test City'
+        destination: 'RLS Test City',
       });
 
       // The trip should be accessible when queried properly
@@ -468,8 +470,7 @@ describe('Database Schema Operations', () => {
       // when a new user is created in auth.users
       // For now, we'll verify that the function exists
 
-      const { data: functions } = await testSupabaseClient
-        .rpc('get_functions');
+      const { data: functions } = await testSupabaseClient.rpc('get_functions');
 
       // If RPC function doesn't exist, we'll skip this test
       if (!functions) {
@@ -489,7 +490,7 @@ describe('Database Schema Operations', () => {
       const { data: buckets } = await testSupabaseClient.storage.listBuckets();
 
       if (buckets) {
-        const avatarBucket = buckets.find(bucket => bucket.id === 'avatars');
+        const avatarBucket = buckets.find((bucket) => bucket.id === 'avatars');
         expect(avatarBucket).toBeDefined();
         expect(avatarBucket.public).toBe(false);
       } else {
@@ -502,7 +503,7 @@ describe('Database Schema Operations', () => {
     it('should handle concurrent trip creation', async () => {
       const testUser = await createTestUser({
         telegram_id: testTelegramId,
-        username: 'concurrent_test_user'
+        username: 'concurrent_test_user',
       });
 
       // Create multiple trips concurrently
@@ -511,7 +512,7 @@ describe('Database Schema Operations', () => {
         tripPromises.push(
           createTestTrip(testUser.id, {
             destination: `Concurrent City ${i}`,
-            budget: 1000 + i
+            budget: 1000 + i,
           })
         );
       }
@@ -528,11 +529,11 @@ describe('Database Schema Operations', () => {
     it('should handle concurrent expense creation', async () => {
       const testUser = await createTestUser({
         telegram_id: testTelegramId,
-        username: 'expense_concurrent_user'
+        username: 'expense_concurrent_user',
       });
 
       const testTrip = await createTestTrip(testUser.id, {
-        destination: 'Expense Concurrent Test'
+        destination: 'Expense Concurrent Test',
       });
 
       // Create multiple expenses concurrently
@@ -542,7 +543,7 @@ describe('Database Schema Operations', () => {
           createTestExpense(testTrip.id, testUser.id, {
             category: 'food',
             amount: 10 + i,
-            description: `Concurrent expense ${i}`
+            description: `Concurrent expense ${i}`,
           })
         );
       }

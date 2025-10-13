@@ -8,7 +8,7 @@ process.env.NODE_ENV = 'test';
 process.env.JWT_SECRET = 'test-jwt-secret-key';
 process.env.SUPABASE_URL = 'https://test.supabase.co';
 process.env.SUPABASE_ANON_KEY = 'test-anon-key';
-process.env.ZAI_API_KEY = 'test-zai-key';
+process.env.KELO_API_KEY = 'test-kelo-key';
 process.env.STRIPE_SECRET_KEY = 'test-stripe-key';
 process.env.PAYPAL_CLIENT_ID = 'test-paypal-id';
 process.env.PAYPAL_CLIENT_SECRET = 'test-paypal-secret';
@@ -21,7 +21,7 @@ global.testLogger = {
   info: jest.fn(),
   error: jest.fn(),
   warn: jest.fn(),
-  debug: jest.fn()
+  debug: jest.fn(),
 };
 
 // Mock external dependencies
@@ -29,29 +29,29 @@ jest.mock('../database/supabase', () => {
   return jest.fn().mockImplementation(() => ({
     getTravelOffers: jest.fn().mockResolvedValue([
       { id: 1, title: 'Test Trip', price: 100 },
-      { id: 2, title: 'Another Trip', price: 200 }
+      { id: 2, title: 'Another Trip', price: 200 },
     ]),
     createUser: jest.fn().mockResolvedValue({ id: 'test-user-id' }),
     getUserProfile: jest.fn().mockResolvedValue({
       id: 'test-user-id',
       name: 'Test User',
-      preferences: {}
-    })
+      preferences: {},
+    }),
   }));
 });
 
-jest.mock('../src/ai/zaiClient', () => {
+jest.mock('../src/ai/keloClient', () => {
   return jest.fn().mockImplementation(() => ({
     healthCheck: jest.fn().mockResolvedValue({ status: 'healthy' }),
     chat: jest.fn().mockResolvedValue({
       success: true,
-      message: 'Test AI response'
+      message: 'Test AI response',
     }),
     analyzeIntent: jest.fn().mockReturnValue({
       intent: 'travel_info',
       confidence: 0.9,
-      entities: {}
-    })
+      entities: {},
+    }),
   }));
 });
 
@@ -63,20 +63,20 @@ global.testUtils = {
     params,
     query,
     headers: {},
-    get: jest.fn()
+    get: jest.fn(),
   }),
 
   createMockRes: () => {
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),
-      send: jest.fn().mockReturnThis()
+      send: jest.fn().mockReturnThis(),
     };
     return res;
   },
 
   // Helper to wait for async operations
-  wait: (ms) => new Promise(resolve => setTimeout(resolve, ms)),
+  wait: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
 
   // Helper to generate test user data
   createTestUser: (overrides = {}) => ({
@@ -86,9 +86,9 @@ global.testUtils = {
     preferences: {
       language: 'ar',
       currency: 'USD',
-      ...overrides.preferences
+      ...overrides.preferences,
     },
-    ...overrides
+    ...overrides,
   }),
 
   // Helper to generate test trip data
@@ -99,8 +99,8 @@ global.testUtils = {
     price: 100,
     currency: 'USD',
     duration: 7,
-    ...overrides
-  })
+    ...overrides,
+  }),
 };
 
 // Clean up after each test

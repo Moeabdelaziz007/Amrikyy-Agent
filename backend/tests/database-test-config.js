@@ -14,7 +14,7 @@ const TEST_CONFIG = {
     anonKey: process.env.TEST_SUPABASE_ANON_KEY || 'test-anon-key',
     poolSize: 10,
     connectionTimeout: 10000,
-    queryTimeout: 5000
+    queryTimeout: 5000,
   },
 
   // Test data settings
@@ -23,7 +23,7 @@ const TEST_CONFIG = {
     defaultTripCount: 10,
     defaultExpenseCount: 20,
     maxConcurrentOperations: 50,
-    cleanupTimeout: 30000
+    cleanupTimeout: 30000,
   },
 
   // Performance thresholds
@@ -31,7 +31,7 @@ const TEST_CONFIG = {
     maxQueryTime: 1000, // 1 second
     maxBulkOperationTime: 5000, // 5 seconds
     maxConnectionTime: 3000, // 3 seconds
-    maxCleanupTime: 10000 // 10 seconds
+    maxCleanupTime: 10000, // 10 seconds
   },
 
   // Test isolation settings
@@ -39,7 +39,7 @@ const TEST_CONFIG = {
     useTransactions: true,
     rollbackAfterEach: true,
     separateSchemas: false,
-    uniquePrefixes: true
+    uniquePrefixes: true,
   },
 
   // Logging configuration
@@ -49,7 +49,7 @@ const TEST_CONFIG = {
     enableFile: false,
     logDirectory: path.join(__dirname, 'logs'),
     maxFileSize: '10MB',
-    maxFiles: 5
+    maxFiles: 5,
   },
 
   // Mock data settings
@@ -57,8 +57,8 @@ const TEST_CONFIG = {
     enableFallbackMocks: true,
     mockResponseDelay: 0,
     mockErrorRate: 0.05, // 5% error rate for testing error handling
-    seedDataPath: path.join(__dirname, 'seed-data')
-  }
+    seedDataPath: path.join(__dirname, 'seed-data'),
+  },
 };
 
 // Environment-specific overrides
@@ -72,13 +72,14 @@ const getEnvironmentConfig = () => {
         database: {
           ...TEST_CONFIG.database,
           url: process.env.SUPABASE_URL || TEST_CONFIG.database.url,
-          serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || TEST_CONFIG.database.serviceRoleKey
+          serviceRoleKey:
+            process.env.SUPABASE_SERVICE_ROLE_KEY || TEST_CONFIG.database.serviceRoleKey,
         },
         logging: {
           ...TEST_CONFIG.logging,
           level: 'debug',
-          enableFile: true
-        }
+          enableFile: true,
+        },
       };
 
     case 'ci':
@@ -87,14 +88,14 @@ const getEnvironmentConfig = () => {
         performance: {
           ...TEST_CONFIG.performance,
           maxQueryTime: 2000, // More lenient for CI
-          maxConnectionTime: 5000
+          maxConnectionTime: 5000,
         },
         testData: {
           ...TEST_CONFIG.testData,
           defaultUserCount: 2, // Fewer users for faster CI
           defaultTripCount: 5,
-          defaultExpenseCount: 10
-        }
+          defaultExpenseCount: 10,
+        },
       };
 
     case 'production':
@@ -103,13 +104,13 @@ const getEnvironmentConfig = () => {
         database: {
           ...TEST_CONFIG.database,
           url: process.env.SUPABASE_URL,
-          serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY
+          serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
         },
         logging: {
           ...TEST_CONFIG.logging,
           level: 'error',
-          enableFile: true
-        }
+          enableFile: true,
+        },
       };
 
     default:
@@ -146,7 +147,7 @@ const validationErrors = validateConfig(config);
 
 if (validationErrors.length > 0) {
   console.error('❌ Database test configuration errors:');
-  validationErrors.forEach(error => console.error(`  - ${error}`));
+  validationErrors.forEach((error) => console.error(`  - ${error}`));
   throw new Error('Invalid database test configuration');
 }
 
@@ -154,5 +155,5 @@ module.exports = {
   config,
   TEST_CONFIG,
   getEnvironmentConfig,
-  validateConfig
+  validateConfig,
 };

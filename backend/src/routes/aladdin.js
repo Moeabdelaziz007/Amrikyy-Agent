@@ -20,7 +20,7 @@ router.get('/health', (req, res) => {
   res.json({
     success: true,
     message: 'Aladdin agent is running',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -39,7 +39,7 @@ router.post('/hunt', async (req, res) => {
       log.warn('Invalid budget provided', { budget });
       return res.status(400).json({
         success: false,
-        error: 'Valid budget (positive number) is required'
+        error: 'Valid budget (positive number) is required',
       });
     }
 
@@ -55,7 +55,7 @@ router.post('/hunt', async (req, res) => {
           title: 'High-yield savings account',
           estimatedReturn: budget * 0.05,
           risk: 'low',
-          timeframe: '1 year'
+          timeframe: '1 year',
         },
         {
           id: 2,
@@ -63,28 +63,27 @@ router.post('/hunt', async (req, res) => {
           title: 'Travel package optimization',
           estimatedSaving: budget * 0.15,
           category: 'travel',
-          timeframe: 'immediate'
-        }
+          timeframe: 'immediate',
+        },
       ],
-      totalPotentialGain: budget * 0.20,
-      confidence: 0.85
+      totalPotentialGain: budget * 0.2,
+      confidence: 0.85,
     };
 
-    log.success('Money hunt completed', { 
-      opportunitiesFound: mockResults.opportunities.length 
+    log.success('Money hunt completed', {
+      opportunitiesFound: mockResults.opportunities.length,
     });
 
     res.json({
       success: true,
-      data: mockResults
+      data: mockResults,
     });
-
   } catch (error) {
     log.error('Error in money hunt', { error: error.message });
     res.status(500).json({
       success: false,
       error: 'Failed to complete money hunt',
-      message: error.message
+      message: error.message,
     });
   }
 });
@@ -109,7 +108,7 @@ router.get('/opportunities', async (req, res) => {
         title: 'Off-season travel deals',
         description: 'Save up to 40% by traveling during off-peak seasons',
         potentialSaving: 500,
-        difficulty: 'easy'
+        difficulty: 'easy',
       },
       {
         id: 2,
@@ -117,21 +116,21 @@ router.get('/opportunities', async (req, res) => {
         title: 'Travel rewards credit card',
         description: 'Earn points on travel purchases',
         potentialReturn: 300,
-        difficulty: 'medium'
-      }
+        difficulty: 'medium',
+      },
     ];
 
     // Filter by category if provided
     let filtered = mockOpportunities;
     if (category) {
-      filtered = filtered.filter(opp => opp.category === category);
+      filtered = filtered.filter((opp) => opp.category === category);
     }
 
     // Filter by minimum return if provided
     if (minReturn) {
       const minReturnNum = parseFloat(minReturn);
-      filtered = filtered.filter(opp => 
-        (opp.potentialSaving || opp.potentialReturn || 0) >= minReturnNum
+      filtered = filtered.filter(
+        (opp) => (opp.potentialSaving || opp.potentialReturn || 0) >= minReturnNum
       );
     }
 
@@ -141,16 +140,15 @@ router.get('/opportunities', async (req, res) => {
       success: true,
       data: {
         opportunities: filtered,
-        total: filtered.length
-      }
+        total: filtered.length,
+      },
     });
-
   } catch (error) {
     log.error('Error fetching opportunities', { error: error.message });
     res.status(500).json({
       success: false,
       error: 'Failed to fetch opportunities',
-      message: error.message
+      message: error.message,
     });
   }
 });
@@ -169,7 +167,7 @@ router.post('/analyze', async (req, res) => {
       log.warn('Missing opportunity ID');
       return res.status(400).json({
         success: false,
-        error: 'Opportunity ID is required'
+        error: 'Opportunity ID is required',
       });
     }
 
@@ -179,33 +177,25 @@ router.post('/analyze', async (req, res) => {
     const mockAnalysis = {
       opportunityId,
       suitabilityScore: 0.85,
-      pros: [
-        'Low risk',
-        'Quick returns',
-        'Easy to implement'
-      ],
-      cons: [
-        'Requires initial investment',
-        'Market dependent'
-      ],
+      pros: ['Low risk', 'Quick returns', 'Easy to implement'],
+      cons: ['Requires initial investment', 'Market dependent'],
       recommendation: 'Highly recommended for your profile',
       estimatedROI: 0.15,
-      timeToReturn: '3-6 months'
+      timeToReturn: '3-6 months',
     };
 
     log.success('Analysis completed', { opportunityId });
 
     res.json({
       success: true,
-      data: mockAnalysis
+      data: mockAnalysis,
     });
-
   } catch (error) {
     log.error('Error analyzing opportunity', { error: error.message });
     res.status(500).json({
       success: false,
       error: 'Failed to analyze opportunity',
-      message: error.message
+      message: error.message,
     });
   }
 });
@@ -230,21 +220,20 @@ router.get('/stats', (req, res) => {
       topCategories: [
         { name: 'travel', count: 65 },
         { name: 'investment', count: 42 },
-        { name: 'cost-saving', count: 20 }
-      ]
+        { name: 'cost-saving', count: 20 },
+      ],
     };
 
     res.json({
       success: true,
-      data: mockStats
+      data: mockStats,
     });
-
   } catch (error) {
     log.error('Error fetching stats', { error: error.message });
     res.status(500).json({
       success: false,
       error: 'Failed to fetch stats',
-      message: error.message
+      message: error.message,
     });
   }
 });

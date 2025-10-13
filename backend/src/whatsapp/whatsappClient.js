@@ -12,12 +12,11 @@ class WhatsAppClient {
     this.businessAccountId = process.env.WHATSAPP_BUSINESS_ACCOUNT_ID;
     this.apiVersion = process.env.WHATSAPP_API_VERSION || 'v21.0';
     this.baseUrl = `https://graph.facebook.com/${this.apiVersion}`;
-    
+
     // Check if WhatsApp is configured
-    this.isConfigured = this.accessToken && 
-                        !this.accessToken.includes('your_whatsapp') &&
-                        this.phoneNumberId;
-    
+    this.isConfigured =
+      this.accessToken && !this.accessToken.includes('your_whatsapp') && this.phoneNumberId;
+
     if (this.isConfigured) {
       console.log('✅ WhatsApp Business API initialized');
       console.log(`📱 Phone Number ID: ${this.phoneNumberId}`);
@@ -43,31 +42,30 @@ class WhatsAppClient {
           recipient_type: 'individual',
           to: to.replace(/[^0-9]/g, ''), // Remove non-numeric characters
           type: 'text',
-          text: { 
+          text: {
             preview_url: false,
-            body: message 
-          }
+            body: message,
+          },
         },
         {
           headers: {
-            'Authorization': `Bearer ${this.accessToken}`,
-            'Content-Type': 'application/json'
-          }
+            Authorization: `Bearer ${this.accessToken}`,
+            'Content-Type': 'application/json',
+          },
         }
       );
 
       console.log(`✅ WhatsApp message sent to ${to}`);
-      return { 
-        success: true, 
+      return {
+        success: true,
         data: response.data,
-        messageId: response.data.messages?.[0]?.id
+        messageId: response.data.messages?.[0]?.id,
       };
-
     } catch (error) {
       console.error('❌ WhatsApp Send Error:', error.response?.data || error.message);
-      return { 
-        success: false, 
-        error: error.response?.data?.error?.message || error.message 
+      return {
+        success: false,
+        error: error.response?.data?.error?.message || error.message,
       };
     }
   }
@@ -91,29 +89,28 @@ class WhatsAppClient {
           template: {
             name: templateName,
             language: { code: languageCode },
-            components: components
-          }
+            components: components,
+          },
         },
         {
           headers: {
-            'Authorization': `Bearer ${this.accessToken}`,
-            'Content-Type': 'application/json'
-          }
+            Authorization: `Bearer ${this.accessToken}`,
+            'Content-Type': 'application/json',
+          },
         }
       );
 
       console.log(`✅ WhatsApp template sent to ${to}`);
-      return { 
-        success: true, 
+      return {
+        success: true,
         data: response.data,
-        messageId: response.data.messages?.[0]?.id
+        messageId: response.data.messages?.[0]?.id,
       };
-
     } catch (error) {
       console.error('❌ WhatsApp Template Error:', error.response?.data || error.message);
-      return { 
-        success: false, 
-        error: error.response?.data?.error?.message || error.message 
+      return {
+        success: false,
+        error: error.response?.data?.error?.message || error.message,
       };
     }
   }
@@ -143,32 +140,31 @@ class WhatsAppClient {
                 type: 'reply',
                 reply: {
                   id: btn.id || `btn_${idx}`,
-                  title: btn.title.substring(0, 20) // Max 20 chars
-                }
-              }))
-            }
-          }
+                  title: btn.title.substring(0, 20), // Max 20 chars
+                },
+              })),
+            },
+          },
         },
         {
           headers: {
-            'Authorization': `Bearer ${this.accessToken}`,
-            'Content-Type': 'application/json'
-          }
+            Authorization: `Bearer ${this.accessToken}`,
+            'Content-Type': 'application/json',
+          },
         }
       );
 
       console.log(`✅ WhatsApp interactive message sent to ${to}`);
-      return { 
-        success: true, 
+      return {
+        success: true,
         data: response.data,
-        messageId: response.data.messages?.[0]?.id
+        messageId: response.data.messages?.[0]?.id,
       };
-
     } catch (error) {
       console.error('❌ WhatsApp Interactive Error:', error.response?.data || error.message);
-      return { 
-        success: false, 
-        error: error.response?.data?.error?.message || error.message 
+      return {
+        success: false,
+        error: error.response?.data?.error?.message || error.message,
       };
     }
   }
@@ -195,30 +191,29 @@ class WhatsAppClient {
             body: { text: bodyText },
             action: {
               button: buttonText,
-              sections: sections
-            }
-          }
+              sections: sections,
+            },
+          },
         },
         {
           headers: {
-            'Authorization': `Bearer ${this.accessToken}`,
-            'Content-Type': 'application/json'
-          }
+            Authorization: `Bearer ${this.accessToken}`,
+            'Content-Type': 'application/json',
+          },
         }
       );
 
       console.log(`✅ WhatsApp list message sent to ${to}`);
-      return { 
-        success: true, 
+      return {
+        success: true,
         data: response.data,
-        messageId: response.data.messages?.[0]?.id
+        messageId: response.data.messages?.[0]?.id,
       };
-
     } catch (error) {
       console.error('❌ WhatsApp List Error:', error.response?.data || error.message);
-      return { 
-        success: false, 
-        error: error.response?.data?.error?.message || error.message 
+      return {
+        success: false,
+        error: error.response?.data?.error?.message || error.message,
       };
     }
   }
@@ -235,13 +230,13 @@ class WhatsAppClient {
         {
           messaging_product: 'whatsapp',
           status: 'read',
-          message_id: messageId
+          message_id: messageId,
         },
         {
           headers: {
-            'Authorization': `Bearer ${this.accessToken}`,
-            'Content-Type': 'application/json'
-          }
+            Authorization: `Bearer ${this.accessToken}`,
+            'Content-Type': 'application/json',
+          },
         }
       );
 
@@ -259,14 +254,11 @@ class WhatsAppClient {
     if (!this.isConfigured) return null;
 
     try {
-      const response = await axios.get(
-        `${this.baseUrl}/${mediaId}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${this.accessToken}`
-          }
-        }
-      );
+      const response = await axios.get(`${this.baseUrl}/${mediaId}`, {
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      });
 
       return response.data.url;
     } catch (error) {
@@ -280,34 +272,31 @@ class WhatsAppClient {
    */
   async healthCheck() {
     if (!this.isConfigured) {
-      return { 
-        success: false, 
+      return {
+        success: false,
         status: 'not_configured',
-        message: 'WhatsApp API not configured'
+        message: 'WhatsApp API not configured',
       };
     }
 
     try {
       // Try to get phone number info
-      const response = await axios.get(
-        `${this.baseUrl}/${this.phoneNumberId}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${this.accessToken}`
-          }
-        }
-      );
+      const response = await axios.get(`${this.baseUrl}/${this.phoneNumberId}`, {
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      });
 
-      return { 
-        success: true, 
+      return {
+        success: true,
         status: 'healthy',
-        data: response.data
+        data: response.data,
       };
     } catch (error) {
-      return { 
-        success: false, 
+      return {
+        success: false,
         status: 'unhealthy',
-        error: error.response?.data?.error?.message || error.message
+        error: error.response?.data?.error?.message || error.message,
       };
     }
   }
