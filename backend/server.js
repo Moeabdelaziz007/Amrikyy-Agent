@@ -83,6 +83,10 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Aladdin Agent routes
+const aladdinRoutes = require('./src/routes/aladdin');
+app.use('/api/aladdin', aladdinRoutes);
+
 // Trip routes
 app.get('/api/trips', (req, res) => {
     res.json({
