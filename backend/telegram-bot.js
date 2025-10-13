@@ -25,6 +25,46 @@ const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, {
 // Payment service integration
 const PaymentService = require('./routes/payment');
 
+// ============================================================================
+// SECURITY: Bot Rate Limiting - Prevent Abuse
+// ============================================================================
+const userRequestCounts = new Map();
+const USER_RATE_LIMIT = 20;  // Max 20 requests per minute per user
+const RATE_LIMIT_WINDOW = 60000;  // 1 minute
+
+function checkRateLimit(userId) {
+  const now = Date.now();
+  const userLimit = userRequestCounts.get(userId) || { count: 0, resetAt: now + RATE_LIMIT_WINDOW };
+  
+  // Reset if window expired
+  if (now > userLimit.resetAt) {
+    userLimit.count = 0;
+    userLimit.resetAt = now + RATE_LIMIT_WINDOW;
+  }
+  
+  userLimit.count++;
+  userRequestCounts.set(userId, userLimit);
+  
+  // Check if over limit
+  if (userLimit.count > USER_RATE_LIMIT) {
+    return false;  // Rate limited
+  }
+  
+  return true;  // Within limits
+}
+
+// Cleanup old entries every 5 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [userId, limit] of userRequestCounts.entries()) {
+    if (now > limit.resetAt) {
+      userRequestCounts.delete(userId);
+    }
+  }
+}, 5 * 60 * 1000);
+
+console.log('✅ Bot rate limiting enabled: 20 requests/minute per user');
+
 // Bot error handling
 bot.on('polling_error', (error) => {
   errorHandler.handle(error, { source: 'telegram_polling' });
@@ -659,6 +699,16 @@ bot.on('text', safeHandler(async (msg) => {
 
 // Handle successful payments
 bot.on('message', safeHandler(async (msg) => {
+  // ✅ SECURITY: Apply rate limiting to all message handlers
+  const userId = msg.from?.id;
+  if (userId && !checkRateLimit(userId)) {
+    await bot.sendMessage(msg.chat.id, 
+      '⚠️ طلبات كثيرة جداً. يرجى الانتظار دقيقة.\n' +
+      'Too many requests. Please wait one minute.'
+    );
+    return;
+  }
+  
   if (msg.successful_payment) {
     const chatId = msg.chat.id;
     const payment = msg.successful_payment;
