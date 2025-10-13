@@ -5,10 +5,10 @@
 
 const express = require('express');
 const router = express.Router();
-const KeloClient = require('../src/ai/keloClient');
+const MoonshotClient = require('../src/ai/moonshotClient');
 
-// Initialize Kelo AI client
-const keloClient = new KeloClient();
+// Initialize Moonshot AI client
+const moonshotClient = new MoonshotClient();
 
 /**
  * GET /api/revenue/opportunities
@@ -50,7 +50,7 @@ router.get('/opportunities', async (req, res) => {
       }
     ];
 
-    const aiResponse = await keloClient.chatCompletion(messages, {
+    const aiResponse = await moonshotClient.chatCompletion(messages, {
       maxTokens: 2000,
       temperature: 0.3
     });
@@ -124,7 +124,7 @@ router.post('/analyze', async (req, res) => {
       }
     ];
 
-    const aiResponse = await keloClient.chatCompletion(messages, {
+    const aiResponse = await moonshotClient.chatCompletion(messages, {
       maxTokens: 2500,
       temperature: 0.2
     });
