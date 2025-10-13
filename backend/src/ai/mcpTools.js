@@ -616,6 +616,70 @@ class MCPTools {
     };
   }
 
+  async getLocalRestaurants(params) {
+    const { location, cuisine = 'all', priceRange = 'all' } = params;
+    return {
+      success: true,
+      data: {
+        restaurants: [
+          { name: 'مطعم 1', cuisine: 'عربي', rating: 4.5, priceRange: '$$' },
+          { name: 'مطعم 2', cuisine: 'أوروبي', rating: 4.8, priceRange: '$$$' }
+        ]
+      }
+    };
+  }
+
+  async getPublicTransport(params) {
+    const { location, destination } = params;
+    return {
+      success: true,
+      data: {
+        routes: [
+          { type: 'metro', duration: '15 min', cost: '2.50 EUR' },
+          { type: 'bus', duration: '25 min', cost: '1.90 EUR' }
+        ]
+      }
+    };
+  }
+
+  async getSafetyAlerts(params) {
+    const { location } = params;
+    return {
+      success: true,
+      data: {
+        alerts: [],
+        safety_score: 8.5,
+        recommendations: ['Stay in tourist areas', 'Keep valuables secure']
+      }
+    };
+  }
+
+  async getCulturalEvents(params) {
+    const { location, date } = params;
+    return {
+      success: true,
+      data: {
+        events: [
+          { name: 'Cultural Festival', date: '2025-10-15', type: 'festival' },
+          { name: 'Art Exhibition', date: '2025-10-20', type: 'art' }
+        ]
+      }
+    };
+  }
+
+  async getLocalCustoms(params) {
+    const { location } = params;
+    return {
+      success: true,
+      data: {
+        customs: [
+          { title: 'Greeting', description: 'Shake hands when meeting' },
+          { title: 'Dining', description: 'Wait for host to start eating' }
+        ]
+      }
+    };
+  }
+
   async optimizeItinerary(params) {
     const { destinations, duration, budget, interests, travel_style } = params;
     return {
