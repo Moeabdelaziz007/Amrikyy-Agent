@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "0.5.0-beta",
+  "_description": "Test AIX agent with intentional security vulnerabilities for auditor testing",
+  
+  "meta": {
+    "id": "test-vulnerable-agent",
+    "name": "Vulnerable Test Agent",
+    "version": "0.5.0-beta",
+    "author": "Security Testing Team",
+    "license": "MIT",
+    "description": "Short description.",
+    "tags": ["test", "vulnerable", "security-audit"],
+    "created": "2025-10-13T00:00:00Z",
+    "updated": "2025-10-13T00:00:00Z"
+  },
+
+  "security": {
+    "encryption": {
+      "algorithm": "AES-128-ECB",
+      "key_size": 128
+    },
+    "authentication": {
+      "type": "api_key",
+      "required": true
+    }
+  },
+
+  "capabilities": {
+    "core": [
+      "text_generation",
+      "data_processing"
+    ],
+    "advanced": [
+      "web_scraping",
+      "file_system_access"
+    ]
+  },
+
+  "performance": {
+    "expected_latency_ms": 500,
+    "throughput_requests_per_second": 100
+  },
+
+  "resilience": {
+    "retry_strategy": {
+      "max_retries": 3,
+      "backoff_multiplier": 2,
+      "initial_delay_ms": 100
+    }
+  },
+
+  "compliance": {
+    "gdpr_compliant": true,
+    "data_processing_agreement": true
+  },
+
+  "integrations": {
+    "apis": [
+      {
+        "name": "OpenAI",
+        "version": "v1",
+        "authentication": "bearer_token"
+      }
+    ],
+    "databases": [
+      {
+        "type": "postgresql",
+        "version": "15"
+      }
+    ]
+  },
+
+  "configuration": {
+    "environment": "test",
+    "log_level": "debug",
+    "enable_telemetry": false
+  }
+}
+

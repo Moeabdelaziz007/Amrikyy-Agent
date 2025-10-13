@@ -1,0 +1,47 @@
+{
+  "name": "@amrikyy/aix-security-auditor",
+  "version": "1.0.0",
+  "description": "Production-grade security auditor for AIX agent files with auto-fix capabilities",
+  "main": "bin/aix-audit.js",
+  "bin": {
+    "aix-audit": "./bin/aix-audit.js"
+  },
+  "scripts": {
+    "audit": "node bin/aix-audit.js",
+    "audit:fix": "node bin/aix-audit.js --fix",
+    "test": "node tests/test-suite.js",
+    "demo": "bash tools/demo.sh"
+  },
+  "keywords": [
+    "aix",
+    "security",
+    "audit",
+    "ai-agent",
+    "compliance",
+    "gdpr",
+    "soc2",
+    "nist",
+    "vulnerability-scanner",
+    "auto-fix"
+  ],
+  "author": "Mohamed H Abdelaziz <moe@amrikyy.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Moeabdelaziz007/maya-travel-agent.git",
+    "directory": "aix-auditor"
+  },
+  "bugs": {
+    "url": "https://github.com/Moeabdelaziz007/maya-travel-agent/issues"
+  },
+  "homepage": "https://github.com/Moeabdelaziz007/maya-travel-agent/tree/pr-7/aix-auditor#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "yaml": "^2.3.4"
+  },
+  "devDependencies": {},
+  "peerDependencies": {}
+}
+
