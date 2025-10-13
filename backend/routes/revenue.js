@@ -189,7 +189,7 @@ router.get('/forecast', async (req, res) => {
       }
     ];
 
-    const aiResponse = await keloClient.chatCompletion(messages, {
+    const aiResponse = await moonshotClient.chatCompletion(messages, {
       maxTokens: 2000,
       temperature: 0.1
     });
@@ -221,12 +221,12 @@ router.get('/forecast', async (req, res) => {
  */
 router.get('/health', async (req, res) => {
   try {
-    const keloHealth = await keloClient.healthCheck();
+    const moonshotHealth = await moonshotClient.healthCheck();
     
     res.json({
       success: true,
       status: 'healthy',
-      kelo_ai: keloHealth,
+      moonshot_ai: moonshotHealth,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
