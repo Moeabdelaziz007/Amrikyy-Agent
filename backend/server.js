@@ -175,6 +175,14 @@ app.use('/api/ai', aiLimiter, aiRoutes);
 const whatsappRoutes = require('./routes/whatsapp');
 app.use('/api/whatsapp', webhookLimiter, whatsappRoutes);
 
+// Revenue API routes with analytics rate limiting
+const revenueRoutes = require('./routes/revenue');
+app.use('/api/revenue', analyticsLimiter, revenueRoutes);
+
+// Kelo AI API routes with AI rate limiting
+const keloRoutes = require('./routes/kelo');
+app.use('/api/kelo', aiLimiter, keloRoutes);
+
 // Advanced Telegram Bot (only start if token is provided)
 if (process.env.TELEGRAM_BOT_TOKEN) {
   const advancedTelegramBot = require('./advanced-telegram-bot');
