@@ -1,19 +1,98 @@
-node_modules
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+.npm-cache/
+
+# Testing
+coverage/
+.nyc_output/
+test-results/
+*.test.js.snap
+
+# Production builds
+dist/
+build/
+.next/
+.nuxt/
+out/
 
 # Environment variables
 .env
 .env.local
-.env.*.local
-*.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
 
-# Log files
-*.log
+# Logs
 logs/
 debug-logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
 
 # OS files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+*~
 
-# Lovable UI source folder
-lovable-ui/
+# IDE
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# Miscellaneous
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+.turbo/
+
+# Security & audit reports
+security-report*.json
+baseline-*.json
+after-*.json
+audit-report.json
+*-security-report.json
+
+# PM2
+.pm2/
+pm2.json
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Lock files (keep only package-lock.json)
+yarn.lock
+pnpm-lock.yaml
+
+# Build artifacts
+*.tgz
+*.map
+
+# Editor directories
+.vscode-test/
