@@ -581,11 +581,7 @@ class RedisService {
       this.metrics.errors++;
 
       // Return result from fallback even if caching fails
-      try {
-        return await fallbackFn();
-      } catch (fallbackError) {
-        throw fallbackError;
-      }
+      return await fallbackFn();
     }
   }
 

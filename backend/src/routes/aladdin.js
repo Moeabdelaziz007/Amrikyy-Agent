@@ -43,7 +43,7 @@ const generalLimiter = rateLimit({
     retryAfter: '15 minutes'
   },
   standardHeaders: true,
-  legacyHeaders: false,
+  legacyHeaders: false
 });
 
 const analyzeLimiter = rateLimit({
@@ -55,7 +55,7 @@ const analyzeLimiter = rateLimit({
     retryAfter: '15 minutes'
   },
   standardHeaders: true,
-  legacyHeaders: false,
+  legacyHeaders: false
 });
 
 // Initialize agent (singleton pattern)
@@ -260,8 +260,8 @@ router.post('/analyze', analyzeLimiter, async (req, res) => {
         riskMetrics: analytics.riskMetrics
       },
       recommendation: opportunity.score >= 70 ? 'STRONG BUY' : 
-                      opportunity.score >= 50 ? 'BUY' : 
-                      opportunity.score >= 30 ? 'HOLD' : 'AVOID',
+        opportunity.score >= 50 ? 'BUY' : 
+          opportunity.score >= 30 ? 'HOLD' : 'AVOID',
       confidence: opportunity.score / 100,
       timestamp: new Date().toISOString()
     };

@@ -63,7 +63,7 @@ class MathAgent {
       results.push({
         finalPrice: price,
         return: ((price - currentPrice) / currentPrice) * 100,
-        path,
+        path
       });
     }
 
@@ -99,8 +99,8 @@ class MathAgent {
       expectedPrice: this._mean(finalPrices),
       priceRange: {
         low: finalPrices[Math.floor(finalPrices.length * 0.05)],
-        high: finalPrices[Math.floor(finalPrices.length * 0.95)],
-      },
+        high: finalPrices[Math.floor(finalPrices.length * 0.95)]
+      }
     };
   }
 
@@ -122,7 +122,7 @@ class MathAgent {
       sellRevenue,
       fees: buyFee + sellFee,
       worthIt: profitPercent > 0.5, // minimum 0.5% profit
-      roi: (profit / buyCost) * 100,
+      roi: (profit / buyCost) * 100
     };
   }
 
@@ -160,7 +160,7 @@ class MathAgent {
       bestPath,
       bestProfit,
       bestPercent,
-      worthIt: bestPercent > 0.3, // 0.3% minimum after fees
+      worthIt: bestPercent > 0.3 // 0.3% minimum after fees
     };
   }
 
@@ -182,7 +182,7 @@ class MathAgent {
       fullKellyAmount: kellyAmount,
       recommendedPercent: kellyPercent * 0.25 * 100,
       recommendedAmount: fractionalKelly,
-      maxRisk: fractionalKelly,
+      maxRisk: fractionalKelly
     };
   }
 
@@ -261,7 +261,7 @@ class MarketAgent {
         type: 'golden_cross',
         signal: 'bullish',
         strength: 8,
-        description: 'Short-term MA crossed above long-term MA',
+        description: 'Short-term MA crossed above long-term MA'
       });
     }
 
@@ -274,14 +274,14 @@ class MarketAgent {
         type: 'oversold',
         signal: 'buy',
         strength: 7,
-        description: `RSI at ${currentRSI.toFixed(2)} - oversold territory`,
+        description: `RSI at ${currentRSI.toFixed(2)} - oversold territory`
       });
     } else if (currentRSI > 70) {
       patterns.push({
         type: 'overbought',
         signal: 'sell',
         strength: 7,
-        description: `RSI at ${currentRSI.toFixed(2)} - overbought territory`,
+        description: `RSI at ${currentRSI.toFixed(2)} - overbought territory`
       });
     }
 
@@ -294,7 +294,7 @@ class MarketAgent {
         strength: 6,
         description: `High volatility (${(volatility * 100).toFixed(
           2
-        )}%) - opportunity for arbitrage`,
+        )}%) - opportunity for arbitrage`
       });
     }
 
@@ -379,7 +379,7 @@ class MarketAgent {
             buyPrice: Math.min(price1, price2),
             sellPrice: Math.max(price1, price2),
             spreadPercent: percent,
-            estimatedProfit: percent - 0.2, // minus fees
+            estimatedProfit: percent - 0.2 // minus fees
           });
         }
       }
@@ -415,7 +415,7 @@ class RiskAgent {
       positionSize,
       stopLoss,
       maxLoss: positionSize * (stopLoss / 100),
-      recommendation: this._getRecommendation(riskScore),
+      recommendation: this._getRecommendation(riskScore)
     };
   }
 
@@ -499,7 +499,7 @@ class RiskAgent {
       concentrationIndex,
       diversificationScore,
       isWellDiversified: diversificationScore > 60,
-      largestPosition: Math.max(...values.map((v) => (v / total) * 100)),
+      largestPosition: Math.max(...values.map((v) => (v / total) * 100))
     };
   }
 }
@@ -532,7 +532,7 @@ class DataAgent {
       kraken: basePrice * (1 + (Math.random() - 0.5) * 0.012),
       kucoin: basePrice * (1 + (Math.random() - 0.5) * 0.02),
       bybit: basePrice * (1 + (Math.random() - 0.5) * 0.018),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     this._setCache(`prices_${symbol}`, prices);
@@ -564,22 +564,22 @@ class DataAgent {
         commission: '50%',
         type: 'crypto_exchange',
         avgRevenue: 500,
-        difficulty: 'medium',
+        difficulty: 'medium'
       },
       {
         name: 'Coinbase Affiliate',
         commission: '$10 per referral',
         type: 'crypto_exchange',
         avgRevenue: 300,
-        difficulty: 'easy',
+        difficulty: 'easy'
       },
       {
         name: 'TradingView Affiliate',
         commission: '30%',
         type: 'trading_tools',
         avgRevenue: 400,
-        difficulty: 'easy',
-      },
+        difficulty: 'easy'
+      }
     ];
   }
 
@@ -588,7 +588,7 @@ class DataAgent {
       BTC: 45000,
       ETH: 2500,
       SOL: 100,
-      BNB: 350,
+      BNB: 350
     };
     return basePrices[symbol] || 100;
   }
@@ -623,7 +623,7 @@ class MiniAladdin extends EventEmitter {
       initialCapital: config.initialCapital || 10000,
       riskTolerance: config.riskTolerance || 'medium',
       strategies: config.strategies || ['arbitrage', 'pattern', 'affiliate'],
-      autoExecute: config.autoExecute || false,
+      autoExecute: config.autoExecute || false
     };
 
     // Initialize mini-agents
@@ -631,14 +631,14 @@ class MiniAladdin extends EventEmitter {
       math: new MathAgent(),
       market: new MarketAgent(),
       risk: new RiskAgent(),
-      data: new DataAgent(),
+      data: new DataAgent()
     };
 
     this.portfolio = {
       cash: this.config.initialCapital,
       positions: [],
       totalValue: this.config.initialCapital,
-      totalProfit: 0,
+      totalProfit: 0
     };
 
     this.opportunities = [];
@@ -670,7 +670,7 @@ class MiniAladdin extends EventEmitter {
         this.findAffiliateOpportunities().catch(err => {
           console.error('❌ Affiliate search failed:', err.message);
           return [];
-        }),
+        })
       ]);
 
       // Extract successful results
@@ -682,7 +682,7 @@ class MiniAladdin extends EventEmitter {
       this.opportunities = [
         ...arbResults.map((o) => ({ ...o, category: 'arbitrage' })),
         ...patternResults.map((o) => ({ ...o, category: 'trading' })),
-        ...affiliateResults.map((o) => ({ ...o, category: 'affiliate' })),
+        ...affiliateResults.map((o) => ({ ...o, category: 'affiliate' }))
       ];
 
       // Validate opportunities
@@ -730,7 +730,7 @@ class MiniAladdin extends EventEmitter {
         plan,
         portfolio: this.portfolio,
         analytics,
-        errors: this._collectErrors(arbOpps, patterns, affiliates),
+        errors: this._collectErrors(arbOpps, patterns, affiliates)
       };
 
     } catch (error) {
@@ -745,7 +745,7 @@ class MiniAladdin extends EventEmitter {
         opportunities: [],
         plan: null,
         portfolio: this.portfolio,
-        analytics: null,
+        analytics: null
       };
     }
   }
@@ -759,7 +759,7 @@ class MiniAladdin extends EventEmitter {
       if (result.status === 'rejected') {
         errors.push({
           strategy: ['arbitrage', 'pattern', 'affiliate'][index],
-          error: result.reason?.message || 'Unknown error',
+          error: result.reason?.message || 'Unknown error'
         });
       }
     });
@@ -796,7 +796,7 @@ class MiniAladdin extends EventEmitter {
               volatility: 0.02,
               volume: 50000000,
               leverage: 1,
-              stopLossPercent: 2,
+              stopLossPercent: 2
             },
             this.portfolio
           );
@@ -808,7 +808,7 @@ class MiniAladdin extends EventEmitter {
             ...calc,
             risk: riskAssessment,
             timeToExecute: '< 30 seconds',
-            confidence: 85,
+            confidence: 85
           });
         }
       }
@@ -851,7 +851,7 @@ class MiniAladdin extends EventEmitter {
           simulation,
           expectedReturn: simulation.expectedReturn,
           confidence: simulation.probabilityOfProfit,
-          timeHorizon: '30 days',
+          timeHorizon: '30 days'
         });
       }
     }
@@ -871,7 +871,7 @@ class MiniAladdin extends EventEmitter {
       estimatedMonthlyRevenue: aff.avgRevenue,
       timeToFirstDollar: '2-4 weeks',
       confidence: 70,
-      effort: 'low',
+      effort: 'low'
     }));
   }
 
@@ -908,7 +908,7 @@ class MiniAladdin extends EventEmitter {
         return {
           ...opp,
           score: Math.round(score),
-          priority: score > 75 ? 'high' : score > 50 ? 'medium' : 'low',
+          priority: score > 75 ? 'high' : score > 50 ? 'medium' : 'low'
         };
       })
       .sort((a, b) => b.score - a.score);
@@ -921,14 +921,14 @@ class MiniAladdin extends EventEmitter {
     const plan = {
       immediate: [],
       today: [],
-      thisWeek: [],
+      thisWeek: []
     };
 
     this.opportunities.forEach((opp) => {
       const action = {
         opportunity: opp,
         steps: this._generateSteps(opp),
-        estimatedReturn: this._estimateReturn(opp),
+        estimatedReturn: this._estimateReturn(opp)
       };
 
       if (opp.category === 'arbitrage' && opp.score > 70) {
@@ -950,36 +950,36 @@ class MiniAladdin extends EventEmitter {
     const steps = {
       arbitrage: [
         `1. Connect to ${opp.buyExchange} and ${opp.sellExchange}`,
-        `2. Verify liquidity (minimum $10,000 volume)`,
+        '2. Verify liquidity (minimum $10,000 volume)',
         `3. Execute simultaneous buy on ${
           opp.buyExchange
         } at $${opp.buyPrice?.toFixed(2)}`,
         `4. Execute simultaneous sell on ${
           opp.sellExchange
         } at $${opp.sellPrice?.toFixed(2)}`,
-        `5. Withdraw funds and reinvest`,
+        '5. Withdraw funds and reinvest',
         `Expected profit: $${opp.profit?.toFixed(
           2
-        )} (${opp.profitPercent?.toFixed(2)}%)`,
+        )} (${opp.profitPercent?.toFixed(2)}%)`
       ],
       pattern_trading: [
-        `1. Set up position on exchange`,
+        '1. Set up position on exchange',
         `2. Entry price: $${opp.currentPrice?.toFixed(2)}`,
         `3. Set stop loss at $${(opp.currentPrice * 0.95)?.toFixed(2)}`,
         `4. Set take profit at $${opp.simulation?.expectedPrice?.toFixed(2)}`,
         `5. Monitor patterns: ${opp.patterns?.map((p) => p.type).join(', ')}`,
         `Expected return: ${opp.simulation?.expectedReturn?.toFixed(
           2
-        )}% over 30 days`,
+        )}% over 30 days`
       ],
       affiliate_program: [
         `1. Sign up for ${opp.name}`,
-        `2. Get affiliate links`,
-        `3. Create content: blog post + YouTube video`,
-        `4. Promote on social media`,
-        `5. Track conversions`,
-        `Expected revenue: $${opp.estimatedMonthlyRevenue}/month`,
-      ],
+        '2. Get affiliate links',
+        '3. Create content: blog post + YouTube video',
+        '4. Promote on social media',
+        '5. Track conversions',
+        `Expected revenue: $${opp.estimatedMonthlyRevenue}/month`
+      ]
     };
 
     return steps[opp.type] || steps[opp.category] || ['Execute opportunity'];
@@ -1018,7 +1018,7 @@ class MiniAladdin extends EventEmitter {
       opportunity,
       entryTime: new Date().toISOString(),
       status: 'executed',
-      amount: opportunity.risk?.positionSize || 1000,
+      amount: opportunity.risk?.positionSize || 1000
     };
 
     this.trades.push(trade);
@@ -1044,7 +1044,7 @@ class MiniAladdin extends EventEmitter {
       totalTrades,
       winRate,
       bestOpportunity: this.opportunities[0],
-      estimatedDailyProfit: this._estimateDailyProfit(),
+      estimatedDailyProfit: this._estimateDailyProfit()
     };
   }
 
@@ -1074,13 +1074,13 @@ class MiniAladdin extends EventEmitter {
         highPriority: analytics.highPriorityOpps,
         portfolioValue: this.portfolio.totalValue,
         estimatedDailyProfit: analytics.estimatedDailyProfit,
-        estimatedMonthlyProfit: analytics.estimatedDailyProfit * 30,
+        estimatedMonthlyProfit: analytics.estimatedDailyProfit * 30
       },
       bestOpportunities: this.opportunities.slice(0, 10),
       portfolio: this.portfolio,
       agents: Object.values(this.agents).map((a) => ({
         name: a.name,
-        specialty: a.specialty,
+        specialty: a.specialty
       })),
       strategies: {
         arbitrage: this.opportunities.filter((o) => o.category === 'arbitrage')
@@ -1088,8 +1088,8 @@ class MiniAladdin extends EventEmitter {
         trading: this.opportunities.filter((o) => o.category === 'trading')
           .length,
         affiliate: this.opportunities.filter((o) => o.category === 'affiliate')
-          .length,
-      },
+          .length
+      }
     };
   }
 
@@ -1117,7 +1117,7 @@ class MiniAladdin extends EventEmitter {
       const result = await this.hunt();
 
       if (result.opportunities.filter((o) => o.score > 80).length > 0) {
-        console.log(`\n🚨 HIGH SCORE OPPORTUNITY DETECTED!`);
+        console.log('\n🚨 HIGH SCORE OPPORTUNITY DETECTED!');
         const best = result.opportunities[0];
         console.log(`   ${best.type}: ${best.symbol || best.name}`);
         console.log(`   Score: ${best.score}/100`);
@@ -1221,7 +1221,7 @@ if (require.main === module) {
   console.clear();
   console.log('═'.repeat(80));
   console.log('🎯 MINI-ALADDIN: Multi-Agent Money Machine');
-  console.log("   Inspired by BlackRock's $20 Trillion System");
+  console.log('   Inspired by BlackRock\'s $20 Trillion System');
   console.log('═'.repeat(80));
   console.log('\n');
 
@@ -1231,7 +1231,7 @@ if (require.main === module) {
       initialCapital: 10000,
       riskTolerance: 'medium',
       strategies: ['arbitrage', 'pattern', 'affiliate'],
-      autoExecute: false,
+      autoExecute: false
     });
 
     // Event listeners
@@ -1252,8 +1252,8 @@ if (require.main === module) {
       30,
       10000
     );
-    console.log(`Current BTC Price: $45,000`);
-    console.log(`\nSimulation Results (10,000 scenarios, 30 days):`);
+    console.log('Current BTC Price: $45,000');
+    console.log('\nSimulation Results (10,000 scenarios, 30 days):');
     console.log(`  Expected Return: ${simulation.expectedReturn.toFixed(2)}%`);
     console.log(
       `  Probability of Profit: ${simulation.probabilityOfProfit.toFixed(1)}%`
@@ -1278,8 +1278,8 @@ if (require.main === module) {
       2500,
       10000
     );
-    console.log(`Path: USDT -> BTC -> ETH -> USDT`);
-    console.log(`Starting Amount: $10,000`);
+    console.log('Path: USDT -> BTC -> ETH -> USDT');
+    console.log('Starting Amount: $10,000');
     console.log(
       `\nForward Path: ${triArb.forward.percent.toFixed(
         3
@@ -1303,9 +1303,9 @@ if (require.main === module) {
     console.log('━'.repeat(80));
 
     const kelly = aladdin.agents.math.kellyCalculator(0.65, 2, 10000);
-    console.log(`Win Probability: 65%`);
-    console.log(`Win/Loss Ratio: 2:1`);
-    console.log(`Bankroll: $10,000`);
+    console.log('Win Probability: 65%');
+    console.log('Win/Loss Ratio: 2:1');
+    console.log('Bankroll: $10,000');
     console.log(
       `\nFull Kelly: ${kelly.fullKellyPercent.toFixed(
         2
@@ -1420,7 +1420,7 @@ if (require.main === module) {
     console.log(`Available Cash: $${report.portfolio.cash.toLocaleString()}`);
     console.log(`Total Opportunities: ${report.summary.totalOpportunities}`);
     console.log(`High Priority: ${report.summary.highPriority}`);
-    console.log(`\n💰 PROFIT PROJECTIONS:`);
+    console.log('\n💰 PROFIT PROJECTIONS:');
     console.log(`  Daily: $${report.summary.estimatedDailyProfit}`);
     console.log(
       `  Monthly: $${report.summary.estimatedMonthlyProfit.toLocaleString()}`
@@ -1461,14 +1461,14 @@ if (require.main === module) {
     console.log(`Confidence: ${best.confidence}%`);
 
     if (best.profit) {
-      console.log(`\n💰 PROFIT POTENTIAL:`);
+      console.log('\n💰 PROFIT POTENTIAL:');
       console.log(`  Amount: $${best.profit.toFixed(2)}`);
       console.log(`  Percentage: ${best.profitPercent.toFixed(2)}%`);
       console.log(`  ROI: ${best.roi.toFixed(2)}%`);
     }
 
     if (best.risk) {
-      console.log(`\n🛡️  RISK ASSESSMENT:`);
+      console.log('\n🛡️  RISK ASSESSMENT:');
       console.log(`  Risk Score: ${best.risk.riskScore}/100`);
       console.log(`  Risk Level: ${best.risk.riskLevel.toUpperCase()}`);
       console.log(`  Approved: ${best.risk.approved ? '✅ YES' : '❌ NO'}`);

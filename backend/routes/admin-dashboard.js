@@ -444,7 +444,7 @@ router.post('/control/:action', async (req, res) => {
       }
       break;
 
-    case 'update-knowledge':
+    case 'update-knowledge': {
       if (!countryAgentNetwork.isInitialized) {
         throw new Error('Network not initialized');
       }
@@ -452,6 +452,7 @@ router.post('/control/:action', async (req, res) => {
       await Promise.all(agents.map((agent) => agent.updateKnowledge()));
       result = { message: `Updated knowledge for ${agents.length} agents` };
       break;
+    }
 
     default:
       throw new Error(`Unknown action: ${action}`);

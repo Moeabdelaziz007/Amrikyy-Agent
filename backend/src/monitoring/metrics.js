@@ -133,6 +133,58 @@ const dependencyHealthStatus = new promClient.Gauge({
   registers: [register]
 });
 
+// Redis specific metrics
+const redisCacheHits = new promClient.Counter({
+  name: 'redis_cache_hits_total',
+  help: 'Total number of Redis cache hits',
+  registers: [register]
+});
+
+const redisCacheMisses = new promClient.Counter({
+  name: 'redis_cache_misses_total',
+  help: 'Total number of Redis cache misses',
+  registers: [register]
+});
+
+const redisOperations = new promClient.Counter({
+  name: 'redis_operations_total',
+  help: 'Total number of Redis operations',
+  labelNames: ['operation'],
+  registers: [register]
+});
+
+const redisResponseTime = new promClient.Histogram({
+  name: 'redis_response_time_seconds',
+  help: 'Response time of Redis operations',
+  labelNames: ['operation'],
+  buckets: [0.001, 0.005, 0.01, 0.05, 0.1, 0.5],
+  registers: [register]
+});
+
+const redisErrors = new promClient.Counter({
+  name: 'redis_errors_total',
+  help: 'Total number of Redis errors',
+  registers: [register]
+});
+
+const redisConnections = new promClient.Gauge({
+  name: 'redis_connections',
+  help: 'Number of active Redis connections',
+  registers: [register]
+});
+
+const redisMemoryUsed = new promClient.Gauge({
+  name: 'redis_memory_used_bytes',
+  help: 'Memory used by Redis in bytes',
+  registers: [register]
+});
+
+const redisUptime = new promClient.Gauge({
+  name: 'redis_uptime_seconds',
+  help: 'Redis server uptime in seconds',
+  registers: [register]
+});
+
 /**
  * Middleware to collect HTTP metrics
  */
