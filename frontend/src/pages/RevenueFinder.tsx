@@ -407,6 +407,7 @@ export default function RevenueFinder() {
                     value={skills}
                     onChange={(e) => setSkills(e.target.value)}
                     placeholder="javascript,ai,security"
+                    aria-label="Enter your skills separated by commas"
                   />
                 </div>
                 <div>
@@ -416,6 +417,9 @@ export default function RevenueFinder() {
                     type="number"
                     value={timeAvailable}
                     onChange={(e) => setTimeAvailable(e.target.value)}
+                    aria-label="Hours available per week"
+                    min="1"
+                    max="168"
                   />
                 </div>
                 <div>
@@ -425,14 +429,18 @@ export default function RevenueFinder() {
                     type="number"
                     value={minRevenue}
                     onChange={(e) => setMinRevenue(e.target.value)}
+                    aria-label="Minimum monthly revenue target in dollars"
+                    min="0"
+                    step="100"
                   />
                 </div>
               </div>
               <Button
                 onClick={fetchOpportunities}
                 className="mt-4 w-full md:w-auto bg-gradient-to-r from-purple-600 to-blue-600"
+                aria-label="Search for revenue opportunities"
               >
-                <RefreshCw className="w-4 h-4 mr-2" />
+                <RefreshCw className="w-4 h-4 mr-2" aria-hidden="true" />
                 Find Opportunities
               </Button>
             </CardContent>
