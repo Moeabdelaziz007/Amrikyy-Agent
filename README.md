@@ -6,6 +6,8 @@ AI Automation Platform (Frontend + Backend) powered by Amrikyy - Currently featu
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
+**English | [العربية](README.ar.md)**
+
 ## 🎯 Features
 
 - 🧠 **AI-Powered Recommendations** - Intelligent travel suggestions using Z.ai GLM-4.6
