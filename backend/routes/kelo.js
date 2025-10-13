@@ -1,6 +1,7 @@
 /**
  * Kelo AI API Routes
- * Advanced AI-powered endpoints using Kelo AI
+ * Advanced AI-powered endpoints using Kelo Code free/budget models
+ * Optimized for cost-effective AI operations
  */
 
 const express = require('express');
@@ -44,7 +45,7 @@ router.post('/chat', async (req, res) => {
       }
     ];
 
-    const response = await keloClient.chatCompletion(messages, {
+    const response = await moonshotClient.chatCompletion(messages, {
       temperature: parseFloat(temperature),
       maxTokens: parseInt(maxTokens)
     });
