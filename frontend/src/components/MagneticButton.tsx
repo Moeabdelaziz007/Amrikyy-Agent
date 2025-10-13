@@ -2,7 +2,8 @@ import { useRef, useState, ReactNode, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 
-interface MagneticButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface MagneticButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   size?: 'default' | 'sm' | 'lg' | 'icon';
   variant?:
@@ -25,19 +26,22 @@ export const MagneticButton = ({
   const ref = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!ref.current) return;
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (!ref.current) return;
 
-    const { clientX, clientY } = e;
-    const { left, top, width, height } = ref.current.getBoundingClientRect();
-    const x = (clientX - (left + width / 2)) * 0.3;
-    const y = (clientY - (top + height / 2)) * 0.3;
-    
-    // Only update if change is significant (debounce)
-    if (Math.abs(x - position.x) > 1 || Math.abs(y - position.y) > 1) {
-      setPosition({ x, y });
-    }
-  }, [position.x, position.y]);
+      const { clientX, clientY } = e;
+      const { left, top, width, height } = ref.current.getBoundingClientRect();
+      const x = (clientX - (left + width / 2)) * 0.3;
+      const y = (clientY - (top + height / 2)) * 0.3;
+
+      // Only update if change is significant (debounce)
+      if (Math.abs(x - position.x) > 1 || Math.abs(y - position.y) > 1) {
+        setPosition({ x, y });
+      }
+    },
+    [position.x, position.y]
+  );
 
   const handleMouseLeave = useCallback(() => {
     setPosition({ x: 0, y: 0 });
