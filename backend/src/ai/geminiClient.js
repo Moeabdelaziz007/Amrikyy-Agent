@@ -78,27 +78,14 @@ class KeloClient {
    * Convert OpenAI-style messages to Kelo format
    */
   convertMessagesToKelo(messages) {
-    const contents = [];
-    let systemInstruction = '';
-    
-    for (const msg of messages) {
-      if (msg.role === 'system') {
-        systemInstruction = msg.content;
-        continue;
+    return messages.map(msg => ({
+      role: msg.role,
+      content: msg.content,
+      metadata: {
+        timestamp: new Date().toISOString(),
+        source: 'maya-travel-agent'
       }
-      
-      contents.push({
-        role: msg.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: msg.content }]
-      });
-    }
-    
-    // Prepend system instruction to first user message if exists
-    if (systemInstruction && contents.length > 0 && contents[0].role === 'user') {
-      contents[0].parts[0].text = `${systemInstruction}\n\n${contents[0].parts[0].text}`;
-    }
-    
-    return contents;
+    }));
   }
 
   /**
