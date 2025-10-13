@@ -10,26 +10,24 @@ interface CountUpProps {
   decimals?: number;
 }
 
-export const CountUp = ({ 
-  end, 
-  duration = 2, 
-  prefix = '', 
+export const CountUp = ({
+  end,
+  duration = 2,
+  prefix = '',
   suffix = '',
   className = '',
-  decimals = 0
+  decimals = 0,
 }: CountUpProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true });
   const [hasAnimated, setHasAnimated] = useState(false);
-  
+
   const spring = useSpring(0, {
     duration: duration * 1000,
     bounce: 0,
   });
-  
-  const display = useTransform(spring, (latest) => {
-    return prefix + latest.toFixed(decimals) + suffix;
-  });
+
+  const [displayValue, setDisplayValue] = useState('0');
 
   useEffect(() => {
     if (isInView && !hasAnimated) {
@@ -38,10 +36,17 @@ export const CountUp = ({
     }
   }, [isInView, end, spring, hasAnimated]);
 
+  // Update display value efficiently
+  useEffect(() => {
+    const unsubscribe = spring.on('change', (latest) => {
+      setDisplayValue(prefix + latest.toFixed(decimals) + suffix);
+    });
+    return unsubscribe;
+  }, [spring, prefix, suffix, decimals]);
+
   return (
-    <motion.div ref={ref} className={className}>
-      <motion.span>{display}</motion.span>
-    </motion.div>
+    <div ref={ref} className={className}>
+      <span>{displayValue}</span>
+    </div>
   );
 };
-

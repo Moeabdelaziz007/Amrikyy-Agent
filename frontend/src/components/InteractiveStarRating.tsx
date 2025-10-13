@@ -56,7 +56,7 @@ export const InteractiveStarRating = ({
         {Array.from({ length: maxStars }).map((_, index) => {
           const starValue = index + 1;
           const isFilled = starValue <= displayValue;
-          
+
           return (
             <motion.button
               key={index}
@@ -64,12 +64,26 @@ export const InteractiveStarRating = ({
               onClick={() => handleClick(starValue)}
               onMouseEnter={() => handleMouseEnter(starValue)}
               onMouseLeave={handleMouseLeave}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleClick(starValue);
+                } else if (e.key === 'ArrowRight' && starValue < maxStars) {
+                  e.preventDefault();
+                  handleClick(starValue + 1);
+                } else if (e.key === 'ArrowLeft' && starValue > 1) {
+                  e.preventDefault();
+                  handleClick(starValue - 1);
+                }
+              }}
               whileHover={{ scale: readonly ? 1 : 1.2 }}
               whileTap={{ scale: readonly ? 1 : 0.9 }}
               className={cn(
-                'transition-colors',
+                'transition-colors focus-visible:ring-2 focus-visible:ring-primary rounded',
                 !readonly && 'cursor-pointer'
               )}
+              aria-label={`Rate ${starValue} out of ${maxStars} stars`}
+              aria-pressed={starValue <= value}
               disabled={readonly}
             >
               <Star
@@ -85,7 +99,7 @@ export const InteractiveStarRating = ({
           );
         })}
       </div>
-      
+
       {showCount && reviewCount > 0 && (
         <span className="text-sm text-muted-foreground">
           ({reviewCount.toLocaleString()} reviews)
@@ -94,4 +108,3 @@ export const InteractiveStarRating = ({
     </div>
   );
 };
-
