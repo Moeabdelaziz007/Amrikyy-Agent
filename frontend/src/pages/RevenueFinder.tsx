@@ -1,7 +1,23 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { DollarSign, TrendingUp, Zap, Target, Clock, Star, ArrowRight, Download, RefreshCw } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  DollarSign,
+  TrendingUp,
+  Zap,
+  Target,
+  Clock,
+  Star,
+  ArrowRight,
+  Download,
+  RefreshCw,
+} from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -57,7 +73,9 @@ interface RevenueData {
 export default function RevenueFinder() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<RevenueData | null>(null);
-  const [skills, setSkills] = useState('javascript,security,ai,automation,api,development');
+  const [skills, setSkills] = useState(
+    'javascript,security,ai,automation,api,development'
+  );
   const [timeAvailable, setTimeAvailable] = useState('15');
   const [minRevenue, setMinRevenue] = useState('500');
 
@@ -93,8 +111,9 @@ export default function RevenueFinder() {
         scalability: 'very high',
         priority: 'high',
         matchScore: 100,
-        description: 'Create API for security auditing (based on your AIX auditor)',
-        effort: 'medium'
+        description:
+          'Create API for security auditing (based on your AIX auditor)',
+        effort: 'medium',
       },
       {
         name: 'Security Audit Template Pack',
@@ -107,7 +126,7 @@ export default function RevenueFinder() {
         priority: 'high',
         matchScore: 50,
         description: 'Sell audit templates, checklists, and reports',
-        effort: 'low'
+        effort: 'low',
       },
       {
         name: 'AI Agent Development Course',
@@ -120,7 +139,7 @@ export default function RevenueFinder() {
         priority: 'high',
         matchScore: 67,
         description: 'Create course on building AI agents',
-        effort: 'high'
+        effort: 'high',
       },
       {
         name: 'AI Integration Specialist',
@@ -133,7 +152,7 @@ export default function RevenueFinder() {
         priority: 'medium',
         matchScore: 67,
         description: 'Help businesses integrate AI tools',
-        effort: 'high'
+        effort: 'high',
       },
       {
         name: 'GitHub Action Marketplace',
@@ -146,8 +165,8 @@ export default function RevenueFinder() {
         priority: 'medium',
         matchScore: 67,
         description: 'Publish security audit GitHub Action',
-        effort: 'medium'
-      }
+        effort: 'medium',
+      },
     ],
     actionPlan: {
       immediate: [
@@ -160,26 +179,56 @@ export default function RevenueFinder() {
             '2. Create high-quality product',
             '3. Set up sales page with Gumroad/Stripe',
             '4. Build email list',
-            '5. Launch with special offer'
-          ]
-        }
+            '5. Launch with special offer',
+          ],
+        },
       ],
       shortTerm: [
         { opportunity: 'AI Integration Specialist', estimatedRevenue: 3000 },
-        { opportunity: 'GitHub Action Marketplace', estimatedRevenue: 400 }
+        { opportunity: 'GitHub Action Marketplace', estimatedRevenue: 400 },
       ],
       longTerm: [
         { opportunity: 'Build Security Audit API', estimatedRevenue: 1000 },
-        { opportunity: 'AI Agent Development Course', estimatedRevenue: 1500 }
-      ]
+        { opportunity: 'AI Agent Development Course', estimatedRevenue: 1500 },
+      ],
     },
     forecast: [
-      { month: 1, monthlyRevenue: 1820, cumulativeRevenue: 1820, activeOpportunities: 4 },
-      { month: 2, monthlyRevenue: 3620, cumulativeRevenue: 5440, activeOpportunities: 7 },
-      { month: 3, monthlyRevenue: 5520, cumulativeRevenue: 10960, activeOpportunities: 11 },
-      { month: 4, monthlyRevenue: 6620, cumulativeRevenue: 17580, activeOpportunities: 13 },
-      { month: 5, monthlyRevenue: 8620, cumulativeRevenue: 26200, activeOpportunities: 17 },
-      { month: 6, monthlyRevenue: 8620, cumulativeRevenue: 34820, activeOpportunities: 17 }
+      {
+        month: 1,
+        monthlyRevenue: 1820,
+        cumulativeRevenue: 1820,
+        activeOpportunities: 4,
+      },
+      {
+        month: 2,
+        monthlyRevenue: 3620,
+        cumulativeRevenue: 5440,
+        activeOpportunities: 7,
+      },
+      {
+        month: 3,
+        monthlyRevenue: 5520,
+        cumulativeRevenue: 10960,
+        activeOpportunities: 11,
+      },
+      {
+        month: 4,
+        monthlyRevenue: 6620,
+        cumulativeRevenue: 17580,
+        activeOpportunities: 13,
+      },
+      {
+        month: 5,
+        monthlyRevenue: 8620,
+        cumulativeRevenue: 26200,
+        activeOpportunities: 17,
+      },
+      {
+        month: 6,
+        monthlyRevenue: 8620,
+        cumulativeRevenue: 34820,
+        activeOpportunities: 17,
+      },
     ],
     quickWins: [
       {
@@ -193,29 +242,36 @@ export default function RevenueFinder() {
         priority: 'high',
         matchScore: 50,
         description: 'Sell audit templates, checklists, and reports',
-        effort: 'low'
-      }
+        effort: 'low',
+      },
     ],
     recommendations: [
       {
         type: 'quick_win',
         title: 'Start with Quick Wins',
-        description: 'You have 1 easy opportunity with high score. Start here for fast momentum.',
-        opportunities: ['Security Audit Template Pack']
+        description:
+          'You have 1 easy opportunity with high score. Start here for fast momentum.',
+        opportunities: ['Security Audit Template Pack'],
       },
       {
         type: 'high_revenue',
         title: 'High Revenue Opportunities',
-        description: '3 opportunities with $1000+/month potential. Worth the extra effort.',
-        opportunities: ['Build Security Audit API', 'AI Agent Development Course', 'AI Integration Specialist']
+        description:
+          '3 opportunities with $1000+/month potential. Worth the extra effort.',
+        opportunities: [
+          'Build Security Audit API',
+          'AI Agent Development Course',
+          'AI Integration Specialist',
+        ],
       },
       {
         type: 'skill_leverage',
         title: 'Leverage Your Strengths',
-        description: '1 opportunity matches your skills perfectly. Highest success probability.',
-        opportunities: ['Build Security Audit API']
-      }
-    ]
+        description:
+          '1 opportunity matches your skills perfectly. Highest success probability.',
+        opportunities: ['Build Security Audit API'],
+      },
+    ],
   });
 
   useEffect(() => {
@@ -225,8 +281,17 @@ export default function RevenueFinder() {
   const exportToCSV = () => {
     if (!data) return;
 
-    const headers = ['Name', 'Category', 'Score', 'Revenue', 'Difficulty', 'Time to Revenue', 'Scalability', 'Priority'];
-    const rows = data.opportunities.map(o => [
+    const headers = [
+      'Name',
+      'Category',
+      'Score',
+      'Revenue',
+      'Difficulty',
+      'Time to Revenue',
+      'Scalability',
+      'Priority',
+    ];
+    const rows = data.opportunities.map((o) => [
       o.name,
       o.category,
       o.score,
@@ -234,18 +299,20 @@ export default function RevenueFinder() {
       o.difficulty,
       o.timeToRevenue,
       o.scalability || 'N/A',
-      o.priority
+      o.priority,
     ]);
 
     const csvContent = [headers, ...rows]
-      .map(row => row.map(cell => `"${cell}"`).join(','))
+      .map((row) => row.map((cell) => `"${cell}"`).join(','))
       .join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `revenue-opportunities-${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `revenue-opportunities-${
+      new Date().toISOString().split('T')[0]
+    }.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
   };
@@ -287,8 +354,12 @@ export default function RevenueFinder() {
           className="text-center"
         >
           <RefreshCw className="w-16 h-16 mx-auto mb-4 animate-spin text-purple-600" />
-          <h2 className="text-2xl font-bold text-gray-800">Finding Revenue Opportunities...</h2>
-          <p className="text-gray-600 mt-2">Analyzing your skills and market data</p>
+          <h2 className="text-2xl font-bold text-gray-800">
+            Finding Revenue Opportunities...
+          </h2>
+          <p className="text-gray-600 mt-2">
+            Analyzing your skills and market data
+          </p>
         </motion.div>
       </div>
     );
@@ -309,7 +380,9 @@ export default function RevenueFinder() {
               MoneyFinder AI
             </h1>
           </div>
-          <p className="text-gray-600 text-lg">Discover personalized revenue opportunities based on your skills</p>
+          <p className="text-gray-600 text-lg">
+            Discover personalized revenue opportunities based on your skills
+          </p>
         </motion.div>
 
         {/* Configuration Panel */}
@@ -355,7 +428,10 @@ export default function RevenueFinder() {
                   />
                 </div>
               </div>
-              <Button onClick={fetchOpportunities} className="mt-4 w-full md:w-auto bg-gradient-to-r from-purple-600 to-blue-600">
+              <Button
+                onClick={fetchOpportunities}
+                className="mt-4 w-full md:w-auto bg-gradient-to-r from-purple-600 to-blue-600"
+              >
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Find Opportunities
               </Button>
@@ -374,21 +450,32 @@ export default function RevenueFinder() {
             >
               <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium opacity-90">Total Opportunities</CardTitle>
+                  <CardTitle className="text-sm font-medium opacity-90">
+                    Total Opportunities
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold">{data.opportunities.length}</div>
-                  <p className="text-xs opacity-75 mt-1">Revenue streams found</p>
+                  <div className="text-3xl font-bold">
+                    {data.opportunities.length}
+                  </div>
+                  <p className="text-xs opacity-75 mt-1">
+                    Revenue streams found
+                  </p>
                 </CardContent>
               </Card>
 
               <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium opacity-90">High Priority</CardTitle>
+                  <CardTitle className="text-sm font-medium opacity-90">
+                    High Priority
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold">
-                    {data.opportunities.filter(o => o.priority === 'high').length}
+                    {
+                      data.opportunities.filter((o) => o.priority === 'high')
+                        .length
+                    }
                   </div>
                   <p className="text-xs opacity-75 mt-1">Start with these</p>
                 </CardContent>
@@ -396,17 +483,23 @@ export default function RevenueFinder() {
 
               <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium opacity-90">Quick Wins</CardTitle>
+                  <CardTitle className="text-sm font-medium opacity-90">
+                    Quick Wins
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold">{data.quickWins.length}</div>
+                  <div className="text-3xl font-bold">
+                    {data.quickWins.length}
+                  </div>
                   <p className="text-xs opacity-75 mt-1">Easy & fast revenue</p>
                 </CardContent>
               </Card>
 
               <Card className="bg-gradient-to-br from-pink-500 to-pink-600 text-white">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium opacity-90">6-Month Potential</CardTitle>
+                  <CardTitle className="text-sm font-medium opacity-90">
+                    6-Month Potential
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold">
@@ -420,10 +513,14 @@ export default function RevenueFinder() {
             {/* Main Content Tabs */}
             <Tabs defaultValue="opportunities" className="space-y-6">
               <TabsList className="grid w-full grid-cols-4 bg-white/50 backdrop-blur">
-                <TabsTrigger value="opportunities">🏆 Top Opportunities</TabsTrigger>
+                <TabsTrigger value="opportunities">
+                  🏆 Top Opportunities
+                </TabsTrigger>
                 <TabsTrigger value="action">📋 Action Plan</TabsTrigger>
                 <TabsTrigger value="forecast">📈 Forecast</TabsTrigger>
-                <TabsTrigger value="recommendations">💡 Recommendations</TabsTrigger>
+                <TabsTrigger value="recommendations">
+                  💡 Recommendations
+                </TabsTrigger>
               </TabsList>
 
               {/* Top Opportunities Tab */}
@@ -435,20 +532,32 @@ export default function RevenueFinder() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
                   >
-                    <Card className="hover:shadow-lg transition-shadow border-l-4" style={{ borderLeftColor: opp.priority === 'high' ? '#ef4444' : opp.priority === 'medium' ? '#eab308' : '#22c55e' }}>
+                    <Card
+                      className="hover:shadow-lg transition-shadow border-l-4"
+                      style={{
+                        borderLeftColor:
+                          opp.priority === 'high'
+                            ? '#ef4444'
+                            : opp.priority === 'medium'
+                            ? '#eab308'
+                            : '#22c55e',
+                      }}
+                    >
                       <CardHeader>
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
-                              <CardTitle className="text-xl">{opp.name}</CardTitle>
+                              <CardTitle className="text-xl">
+                                {opp.name}
+                              </CardTitle>
                               <Badge className={getPriorityColor(opp.priority)}>
                                 {opp.priority.toUpperCase()}
                               </Badge>
                             </div>
                             <CardDescription className="flex items-center gap-4 flex-wrap">
                               <span className="flex items-center gap-1">
-                                <DollarSign className="w-4 h-4" />
-                                ${opp.estimatedRevenue}/mo
+                                <DollarSign className="w-4 h-4" />$
+                                {opp.estimatedRevenue}/mo
                               </span>
                               <span className="flex items-center gap-1">
                                 <Clock className="w-4 h-4" />
@@ -461,7 +570,9 @@ export default function RevenueFinder() {
                             </CardDescription>
                           </div>
                           <div className="text-right">
-                            <div className="text-3xl font-bold text-purple-600">{opp.score}</div>
+                            <div className="text-3xl font-bold text-purple-600">
+                              {opp.score}
+                            </div>
                             <div className="text-xs text-gray-500">Score</div>
                           </div>
                         </div>
@@ -469,20 +580,31 @@ export default function RevenueFinder() {
                       <CardContent>
                         <p className="text-gray-600 mb-4">{opp.description}</p>
                         <div className="flex items-center gap-3 flex-wrap">
-                          <Badge variant="outline" className={getDifficultyColor(opp.difficulty)}>
+                          <Badge
+                            variant="outline"
+                            className={getDifficultyColor(opp.difficulty)}
+                          >
                             Difficulty: {opp.difficulty}
                           </Badge>
-                          <Badge variant="outline" className="text-blue-600 bg-blue-50">
+                          <Badge
+                            variant="outline"
+                            className="text-blue-600 bg-blue-50"
+                          >
                             Match: {opp.matchScore}%
                           </Badge>
-                          <Badge variant="outline" className="text-purple-600 bg-purple-50">
+                          <Badge
+                            variant="outline"
+                            className="text-purple-600 bg-purple-50"
+                          >
                             {opp.category}
                           </Badge>
                         </div>
                         <div className="mt-4">
                           <div className="flex items-center justify-between text-sm mb-2">
                             <span className="text-gray-600">Skill Match</span>
-                            <span className="font-medium">{opp.matchScore}%</span>
+                            <span className="font-medium">
+                              {opp.matchScore}%
+                            </span>
                           </div>
                           <Progress value={opp.matchScore} className="h-2" />
                         </div>
@@ -505,14 +627,23 @@ export default function RevenueFinder() {
                     {data.actionPlan.immediate.map((action, index) => (
                       <div key={index} className="mb-6 last:mb-0">
                         <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-semibold text-lg">{action.opportunity}</h4>
-                          <Badge className="bg-red-500">${action.estimatedRevenue}/mo</Badge>
+                          <h4 className="font-semibold text-lg">
+                            {action.opportunity}
+                          </h4>
+                          <Badge className="bg-red-500">
+                            ${action.estimatedRevenue}/mo
+                          </Badge>
                         </div>
                         <div className="bg-gray-50 rounded-lg p-4">
-                          <p className="text-sm font-medium text-gray-700 mb-2">Next Steps:</p>
+                          <p className="text-sm font-medium text-gray-700 mb-2">
+                            Next Steps:
+                          </p>
                           <ul className="space-y-2">
                             {action.nextSteps.map((step, i) => (
-                              <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
+                              <li
+                                key={i}
+                                className="flex items-start gap-2 text-sm text-gray-600"
+                              >
                                 <ArrowRight className="w-4 h-4 mt-0.5 text-red-500" />
                                 {step}
                               </li>
@@ -534,9 +665,16 @@ export default function RevenueFinder() {
                   <CardContent className="pt-6">
                     <div className="space-y-3">
                       {data.actionPlan.shortTerm.map((action, index) => (
-                        <div key={index} className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                          <span className="font-medium">{action.opportunity}</span>
-                          <span className="text-sm text-gray-600">${action.estimatedRevenue}/mo</span>
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg"
+                        >
+                          <span className="font-medium">
+                            {action.opportunity}
+                          </span>
+                          <span className="text-sm text-gray-600">
+                            ${action.estimatedRevenue}/mo
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -553,9 +691,16 @@ export default function RevenueFinder() {
                   <CardContent className="pt-6">
                     <div className="space-y-3">
                       {data.actionPlan.longTerm.map((action, index) => (
-                        <div key={index} className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                          <span className="font-medium">{action.opportunity}</span>
-                          <span className="text-sm text-gray-600">${action.estimatedRevenue}/mo</span>
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-3 bg-green-50 rounded-lg"
+                        >
+                          <span className="font-medium">
+                            {action.opportunity}
+                          </span>
+                          <span className="text-sm text-gray-600">
+                            ${action.estimatedRevenue}/mo
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -571,25 +716,37 @@ export default function RevenueFinder() {
                       <TrendingUp className="w-5 h-5" />
                       6-Month Revenue Forecast
                     </CardTitle>
-                    <CardDescription>Projected earnings based on opportunity success rates</CardDescription>
+                    <CardDescription>
+                      Projected earnings based on opportunity success rates
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       {data.forecast.map((month) => (
-                        <div key={month.month} className="border-b pb-4 last:border-0">
+                        <div
+                          key={month.month}
+                          className="border-b pb-4 last:border-0"
+                        >
                           <div className="flex items-center justify-between mb-2">
-                            <span className="font-medium">Month {month.month}</span>
+                            <span className="font-medium">
+                              Month {month.month}
+                            </span>
                             <div className="text-right">
                               <div className="text-lg font-bold text-purple-600">
                                 ${month.cumulativeRevenue.toLocaleString()}
                               </div>
                               <div className="text-xs text-gray-500">
-                                +${month.monthlyRevenue.toLocaleString()} this month
+                                +${month.monthlyRevenue.toLocaleString()} this
+                                month
                               </div>
                             </div>
                           </div>
-                          <Progress 
-                            value={(month.cumulativeRevenue / data.forecast[5].cumulativeRevenue) * 100} 
+                          <Progress
+                            value={
+                              (month.cumulativeRevenue /
+                                data.forecast[5].cumulativeRevenue) *
+                              100
+                            }
                             className="h-3"
                           />
                           <p className="text-xs text-gray-500 mt-1">
@@ -621,10 +778,15 @@ export default function RevenueFinder() {
                       </CardHeader>
                       <CardContent>
                         <div className="bg-purple-50 rounded-lg p-4">
-                          <p className="text-sm font-medium text-purple-900 mb-3">Focus on:</p>
+                          <p className="text-sm font-medium text-purple-900 mb-3">
+                            Focus on:
+                          </p>
                           <ul className="space-y-2">
                             {rec.opportunities.map((opp, i) => (
-                              <li key={i} className="flex items-center gap-2 text-sm text-purple-700">
+                              <li
+                                key={i}
+                                className="flex items-center gap-2 text-sm text-purple-700"
+                              >
                                 <div className="w-1.5 h-1.5 rounded-full bg-purple-500" />
                                 {opp}
                               </li>
@@ -645,7 +807,11 @@ export default function RevenueFinder() {
               transition={{ delay: 0.5 }}
               className="mt-8 flex gap-4 justify-center"
             >
-              <Button onClick={exportToCSV} size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600">
+              <Button
+                onClick={exportToCSV}
+                size="lg"
+                className="bg-gradient-to-r from-purple-600 to-blue-600"
+              >
                 <Download className="w-5 h-5 mr-2" />
                 Export to CSV
               </Button>
@@ -660,5 +826,3 @@ export default function RevenueFinder() {
     </div>
   );
 }
-
-

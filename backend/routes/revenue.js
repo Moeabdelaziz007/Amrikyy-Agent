@@ -9,7 +9,7 @@ const revenueOpportunities = [
     description: 'Offer premium travel insurance to customers booking flights to high-risk destinations.',
     value: 50000,
     probability: 0.75,
-    status: 'open',
+    status: 'open'
   },
   {
     id: 'opp-002',
@@ -17,7 +17,7 @@ const revenueOpportunities = [
     description: 'Targeted campaign for luxury hotel packages for users who have previously searched for Dubai.',
     value: 120000,
     probability: 0.6,
-    status: 'open',
+    status: 'open'
   },
   {
     id: 'opp-003',
@@ -25,8 +25,8 @@ const revenueOpportunities = [
     description: 'Partner with airport lounges to offer exclusive access to our frequent flyers.',
     value: 75000,
     probability: 0.8,
-    status: 'in-progress',
-  },
+    status: 'in-progress'
+  }
 ];
 
 /**

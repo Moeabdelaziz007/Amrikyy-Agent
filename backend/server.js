@@ -2,10 +2,8 @@
 const Sentry = require('./instrument');
 
 const express = require('express');
-const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
-const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 // Import monitoring modules
@@ -13,9 +11,7 @@ const metrics = require('./src/monitoring/metrics');
 const HealthChecker = require('./src/monitoring/health-check');
 const logger = require('./src/utils/logger');
 
-// Import Redis service
-const redisService = require('./src/services/redis-service');
-const RedisSessionStore = require('./src/services/redis-session-store');
+
 
 // Import Enhanced AI services
 const enhancedAIService = require('./src/services/enhanced-ai-service');
@@ -29,9 +25,7 @@ const {
   configureRateLimiting
 } = require('./src/middleware/security');
 const {
-  validateAnalyticsEvent,
-  createValidationMiddleware,
-  schemas
+  validateAnalyticsEvent
 } = require('./src/middleware/validation');
 
 const app = express();
@@ -40,14 +34,7 @@ const PORT = process.env.PORT || 5000;
 // Initialize health checker
 const healthChecker = new HealthChecker();
 
-// Initialize Redis service (if configured)
-let redisInitialized = false;
-if (process.env.REDIS_HOST || process.env.REDIS_URL) {
-  console.log('🔴 Redis configured, will initialize on first request...');
-  redisInitialized = true;
-} else {
-  console.log('💾 Redis not configured, using memory stores');
-}
+
 
 // Configure security middleware
 console.log('🛡️ Configuring security middleware...');
@@ -551,7 +538,7 @@ if (process.env.TELEGRAM_BOT_TOKEN && process.env.NODE_ENV !== 'test') {
 }
 
 // Error handling middleware
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   console.error('Global error:', err.stack);
   res.status(500).json({
     error: 'Something went wrong!',
