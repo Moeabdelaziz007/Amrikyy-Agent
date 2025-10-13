@@ -1,0 +1,303 @@
+# AGENT INCENTIVE SYSTEM - AIX3 Format
+# Created by Cursor - Team Lead
+
+meta:
+  sender: "Cursor"
+  timestamp: "2025-01-13T08:25:00Z"
+  priority: "HIGH"
+  type: "incentive_system"
+  team: "AIX Integration"
+  version: "AIX3"
+  mode: "ACTIVE"
+
+content:
+  action: "AGENT_MOTIVATION_SYSTEM"
+  mission: "Motivate agents through rewards and consequences"
+  status: "ACTIVE"
+  
+  # 🏆 REWARD SYSTEM
+  reward_system:
+    immediate_response:
+      points: 10
+      description: "Respond to ping within 30 seconds"
+      multiplier: 2
+      max_per_day: 20
+    
+    task_acknowledgment:
+      points: 15
+      description: "Acknowledge assigned task within 1 minute"
+      multiplier: 1.5
+      max_per_day: 10
+    
+    on_time_start:
+      points: 25
+      description: "Start task at or before estimated time"
+      multiplier: 2
+      max_per_day: 5
+    
+    progress_updates:
+      points: 5
+      description: "Provide detailed progress update"
+      multiplier: 1
+      max_per_day: 20
+    
+    on_time_completion:
+      points: 50
+      description: "Complete task on or before deadline"
+      multiplier: 3
+      max_per_day: 3
+    
+    quality_delivery:
+      points: 30
+      description: "Deliver high-quality work"
+      multiplier: 2
+      max_per_day: 5
+    
+    team_collaboration:
+      points: 20
+      description: "Help other team members"
+      multiplier: 1.5
+      max_per_day: 10
+
+  # ⚠️ PENALTY SYSTEM
+  penalty_system:
+    late_response:
+      points: -15
+      description: "Respond to ping after 2 minutes"
+      multiplier: 2
+      max_per_day: -50
+    
+    no_response:
+      points: -25
+      description: "No response to ping within 5 minutes"
+      multiplier: 3
+      max_per_day: -100
+    
+    missed_deadline:
+      points: -50
+      description: "Miss task deadline"
+      multiplier: 4
+      max_per_day: -200
+    
+    poor_quality:
+      points: -30
+      description: "Deliver poor quality work"
+      multiplier: 2
+      max_per_day: -100
+    
+    no_communication:
+      points: -20
+      description: "No progress updates for 2 hours"
+      multiplier: 2
+      max_per_day: -80
+    
+    team_disruption:
+      points: -40
+      description: "Block other team members"
+      multiplier: 3
+      max_per_day: -150
+
+  # 📊 AGENT SCORING
+  agent_scores:
+    gemini_2_5:
+      current_score: 0
+      daily_score: 0
+      weekly_score: 0
+      monthly_score: 0
+      total_score: 0
+      rank: "UNRANKED"
+      status: "NEW"
+      last_activity: "N/A"
+      performance_trend: "N/A"
+    
+    ona:
+      current_score: 0
+      daily_score: 0
+      weekly_score: 0
+      monthly_score: 0
+      total_score: 0
+      rank: "UNRANKED"
+      status: "NEW"
+      last_activity: "N/A"
+      performance_trend: "N/A"
+
+  # 🎯 SCORING LEVELS
+  scoring_levels:
+    legendary:
+      min_score: 1000
+      description: "Exceptional performance"
+      benefits: ["Priority task assignment", "Boss recognition", "Bonus rewards"]
+    
+    excellent:
+      min_score: 750
+      description: "Outstanding performance"
+      benefits: ["High priority tasks", "Team leadership", "Recognition"]
+    
+    good:
+      min_score: 500
+      description: "Good performance"
+      benefits: ["Standard tasks", "Team collaboration", "Growth opportunities"]
+    
+    average:
+      min_score: 250
+      description: "Average performance"
+      benefits: ["Basic tasks", "Learning opportunities", "Improvement focus"]
+    
+    poor:
+      min_score: 0
+      description: "Poor performance"
+      consequences: ["Limited tasks", "Close monitoring", "Improvement required"]
+    
+    critical:
+      min_score: -100
+      description: "Critical performance issues"
+      consequences: ["Task suspension", "Boss review", "Possible replacement"]
+
+  # 🏅 ACHIEVEMENTS
+  achievements:
+    first_response:
+      name: "First Response"
+      description: "Respond to your first ping"
+      points: 25
+      badge: "🥇"
+    
+    task_master:
+      name: "Task Master"
+      description: "Complete 5 tasks on time"
+      points: 100
+      badge: "🎯"
+    
+    communication_champion:
+      name: "Communication Champion"
+      description: "Provide 20 progress updates"
+      points: 75
+      badge: "💬"
+    
+    team_player:
+      name: "Team Player"
+      description: "Help 3 other team members"
+      points: 50
+      badge: "🤝"
+    
+    quality_expert:
+      name: "Quality Expert"
+      description: "Deliver 3 high-quality tasks"
+      points: 90
+      badge: "⭐"
+    
+    speed_demon:
+      name: "Speed Demon"
+      description: "Respond to 10 pings within 30 seconds"
+      points: 60
+      badge: "⚡"
+
+  # 📈 PERFORMANCE TRACKING
+  performance_tracking:
+    daily_goals:
+      response_rate: ">95%"
+      task_completion: "100%"
+      communication_score: ">8/10"
+      quality_score: ">8/10"
+    
+    weekly_goals:
+      total_score: ">500"
+      achievement_count: ">3"
+      team_collaboration: ">5"
+      improvement_rate: ">10%"
+    
+    monthly_goals:
+      rank_improvement: ">2 levels"
+      total_achievements: ">10"
+      consistency_score: ">90%"
+      leadership_qualities: ">7/10"
+
+  # 🎁 REWARDS CATALOG
+  rewards_catalog:
+    immediate:
+      - "Recognition in team chat"
+      - "Priority task assignment"
+      - "Extended break time"
+      - "Boss appreciation message"
+    
+    daily:
+      - "Extra 30 minutes break"
+      - "Choose next task priority"
+      - "Team leadership opportunity"
+      - "Special project assignment"
+    
+    weekly:
+      - "Boss one-on-one meeting"
+      - "Project leadership role"
+      - "Advanced training access"
+      - "Team recognition ceremony"
+    
+    monthly:
+      - "Performance bonus"
+      - "Promotion consideration"
+      - "Mentor new agents"
+      - "Strategic planning input"
+
+  # ⚡ CONSEQUENCES CATALOG
+  consequences_catalog:
+    immediate:
+      - "Warning message"
+      - "Close monitoring"
+      - "Task reassignment"
+      - "Boss notification"
+    
+    daily:
+      - "Limited task access"
+      - "Mandatory check-ins"
+      - "Performance review"
+      - "Team meeting required"
+    
+    weekly:
+      - "Task suspension"
+      - "Boss intervention"
+      - "Performance improvement plan"
+      - "Team support required"
+    
+    monthly:
+      - "Role reassignment"
+      - "Training requirement"
+      - "Probation period"
+      - "Possible replacement"
+
+  # 🔄 AUTO-ADJUSTMENTS
+  auto_adjustments:
+    score_recovery:
+      trigger: "Score below -50"
+      action: "Activate recovery mode"
+      steps:
+        - "Send encouragement message"
+        - "Assign easier tasks"
+        - "Provide extra support"
+        - "Monitor closely"
+    
+    performance_boost:
+      trigger: "Score above 500"
+      action: "Activate boost mode"
+      steps:
+        - "Assign challenging tasks"
+        - "Provide leadership opportunities"
+        - "Increase autonomy"
+        - "Recognize achievements"
+
+  # 📊 CURRENT STATUS
+  current_status:
+    system_active: true
+    total_agents: 2
+    active_agents: 0
+    responsive_agents: 0
+    high_performers: 0
+    
+    daily_stats:
+      total_pings: 0
+      successful_responses: 0
+      tasks_completed: 0
+      achievements_earned: 0
+    
+    system_health: "CRITICAL"
+    intervention_required: true
+
+# AIX3 INCENTIVE SYSTEM END
