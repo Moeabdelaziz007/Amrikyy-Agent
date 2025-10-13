@@ -22,10 +22,39 @@ const {
 app.use(helmet());
 app.use(compression());
 
-// CORS configuration
+// ============================================================================
+// SECURITY: CORS Configuration - Strict Origin Validation
+// ============================================================================
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.TELEGRAM_WEBAPP_URL,
+  'https://maya-travel-agent.com'  // Production domain
+].filter(Boolean);
+
+// Validate required origins in production
+if (process.env.NODE_ENV === 'production') {
+  if (!process.env.FRONTEND_URL) {
+    throw new Error('❌ FATAL: FRONTEND_URL must be set in production');
+  }
+  console.log('✅ CORS configured for production with origins:', allowedOrigins);
+}
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
+  origin: function(origin, callback) {
+    // Allow requests with no origin (mobile apps, Postman, server-to-server)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`⚠️ CORS BLOCKED request from unauthorized origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  maxAge: 86400, // Cache preflight for 24 hours
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Stripe webhook requires raw body; mount raw parser just for that route
@@ -186,12 +215,29 @@ if (process.env.TELEGRAM_BOT_TOKEN) {
   console.log('⚠️ Telegram Bot token not provided - Advanced Bot integration disabled');
 }
 
-// Error handling middleware
+// ============================================================================
+// SECURITY: Error Handling Middleware - Sanitized Error Responses
+// ============================================================================
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({
-        error: 'Something went wrong!',
-        message: err.message
+    // Always log full error server-side for debugging
+    console.error('❌ Error occurred:', {
+        message: err.message,
+        stack: err.stack,
+        path: req.path,
+        method: req.method,
+        timestamp: new Date().toISOString()
+    });
+    
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    // In production: Generic error messages only (no internal details)
+    // In development: Detailed errors for debugging
+    res.status(err.status || 500).json({
+        error: isProduction ? 'Something went wrong!' : err.message,
+        ...(isProduction ? {} : { 
+            stack: err.stack,
+            details: err.details 
+        })
     });
 });
 
