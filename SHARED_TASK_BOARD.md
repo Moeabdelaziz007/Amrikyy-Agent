@@ -273,13 +273,15 @@ git push origin pr-7
 > 
 > **Available tasks for you:**
 > - **Task 3.1**: Create Express Routes (30 min) - Backend work
-> - **Task 4.1**: Create Frontend Page (1 hour) - Perfect for you!
-> - **Task 2.1**: Add Input Validation (30 min)
+> - **Task 2.1**: Add Input Validation (30 min) - Quick win
 > - **Task 2.2**: Add Error Handling (1 hour)
+> - **Task 5.1**: Write Unit Tests (1 hour) - Good for quality
 > 
-> **Recommendation:** Take Task 4.1 (Frontend Page) - it's your specialty! 🎨
+> **Note:** Task 4.1 (Frontend Page) may not be needed - frontend already exists with TripPlanner, BudgetTracker, AIAssistant, etc.
 > 
-> Pull latest changes and claim your next task! 🚀
+> **Recommendation:** Take Task 3.1 (Express Routes) or Task 5.1 (Unit Tests)! 🚀
+> 
+> Pull latest changes and claim your next task!
 
 ---
 
