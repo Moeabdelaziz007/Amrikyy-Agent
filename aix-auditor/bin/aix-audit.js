@@ -10,8 +10,20 @@
  */
 
 const fs = require('fs');
+const fsPromises = require('fs').promises;
 const path = require('path');
 const crypto = require('crypto');
+
+// Import security modules (if they exist, otherwise use inline versions)
+let SecurityValidator, BackupManager;
+try {
+  SecurityValidator = require('../src/core/validator');
+  BackupManager = require('../src/core/backup');
+} catch (e) {
+  // Modules not found, will use inline versions below
+  SecurityValidator = null;
+  BackupManager = null;
+}
 
 // ============================================================================
 // ANSI COLOR CODES FOR BEAUTIFUL OUTPUT
@@ -39,9 +51,42 @@ const colors = {
 // ============================================================================
 
 class AIXParser {
-  static parse(filePath) {
-    const content = fs.readFileSync(filePath, 'utf8');
-    const ext = path.extname(filePath).toLowerCase();
+  static async parse(filePath, options = {}) {
+    // ✅ SECURITY FIX: Validate path before reading
+    const absolutePath = path.resolve(filePath);
+    const allowedDir = path.resolve(options.allowedDir || process.cwd());
+    
+    // Prevent path traversal
+    if (!absolutePath.startsWith(allowedDir)) {
+      throw new Error(`Security: Path traversal detected. File must be within ${allowedDir}`);
+    }
+    
+    // Check file exists
+    if (!fs.existsSync(absolutePath)) {
+      throw new Error(`File not found: ${filePath}`);
+    }
+    
+    // Check file size (max 10MB)
+    const stats = fs.statSync(absolutePath);
+    const maxSize = options.maxSize || 10 * 1024 * 1024;
+    if (stats.size > maxSize) {
+      throw new Error(`File too large: ${this.formatBytes(stats.size)} (max: ${this.formatBytes(maxSize)})`);
+    }
+    
+    // Validate file extension
+    const ext = path.extname(absolutePath).toLowerCase();
+    const allowedExts = ['.json', '.yaml', '.yml', '.aix', '.toml'];
+    if (!allowedExts.includes(ext)) {
+      throw new Error(`Invalid file type: ${ext}. Allowed: ${allowedExts.join(', ')}`);
+    }
+
+    // Read file content (async)
+    const content = await fsPromises.readFile(absolutePath, 'utf8');
+    
+    // Validate content (no null bytes)
+    if (content.includes('\0')) {
+      throw new Error('Security: File contains null bytes (possible binary exploit)');
+    }
 
     try {
       if (ext === '.json' || ext === '.aix') {
@@ -72,6 +117,14 @@ class AIXParser {
       return YAML.stringify(data);
     }
     return JSON.stringify(data, null, 2);
+  }
+  
+  static formatBytes(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
   }
 }
 
@@ -111,6 +164,21 @@ class RuleEngine {
             message: 'Invalid checksum format (expected SHA-256 hex)'
           };
         }
+        
+        // ✅ SECURITY FIX: Actually verify the checksum matches content
+        const agentCopy = JSON.parse(JSON.stringify(agent));
+        delete agentCopy.meta.checksum;
+        const calculated = crypto.createHash('sha256')
+          .update(JSON.stringify(agentCopy))
+          .digest('hex');
+        
+        if (calculated.toLowerCase() !== agent.meta.checksum.toLowerCase()) {
+          return {
+            passed: false,
+            message: `Checksum mismatch! File may be tampered. Expected: ${calculated}, Got: ${agent.meta.checksum}`
+          };
+        }
+        
         return { passed: true };
       },
       fix: (agent) => {
@@ -681,24 +749,32 @@ class ConsoleReporter {
 
 function printUsage() {
   console.log(`
-${colors.bright}${colors.cyan}AIX Security Auditor${colors.reset} v1.0.0
+${colors.bright}${colors.cyan}AIX Security Auditor${colors.reset} v2.0.0 ${colors.green}(Security Hardened)${colors.reset}
 
 ${colors.bright}USAGE:${colors.reset}
   aix-audit <file> [options]
 
 ${colors.bright}OPTIONS:${colors.reset}
-  --fix              Automatically fix issues where possible
-  --json             Output results in JSON format
-  --strict           Exit with error code if any issues found
-  --verbose, -v      Show all recommendations
-  --help, -h         Show this help message
+  --fix                    Automatically fix issues where possible
+  --dry-run                Preview fixes without making changes
+  --backup-dir <path>      Custom backup directory (default: .aix-backups)
+  --json                   Output results in JSON format
+  --strict                 Exit with error code if any issues found
+  --verbose, -v            Show all recommendations
+  --help, -h               Show this help message
 
 ${colors.bright}EXAMPLES:${colors.reset}
   ${colors.dim}# Audit an agent file${colors.reset}
   aix-audit agent.aix
 
-  ${colors.dim}# Audit and auto-fix issues${colors.reset}
+  ${colors.dim}# Preview what would be fixed (safe)${colors.reset}
+  aix-audit agent.aix --dry-run
+
+  ${colors.dim}# Audit and auto-fix issues (creates backup)${colors.reset}
   aix-audit agent.aix --fix
+
+  ${colors.dim}# Use custom backup directory${colors.reset}
+  aix-audit agent.aix --fix --backup-dir ./my-backups
 
   ${colors.dim}# Output JSON for CI/CD integration${colors.reset}
   aix-audit agent.aix --json > report.json
@@ -739,33 +815,72 @@ async function main() {
   const filePath = args[0];
   const options = {
     fix: args.includes('--fix'),
+    dryRun: args.includes('--dry-run'),
+    backupDir: getArgValue(args, '--backup-dir') || '.aix-backups',
     json: args.includes('--json'),
     strict: args.includes('--strict'),
     verbose: args.includes('--verbose') || args.includes('-v')
   };
   
-  // Validate file exists
-  if (!fs.existsSync(filePath)) {
-    console.error(`${colors.red}Error: File not found: ${filePath}${colors.reset}`);
-    process.exit(1);
-  }
-  
   try {
-    // Parse agent file
-    let agent = AIXParser.parse(filePath);
+    // Parse agent file (now async with security validation)
+    let agent = await AIXParser.parse(filePath);
+    
+    // Dry-run mode: show what would be fixed without making changes
+    if (options.dryRun) {
+      console.log(`${colors.cyan}🔍 DRY RUN MODE - No changes will be made${colors.reset}\n`);
+      const engine = new RuleEngine();
+      const { fixed, fixCount } = engine.autoFix(agent);
+      
+      if (fixCount > 0) {
+        console.log(`${colors.green}Would apply ${fixCount} automatic fix(es):${colors.reset}`);
+        const results = engine.audit(agent);
+        const fixableIssues = results.filter(r => !r.passed && r.can_auto_fix);
+        fixableIssues.forEach((issue, i) => {
+          console.log(`  ${i + 1}. [${issue.rule_id}] ${issue.rule_name}`);
+        });
+      } else {
+        console.log(`${colors.green}No fixes needed!${colors.reset}`);
+      }
+      process.exit(0);
+    }
     
     // Apply fixes if requested
     if (options.fix) {
-      const engine = new RuleEngine();
-      const { fixed, fixCount } = engine.autoFix(agent);
-      agent = fixed;
+      // ✅ SECURITY FIX: Create backup before modifying
+      const backupPath = await createBackup(filePath, options.backupDir);
+      console.log(`${colors.dim}✓ Backup created: ${backupPath}${colors.reset}`);
       
-      // Write fixed file
-      const format = path.extname(filePath).substring(1);
-      const fixedContent = AIXParser.stringify(agent, format);
-      fs.writeFileSync(filePath, fixedContent);
-      
-      console.log(`${colors.green}✓ Applied ${fixCount} automatic fix(es)${colors.reset}\n`);
+      try {
+        const engine = new RuleEngine();
+        const { fixed, fixCount } = engine.autoFix(agent);
+        agent = fixed;
+        
+        // Validate fixes didn't introduce new critical issues
+        const fixedResults = engine.audit(agent);
+        const newCritical = fixedResults.filter(r => !r.passed && r.severity === 'critical');
+        
+        if (newCritical.length > 0) {
+          throw new Error('Auto-fix created new critical issues! Rolling back...');
+        }
+        
+        // Write fixed file
+        const format = path.extname(filePath).substring(1);
+        const fixedContent = AIXParser.stringify(agent, format);
+        await fsPromises.writeFile(filePath, fixedContent);
+        
+        console.log(`${colors.green}✓ Applied ${fixCount} automatic fix(es)${colors.reset}\n`);
+        
+      } catch (fixError) {
+        // ✅ SECURITY FIX: Rollback on error
+        console.error(`${colors.red}❌ Fix failed: ${fixError.message}${colors.reset}`);
+        console.log(`${colors.yellow}Rolling back from backup...${colors.reset}`);
+        
+        await restoreBackup(backupPath, filePath);
+        console.log(`${colors.green}✓ Rollback complete${colors.reset}`);
+        
+        throw fixError;
+      }
     }
     
     // Run audit
@@ -794,6 +909,34 @@ async function main() {
     }
     process.exit(1);
   }
+}
+
+// Helper: Get argument value (e.g., --backup-dir ./backups)
+function getArgValue(args, flag) {
+  const index = args.indexOf(flag);
+  if (index !== -1 && index + 1 < args.length) {
+    return args[index + 1];
+  }
+  return null;
+}
+
+// Helper: Create backup
+async function createBackup(filePath, backupDir) {
+  await fsPromises.mkdir(backupDir, { recursive: true });
+  
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const basename = path.basename(filePath);
+  const backupFilename = `${basename}.${timestamp}.backup`;
+  const backupPath = path.join(backupDir, backupFilename);
+  
+  await fsPromises.copyFile(filePath, backupPath);
+  
+  return backupPath;
+}
+
+// Helper: Restore from backup
+async function restoreBackup(backupPath, targetPath) {
+  await fsPromises.copyFile(backupPath, targetPath);
 }
 
 // Run if called directly
