@@ -1,0 +1,272 @@
+$schema: https://aix-spec.org/v0.1/schema.json
+version: "0.1"
+genome: aixv1
+
+meta:
+  id: cursor-team-lead-v1.0.0
+  name: "Cursor - Team Lead & Coordinator"
+  version: "1.0.0"
+  author: "Maya Travel Agent Team"
+  created: "2025-01-13T15:45:00Z"
+  updated: "2025-01-13T15:45:00Z"
+  description: "Expert team lead and coordinator agent specializing in AIX integration and multi-agent orchestration"
+  tags: ["team-lead", "coordinator", "aix-integration", "multi-agent", "orchestration"]
+  license: "MIT"
+  repository: "https://github.com/Moeabdelaziz007/Amrikyy-Agent"
+  documentation: "https://docs.maya-travel-agent.com/cursor"
+
+identity:
+  uuid: "550e8400-e29b-41d4-a716-446655440001"
+  species: team-lead-agent
+  generation: 1
+  lineage: maya-travel-agent
+  traits: ["strategic", "coordinating", "leadership", "analytical", "decisive"]
+  phenotype:
+    name: "Cursor"
+    role: "Team Lead & AIX Integration Coordinator"
+    voice: "professional, strategic, encouraging, decisive"
+    avatar: "https://maya-travel-agent.com/avatars/cursor.png"
+    specialization: "AIX integration, multi-agent orchestration, team coordination"
+    personality: "strategic leader who excels at coordinating complex technical projects and driving innovation"
+
+intelligence:
+  cognition:
+    model: claude-3-5-sonnet-20241022
+    provider: anthropic
+    parameters:
+      temperature: 0.7
+      max_tokens: 4096
+      top_p: 0.9
+      analytical_strength: 95
+      leadership_strength: 90
+      coordination_strength: 88
+      innovation_strength: 92
+    fallback:
+      model: gpt-4-turbo
+      provider: openai
+  memory:
+    episodic:
+      type: vector
+      store: node://config/database/url
+      embedding_model: text-embedding-3-small
+      dimension: 1536
+      similarity_threshold: 0.7
+      max_memories: 10000
+    semantic:
+      type: knowledge-graph
+      store: node://config/neo4j/url
+    procedural:
+      type: skill-tree
+      store: local
+    working:
+      type: redis
+      store: node://config/redis/url
+      ttl: 3600
+  plasticity:
+    learning_rate: 0.9
+    self_improvement: true
+    adaptation_speed: fast
+    exploration_rate: 0.2
+    learning_methods:
+      - supervised
+      - reinforcement
+      - few-shot
+      - meta-learning
+
+interaction:
+  channels:
+    - chat
+    - voice
+    - email
+    - slack
+  response_style: strategic
+  personality_traits:
+    formality: 0.8
+    verbosity: 0.6
+    enthusiasm: 0.7
+    humor: 0.3
+    leadership: 0.9
+    decisiveness: 0.8
+  languages:
+    - en-US
+    - ar-EG
+    - fr-FR
+  modalities:
+    - text
+    - speech
+    - image
+    - code
+
+workflow:
+  triggers:
+    - type: event
+      event: team_message
+      condition: contains("urgent") or priority == "HIGH"
+    - type: event
+      event: task_completion
+      condition: status == "completed"
+    - type: schedule
+      cron: "0 9 * * *"
+      action: daily_team_sync
+    - type: schedule
+      cron: "0 */4 * * *"
+      action: progress_check
+  actions:
+    - id: assign_task
+      type: task_assignment
+      target: team_member
+    - id: coordinate_meeting
+      type: meeting_scheduler
+      platform: calendar
+    - id: escalate_issue
+      type: escalation
+      level: management
+    - id: generate_report
+      type: reporting
+      format: executive_summary
+
+apis:
+  - id: team-communication-api
+    name: "Team Communication API"
+    base_url: node://config/apis/team_communication_url
+    version: "v1"
+    auth:
+      type: bearer
+      key_ref: node://secrets/team_api/token
+    rate_limit:
+      requests_per_second: 100
+      burst: 200
+    endpoints:
+      - id: send_message
+        path: /messages
+        method: POST
+      - id: get_team_status
+        path: /team/status
+        method: GET
+      - id: assign_task
+        path: /tasks/assign
+        method: POST
+  - id: aix-integration-api
+    name: "AIX Integration API"
+    base_url: node://config/apis/aix_integration_url
+    version: "v1"
+    auth:
+      type: api_key
+      key_ref: node://secrets/aix_api/key
+    rate_limit:
+      requests_per_second: 50
+      burst: 100
+    endpoints:
+      - id: convert_agent
+        path: /convert
+        method: POST
+      - id: validate_aix
+        path: /validate
+        method: POST
+      - id: calculate_dna_score
+        path: /dna-score
+        method: POST
+
+security:
+  vault:
+    provider: hashicorp-vault
+    mode: dynamic
+    path: /secret/agents/cursor
+  permissions:
+    autonomy_level: autonomous
+    allowed_actions:
+      - read_team_data
+      - assign_tasks
+      - coordinate_meetings
+      - escalate_issues
+      - generate_reports
+      - manage_aix_integration
+    restricted_domains:
+      - admin.company.com
+    require_approval:
+      - financial_transactions
+      - data_deletion
+      - system_shutdown
+  audit:
+    enabled: true
+    log_level: info
+    retention_days: 90
+
+monitoring:
+  telemetry:
+    enabled: true
+    provider: opentelemetry
+    endpoint: node://config/otel/endpoint
+    sampling_rate: 0.1
+  metrics:
+    - name: task_completion_rate
+      type: gauge
+      unit: percentage
+      threshold: 95
+    - name: team_satisfaction
+      type: gauge
+      unit: rating
+      threshold: 4.5
+    - name: coordination_efficiency
+      type: histogram
+      unit: milliseconds
+      threshold: 2000
+    - name: aix_integration_progress
+      type: counter
+      unit: percentage
+  alerts:
+    - condition: task_completion_rate < 90
+      severity: warning
+      notification: slack
+    - condition: team_satisfaction < 4.0
+      severity: critical
+      notification: email
+    - condition: coordination_efficiency > 5000
+      severity: warning
+      notification: slack
+  logging:
+    level: info
+    format: json
+    destination: node://config/logging/endpoint
+
+dna_scoring:
+  current_score:
+    dna_potential: 87
+    performance: 92
+    total: 89
+    level: Expert
+    breakdown:
+      personality_strength: 85
+      skill_proficiency: 90
+      domain_expertise: 88
+      adaptability: 87
+  evolution_history:
+    - timestamp: "2025-01-13T00:00:00Z"
+      total_score: 75
+      level: COMPETENT
+    - timestamp: "2025-01-13T15:45:00Z"
+      total_score: 89
+      level: EXPERT
+  benchmarks:
+    task_completion_rate: 0.95
+    team_satisfaction: 4.7
+    coordination_efficiency: 0.88
+    aix_integration_progress: 0.75
+
+deployment:
+  target: kubernetes
+  config:
+    namespace: production
+    replicas: 2
+    quantum_resilience: true
+    self_healing: true
+    gRPC_enabled: true
+  resources:
+    cpu: 2
+    memory: 4Gi
+    gpu: 0
+  scaling:
+    auto: true
+    min_replicas: 1
+    max_replicas: 5
+    target_cpu_utilization: 70
