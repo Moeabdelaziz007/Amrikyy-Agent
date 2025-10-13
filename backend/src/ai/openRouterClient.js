@@ -81,11 +81,26 @@ class OpenRouterClient {
   }
 
   /**
-   * Send chat completion request to OpenRouter
+   * Send chat completion request to OpenRouter with cost optimization
    */
   async chatCompletion(messages, options = {}) {
     try {
-      const model = options.model || this.selectOptimalModel(messages, options);
+      // Check daily cost limit
+      if (this.costOptimization.enabled && this.costOptimization.currentDailyCost >= this.costOptimization.maxDailyCost) {
+        throw new Error(`Daily cost limit of $${this.costOptimization.maxDailyCost} reached`);
+      }
+
+      // Optimize context for cost savings
+      const optimizedMessages = this.optimizeContextForCost(messages, options);
+      
+      // Select optimal model based on task complexity and budget
+      const modelSelection = this.modelSwitcher.selectModel(
+        options.task || 'general',
+        options.budget || this.costOptimization.budgetTier,
+        options.previousFailures || 0
+      );
+      
+      const model = options.model || modelSelection.modelId;
       const modelInfo = this.models[model];
       
       if (!modelInfo) {
@@ -94,7 +109,7 @@ class OpenRouterClient {
 
       const requestBody = {
         model: model,
-        messages: this.convertMessagesToOpenRouter(messages),
+        messages: this.convertMessagesToOpenRouter(optimizedMessages),
         max_tokens: Math.min(options.maxTokens || this.maxTokens, modelInfo.maxTokens),
         temperature: options.temperature || this.temperature,
         top_p: options.topP || 0.9,
