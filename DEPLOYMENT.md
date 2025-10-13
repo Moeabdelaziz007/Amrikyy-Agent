@@ -1,103 +1,888 @@
-# 🚀 Amrikyy Travel Agent - Deployment Guide
+# Deployment Guide
 
-Complete guide for deploying Amrikyy Travel Agent to production with Collibra config management, Prometheus monitoring, and CI/CD automation.
+Complete guide for deploying the Amrikyy AI Automation Platform to production.
+
+## 📋 Table of Contents
+
+- [Quick Deploy (5 Minutes)](#quick-deploy-5-minutes)
+- [Prerequisites](#prerequisites)
+- [Deployment Options](#deployment-options)
+  - [Railway (Recommended)](#railway-recommended)
+  - [Vercel](#vercel)
+  - [Docker](#docker)
+  - [Manual Deployment](#manual-deployment)
+- [Database Setup](#database-setup)
+- [Environment Configuration](#environment-configuration)
+- [Post-Deployment](#post-deployment)
+- [Monitoring & Maintenance](#monitoring--maintenance)
+- [Troubleshooting](#troubleshooting)
+- [Rollback Procedures](#rollback-procedures)
 
 ---
 
-## 📋 **Table of Contents**
+## 🚀 Quick Deploy (5 Minutes)
 
-1. [Prerequisites](#prerequisites)
-2. [Environment Configuration](#environment-configuration)
-3. [Collibra Setup](#collibra-setup)
-4. [Deployment Options](#deployment-options)
-5. [Monitoring Setup](#monitoring-setup)
-6. [CI/CD Pipeline](#cicd-pipeline)
-7. [Testing & Validation](#testing--validation)
-8. [Security Checklist](#security-checklist)
+The fastest way to get Amrikyy running in production:
+
+### Option 1: Railway + Vercel (Recommended)
+
+```bash
+# 1. Deploy backend to Railway
+cd backend
+railway login
+railway up
+
+# 2. Deploy frontend to Vercel
+cd ../frontend
+vercel --prod
+
+# 3. Configure environment variables in dashboards
+# Railway: https://railway.app/dashboard
+# Vercel: https://vercel.com/dashboard
+
+# Done! Your app is live 🎉
+```
+
+### Option 2: One-Click Deploy
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone)
 
 ---
 
-## 🔧 **Prerequisites**
+## 📋 Prerequisites
 
-### Required Accounts & Services
+### Required Accounts
 
-- ✅ **Railway.app** - Backend hosting
-- ✅ **Vercel** - Frontend hosting
-- ✅ **Collibra** - Configuration governance
-- ✅ **GitHub** - Source control & CI/CD
-- ✅ **Supabase** - Database
-- ✅ **JSONbin.io** - Caching
-- ✅ **Prometheus + Grafana** - Monitoring
+Create free accounts for these services:
+
+1. **Supabase** (https://supabase.com) - Database
+2. **Railway** (https://railway.app) - Backend hosting
+3. **Vercel** (https://vercel.com) - Frontend hosting
+4. **Z.ai** (https://z.ai) - AI services
+5. **Stripe** (https://stripe.com) - Payments
+6. **GitHub** (https://github.com) - Source control
 
 ### Required Tools
 
 ```bash
 # Node.js 18+
-node --version  # Should be v18.x or higher
+node --version  # v18.0.0 or higher
 
 # Git
 git --version
 
-# Railway CLI
+# Railway CLI (optional)
 npm install -g @railway/cli
 
-# Vercel CLI
+# Vercel CLI (optional)
 npm install -g vercel
+```
 
-# k6 (for load testing)
-# See: https://k6.io/docs/getting-started/installation/
+### API Keys Needed
+
+Before deploying, obtain these API keys:
+
+- ✅ Supabase URL and keys
+- ✅ Z.ai API key
+- ✅ Stripe secret key
+- ✅ JWT secret (generate random string)
+
+See [ENV_SETUP.md](ENV_SETUP.md) for detailed instructions.
+
+---
+
+## 🎯 Deployment Options
+
+### Railway (Recommended)
+
+**Best for**: Backend API, databases, background jobs
+
+**Pros**:
+- ✅ Easy deployment
+- ✅ Automatic HTTPS
+- ✅ Built-in monitoring
+- ✅ Free tier available
+- ✅ PostgreSQL support
+
+**Steps**:
+
+1. **Install Railway CLI**
+   ```bash
+   npm install -g @railway/cli
+   ```
+
+2. **Login to Railway**
+   ```bash
+   railway login
+   ```
+
+3. **Initialize Project**
+   ```bash
+   cd backend
+   railway init
+   ```
+
+4. **Add Environment Variables**
+   ```bash
+   # In Railway dashboard, add all variables from ENV_SETUP.md
+   ```
+
+5. **Deploy**
+   ```bash
+   railway up
+   ```
+
+6. **Get URL**
+   ```bash
+   railway domain
+   # Your backend is now live at: https://your-app.railway.app
+   ```
+
+**Configuration**:
+
+Create `railway.toml` in backend directory:
+```toml
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "npm start"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[[healthcheck]]
+path = "/api/health"
+interval = 30
+timeout = 10
 ```
 
 ---
 
-## 🔐 **Environment Configuration**
+### Vercel
 
-### 1. Create Environment Files
+**Best for**: Frontend, static sites, serverless functions
 
-**Backend `.env` file:**
+**Pros**:
+- ✅ Lightning-fast CDN
+- ✅ Automatic deployments
+- ✅ Preview deployments
+- ✅ Free tier generous
+- ✅ Great DX
+
+**Steps**:
+
+1. **Install Vercel CLI**
+   ```bash
+   npm install -g vercel
+   ```
+
+2. **Login**
+   ```bash
+   vercel login
+   ```
+
+3. **Deploy Frontend**
+   ```bash
+   cd frontend
+   vercel --prod
+   ```
+
+4. **Configure Environment**
+   ```bash
+   # In Vercel dashboard:
+   # Settings → Environment Variables
+   # Add all VITE_* variables
+   ```
+
+5. **Done!**
+   ```
+   Your frontend is live at: https://your-app.vercel.app
+   ```
+
+**Configuration**:
+
+Create `vercel.json` in frontend directory:
+```json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+### Docker
+
+**Best for**: Self-hosting, Kubernetes, custom infrastructure
+
+**Backend Dockerfile**:
+
+```dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy source code
+COPY . .
+
+# Expose port
+EXPOSE 5001
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:5001/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Start server
+CMD ["node", "server.js"]
+```
+
+**Frontend Dockerfile**:
+
+```dockerfile
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+RUN npm run build
+
+FROM nginx:alpine
+
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+**Docker Compose**:
+
+```yaml
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5001:5001"
+    environment:
+      - NODE_ENV=production
+      - PORT=5001
+    env_file:
+      - ./backend/.env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+```
+
+**Deploy**:
+
+```bash
+# Build and start
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop
+docker-compose down
+```
+
+---
+
+### Manual Deployment
+
+**Best for**: VPS, dedicated servers, custom setups
+
+**Requirements**:
+- Ubuntu 20.04+ or similar
+- Node.js 18+
+- Nginx
+- PM2 process manager
+
+**Steps**:
+
+1. **Setup Server**
+   ```bash
+   # Update system
+   sudo apt update && sudo apt upgrade -y
+
+   # Install Node.js 18
+   curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+   sudo apt install -y nodejs
+
+   # Install PM2
+   sudo npm install -g pm2
+
+   # Install Nginx
+   sudo apt install -y nginx
+   ```
+
+2. **Clone Repository**
+   ```bash
+   cd /var/www
+   git clone https://github.com/Moeabdelaziz007/amrikyy-agent.git
+   cd amrikyy-agent
+   ```
+
+3. **Install Dependencies**
+   ```bash
+   npm run install:all
+   ```
+
+4. **Configure Environment**
+   ```bash
+   cd backend
+   cp env.example .env
+   nano .env  # Edit with production values
+
+   cd ../frontend
+   cp .env.example .env
+   nano .env  # Edit with production values
+   ```
+
+5. **Build Frontend**
+   ```bash
+   cd frontend
+   npm run build
+   ```
+
+6. **Start Backend with PM2**
+   ```bash
+   cd backend
+   pm2 start server.js --name amrikyy-backend
+   pm2 save
+   pm2 startup
+   ```
+
+7. **Configure Nginx**
+   ```bash
+   sudo nano /etc/nginx/sites-available/amrikyy
+   ```
+
+   ```nginx
+   server {
+       listen 80;
+       server_name yourdomain.com;
+
+       # Frontend
+       location / {
+           root /var/www/amrikyy-agent/frontend/dist;
+           try_files $uri $uri/ /index.html;
+       }
+
+       # Backend API
+       location /api {
+           proxy_pass http://localhost:5001;
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection 'upgrade';
+           proxy_set_header Host $host;
+           proxy_cache_bypass $http_upgrade;
+       }
+   }
+   ```
+
+   ```bash
+   sudo ln -s /etc/nginx/sites-available/amrikyy /etc/nginx/sites-enabled/
+   sudo nginx -t
+   sudo systemctl restart nginx
+   ```
+
+8. **Setup SSL with Let's Encrypt**
+   ```bash
+   sudo apt install -y certbot python3-certbot-nginx
+   sudo certbot --nginx -d yourdomain.com
+   ```
+
+9. **Done!**
+   ```
+   Your app is live at: https://yourdomain.com
+   ```
+
+---
+
+## 🗄️ Database Setup
+
+### Supabase Setup
+
+1. **Create Project**
+   - Go to https://supabase.com/dashboard
+   - Click "New project"
+   - Fill in details
+   - Wait for provisioning (~2 minutes)
+
+2. **Run Migrations**
+   - Go to SQL Editor
+   - Copy contents of `backend/database/production-schema-complete.sql`
+   - Paste and execute
+
+3. **Get Connection Details**
+   - Go to Settings → API
+   - Copy:
+     - Project URL
+     - `anon` public key
+     - `service_role` secret key
+
+4. **Configure Environment**
+   ```bash
+   SUPABASE_URL=https://xxxxx.supabase.co
+   SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+   SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+   ```
+
+See [backend/database/SCHEMA_MIGRATION_GUIDE.md](backend/database/SCHEMA_MIGRATION_GUIDE.md) for detailed instructions.
+
+---
+
+## 🔐 Environment Configuration
+
+### Production Environment Variables
+
+**Backend** (`backend/.env`):
 
 ```bash
 # Environment
 NODE_ENV=production
-PORT=3001
+PORT=5001
 
-# Collibra Configuration Management
-COLLIBRA_URL=https://amrikyy.collibra.com
-COLLIBRA_API_KEY=your_collibra_api_key_here
-COLLIBRA_USERNAME=your_username
-COLLIBRA_PASSWORD=your_password
-
-# Database (Supabase)
-DATABASE_URL=postgresql://...
+# Database
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
-# AI Provider (Z.ai)
+# AI Services
 ZAI_API_KEY=your_zai_api_key
-ZAI_API_URL=https://open.bigmodel.cn/api/paas/v4
-ZAI_MODEL=glm-4-flash
+ZAI_API_BASE_URL=https://api.z.ai/api/paas/v4
+ZAI_MODEL=glm-4.6
 
-# Caching (JSONbin.io)
-JSONBIN_API_KEY=your_jsonbin_api_key
-
-# Telegram Bot
-TELEGRAM_BOT_TOKEN=your_telegram_bot_token
-TELEGRAM_WEBHOOK_URL=https://your-domain.com/api/telegram/webhook
-
-# Payments (Stripe)
+# Payments
 STRIPE_SECRET_KEY=sk_live_...
 STRIPE_WEBHOOK_SECRET=whsec_...
-STRIPE_ENABLED=true
 
 # Security
-JWT_SECRET=your_very_long_secure_random_string
-CORS_ORIGIN=https://your-frontend-domain.com
+JWT_SECRET=your_super_secret_jwt_key_min_64_chars
+ENCRYPTION_KEY=your_32_character_encryption_key
 
-# Rate Limiting
-RATE_LIMIT_WINDOW=60000
-RATE_LIMIT_MAX=100
+# CORS
+CORS_ORIGIN=https://yourdomain.com
 
-# Monitoring
+# Optional
+SENTRY_DSN=https://xxxxx@xxxxx.ingest.sentry.io/xxxxx
+REDIS_URL=redis://your-redis-url
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+```
+
+**Frontend** (`frontend/.env`):
+
+```bash
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your_anon_key
+VITE_API_URL=https://your-backend-url.com
+VITE_STRIPE_PUBLISHABLE_KEY=pk_live_...
+VITE_SENTRY_DSN=https://xxxxx@xxxxx.ingest.sentry.io/xxxxx
+```
+
+**Security Notes**:
+- ⚠️ Never commit `.env` files
+- ⚠️ Use different keys for dev/prod
+- ⚠️ Rotate keys regularly
+- ⚠️ Use secrets management in production
+
+See [ENV_SETUP.md](ENV_SETUP.md) for complete configuration guide.
+
+---
+
+## ✅ Post-Deployment
+
+### 1. Verify Deployment
+
+```bash
+# Check backend health
+curl https://your-backend-url.com/api/health
+
+# Expected response:
+# {"status":"healthy","service":"amrikyy-backend","timestamp":"..."}
+
+# Check frontend
+curl https://your-frontend-url.com
+
+# Should return HTML
+```
+
+### 2. Test Critical Paths
+
+```bash
+# Test AI chat
+curl -X POST https://your-backend-url.com/api/ai/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello", "userId": "test"}'
+
+# Test search
+curl -X POST https://your-backend-url.com/api/search \
+  -H "Content-Type: application/json" \
+  -d '{"origin": "CAI", "destination": "DXB", "departureDate": "2025-03-01"}'
+```
+
+### 3. Configure Webhooks
+
+**Stripe Webhooks**:
+1. Go to https://dashboard.stripe.com/webhooks
+2. Add endpoint: `https://your-backend-url.com/api/stripe/webhook`
+3. Select events: `payment_intent.succeeded`, `payment_intent.failed`
+4. Copy webhook secret to `STRIPE_WEBHOOK_SECRET`
+
+**Telegram Webhooks** (if using):
+```bash
+curl -X POST "https://api.telegram.org/bot<YOUR_BOT_TOKEN>/setWebhook" \
+  -d "url=https://your-backend-url.com/api/miniapp/webhook"
+```
+
+### 4. Setup Monitoring
+
+**Sentry** (Error Tracking):
+1. Create project at https://sentry.io
+2. Copy DSN
+3. Add to environment variables
+4. Verify errors are being captured
+
+**Uptime Monitoring**:
+- Use UptimeRobot (https://uptimerobot.com)
+- Monitor: `https://your-backend-url.com/api/health`
+- Alert on downtime
+
+### 5. Configure DNS
+
+Point your domain to deployment:
+
+**For Vercel**:
+```
+Type: CNAME
+Name: @
+Value: cname.vercel-dns.com
+```
+
+**For Railway**:
+```
+Type: CNAME
+Name: api
+Value: your-app.railway.app
+```
+
+---
+
+## 📊 Monitoring & Maintenance
+
+### Health Checks
+
+**Backend Health Endpoint**:
+```bash
+GET /api/health
+```
+
+Response:
+```json
+{
+  "status": "healthy",
+  "service": "amrikyy-backend",
+  "timestamp": "2025-01-15T10:00:00Z",
+  "uptime": 3600,
+  "environment": "production",
+  "version": "1.0.0"
+}
+```
+
+**Detailed Health Check**:
+```bash
+GET /api/health/detailed
+```
+
+### Metrics
+
+**Prometheus Metrics**:
+```bash
+GET /metrics
+```
+
+**Key Metrics to Monitor**:
+- Request rate
+- Error rate
+- Response time (p50, p95, p99)
+- Database connections
+- Memory usage
+- CPU usage
+
+### Logs
+
+**View Logs**:
+
+Railway:
+```bash
+railway logs
+```
+
+PM2:
+```bash
+pm2 logs amrikyy-backend
+```
+
+Docker:
+```bash
+docker-compose logs -f
+```
+
+### Backups
+
+**Database Backups**:
+
+Supabase automatically backs up your database. To create manual backup:
+
+1. Go to Supabase Dashboard
+2. Database → Backups
+3. Click "Create backup"
+
+**Code Backups**:
+- Git repository is your backup
+- Tag releases: `git tag v1.0.0`
+- Push tags: `git push --tags`
+
+---
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+#### "Cannot connect to database"
+
+**Problem**: Invalid Supabase credentials
+
+**Solution**:
+```bash
+# Verify credentials
+echo $SUPABASE_URL
+echo $SUPABASE_ANON_KEY
+
+# Test connection
+curl -H "apikey: $SUPABASE_ANON_KEY" $SUPABASE_URL/rest/v1/
+```
+
+#### "AI API rate limit exceeded"
+
+**Problem**: Too many AI requests
+
+**Solution**:
+- Implement caching
+- Add rate limiting
+- Upgrade Z.ai plan
+
+#### "Payment webhook failed"
+
+**Problem**: Invalid webhook secret
+
+**Solution**:
+1. Get secret from Stripe dashboard
+2. Update `STRIPE_WEBHOOK_SECRET`
+3. Restart backend
+
+#### "Frontend shows blank page"
+
+**Problem**: API URL misconfigured
+
+**Solution**:
+```bash
+# Check frontend .env
+echo $VITE_API_URL
+
+# Should match backend URL
+# Update and rebuild:
+npm run build
+```
+
+### Debug Mode
+
+Enable debug logging:
+
+```bash
+# Backend
+DEBUG=* npm start
+
+# Or set in .env
+LOG_LEVEL=debug
+```
+
+### Performance Issues
+
+**Slow Response Times**:
+1. Check database indexes
+2. Enable Redis caching
+3. Optimize queries
+4. Scale horizontally
+
+**High Memory Usage**:
+1. Check for memory leaks
+2. Restart services
+3. Increase memory limits
+4. Optimize code
+
+---
+
+## 🔄 Rollback Procedures
+
+### Quick Rollback
+
+**Railway**:
+```bash
+# View deployments
+railway status
+
+# Rollback to previous
+railway rollback
+```
+
+**Vercel**:
+```bash
+# View deployments
+vercel ls
+
+# Rollback to specific deployment
+vercel rollback <deployment-url>
+```
+
+### Manual Rollback
+
+```bash
+# Checkout previous version
+git checkout v1.0.0
+
+# Redeploy
+railway up
+# or
+vercel --prod
+```
+
+### Database Rollback
+
+**⚠️ CAUTION**: Database rollbacks are risky!
+
+1. Restore from backup
+2. Run down migrations (if available)
+3. Test thoroughly before going live
+
+---
+
+## 📋 Deployment Checklist
+
+Before deploying to production:
+
+### Pre-Deployment
+- [ ] All tests passing
+- [ ] Environment variables configured
+- [ ] Database migrations ready
+- [ ] API keys obtained
+- [ ] Domain configured
+- [ ] SSL certificate ready
+
+### Deployment
+- [ ] Backend deployed
+- [ ] Frontend deployed
+- [ ] Database migrated
+- [ ] Webhooks configured
+- [ ] DNS updated
+
+### Post-Deployment
+- [ ] Health checks passing
+- [ ] Critical paths tested
+- [ ] Monitoring configured
+- [ ] Backups enabled
+- [ ] Team notified
+
+### Security
+- [ ] HTTPS enabled
+- [ ] Security headers configured
+- [ ] Rate limiting enabled
+- [ ] Secrets rotated
+- [ ] Audit logging enabled
+
+---
+
+## 📚 Additional Resources
+
+- [Quick Start Guide](QUICKSTART.md)
+- [API Reference](API_REFERENCE.md)
+- [Environment Setup](ENV_SETUP.md)
+- [Backend README](backend/README.md)
+- [Database Migration Guide](backend/database/SCHEMA_MIGRATION_GUIDE.md)
+
+---
+
+## 🆘 Support
+
+Need help with deployment?
+
+- **Email**: support@amrikyy.ai
+- **GitHub Issues**: https://github.com/Moeabdelaziz007/amrikyy-agent/issues
+- **Documentation**: https://docs.amrikyy.ai
+
+---
+
+**Last Updated**: January 15, 2025  
+**Version**: 1.0.0
 METRICS_PORT=9090
 PROMETHEUS_ENABLED=true
 ```
