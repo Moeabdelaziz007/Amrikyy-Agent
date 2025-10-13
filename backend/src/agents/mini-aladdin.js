@@ -20,6 +20,7 @@
 
 const crypto = require('crypto');
 const EventEmitter = require('events');
+const AIXLoader = require('../utils/aix-loader');
 
 // ============================================================================
 // MINI-AGENTS - Specialized Workers
@@ -616,6 +617,24 @@ class MiniAladdin extends EventEmitter {
   constructor(config = {}) {
     super();
 
+    // Load AIX configuration if provided
+    if (config.aixFile) {
+      try {
+        this.aixDef = AIXLoader.load(config.aixFile);
+        console.log(`✅ Loaded AIX: ${this.aixDef.meta.name} v${this.aixDef.meta.version}`);
+        
+        // Apply AIX security settings
+        this.security = this.aixDef.security || {};
+        this.rateLimit = this.security.rate_limiting || {};
+        
+        // Apply AIX persona settings
+        this.persona = this.aixDef.persona || {};
+      } catch (error) {
+        console.warn(`⚠️  Failed to load AIX file: ${error.message}`);
+        this.aixDef = null;
+      }
+    }
+
     // Input validation for constructor
     this.validateConfig(config);
 
@@ -1101,6 +1120,29 @@ class MiniAladdin extends EventEmitter {
   }
 
   /**
+   * Get AIX configuration
+   */
+  getAIXConfig() {
+    return this.aixDef;
+  }
+
+  /**
+   * Check if operation is allowed by AIX security
+   */
+  isOperationAllowed(operation) {
+    if (!this.aixDef) return true; // No AIX = no restrictions
+    return AIXLoader.isOperationAllowed(this.aixDef, operation);
+  }
+
+  /**
+   * Get rate limit for endpoint
+   */
+  getRateLimit(endpoint) {
+    if (!this.aixDef) return null;
+    return AIXLoader.getRateLimit(this.aixDef, endpoint);
+  }
+
+  /**
    * Real-time monitoring (would run continuously)
    */
   async startMonitoring(interval = 30000) {
@@ -1514,3 +1556,6 @@ if (require.main === module) {
     console.log('🔥 THE MONEY MACHINE IS ONLINE! 🔥\n');
   })();
 }
+
+// Export for use as module
+module.exports = MiniAladdin;

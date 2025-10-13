@@ -7,64 +7,64 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const router = express.Router();
 const logger = require('../utils/logger');
-const { MiniAladdin } = require('../agents/mini-aladdin');
+const MiniAladdin = require('../agents/mini-aladdin');
+const AIXLoader = require('../utils/aix-loader');
 
 // Use logger directly (no child method available)
 const log = logger;
 
-// Rate limiters for different endpoints
-const huntLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // 10 requests per window
-  message: {
-    success: false,
-    error: 'Too many hunt requests. Please try again later.',
-    retryAfter: '15 minutes'
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: (req, res) => {
-    log.warn('Rate limit exceeded for hunt endpoint', { ip: req.ip });
-    res.status(429).json({
+// Load AIX configuration
+let aixConfig = null;
+try {
+  aixConfig = AIXLoader.load('agents/mini-aladdin.aix');
+  log.info('AIX configuration loaded', { 
+    name: aixConfig.meta.name, 
+    version: aixConfig.meta.version 
+  });
+} catch (error) {
+  log.warn('Failed to load AIX configuration, using defaults', { error: error.message });
+}
+
+// Create rate limiters from AIX config
+function createRateLimiter(endpoint, defaultMax) {
+  const limit = aixConfig ? AIXLoader.getRateLimit(aixConfig, endpoint) : defaultMax;
+  
+  return rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: limit,
+    message: {
       success: false,
-      error: 'Too many hunt requests',
-      message: 'You have exceeded the rate limit. Please try again in 15 minutes.',
-      retryAfter: 900 // seconds
-    });
-  }
-});
+      error: `Too many requests. Please try again later.`,
+      retryAfter: '15 minutes'
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (req, res) => {
+      log.warn(`Rate limit exceeded for ${endpoint}`, { ip: req.ip, limit });
+      res.status(429).json({
+        success: false,
+        error: 'Too many requests',
+        message: `You have exceeded the rate limit (${limit} requests per 15 minutes). Please try again later.`,
+        retryAfter: 900 // seconds
+      });
+    }
+  });
+}
 
-const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // 100 requests per window
-  message: {
-    success: false,
-    error: 'Too many requests. Please try again later.',
-    retryAfter: '15 minutes'
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-const analyzeLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 50, // 50 requests per window
-  message: {
-    success: false,
-    error: 'Too many analysis requests. Please try again later.',
-    retryAfter: '15 minutes'
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+// Rate limiters using AIX configuration
+const huntLimiter = createRateLimiter('hunt_endpoint', 10);
+const generalLimiter = createRateLimiter('general_endpoint', 100);
+const analyzeLimiter = createRateLimiter('analyze_endpoint', 50);
 
 // Initialize agent (singleton pattern)
 let aladdinAgent = null;
 
 function getAgent() {
   if (!aladdinAgent) {
-    aladdinAgent = new MiniAladdin();
-    log.info('Mini-Aladdin agent initialized successfully');
+    aladdinAgent = new MiniAladdin({ 
+      aixFile: 'agents/mini-aladdin.aix' 
+    });
+    log.info('Mini-Aladdin agent initialized successfully with AIX config');
   }
   return aladdinAgent;
 }

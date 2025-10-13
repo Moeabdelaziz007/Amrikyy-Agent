@@ -1,0 +1,686 @@
+# AIX Schema - Chinese Tech Enhanced Version
+# Combines Western security/structure with Chinese speed/flexibility
+
+version: "2.0.0-chinese-enhanced"
+schema_type: "ai_agent_definition"
+description: "Enhanced AIX format integrating Chinese tech principles for superior coordination"
+
+# ============================================================================
+# STANDARD AIX SECTIONS (Enhanced)
+# ============================================================================
+
+meta:
+  required: true
+  fields:
+    id:
+      type: "string"
+      format: "uuid"
+      required: true
+    name:
+      type: "string"
+      required: true
+    version:
+      type: "string"
+      format: "semver"
+      required: true
+    author:
+      type: "string"
+      required: true
+    created:
+      type: "string"
+      format: "iso8601"
+      required: true
+    updated:
+      type: "string"
+      format: "iso8601"
+      required: true
+    checksum:
+      type: "string"
+      format: "sha256"
+      required: true
+      auto_generate: true
+
+persona:
+  required: true
+  fields:
+    role:
+      type: "string"
+      required: true
+    tone:
+      type: "string"
+      required: true
+    style:
+      type: "string"
+      required: true
+    instructions:
+      type: "string"
+      required: true
+
+# ============================================================================
+# CHINESE ENHANCEMENT: DYNAMIC COORDINATION (动态协调)
+# ============================================================================
+
+coordination:
+  description: "Dynamic task coordination and autonomous collaboration"
+  required: true
+  
+  strategy:
+    type: "enum"
+    values: ["hierarchical", "decentralized_autonomous", "hybrid"]
+    default: "decentralized_autonomous"
+    description: "Coordination strategy - Chinese approach favors decentralized"
+  
+  dynamic_reassignment:
+    enabled:
+      type: "boolean"
+      default: true
+      description: "Allow real-time task reassignment"
+    
+    triggers:
+      type: "array"
+      items: "string"
+      default: ["agent_overload", "skill_mismatch", "priority_change", "deadline_pressure"]
+      description: "Conditions that trigger task reassignment"
+    
+    reassignment_algorithm:
+      type: "enum"
+      values: ["skill_based", "load_based", "trust_based", "hybrid"]
+      default: "hybrid"
+    
+    notification_delay_ms:
+      type: "integer"
+      default: 0
+      description: "Delay before notifying agents of reassignment (0 = instant)"
+  
+  autonomous_collaboration:
+    description: "Enable agents to collaborate without central coordination"
+    
+    can_request_help:
+      type: "boolean"
+      default: true
+      description: "Agent can request assistance from peers"
+    
+    can_delegate_subtasks:
+      type: "boolean"
+      default: true
+      description: "Agent can break down and delegate subtasks"
+    
+    can_form_temporary_teams:
+      type: "boolean"
+      default: true
+      description: "Agents can form ad-hoc teams for complex tasks"
+    
+    peer_review_required:
+      type: "boolean"
+      default: false
+      description: "Require peer review before completion"
+  
+  real_time_adaptation:
+    enabled:
+      type: "boolean"
+      default: true
+    
+    monitor_interval_seconds:
+      type: "integer"
+      default: 30
+      description: "How often to check for adaptation needs"
+    
+    auto_rebalance:
+      type: "boolean"
+      default: true
+      description: "Automatically rebalance workload across agents"
+    
+    adaptation_metrics:
+      type: "array"
+      items: "string"
+      default: ["task_completion_rate", "error_rate", "response_time", "quality_score"]
+
+# ============================================================================
+# CHINESE ENHANCEMENT: DECENTRALIZED COMMAND (分散指挥)
+# ============================================================================
+
+command_structure:
+  description: "Decentralized decision-making authority"
+  required: true
+  
+  type:
+    type: "enum"
+    values: ["centralized", "decentralized", "hybrid"]
+    default: "decentralized"
+    description: "Command structure type - Chinese approach favors decentralized"
+  
+  agent_autonomy_level:
+    type: "enum"
+    values: ["low", "medium", "high", "full"]
+    default: "high"
+    description: "Level of autonomous decision-making"
+  
+  decision_authority:
+    description: "What each agent can decide autonomously"
+    type: "object"
+    properties:
+      autonomous:
+        type: "array"
+        items: "string"
+        description: "Actions agent can take without approval"
+      
+      requires_approval:
+        type: "array"
+        items: "string"
+        description: "Actions requiring human/senior approval"
+      
+      forbidden:
+        type: "array"
+        items: "string"
+        description: "Actions agent cannot perform"
+  
+  escalation:
+    threshold:
+      type: "enum"
+      values: ["all", "major", "critical_only", "never"]
+      default: "critical_only"
+      description: "When to escalate to human oversight"
+    
+    auto_escalate_after_hours:
+      type: "integer"
+      default: 4
+      description: "Auto-escalate if blocked for this many hours"
+    
+    escalation_path:
+      type: "array"
+      items: "string"
+      description: "Chain of escalation (e.g., ['senior_agent', 'human_lead', 'manager'])"
+
+# ============================================================================
+# CHINESE ENHANCEMENT: RAPID ITERATION (快速迭代)
+# ============================================================================
+
+development_cycle:
+  description: "Rapid iteration and experimentation framework"
+  required: true
+  
+  methodology:
+    type: "enum"
+    values: ["waterfall", "agile", "rapid_iteration", "continuous"]
+    default: "rapid_iteration"
+    description: "Development methodology - Chinese approach favors rapid iteration"
+  
+  target_cycle_hours:
+    type: "integer"
+    default: 4
+    description: "Target time from task start to completion"
+  
+  mvf_mindset:
+    type: "boolean"
+    default: true
+    description: "Minimum Viable Feature - ship smallest useful increment"
+  
+  experimentation:
+    enabled:
+      type: "boolean"
+      default: true
+    
+    parallel_branches:
+      type: "integer"
+      default: 3
+      description: "Max number of experimental branches"
+    
+    a_b_testing:
+      type: "boolean"
+      default: true
+      description: "Enable A/B testing of implementations"
+    
+    quick_rollback:
+      type: "boolean"
+      default: true
+      description: "One-click rollback capability"
+    
+    experiment_duration_hours:
+      type: "integer"
+      default: 24
+      description: "Max duration for experiments before decision"
+  
+  deployment:
+    strategy:
+      type: "enum"
+      values: ["manual", "scheduled", "continuous", "on_demand"]
+      default: "continuous"
+    
+    auto_deploy_on_tests_pass:
+      type: "boolean"
+      default: true
+    
+    canary_percentage:
+      type: "integer"
+      default: 10
+      description: "Percentage of traffic for canary deployments"
+    
+    rollback_on_error:
+      type: "boolean"
+      default: true
+
+# ============================================================================
+# CHINESE ENHANCEMENT: INFORMATION WARFARE (信息战)
+# ============================================================================
+
+information_security:
+  description: "Military-grade information protection"
+  required: true
+  
+  classification:
+    description: "Data classification levels"
+    type: "object"
+    properties:
+      public:
+        type: "array"
+        items: "string"
+        default: ["docs", "api_specs"]
+      
+      internal:
+        type: "array"
+        items: "string"
+        default: ["code", "configs"]
+      
+      secret:
+        type: "array"
+        items: "string"
+        default: ["keys", "credentials", "user_data"]
+      
+      top_secret:
+        type: "array"
+        items: "string"
+        default: ["algorithms", "business_logic", "financial_data"]
+  
+  communication_security:
+    encrypted_channels:
+      type: "boolean"
+      default: true
+      description: "Encrypt all agent-to-agent communication"
+    
+    message_signing:
+      type: "boolean"
+      default: true
+      description: "Cryptographically sign all messages"
+    
+    tampering_detection:
+      type: "enum"
+      values: ["none", "checksum_validation", "blockchain", "quantum_resistant"]
+      default: "checksum_validation"
+    
+    key_rotation_hours:
+      type: "integer"
+      default: 24
+      description: "Rotate encryption keys every N hours"
+  
+  misinformation_protection:
+    source_verification:
+      type: "boolean"
+      default: true
+      description: "Verify source of all information"
+    
+    multi_agent_consensus:
+      type: "boolean"
+      default: true
+      description: "Require consensus for critical decisions"
+    
+    consensus_threshold:
+      type: "integer"
+      default: 2
+      description: "Minimum agents required for consensus"
+    
+    audit_trail:
+      type: "enum"
+      values: ["none", "basic", "detailed", "immutable_blockchain"]
+      default: "immutable_blockchain"
+  
+  data_sovereignty:
+    data_residency:
+      type: "enum"
+      values: ["none", "prefer", "enforce"]
+      default: "enforce"
+      description: "Enforce data residency requirements"
+    
+    cross_border_restrictions:
+      type: "boolean"
+      default: true
+      description: "Restrict cross-border data transfer"
+    
+    allowed_regions:
+      type: "array"
+      items: "string"
+      description: "Allowed data storage regions"
+
+# ============================================================================
+# CHINESE ENHANCEMENT: PLATFORM INTEGRATION (平台整合)
+# ============================================================================
+
+platform_integration:
+  description: "Unified platform for seamless coordination"
+  required: true
+  
+  unified_hub:
+    type: "string"
+    default: "SHARED_TASK_BOARD.md"
+    description: "Central coordination hub"
+  
+  communication_channels:
+    type: "array"
+    items: "string"
+    default: ["git_commits", "task_updates", "agent_messages", "status_changes", "health_metrics"]
+    description: "All communication channels in one place"
+  
+  real_time_sync:
+    enabled:
+      type: "boolean"
+      default: true
+    
+    sync_interval_ms:
+      type: "integer"
+      default: 1000
+      description: "Sync interval in milliseconds"
+    
+    conflict_resolution:
+      type: "enum"
+      values: ["manual", "first_write_wins", "last_write_wins", "merge", "consensus"]
+      default: "last_write_wins"
+  
+  context_preservation:
+    enabled:
+      type: "boolean"
+      default: true
+      description: "Preserve context across sessions"
+    
+    auto_save_interval_seconds:
+      type: "integer"
+      default: 30
+    
+    restore_on_reconnect:
+      type: "boolean"
+      default: true
+  
+  one_click_access:
+    type: "array"
+    items: "string"
+    default: ["task_board", "git_status", "agent_health", "metrics_dashboard", "documentation"]
+    description: "Quick access to all tools"
+
+# ============================================================================
+# CHINESE PHILOSOPHY: GUANXI (关系) - Relationship Networks
+# ============================================================================
+
+guanxi:
+  description: "Agent relationship and trust management"
+  enabled:
+    type: "boolean"
+    default: true
+  
+  trust_scoring:
+    enabled:
+      type: "boolean"
+      default: true
+    
+    initial_trust:
+      type: "integer"
+      default: 50
+      min: 0
+      max: 100
+    
+    max_trust:
+      type: "integer"
+      default: 100
+    
+    min_trust:
+      type: "integer"
+      default: 0
+      description: "Below this, agent is flagged for review"
+  
+  trust_factors:
+    successful_collaborations:
+      type: "integer"
+      default: 5
+      description: "Trust points gained per successful collaboration"
+    
+    failed_tasks:
+      type: "integer"
+      default: -10
+      description: "Trust points lost per failed task"
+    
+    code_quality:
+      type: "integer"
+      default: 3
+      description: "Trust points for high code quality"
+    
+    response_time:
+      type: "integer"
+      default: 2
+      description: "Trust points for fast response"
+    
+    security_violations:
+      type: "integer"
+      default: -50
+      description: "Severe penalty for security violations"
+  
+  collaboration_history:
+    track_partnerships:
+      type: "boolean"
+      default: true
+      description: "Track which agents work well together"
+    
+    prefer_trusted_agents:
+      type: "boolean"
+      default: true
+      description: "Prefer assigning tasks to trusted agents"
+    
+    trust_decay_days:
+      type: "integer"
+      default: 30
+      description: "Trust decays if no recent collaboration"
+
+# ============================================================================
+# CHINESE PHILOSOPHY: BIAN (变) - Constant Change
+# ============================================================================
+
+bian:
+  description: "Continuous adaptation and evolution"
+  philosophy:
+    type: "string"
+    default: "embrace_change"
+  
+  adaptation:
+    monitor_performance:
+      type: "boolean"
+      default: true
+    
+    auto_adjust_strategies:
+      type: "boolean"
+      default: true
+      description: "Automatically adjust based on performance"
+    
+    learn_from_failures:
+      type: "boolean"
+      default: true
+      description: "Adapt strategies based on failures"
+    
+    adaptation_interval_hours:
+      type: "integer"
+      default: 24
+      description: "How often to review and adapt"
+  
+  evolution:
+    version_increment:
+      type: "enum"
+      values: ["manual", "semantic", "automatic"]
+      default: "semantic"
+    
+    backward_compatibility:
+      type: "boolean"
+      default: true
+    
+    deprecation_period_days:
+      type: "integer"
+      default: 90
+      description: "Grace period before removing deprecated features"
+
+# ============================================================================
+# CHINESE PHILOSOPHY: SHI (势) - Strategic Momentum
+# ============================================================================
+
+shi:
+  description: "Strategic positioning and momentum"
+  momentum_tracking:
+    enabled:
+      type: "boolean"
+      default: true
+  
+  metrics:
+    velocity:
+      type: "string"
+      default: "tasks_per_day"
+      description: "How to measure velocity"
+    
+    acceleration:
+      type: "string"
+      default: "velocity_change"
+      description: "Rate of velocity change"
+    
+    direction:
+      type: "string"
+      default: "goal_alignment"
+      description: "Are we moving toward goals?"
+  
+  strategic_positioning:
+    identify_opportunities:
+      type: "boolean"
+      default: true
+      description: "Proactively identify opportunities"
+    
+    capitalize_on_momentum:
+      type: "boolean"
+      default: true
+      description: "Double down when momentum is positive"
+    
+    avoid_resistance:
+      type: "boolean"
+      default: true
+      description: "Pivot away from high-resistance paths"
+
+# ============================================================================
+# CHINESE PHILOSOPHY: WU WEI (无为) - Effortless Action
+# ============================================================================
+
+wu_wei:
+  description: "Design for natural flow and minimal friction"
+  design_philosophy:
+    type: "string"
+    default: "effortless_action"
+  
+  principles:
+    type: "array"
+    items: "string"
+    default:
+      - "minimize_manual_steps"
+      - "automate_repetitive_tasks"
+      - "remove_unnecessary_approvals"
+      - "simplify_workflows"
+      - "natural_task_flow"
+  
+  automation:
+    auto_claim_tasks:
+      type: "boolean"
+      default: true
+      description: "Automatically claim matching tasks"
+    
+    auto_run_tests:
+      type: "boolean"
+      default: true
+      description: "Run tests automatically on code changes"
+    
+    auto_deploy:
+      type: "boolean"
+      default: true
+      description: "Deploy automatically when tests pass"
+    
+    auto_document:
+      type: "boolean"
+      default: true
+      description: "Generate documentation automatically"
+    
+    auto_notify:
+      type: "boolean"
+      default: true
+      description: "Notify stakeholders automatically"
+
+# ============================================================================
+# STANDARD AIX SECTIONS (Maintained)
+# ============================================================================
+
+skills:
+  type: "array"
+  required: true
+  items:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        required: true
+      description:
+        type: "string"
+        required: true
+      enabled:
+        type: "boolean"
+        default: true
+      parameters:
+        type: "object"
+      returns:
+        type: "object"
+
+security:
+  required: true
+  # Enhanced with Chinese information warfare principles
+  # See information_security section above
+
+performance:
+  required: true
+  fields:
+    expected_latency_ms:
+      type: "integer"
+      default: 200
+    throughput_requests_per_second:
+      type: "integer"
+      default: 50
+    resource_limits:
+      type: "object"
+
+compliance:
+  required: true
+  fields:
+    gdpr_compliant:
+      type: "boolean"
+      default: true
+    data_retention:
+      type: "object"
+    audit_logging:
+      type: "object"
+
+# ============================================================================
+# METADATA
+# ============================================================================
+
+schema_metadata:
+  version: "2.0.0-chinese-enhanced"
+  created: "2025-10-13"
+  author: "AMRIKYY AI Solutions"
+  description: "AIX schema enhanced with Chinese tech principles"
+  changelog:
+    - version: "2.0.0"
+      date: "2025-10-13"
+      changes:
+        - "Added dynamic coordination (动态协调)"
+        - "Added decentralized command (分散指挥)"
+        - "Added rapid iteration (快速迭代)"
+        - "Added information warfare (信息战)"
+        - "Added platform integration (平台整合)"
+        - "Added Guanxi (关系) trust system"
+        - "Added Bian (变) adaptation system"
+        - "Added Shi (势) momentum tracking"
+        - "Added Wu Wei (无为) effortless design"
