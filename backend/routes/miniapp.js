@@ -14,6 +14,32 @@ const jwt = require('jsonwebtoken');
 const { createClient } = require('@supabase/supabase-js');
 const router = express.Router();
 
+// ============================================================================
+// SECURITY: Validate JWT Secret at Startup
+// ============================================================================
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  console.error('❌ FATAL: JWT_SECRET environment variable is required');
+  console.error('Generate a secure secret: openssl rand -base64 32');
+  process.exit(1);
+}
+
+if (JWT_SECRET.length < 32) {
+  console.error('❌ FATAL: JWT_SECRET must be at least 32 characters');
+  console.error('Current length:', JWT_SECRET.length);
+  process.exit(1);
+}
+
+const WEAK_SECRETS = ['dev_jwt_secret', 'secret', 'test', 'development', 'password'];
+if (WEAK_SECRETS.includes(JWT_SECRET)) {
+  console.error('❌ FATAL: JWT_SECRET is too weak. Use a strong random secret.');
+  console.error('Generate one: openssl rand -base64 32');
+  process.exit(1);
+}
+
+console.log('✅ JWT_SECRET validated successfully');
+
 // Supabase service client (service role)
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
@@ -236,7 +262,7 @@ router.post('/auth/telegram', async (req, res) => {
     // Issue short-lived JWT with sub = telegram_id for RLS
     const token = jwt.sign(
       { sub: String(id) },
-      process.env.JWT_SECRET || 'dev_jwt_secret',
+      JWT_SECRET,  // ✅ SECURITY FIX: No fallback, validated at startup
       { expiresIn: '1h' }
     );
 
