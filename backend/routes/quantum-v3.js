@@ -45,7 +45,7 @@ router.post('/start', async (req, res) => {
         systemHealth: 100,
         learnedRules: 0,
         strategiesEvolved: 0,
-        isCircuitOpen: false,
+        isCircuitOpen: false
       }),
       processRequest: async (request, scenario) => {
         // Simulation for now
@@ -54,18 +54,18 @@ router.post('/start', async (req, res) => {
           healed: false,
           strategy: 'balanced',
           attempts: 1,
-          responseTimeMs: 100,
+          responseTimeMs: 100
         };
       },
       destroy: () => {
         console.log('System destroyed');
-      },
+      }
     };
 
     activeSystems.set(runId, {
       system,
       startTime: Date.now(),
-      status: 'running',
+      status: 'running'
     });
 
     res.json({
@@ -73,13 +73,13 @@ router.post('/start', async (req, res) => {
       runId,
       message: 'Quantum System V3 started successfully',
       note: 'Using placeholder - TypeScript compilation pending',
-      startTime: Date.now(),
+      startTime: Date.now()
     });
   } catch (error) {
     console.error('Error starting quantum v3:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to start quantum system v3',
+      error: error.message || 'Failed to start quantum system v3'
     });
   }
 });
@@ -96,7 +96,7 @@ router.get('/status/:runId', (req, res) => {
     if (!run) {
       return res.status(404).json({
         success: false,
-        error: 'Quantum system run not found',
+        error: 'Quantum system run not found'
       });
     }
 
@@ -109,13 +109,13 @@ router.get('/status/:runId', (req, res) => {
       status: run.status,
       uptime,
       uptimeFormatted: `${Math.floor(uptime / 1000)}s`,
-      metrics,
+      metrics
     });
   } catch (error) {
     console.error('Error getting status:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -132,7 +132,7 @@ router.post('/process/:runId', async (req, res) => {
     if (!request || !scenario) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required fields: request and scenario',
+        error: 'Missing required fields: request and scenario'
       });
     }
 
@@ -141,7 +141,7 @@ router.post('/process/:runId', async (req, res) => {
     if (!run) {
       return res.status(404).json({
         success: false,
-        error: 'Quantum system run not found',
+        error: 'Quantum system run not found'
       });
     }
 
@@ -150,13 +150,13 @@ router.post('/process/:runId', async (req, res) => {
     res.json({
       success: true,
       result,
-      currentMetrics: run.system.getMetrics(),
+      currentMetrics: run.system.getMetrics()
     });
   } catch (error) {
     console.error('Error processing request:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -173,7 +173,7 @@ router.delete('/:runId', (req, res) => {
     if (!run) {
       return res.status(404).json({
         success: false,
-        error: 'Quantum system run not found',
+        error: 'Quantum system run not found'
       });
     }
 
@@ -185,13 +185,13 @@ router.delete('/:runId', (req, res) => {
     res.json({
       success: true,
       message: 'Quantum system stopped successfully',
-      finalMetrics,
+      finalMetrics
     });
   } catch (error) {
     console.error('Error stopping system:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -208,7 +208,7 @@ router.get('/metrics', async (req, res) => {
     console.error('Error getting metrics:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -227,20 +227,20 @@ router.get('/list', (req, res) => {
         startTime: run.startTime,
         uptime,
         uptimeFormatted: `${Math.floor(uptime / 1000)}s`,
-        metrics: run.system.getMetrics(),
+        metrics: run.system.getMetrics()
       };
     });
 
     res.json({
       success: true,
       count: systems.length,
-      systems,
+      systems
     });
   } catch (error) {
     console.error('Error listing systems:', error);
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
@@ -256,7 +256,7 @@ router.get('/health', (req, res) => {
     status: 'healthy',
     activeSystemsCount: activeSystems.size,
     timestamp: Date.now(),
-    note: 'Quantum System V3 - Production Ready',
+    note: 'Quantum System V3 - Production Ready'
   });
 });
 

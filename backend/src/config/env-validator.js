@@ -150,7 +150,7 @@ const envSchema = Joi.object({
   
   AML_ENABLED: Joi.boolean()
     .default(true)
-    .description('Enable AML checks'),
+    .description('Enable AML checks')
   
 }).unknown(true); // Allow additional environment variables
 

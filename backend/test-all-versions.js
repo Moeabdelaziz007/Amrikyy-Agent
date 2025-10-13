@@ -20,13 +20,13 @@ class QuantumSystemOriginal {
       rulesLearned: 0,
       strategiesEvolved: 0,
       avgResponseTime: 0,
-      systemHealth: 100,
+      systemHealth: 100
     };
     this.circuitBreaker = { open: false, failureCount: 0 };
     this.strategies = new Map([
       ['fast', { success: 0, total: 0, avgTime: 100 }],
       ['safe', { success: 0, total: 0, avgTime: 300 }],
-      ['balanced', { success: 0, total: 0, avgTime: 200 }],
+      ['balanced', { success: 0, total: 0, avgTime: 200 }]
     ]);
     this.patterns = new Map();
   }
@@ -148,7 +148,7 @@ class QuantumSystemOriginal {
     this.strategies.set(hybridName, {
       success: 0,
       total: 0,
-      avgTime: best[1].avgTime * 0.9,
+      avgTime: best[1].avgTime * 0.9
     });
 
     this.metrics.strategiesEvolved++;
@@ -171,13 +171,13 @@ class QuantumSystemV2 extends EventEmitter {
       failedRequests: 0,
       healedRequests: 0,
       avgResponseTime: 0,
-      systemHealth: 100,
+      systemHealth: 100
     };
     this.circuit = { openUntil: 0, failureCount: 0 };
     this.strategies = new Map([
       ['fast', { success: 0, total: 0, avgTime: 100 }],
       ['safe', { success: 0, total: 0, avgTime: 300 }],
-      ['balanced', { success: 0, total: 0, avgTime: 200 }],
+      ['balanced', { success: 0, total: 0, avgTime: 200 }]
     ]);
     this.patterns = new Map();
     this.learnedRulesCount = 0;
@@ -336,7 +336,7 @@ class QuantumSystemV2 extends EventEmitter {
     this.strategies.set(hybridName, {
       success: 0,
       total: 0,
-      avgTime: Math.round(best[1].avgTime * 0.9),
+      avgTime: Math.round(best[1].avgTime * 0.9)
     });
   }
 
@@ -345,7 +345,7 @@ class QuantumSystemV2 extends EventEmitter {
       ...this.metrics,
       learnedRules: this.learnedRulesCount,
       strategiesEvolved: this.evolvedStrategiesCount,
-      isCircuitOpen: this.isCircuitOpen(),
+      isCircuitOpen: this.isCircuitOpen()
     };
   }
 
@@ -370,7 +370,7 @@ class QuantumSystemV3 extends EventEmitter {
       learningRateAlpha: 0.3,
       learningThreshold: 5,
       strategyEvolutionInterval: 20,
-      ...config,
+      ...config
     };
 
     this.metrics = {
@@ -379,7 +379,7 @@ class QuantumSystemV3 extends EventEmitter {
       failedRequests: 0,
       healedRequests: 0,
       avgResponseTime: 0,
-      systemHealth: 100,
+      systemHealth: 100
     };
 
     this.circuit = { openUntil: 0, failureCount: 0 };
@@ -387,7 +387,7 @@ class QuantumSystemV3 extends EventEmitter {
     this.strategies = new Map([
       ['fast', { successCount: 0, totalAttempts: 0, emaLatency: 50 }],
       ['safe', { successCount: 0, totalAttempts: 0, emaLatency: 300 }],
-      ['balanced', { successCount: 0, totalAttempts: 0, emaLatency: 150 }],
+      ['balanced', { successCount: 0, totalAttempts: 0, emaLatency: 150 }]
     ]);
 
     this.patterns = new Map();
@@ -422,7 +422,7 @@ class QuantumSystemV3 extends EventEmitter {
           success: true,
           healed: false,
           strategy: strategyName,
-          attempts: attempt,
+          attempts: attempt
         };
       } catch (error) {
         this.updateStrategyOnFailure(strategyName);
@@ -549,7 +549,7 @@ class QuantumSystemV3 extends EventEmitter {
     const patternKey = `${request.type}|${success ? 'success' : 'fail'}`;
     const pattern = this.patterns.get(patternKey) ?? {
       count: 0,
-      strategyFrequency: new Map(),
+      strategyFrequency: new Map()
     };
 
     pattern.count++;
@@ -596,7 +596,7 @@ class QuantumSystemV3 extends EventEmitter {
     this.strategies.set(newStrategyName, {
       successCount: 0,
       totalAttempts: 0,
-      emaLatency: newLatency,
+      emaLatency: newLatency
     });
   }
 
@@ -605,7 +605,7 @@ class QuantumSystemV3 extends EventEmitter {
       ...this.metrics,
       learnedRules: this.learnedRulesCount,
       strategiesEvolved: this.evolvedStrategiesCount,
-      isCircuitOpen: this.isCircuitOpen(),
+      isCircuitOpen: this.isCircuitOpen()
     };
   }
 
@@ -624,7 +624,7 @@ const scenarios = [
   { name: 'High Failure', failureRate: 0.6, requests: 15, avgLatency: 150 },
   { name: 'Extreme Stress', failureRate: 0.8, requests: 20, avgLatency: 200 },
   { name: 'Recovery', failureRate: 0.3, requests: 25, avgLatency: 120 },
-  { name: 'Chaos', failureRate: 0.5, requests: 30, avgLatency: 180 },
+  { name: 'Chaos', failureRate: 0.5, requests: 30, avgLatency: 180 }
 ];
 
 async function testSystem(SystemClass, name) {
@@ -637,7 +637,7 @@ async function testSystem(SystemClass, name) {
         id: `req-${i}`,
         type: ['api_call', 'database', 'payment'][
           Math.floor(Math.random() * 3)
-        ],
+        ]
       };
 
       await system.processRequest(request, scenario);
@@ -662,7 +662,7 @@ async function testSystem(SystemClass, name) {
   const results = await Promise.all([
     testSystem(QuantumSystemOriginal, 'Original'),
     testSystem(QuantumSystemV2, 'V2'),
-    testSystem(QuantumSystemV3, 'V3'),
+    testSystem(QuantumSystemV3, 'V3')
   ]);
 
   console.log('📊 RESULTS:\n');

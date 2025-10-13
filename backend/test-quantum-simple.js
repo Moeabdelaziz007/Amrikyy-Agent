@@ -14,50 +14,50 @@ const differences = [
     feature: 'Circuit Breaker',
     original: 'Boolean flag (open: true/false)',
     v2: 'Timestamp-based (openUntil: timestamp)',
-    impact: '⬆️ BETTER - Prevents race conditions',
+    impact: '⬆️ BETTER - Prevents race conditions'
   },
   {
     feature: 'Strategy avgTime Update',
     original: 'Never updated (static values)',
     v2: 'EMA adaptive learning (α=0.3)',
-    impact: '⬆️ BETTER - Learns real performance',
+    impact: '⬆️ BETTER - Learns real performance'
   },
   {
     feature: 'Strategy Selection',
     original: 'Pure exploitation (best only)',
     v2: 'ε-greedy (5% exploration)',
-    impact: '⬆️ BETTER - Discovers new strategies',
+    impact: '⬆️ BETTER - Discovers new strategies'
   },
   {
     feature: 'Logging',
     original: 'Simple strings',
     v2: 'Structured JSON logs with metadata',
-    impact: '⬆️ BETTER - Better debugging/monitoring',
+    impact: '⬆️ BETTER - Better debugging/monitoring'
   },
   {
     feature: 'Metrics Export',
     original: 'None (internal only)',
     v2: 'Prometheus integration ready',
-    impact: '⬆️ BETTER - Production observability',
+    impact: '⬆️ BETTER - Production observability'
   },
   {
     feature: 'Memory Safety',
     original: 'No unmount protection',
     v2: 'isMounted flag + cleanup',
-    impact: '⬆️ BETTER - Prevents memory leaks',
+    impact: '⬆️ BETTER - Prevents memory leaks'
   },
   {
     feature: 'avgResponseTime',
     original: 'Not stored in metrics object',
     v2: 'Properly tracked and exported',
-    impact: '⬆️ BETTER - Complete metrics',
+    impact: '⬆️ BETTER - Complete metrics'
   },
   {
     feature: 'Circuit Recovery',
     original: 'setTimeout (can conflict)',
     v2: 'Check timestamp on each request',
-    impact: '⬆️ BETTER - More reliable',
-  },
+    impact: '⬆️ BETTER - More reliable'
+  }
 ];
 
 console.log(
@@ -82,38 +82,38 @@ const scenarios = [
     name: 'Normal Operations (10% failure)',
     original: '100% success',
     v2: '100% success',
-    difference: 'SAME',
+    difference: 'SAME'
   },
   {
     name: 'High Failure (60% failure)',
     original: '100% success',
     v2: '100% success',
-    difference: 'SAME',
+    difference: 'SAME'
   },
   {
     name: 'Extreme Stress (80% failure)',
     original: '100% success',
     v2: '100% success',
-    difference: 'SAME',
+    difference: 'SAME'
   },
   {
     name: 'Strategy Learning',
     original: 'Static avgTime',
     v2: 'Adaptive avgTime',
-    difference: 'V2 LEARNS',
+    difference: 'V2 LEARNS'
   },
   {
     name: 'Strategy Discovery',
     original: 'Uses same 3',
     v2: 'Explores evolved ones',
-    difference: 'V2 EXPLORES',
+    difference: 'V2 EXPLORES'
   },
   {
     name: 'Circuit Breaker Reliability',
     original: '95% reliable',
     v2: '99.9% reliable',
-    difference: 'V2 BETTER',
-  },
+    difference: 'V2 BETTER'
+  }
 ];
 
 scenarios.forEach((s) => {
@@ -158,13 +158,13 @@ const bugFixes = [
   '   ✅ V2: Checks isMounted flag before emitting events',
   '',
   '6. ❌ Original: No observability (metrics stay internal)',
-  '   ✅ V2: Prometheus metrics + structured logging',
+  '   ✅ V2: Prometheus metrics + structured logging'
 ];
 
 bugFixes.forEach((fix) => console.log(`  ${fix}`));
 
 console.log('\n\n📊 SIMULATED TEST RESULTS:\n');
-console.log("  Based on ChatGPT's Python simulation:");
+console.log('  Based on ChatGPT\'s Python simulation:');
 console.log('  - Both systems: 110/110 requests successful ✅');
 console.log('  - Both systems: ~50 self-healed requests ✅');
 console.log('  - Both systems: ~12 rules learned ✅');
