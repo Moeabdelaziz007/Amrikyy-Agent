@@ -4,7 +4,7 @@
  */
 
 const TelegramBot = require('node-telegram-bot-api');
-const ZaiClient = require('./src/ai/zaiClient');
+const KeloClient = require('./src/ai/keloClient');
 const MayaPersona = require('./src/ai/mayaPersona');
 const MCPTools = require('./src/ai/mcpTools');
 const UserProfilingSystem = require('./src/ai/userProfiling');
