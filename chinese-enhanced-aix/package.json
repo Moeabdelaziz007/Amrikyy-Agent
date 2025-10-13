@@ -1,0 +1,50 @@
+{
+  "name": "chinese-enhanced-aix",
+  "version": "1.0.0",
+  "description": "Chinese-Enhanced AIX Agent Coordination System",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "start": "node index.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "coordination",
+    "aix",
+    "chinese-tech",
+    "dynamic-coordination",
+    "decentralized-command"
+  ],
+  "author": "Maya Travel Team",
+  "license": "MIT",
+  "dependencies": {
+    "eventemitter3": "^5.0.1",
+    "js-yaml": "^4.1.0",
+    "crypto": "^1.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "eslint": "^8.57.0",
+    "@types/jest": "^29.5.11"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    },
+    "collectCoverageFrom": [
+      "**/*.js",
+      "!**/node_modules/**",
+      "!**/tests/**"
+    ]
+  }
+}
