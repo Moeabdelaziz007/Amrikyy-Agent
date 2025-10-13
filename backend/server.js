@@ -62,6 +62,10 @@ app.use('/api/payment/webhook', bodyParser.raw({ type: 'application/json' }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Serve AIX Dashboard and static files
+app.use(express.static('backend/public'));
+console.log('✅ AIX Dashboard available at /aix-dashboard.html');
+
 // Apply general rate limiter to all API routes
 app.use('/api/', generalLimiter);
 
