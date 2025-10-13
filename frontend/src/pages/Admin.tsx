@@ -74,10 +74,11 @@ export default function Admin() {
 
         {/* Tabs Navigation */}
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
             <TabsTrigger value="dashboard">📊 Dashboard</TabsTrigger>
             <TabsTrigger value="quantum">⚡ Quantum System</TabsTrigger>
             <TabsTrigger value="compliance">🛡️ Compliance</TabsTrigger>
+            <TabsTrigger value="aladdin">💰 Aladdin</TabsTrigger>
           </TabsList>
 
           {/* Dashboard Tab */}
@@ -301,6 +302,53 @@ export default function Admin() {
           {/* Compliance Tab */}
           <TabsContent value="compliance">
             <ComplianceDashboard />
+          </TabsContent>
+
+          {/* Aladdin Tab */}
+          <TabsContent value="aladdin">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  💰 Mini-Aladdin Money Hunter
+                </CardTitle>
+                <CardDescription>
+                  AI-powered opportunity finder - Quick stats overview
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground mb-4">
+                    View full Aladdin dashboard for detailed opportunities and analytics
+                  </p>
+                  <a
+                    href="/aladdin"
+                    className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+                  >
+                    Open Aladdin Dashboard →
+                  </a>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card>
+                    <CardContent className="p-4">
+                      <p className="text-sm text-muted-foreground">Status</p>
+                      <p className="text-2xl font-bold">Active</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4">
+                      <p className="text-sm text-muted-foreground">Agents</p>
+                      <p className="text-2xl font-bold">4 Running</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4">
+                      <p className="text-sm text-muted-foreground">Last Hunt</p>
+                      <p className="text-2xl font-bold">Ready</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
