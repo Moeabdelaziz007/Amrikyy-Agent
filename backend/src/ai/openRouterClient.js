@@ -139,19 +139,109 @@ class OpenRouterClient {
 
       const data = await response.json();
       
+      // Calculate cost and track usage
+      const cost = this.calculateCost(data.usage, modelInfo);
+      this.trackUsage(model, data.usage, cost);
+      
+      // Track performance for model switching
+      this.modelSwitcher.trackPerformance(model, true, data.usage?.total_tokens || 0, cost);
+      
       return {
         content: data.choices?.[0]?.message?.content || '',
         usage: data.usage || {},
         model: data.model || model,
         finishReason: data.choices?.[0]?.finish_reason || 'stop',
-        cost: this.calculateCost(data.usage, modelInfo),
-        provider: 'OpenRouter'
+        cost: cost,
+        provider: 'OpenRouter',
+        optimization: {
+          contextOptimized: true,
+          modelSelection: modelSelection.reason,
+          costSavings: this.calculateCostSavings(model, options)
+        }
       };
 
     } catch (error) {
       console.error('OpenRouter API Error:', error);
+      
+      // Track failure for model switching
+      if (options.model) {
+        this.modelSwitcher.trackPerformance(options.model, false, 0, 0);
+      }
+      
       throw new Error(`OpenRouter API Error: ${error.message}`);
     }
+  }
+
+  /**
+   * Optimize context for cost savings
+   */
+  optimizeContextForCost(messages, options) {
+    if (!this.costOptimization.enabled) return messages;
+
+    return messages.map(msg => {
+      if (msg.role === 'system') {
+        // Compress system prompts
+        return {
+          ...msg,
+          content: this.contextManager.compressContext(msg.content)
+        };
+      }
+      
+      if (msg.role === 'user' && msg.content) {
+        // Use Memory Bank references instead of full context
+        const optimizedContent = this.replaceContextWithReferences(msg.content);
+        return {
+          ...msg,
+          content: optimizedContent
+        };
+      }
+      
+      return msg;
+    });
+  }
+
+  /**
+   * Replace full context with Memory Bank references
+   */
+  replaceContextWithReferences(content) {
+    // Look for file references and replace with Memory Bank refs
+    const fileRefPattern = /@([^:\s]+)(?::(\d+)-(\d+))?/g;
+    
+    return content.replace(fileRefPattern, (match, filePath, startLine, endLine) => {
+      const memoryKey = `file_${filePath.replace(/[^a-zA-Z0-9]/g, '_')}`;
+      const storedContext = this.contextManager.getProjectContext(memoryKey);
+      
+      if (storedContext) {
+        return `@memory:${memoryKey}`;
+      }
+      
+      // Store file context in Memory Bank for future use
+      this.contextManager.storeProjectContext(memoryKey, `File: ${filePath}`);
+      return `@memory:${memoryKey}`;
+    });
+  }
+
+  /**
+   * Track usage and costs
+   */
+  trackUsage(model, usage, cost) {
+    this.contextManager.trackUsage(model, usage?.total_tokens || 0, cost);
+    this.costOptimization.currentDailyCost += cost;
+  }
+
+  /**
+   * Calculate cost savings from optimization
+   */
+  calculateCostSavings(selectedModel, options) {
+    const originalModel = options.originalModel || 'openrouter/anthropic/claude-3.5-sonnet';
+    const originalCost = this.models[originalModel]?.cost || 0.003;
+    const selectedCost = this.models[selectedModel]?.cost || 0;
+    
+    return {
+      modelSavings: originalCost - selectedCost,
+      contextSavings: this.contextManager.getContextSavings(),
+      totalSavings: (originalCost - selectedCost) + this.contextManager.getContextSavings()
+    };
   }
 
   /**

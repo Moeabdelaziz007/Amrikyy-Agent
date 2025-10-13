@@ -45,9 +45,10 @@ router.post('/chat', async (req, res) => {
       }
     ];
 
-    const response = await moonshotClient.chatCompletion(messages, {
+    const response = await keloClient.chatCompletion(messages, {
       temperature: parseFloat(temperature),
-      maxTokens: parseInt(maxTokens)
+      maxTokens: parseInt(maxTokens),
+      budget: 'free' // Use free model for chat
     });
 
     res.json({
