@@ -29,7 +29,7 @@ interface AuditLog {
   user_id?: string;
   transaction_id?: string;
   status: string;
-  metadata: any;
+  metadata: Record<string, unknown>;
   created_at: string;
 }
 
@@ -224,7 +224,7 @@ export default function ComplianceDashboard() {
 }
 
 // Overview Tab Component
-function OverviewTab({ statistics, recentActivity }: any) {
+function OverviewTab({ statistics, recentActivity }: { statistics: Statistics | null; recentActivity: AuditLog[] }) {
   if (!statistics) {
     return <div className="text-center py-12">Loading statistics...</div>;
   }
@@ -325,7 +325,7 @@ function OverviewTab({ statistics, recentActivity }: any) {
           Recent Activity (Last 24 Hours)
         </h3>
         <div className="space-y-3">
-          {recentActivity.slice(0, 5).map((activity: any, index: number) => (
+          {recentActivity.slice(0, 5).map((activity: AuditLog, index: number) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, x: -20 }}
@@ -361,7 +361,7 @@ function OverviewTab({ statistics, recentActivity }: any) {
 }
 
 // Audit Logs Tab Component
-function AuditLogsTab({ searchTerm, setSearchTerm }: any) {
+function AuditLogsTab({ searchTerm, setSearchTerm }: { searchTerm: string; setSearchTerm: (value: string) => void }) {
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(false);
 

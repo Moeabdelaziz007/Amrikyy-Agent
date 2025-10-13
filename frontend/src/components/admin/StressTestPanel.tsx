@@ -53,15 +53,45 @@ interface LogEntry {
   timestamp: number;
 }
 
+interface PatternData {
+  count: number;
+  strategies: Map<string, number>;
+}
+
+interface StrategyData {
+  success: number;
+  total: number;
+  avgTime: number;
+}
+
+interface Request {
+  id: string;
+  type: string;
+}
+
+interface Scenario {
+  name: string;
+  description: string;
+  requests: number;
+  failureRate: number;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+}
+
+interface CircuitBreaker {
+  open?: boolean;
+  openUntil?: number;
+  failureCount: number;
+}
+
 // Quantum System Implementation
 class QuantumSystem {
   onLog: (log: LogEntry) => void;
   onMetricsUpdate: (metrics: SystemMetrics) => void;
   metrics: SystemMetrics & { totalResponseTime?: number };
-  circuitBreaker: { openUntil: number; failureCount: number };
-  patterns: Map<string, any>;
-  strategies: Map<string, any>;
-  knowledge: Map<string, any>;
+  circuitBreaker: CircuitBreaker;
+  patterns: Map<string, PatternData>;
+  strategies: Map<string, StrategyData>;
+  knowledge: Map<string, unknown>;
   isMounted: boolean;
 
   constructor(
@@ -101,7 +131,7 @@ class QuantumSystem {
     const avgResponseTime =
       this.metrics.totalRequests > 0
         ? Math.round(
-            (this.metrics as any).totalResponseTime / this.metrics.totalRequests
+            (this.metrics.totalResponseTime || 0) / this.metrics.totalRequests
           )
         : 0;
 
@@ -125,7 +155,7 @@ class QuantumSystem {
     });
   }
 
-  async processRequest(request: any, scenario: any) {
+  async processRequest(request: Request, scenario: Scenario) {
     this.metrics.totalRequests++;
     const startTime = Date.now();
 
@@ -134,8 +164,8 @@ class QuantumSystem {
       this.log('⚡ Circuit breaker OPEN, using fallback', 'warning');
       this.metrics.healedRequests++;
       this.metrics.successfulRequests++;
-      (this.metrics as any).totalResponseTime =
-        ((this.metrics as any).totalResponseTime || 0) + 50;
+      this.metrics.totalResponseTime =
+        (this.metrics.totalResponseTime || 0) + 50;
       this.updateMetrics();
       return { success: true, healed: true, source: 'fallback' };
     }
@@ -153,8 +183,8 @@ class QuantumSystem {
           this.circuitBreaker.failureCount = 0;
           const responseTime = Date.now() - startTime;
           this.metrics.successfulRequests++;
-          (this.metrics as any).totalResponseTime =
-            ((this.metrics as any).totalResponseTime || 0) + responseTime;
+          this.metrics.totalResponseTime =
+            (this.metrics.totalResponseTime || 0) + responseTime;
 
           this.learnFromExecution(request, strategy, true);
 
@@ -162,8 +192,9 @@ class QuantumSystem {
           this.updateMetrics();
           return { success: true, attempt, responseTime };
         }
-      } catch (error: any) {
-        this.log(`❌ Attempt ${attempt} failed: ${error.message}`, 'error');
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        this.log(`❌ Attempt ${attempt} failed: ${errorMessage}`, 'error');
 
         if (attempt < 3) {
           const delay = Math.pow(2, attempt) * 100;
@@ -189,8 +220,8 @@ class QuantumSystem {
     this.metrics.failedRequests++;
     this.metrics.healedRequests++;
     this.metrics.successfulRequests++;
-    (this.metrics as any).totalResponseTime =
-      ((this.metrics as any).totalResponseTime || 0) + 100;
+    this.metrics.totalResponseTime =
+      (this.metrics.totalResponseTime || 0) + 100;
 
     this.learnFromExecution(request, strategy, false);
     this.updateMetrics();
@@ -198,7 +229,7 @@ class QuantumSystem {
     return { success: true, healed: true, source: 'fallback' };
   }
 
-  async executeWithStrategy(strategy: string, scenario: any) {
+  async executeWithStrategy(strategy: string, scenario: Scenario) {
     const strategyData = this.strategies.get(strategy);
 
     const failureRate = scenario.failureRate || 0.1;
@@ -218,7 +249,7 @@ class QuantumSystem {
     return { success: true };
   }
 
-  selectBestStrategy(request: any) {
+  selectBestStrategy(request: Request) {
     let bestStrategy = 'balanced';
     let bestScore = 0;
 
@@ -238,7 +269,7 @@ class QuantumSystem {
     return bestStrategy;
   }
 
-  learnFromExecution(request: any, strategy: string, success: boolean) {
+  learnFromExecution(request: Request, strategy: string, success: boolean) {
     const pattern = `${request.type}-${success ? 'success' : 'fail'}`;
 
     if (!this.patterns.has(pattern)) {
