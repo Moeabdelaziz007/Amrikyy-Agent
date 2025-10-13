@@ -495,6 +495,11 @@ const auditRoutes = require('./routes/audit');
 app.use('/api/audit', auditRoutes);
 logger.info('📝 Audit Routes mounted successfully - Complete Audit Trail!');
 
+// ============ Revenue Opportunities Routes (NEW) ============
+const revenueRoutes = require('./routes/revenue');
+app.use('/api/revenue', revenueRoutes);
+logger.info('💰 Revenue Opportunities Routes mounted successfully!');
+
 // ============ gRPC Server (High-Performance Agent Communication) ============
 const quantumGrpcServer = require('./src/grpc/QuantumGrpcServer');
 // gRPC server starts separately on port 50051

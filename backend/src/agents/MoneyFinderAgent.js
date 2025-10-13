@@ -25,7 +25,7 @@ class MoneyFinderAgent {
       interests: config.interests || ['technology', 'development', 'security'],
       timeAvailable: config.timeAvailable || 10, // hours per week
       minRevenue: config.minRevenue || 100, // minimum monthly revenue target
-      riskTolerance: config.riskTolerance || 'medium' // low, medium, high
+      riskTolerance: config.riskTolerance || 'medium', // low, medium, high
     };
 
     this.opportunities = [];
@@ -35,7 +35,7 @@ class MoneyFinderAgent {
       qualified: 0,
       contacted: 0,
       converted: 0,
-      totalRevenue: 0
+      totalRevenue: 0,
     };
   }
 
@@ -73,7 +73,7 @@ class MoneyFinderAgent {
       opportunities: this.opportunities,
       actionPlan,
       analytics: this.analytics,
-      nextSteps: this.getNextSteps()
+      nextSteps: this.getNextSteps(),
     };
   }
 
@@ -114,11 +114,11 @@ class MoneyFinderAgent {
               matchScore: this._calculateMatch(profile.skills, [
                 'cloud',
                 'infrastructure',
-                'development'
+                'development',
               ]),
               requirements: 'Active website/blog with tech content',
               timeToRevenue: '2-3 months',
-              description: 'Earn commission on AWS service referrals'
+              description: 'Earn commission on AWS service referrals',
             },
             {
               name: 'DigitalOcean Affiliate',
@@ -130,12 +130,12 @@ class MoneyFinderAgent {
               matchScore: this._calculateMatch(profile.skills, [
                 'hosting',
                 'development',
-                'cloud'
+                'cloud',
               ]),
               requirements: 'Developer audience',
               timeToRevenue: '1-2 months',
               description:
-                'Earn $25 per qualified referral, $50 for enterprise'
+                'Earn $25 per qualified referral, $50 for enterprise',
             },
             {
               name: 'Udemy Affiliate',
@@ -147,12 +147,12 @@ class MoneyFinderAgent {
               matchScore: this._calculateMatch(profile.skills, [
                 'education',
                 'content',
-                'teaching'
+                'teaching',
               ]),
               requirements: 'Content platform or audience',
               timeToRevenue: '1 month',
-              description: 'Promote courses and earn commissions'
-            }
+              description: 'Promote courses and earn commissions',
+            },
           ];
 
           return programs.map((p) => ({
@@ -160,9 +160,9 @@ class MoneyFinderAgent {
             category: 'affiliate',
             effort: 'low',
             scalability: 'high',
-            foundAt: new Date().toISOString()
+            foundAt: new Date().toISOString(),
           }));
-        }
+        },
       },
       {
         name: 'API Monetization',
@@ -177,7 +177,7 @@ class MoneyFinderAgent {
               matchScore: this._calculateMatch(profile.skills, [
                 'security',
                 'api',
-                'development'
+                'development',
               ]),
               description:
                 'Create API for security auditing (based on your AIX auditor)',
@@ -186,7 +186,7 @@ class MoneyFinderAgent {
               timeToRevenue: '3-4 months',
               effort: 'medium',
               scalability: 'very high',
-              monetizationPath: 'RapidAPI, API marketplaces'
+              monetizationPath: 'RapidAPI, API marketplaces',
             },
             {
               name: 'Pattern Analysis API',
@@ -196,7 +196,7 @@ class MoneyFinderAgent {
               matchScore: this._calculateMatch(profile.skills, [
                 'analytics',
                 'ai',
-                'data'
+                'data',
               ]),
               description: 'Offer pattern detection as a service',
               pricing: 'Usage-based: $0.001 per analysis',
@@ -204,16 +204,16 @@ class MoneyFinderAgent {
               timeToRevenue: '2-3 months',
               effort: 'medium',
               scalability: 'very high',
-              monetizationPath: 'Stripe, RapidAPI'
-            }
+              monetizationPath: 'Stripe, RapidAPI',
+            },
           ];
 
           return apiOpportunities.map((o) => ({
             ...o,
             category: 'api_product',
-            foundAt: new Date().toISOString()
+            foundAt: new Date().toISOString(),
           }));
-        }
+        },
       },
       {
         name: 'Freelance Opportunities',
@@ -228,7 +228,7 @@ class MoneyFinderAgent {
               matchScore: this._calculateMatch(profile.skills, [
                 'security',
                 'auditing',
-                'consulting'
+                'consulting',
               ]),
               description: 'Offer security audits to startups',
               pricing: '$150-300/hour or $2000-5000 per audit',
@@ -236,7 +236,7 @@ class MoneyFinderAgent {
               timeToRevenue: '2-4 weeks',
               effort: 'high',
               scalability: 'low',
-              requiredTime: '5-10 hours/week'
+              requiredTime: '5-10 hours/week',
             },
             {
               name: 'AI Integration Specialist',
@@ -246,7 +246,7 @@ class MoneyFinderAgent {
               matchScore: this._calculateMatch(profile.skills, [
                 'ai',
                 'integration',
-                'development'
+                'development',
               ]),
               description: 'Help businesses integrate AI tools',
               pricing: '$100-200/hour',
@@ -254,16 +254,16 @@ class MoneyFinderAgent {
               timeToRevenue: '1-2 months',
               effort: 'high',
               scalability: 'medium',
-              requiredTime: '10-20 hours/week'
-            }
+              requiredTime: '10-20 hours/week',
+            },
           ];
 
           return gigs.map((g) => ({
             ...g,
             category: 'freelance',
-            foundAt: new Date().toISOString()
+            foundAt: new Date().toISOString(),
           }));
-        }
+        },
       },
       {
         name: 'Digital Products',
@@ -277,7 +277,7 @@ class MoneyFinderAgent {
               difficulty: 'low',
               matchScore: this._calculateMatch(profile.skills, [
                 'security',
-                'documentation'
+                'documentation',
               ]),
               description: 'Sell audit templates, checklists, and reports',
               pricing: '$29-99 per pack',
@@ -285,7 +285,7 @@ class MoneyFinderAgent {
               timeToRevenue: '1 month',
               effort: 'low',
               scalability: 'very high',
-              oneTimeEffort: '20-40 hours to create'
+              oneTimeEffort: '20-40 hours to create',
             },
             {
               name: 'AI Agent Development Course',
@@ -295,7 +295,7 @@ class MoneyFinderAgent {
               matchScore: this._calculateMatch(profile.skills, [
                 'ai',
                 'development',
-                'teaching'
+                'teaching',
               ]),
               description: 'Create course on building AI agents',
               pricing: '$99-299 per student',
@@ -303,7 +303,7 @@ class MoneyFinderAgent {
               timeToRevenue: '2-3 months',
               effort: 'high',
               scalability: 'very high',
-              oneTimeEffort: '60-100 hours to create'
+              oneTimeEffort: '60-100 hours to create',
             },
             {
               name: 'AIX Agent Marketplace Themes',
@@ -312,7 +312,7 @@ class MoneyFinderAgent {
               difficulty: 'low',
               matchScore: this._calculateMatch(profile.skills, [
                 'development',
-                'design'
+                'design',
               ]),
               description: 'Create and sell pre-built AIX agent templates',
               pricing: '$9-49 per template',
@@ -320,16 +320,16 @@ class MoneyFinderAgent {
               timeToRevenue: '1 month',
               effort: 'low',
               scalability: 'high',
-              oneTimeEffort: '10-20 hours per template'
-            }
+              oneTimeEffort: '10-20 hours per template',
+            },
           ];
 
           return products.map((p) => ({
             ...p,
             category: 'digital_product',
-            foundAt: new Date().toISOString()
+            foundAt: new Date().toISOString(),
           }));
-        }
+        },
       },
       {
         name: 'Content Monetization',
@@ -343,14 +343,14 @@ class MoneyFinderAgent {
               difficulty: 'easy',
               matchScore: this._calculateMatch(profile.skills, [
                 'writing',
-                'technical'
+                'technical',
               ]),
               description: 'Blog about security/AI with Google AdSense',
               monetization: 'Google AdSense, Carbon Ads',
               timeToRevenue: '3-6 months',
               effort: 'medium',
               scalability: 'medium',
-              requirements: '10-20 quality articles, consistent traffic'
+              requirements: '10-20 quality articles, consistent traffic',
             },
             {
               name: 'YouTube Channel - Dev Tutorials',
@@ -359,14 +359,14 @@ class MoneyFinderAgent {
               difficulty: 'medium',
               matchScore: this._calculateMatch(profile.skills, [
                 'teaching',
-                'video'
+                'video',
               ]),
               description: 'Create coding/security tutorials',
               monetization: 'YouTube Partner, sponsorships, affiliate links',
               timeToRevenue: '4-6 months',
               effort: 'high',
               scalability: 'high',
-              requirements: '1000 subscribers, 4000 watch hours'
+              requirements: '1000 subscribers, 4000 watch hours',
             },
             {
               name: 'Sponsored Newsletter',
@@ -375,23 +375,23 @@ class MoneyFinderAgent {
               difficulty: 'medium',
               matchScore: this._calculateMatch(profile.skills, [
                 'writing',
-                'community'
+                'community',
               ]),
               description: 'Weekly AI/security newsletter with sponsors',
               monetization: 'Sponsorships, affiliate links',
               timeToRevenue: '3-5 months',
               effort: 'medium',
               scalability: 'high',
-              requirements: '1000+ subscribers'
-            }
+              requirements: '1000+ subscribers',
+            },
           ];
 
           return contentOpps.map((c) => ({
             ...c,
             category: 'content_monetization',
-            foundAt: new Date().toISOString()
+            foundAt: new Date().toISOString(),
           }));
-        }
+        },
       },
       {
         name: 'Partnership Deals',
@@ -406,7 +406,7 @@ class MoneyFinderAgent {
               matchScore: this._calculateMatch(profile.skills, [
                 'integration',
                 'api',
-                'business'
+                'business',
               ]),
               description: 'Partner with SaaS companies to build integrations',
               compensation: 'Revenue share (20-30%) or flat fee',
@@ -414,7 +414,7 @@ class MoneyFinderAgent {
               timeToRevenue: '3-6 months',
               effort: 'high',
               scalability: 'medium',
-              outreachStrategy: 'Direct email to founders/CTOs'
+              outreachStrategy: 'Direct email to founders/CTOs',
             },
             {
               name: 'White-Label Security Auditor',
@@ -424,7 +424,7 @@ class MoneyFinderAgent {
               matchScore: this._calculateMatch(profile.skills, [
                 'security',
                 'product',
-                'business'
+                'business',
               ]),
               description: 'License your auditor to security consulting firms',
               compensation: '$500-2000/month per license',
@@ -432,16 +432,16 @@ class MoneyFinderAgent {
               timeToRevenue: '4-6 months',
               effort: 'high',
               scalability: 'very high',
-              outreachStrategy: 'LinkedIn outreach + cold email'
-            }
+              outreachStrategy: 'LinkedIn outreach + cold email',
+            },
           ];
 
           return partnerships.map((p) => ({
             ...p,
             category: 'partnership',
-            foundAt: new Date().toISOString()
+            foundAt: new Date().toISOString(),
           }));
-        }
+        },
       },
       {
         name: 'Automation & Tools',
@@ -456,7 +456,7 @@ class MoneyFinderAgent {
               matchScore: this._calculateMatch(profile.skills, [
                 'automation',
                 'devops',
-                'development'
+                'development',
               ]),
               description: 'Publish security audit GitHub Action',
               pricing: 'Free tier + $9-29/mo for pro features',
@@ -464,7 +464,7 @@ class MoneyFinderAgent {
               timeToRevenue: '2-3 months',
               effort: 'medium',
               scalability: 'very high',
-              distribution: 'GitHub Marketplace'
+              distribution: 'GitHub Marketplace',
             },
             {
               name: 'VS Code Extension',
@@ -473,7 +473,7 @@ class MoneyFinderAgent {
               difficulty: 'medium',
               matchScore: this._calculateMatch(profile.skills, [
                 'development',
-                'tools'
+                'tools',
               ]),
               description: 'Security linter for AIX files',
               pricing: 'Freemium model',
@@ -481,17 +481,17 @@ class MoneyFinderAgent {
               timeToRevenue: '1-2 months',
               effort: 'medium',
               scalability: 'very high',
-              distribution: 'VS Code Marketplace'
-            }
+              distribution: 'VS Code Marketplace',
+            },
           ];
 
           return tools.map((t) => ({
             ...t,
             category: 'automation_tool',
-            foundAt: new Date().toISOString()
+            foundAt: new Date().toISOString(),
           }));
-        }
-      }
+        },
+      },
     ];
   }
 
@@ -529,7 +529,7 @@ class MoneyFinderAgent {
             { 'very high': 100, high: 80, medium: 60, low: 40 }[
               opp.scalability
             ] || 50,
-          timeToRevenue: this._scoreTimeToRevenue(opp.timeToRevenue)
+          timeToRevenue: this._scoreTimeToRevenue(opp.timeToRevenue),
         };
 
         // Weighted score
@@ -544,7 +544,7 @@ class MoneyFinderAgent {
           ...opp,
           score: Math.round(score),
           scores,
-          priority: score >= 80 ? 'high' : score >= 60 ? 'medium' : 'low'
+          priority: score >= 80 ? 'high' : score >= 60 ? 'medium' : 'low',
         };
       })
       .sort((a, b) => b.score - a.score);
@@ -587,7 +587,7 @@ class MoneyFinderAgent {
     const plan = {
       immediate: [], // Start this week
       shortTerm: [], // Start this month
-      longTerm: [] // Start this quarter
+      longTerm: [], // Start this quarter
     };
 
     topOpportunities.forEach((opp) => {
@@ -598,7 +598,7 @@ class MoneyFinderAgent {
         score: opp.score,
         estimatedRevenue: opp.estimatedRevenue,
         nextSteps: this._generateNextSteps(opp),
-        deadline: this._calculateDeadline(weeks)
+        deadline: this._calculateDeadline(weeks),
       };
 
       if (opp.difficulty === 'easy' || opp.difficulty === 'low') {
@@ -623,50 +623,50 @@ class MoneyFinderAgent {
         '2. Get your unique tracking links',
         '3. Create content featuring the product',
         '4. Promote on your platforms (blog, social, email)',
-        '5. Track conversions and optimize'
+        '5. Track conversions and optimize',
       ],
       api_product: [
         '1. Validate market demand (Reddit, Twitter, forums)',
         '2. Build MVP with core features',
         '3. Create API documentation',
         '4. List on RapidAPI or similar marketplaces',
-        '5. Launch with Product Hunt/Hacker News'
+        '5. Launch with Product Hunt/Hacker News',
       ],
       freelance: [
         `1. Create profile on ${opp.platforms?.join(', ')}`,
         '2. Build portfolio showcasing relevant work',
         '3. Set competitive but profitable rates',
         '4. Apply to 10-20 relevant jobs per week',
-        '5. Deliver exceptional work for 5-star reviews'
+        '5. Deliver exceptional work for 5-star reviews',
       ],
       digital_product: [
         '1. Outline content/product structure',
         '2. Create high-quality product',
         '3. Set up sales page with Gumroad/Stripe',
         '4. Build email list',
-        '5. Launch with special offer'
+        '5. Launch with special offer',
       ],
       content: [
         '1. Set up platform (blog, YouTube, newsletter)',
         '2. Create content calendar (12 weeks)',
         '3. Publish consistently (weekly minimum)',
         '4. Promote content on social media',
-        '5. Apply for monetization once eligible'
+        '5. Apply for monetization once eligible',
       ],
       partnership: [
         '1. Research target companies',
         '2. Create compelling partnership proposal',
         '3. Reach out to decision makers',
         '4. Follow up consistently',
-        '5. Negotiate terms and close deal'
+        '5. Negotiate terms and close deal',
       ],
       automation_tool: [
         '1. Build working prototype',
         '2. Test with early users',
         '3. Create marketplace listing',
         '4. Publish to marketplace',
-        '5. Market to target audience'
-      ]
+        '5. Market to target audience',
+      ],
     };
 
     return (
@@ -676,7 +676,7 @@ class MoneyFinderAgent {
         '2. Create action plan',
         '3. Execute first steps',
         '4. Measure results',
-        '5. Iterate and optimize'
+        '5. Iterate and optimize',
       ]
     );
   }
@@ -702,20 +702,20 @@ class MoneyFinderAgent {
         action: `Start with: ${topOpp.name}`,
         reason: `Highest score (${topOpp.score}/100), $${topOpp.estimatedRevenue}/month potential`,
         urgency: 'high',
-        timeNeeded: '2-4 hours to get started'
+        timeNeeded: '2-4 hours to get started',
       },
       {
         action: 'Set up tracking system',
         reason: 'Monitor which opportunities convert best',
         urgency: 'medium',
-        timeNeeded: '1 hour'
+        timeNeeded: '1 hour',
       },
       {
         action: 'Create outreach templates',
         reason: 'Speed up partnership/freelance outreach',
         urgency: 'medium',
-        timeNeeded: '1-2 hours'
-      }
+        timeNeeded: '1-2 hours',
+      },
     ];
   }
 
@@ -785,7 +785,7 @@ Looking forward to partnering!
 
 Best,
 [Your Name]
-Website: [link]`
+Website: [link]`,
     };
 
     return (
@@ -852,7 +852,7 @@ Best regards,
           {
             high: 0.7,
             medium: 0.5,
-            low: 0.3
+            low: 0.3,
           }[opp.priority] || 0.5;
 
         return sum + opp.estimatedRevenue * successRate;
@@ -864,7 +864,7 @@ Best regards,
         month,
         monthlyRevenue: Math.round(monthlyRevenue),
         cumulativeRevenue: Math.round(cumulativeRevenue),
-        activeOpportunities: activeOpps.length
+        activeOpportunities: activeOpps.length,
       });
     }
 
@@ -889,7 +889,7 @@ Best regards,
         averageScore: Math.round(
           this.opportunities.reduce((sum, o) => sum + o.score, 0) /
             this.opportunities.length
-        )
+        ),
       },
       topOpportunities: topOpps,
       forecast,
@@ -902,7 +902,7 @@ Best regards,
       passiveIncome: this.opportunities.filter(
         (o) => o.category === 'passive' || o.scalability === 'very high'
       ),
-      recommendations: this._generateRecommendations()
+      recommendations: this._generateRecommendations(),
     };
   }
 
@@ -921,7 +921,7 @@ Best regards,
         type: 'quick_win',
         title: 'Start with Quick Wins',
         description: `You have ${quickWins.length} easy opportunities with high scores. Start here for fast momentum.`,
-        opportunities: quickWins.slice(0, 3).map((o) => o.name)
+        opportunities: quickWins.slice(0, 3).map((o) => o.name),
       });
     }
 
@@ -934,7 +934,7 @@ Best regards,
         type: 'passive_income',
         title: 'Build Passive Income Streams',
         description: `Focus on ${passive.length} passive opportunities for long-term, scalable revenue.`,
-        opportunities: passive.slice(0, 3).map((o) => o.name)
+        opportunities: passive.slice(0, 3).map((o) => o.name),
       });
     }
 
@@ -947,7 +947,7 @@ Best regards,
         type: 'high_revenue',
         title: 'High Revenue Opportunities',
         description: `${highRevenue.length} opportunities with $1000+/month potential. Worth the extra effort.`,
-        opportunities: highRevenue.slice(0, 3).map((o) => o.name)
+        opportunities: highRevenue.slice(0, 3).map((o) => o.name),
       });
     }
 
@@ -958,7 +958,7 @@ Best regards,
         type: 'skill_leverage',
         title: 'Leverage Your Strengths',
         description: `${topSkillMatch.length} opportunities match your skills perfectly. Highest success probability.`,
-        opportunities: topSkillMatch.slice(0, 3).map((o) => o.name)
+        opportunities: topSkillMatch.slice(0, 3).map((o) => o.name),
       });
     }
 
@@ -977,7 +977,7 @@ Best regards,
       'Difficulty',
       'Time to Revenue',
       'Scalability',
-      'Priority'
+      'Priority',
     ];
 
     const rows = this.opportunities.map((o) => [
@@ -988,7 +988,7 @@ Best regards,
       o.difficulty,
       o.timeToRevenue || 'N/A',
       o.scalability || 'N/A',
-      o.priority
+      o.priority,
     ]);
 
     return [headers, ...rows]
@@ -1016,12 +1016,12 @@ if (require.main === module) {
       'ai',
       'automation',
       'api',
-      'development'
+      'development',
     ],
     interests: ['technology', 'security', 'ai', 'business'],
     timeAvailable: 15, // hours per week
     minRevenue: 500, // minimum monthly target
-    riskTolerance: 'medium'
+    riskTolerance: 'medium',
   });
 
   // Run the revenue hunt
@@ -1154,7 +1154,7 @@ if (require.main === module) {
     console.log(`• Difficulty: ${topOpp.difficulty}`);
     console.log(`• Time to first dollar: ${topOpp.timeToRevenue}`);
 
-    console.log('\n\nHere\'s your outreach template:\n');
+    console.log("\n\nHere's your outreach template:\n");
     console.log('─'.repeat(80));
     console.log(agent.generateOutreachEmail(topOpp));
     console.log('─'.repeat(80));
