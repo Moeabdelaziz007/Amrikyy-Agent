@@ -11,7 +11,7 @@ const crypto = require('crypto');
 jest.mock('../../utils/logger');
 jest.mock('../../utils/healthMonitor');
 jest.mock('../../database/supabase');
-jest.mock('../../src/ai/zaiClient');
+jest.mock('../../src/ai/keloClient');
 jest.mock('jsonwebtoken');
 jest.mock('crypto');
 

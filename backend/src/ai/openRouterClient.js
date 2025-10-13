@@ -5,11 +5,23 @@
  */
 
 const fetch = require('node-fetch');
+const ContextManager = require('./contextManager');
+const ModelSwitcher = require('./modelSwitcher');
 
 class OpenRouterClient {
   constructor() {
     this.apiKey = process.env.OPENROUTER_API_KEY || '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';
     this.baseUrl = 'https://openrouter.ai/api/v1';
+    
+    // Initialize cost optimization components
+    this.contextManager = new ContextManager();
+    this.modelSwitcher = new ModelSwitcher();
+    this.costOptimization = {
+      enabled: true,
+      maxDailyCost: parseFloat(process.env.MAX_DAILY_COST) || 10.0,
+      currentDailyCost: 0,
+      budgetTier: process.env.AI_BUDGET_TIER || 'free'
+    };
     
     // Available models with pricing and capabilities
     this.models = {
