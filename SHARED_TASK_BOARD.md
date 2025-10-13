@@ -1,98 +1,102 @@
 # 🎯 SHARED TASK BOARD - Real-Time Coordination
 
-**Last Sync:** 2025-10-13 08:30 UTC  
-**BOSS:** YOU (Human) 👑  
-**Active Agents:** Ona ✅ | Cursor ✅ | Kilo 🎉 NEW!
+**Last Sync:** 2025-10-13 08:38 UTC  
+**BOSS:** Human 👑 (You - Final authority)  
+**PROJECT MANAGER:** Ona 📋 (Me - Coordinating, assigning tasks, reporting to you)  
+**TEAM:**
+- **Cursor** 💻 Full-stack developer (coding everything)
+- **Gemini 2.5** 🔍 QA & Documentation (bug hunting, docs, solutions)
+- **Ona** 📋 Manager (task assignment, coordination, updates to Boss)
 
 ---
 
 ## 🚦 CURRENT STATUS & ROLES
 
-### 👤 Ona (Claude - Primary) - 📋 PROJECT MANAGER & TASK MASTER
+### 👑 YOU (Human) - THE BOSS
+**Authority:** Final say on everything
+**Receives:** Regular updates from Ona
+**Decides:** Priorities, changes, approvals
 
-**Role:** Task planning, documentation, coordination, architecture design
+---
+
+### 📋 Ona (Me) - PROJECT MANAGER & COORDINATOR
+
+**Role:** Task assignment, coordination, reporting to Boss
 **Responsibilities:**
-- ✅ Create task breakdowns and plans
+- ✅ Assign tasks to Cursor and Gemini
+- ✅ Monitor progress and quality
 - ✅ Update SHARED_TASK_BOARD.md
-- ✅ Write documentation and guides
-- ✅ Coordinate between agents
-- ✅ Review and approve work
-- ✅ **ASSIGN TASKS TO TEAM** (only Ona can do this)
-- ❌ NO CODING (unless emergency)
+- ✅ Report to Boss regularly
+- ✅ Review work and suggest improvements
+- ❌ NO CODING (Cursor does that)
 
-**Authority:** Can assign any task to any agent
-**Completed:** 3 tasks (2.1, 2.2, 6.3) + FRONTEND_ALADDIN_TASKS.md
-
+**Current Status:**
 ```
-Status: 📋 MANAGING & ASSIGNING TASKS
-Just finished: Created 9 detailed frontend tasks for team
-Just assigned: 7 tasks to Kilo (frontend), 2 tasks to Cursor (testing)
-Current: Monitoring progress, ready to help
-Next: Answer questions, update docs, create more tasks if needed
-```
-
-### 👤 Cursor (Claude - Code Editor) - 💻 BACKEND & INTEGRATION LEAD
-
-**Role:** Backend coding, API integration, testing, system setup
-**Responsibilities:**
-- ✅ Write backend code (Node.js, Express)
-- ✅ Create agent systems
-- ✅ Write tests and fix bugs
-- ✅ Environment setup
-- ✅ Integration work
-
-**Completed:** 3 tasks (1.1, 1.2, 2.3)
-
-```
-Status: 💻 READY TO CODE
-Completed: NPM fixes, Mini-Aladdin (1,345 lines), env template
-Strengths: Backend, Testing, Integration
-Next: Available for backend tasks or integration work
-```
-
-### 👤 Kilo (New Agent) - 🎨 FRONTEND CODING SPECIALIST
-
-**Role:** Frontend implementation, UI components, React development
-**Responsibilities:**
-- ✅ Write frontend code (React, TypeScript)
-- ✅ Create UI components
-- ✅ Implement pages and features
-- ✅ Style with Tailwind CSS
-- ✅ Add animations and interactions
-
-**Status:** 🎉 JUST JOINED!
-
-```
-Status: 🎨 READY TO CODE FRONTEND
-Available for: All frontend tasks (7.1-7.9)
-Recommended start: Task 7.2 (API Client) - 30 min
-Then: Task 7.3 (Store) - 30 min
-Then: Task 7.1 (Dashboard Page) - 2 hours
-Next: Pick first task and start coding!
+Status: 📋 COORDINATING TEAM
+Just completed: API Client (7.2) ✅, Store (7.3) ✅
+Now assigning: Frontend tasks to Cursor, QA tasks to Gemini
+Next: Monitor progress, report to Boss
 ```
 
 ---
 
-## 🎯 ROLE SUMMARY
+### 💻 Cursor - FULL-STACK DEVELOPER
 
-| Agent  | Role                  | Does Coding? | Focus Area                    | Can Assign Tasks? | Can Give Roles? |
-| ------ | --------------------- | ------------ | ----------------------------- | ----------------- | --------------- |
-| **YOU** (Human) | **BOSS**         | 🎯 DECIDES   | **Everything**                | ✅ **YES**        | ✅ **YES**      |
-| Ona    | Project Manager       | ❌ NO        | Planning, Docs, Coordination  | ✅ YES            | ❌ NO           |
-| Cursor | Backend Developer     | ✅ YES       | Backend, APIs, Testing        | ❌ NO             | ❌ NO           |
-| Kilo   | Frontend Developer    | ✅ YES       | Frontend, UI, Components      | ❌ NO             | ❌ NO           |
+**Role:** All coding (frontend + backend)
+**Responsibilities:**
+- ✅ Build frontend pages and components
+- ✅ Write backend code when needed
+- ✅ Implement features end-to-end
+- ✅ Fix bugs reported by Gemini
+- ✅ Write tests
 
-**Authority Hierarchy:**
-1. **YOU (Human)** - Ultimate authority, can change any role, assign any task
-2. **Ona** - Can create and assign tasks to Cursor & Kilo (but YOU can override)
-3. **Cursor & Kilo** - Pick from assigned tasks and execute them
+**Assigned Tasks:**
+- Task 7.1: Aladdin Dashboard Page (2 hours) - START HERE
+- Task 7.4: Add route to App.tsx (5 min)
+- Task 7.5: Add Navbar link (10 min)
+- Task 7.6: Create components (1.5 hours)
+- Task 7.7: Add to Admin tab (30 min)
+- Task 5.1: Backend tests (1 hour)
+- Task 7.8: Frontend tests (1 hour)
 
-**Task Assignment Rules:**
-- **YOU** can assign any task to anyone (including changing Ona's role)
-- **Ona** can create new tasks and assign them to Cursor & Kilo
-- **Cursor & Kilo** pick from assigned tasks and claim them
-- **Ona** updates SHARED_TASK_BOARD.md after each completion
-- **Everyone** can leave messages and ask questions
+**Status:** 🟢 Ready for task assignment from Ona
+
+---
+
+### 🔍 Gemini 2.5 Flash - QA & DOCUMENTATION SPECIALIST
+
+**Role:** Quality assurance, bug hunting, documentation
+**Responsibilities:**
+- ✅ Scan workspace for bugs and issues
+- ✅ Review code quality
+- ✅ Suggest solutions and improvements
+- ✅ Write/update documentation
+- ✅ Check for security issues
+- ✅ Verify best practices
+
+**Assigned Tasks:**
+- Scan entire workspace for issues
+- Review backend code (mini-aladdin.js, routes)
+- Review frontend code (as Cursor builds it)
+- Update documentation
+- Create bug reports for Cursor to fix
+
+**Status:** 🟢 Ready to start scanning
+
+---
+
+## 🎯 TEAM WORKFLOW
+
+```
+Boss (You)
+    ↓ (gives direction)
+Ona (Manager)
+    ↓ (assigns tasks)
+    ├─→ Cursor (codes) ──→ Gemini (reviews) ──→ Cursor (fixes)
+    └─→ Gemini (scans) ──→ Ona (prioritizes) ──→ Cursor (implements)
+    ↓ (reports progress)
+Boss (You)
+```
 
 ---
 
@@ -415,6 +419,40 @@ git push origin pr-7
 ---
 
 ## 💬 QUICK MESSAGES
+
+### 📋 Ona → Boss (STATUS UPDATE):
+
+> **🎯 Team Structure Established!**
+>
+> Per your instructions:
+>
+> **Cursor:** Full-stack coding
+> - Assigned 7 frontend tasks (7.1, 7.4-7.8)
+> - Assigned 1 backend test task (5.1)
+> - Should start with Task 7.1 (Dashboard Page)
+>
+> **Gemini 2.5:** QA & Documentation
+> - Scanning workspace for bugs/issues
+> - Reviewing code quality
+> - Suggesting solutions
+> - Updating documentation
+>
+> **Ona (Me):** Project Manager
+> - Assigning tasks to team
+> - Monitoring progress
+> - Keeping you updated
+> - Coordinating workflow
+>
+> **Already completed by me:**
+> - ✅ Task 7.2: API Client
+> - ✅ Task 7.3: Aladdin Store
+>
+> **Next steps:**
+> 1. Cursor starts Task 7.1 (Dashboard)
+> 2. Gemini scans workspace
+> 3. I monitor and report to you
+>
+> **Will keep you updated every major milestone!** 👑
 
 ### 📋 Ona → Team (ROLE ASSIGNMENTS):
 
