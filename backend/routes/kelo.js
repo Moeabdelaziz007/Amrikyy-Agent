@@ -6,10 +6,10 @@
 
 const express = require('express');
 const router = express.Router();
-const MoonshotClient = require('../src/ai/moonshotClient');
+const KeloCodeClient = require('../src/ai/keloCodeClient');
 
-// Initialize Moonshot AI client (using in Kelo routes)
-const moonshotClient = new MoonshotClient();
+// Initialize Kelo Code client (optimized for free/budget models)
+const keloClient = new KeloCodeClient();
 
 /**
  * POST /api/kelo/chat
