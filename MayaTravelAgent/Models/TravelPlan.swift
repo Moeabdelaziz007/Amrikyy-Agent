@@ -56,7 +56,7 @@ struct TravelPlan: Codable, Identifiable, Hashable {
             }
         }
     }
-    
+
     enum CodingKeys: String, CodingKey {
         case id
         case destination
@@ -75,7 +75,7 @@ struct TravelPlan: Codable, Identifiable, Hashable {
         case createdAt = "created_at"
         case updatedAt = "updated_at"
     }
-    
+
     init(
         id: String = UUID().uuidString,
         destination: String,
@@ -124,14 +124,14 @@ struct Activity: Codable, Identifiable, Hashable {
     var cost: Double?
     var category: ActivityCategory
     var isBooked: Bool
-    
-    enum ActivityCategory: String, Codable, CaseIterable {
+
+enum ActivityCategory: String, Codable, CaseIterable {
         case accommodation = "accommodation"
         case transportation = "transportation"
         case dining = "dining"
-        case sightseeing = "sightseeing"
+    case sightseeing = "sightseeing"
         case entertainment = "entertainment"
-        case shopping = "shopping"
+    case shopping = "shopping"
         case other = "other"
         
         var icon: String {

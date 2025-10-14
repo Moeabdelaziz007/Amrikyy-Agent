@@ -3,7 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject var authService: AuthService
     @EnvironmentObject var navigationCoordinator: NavigationCoordinator
-    
+
     var body: some View {
         Group {
             if authService.isAuthenticated {
@@ -107,12 +107,12 @@ struct LoginView: View {
                     .foregroundColor(.blue)
                     .padding(.bottom, 30)
                 
-                Text("Maya Travel Agent")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                
+            Text("Maya Travel Agent")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+
                 Text("Your AI-powered travel companion")
-                    .font(.subheadline)
+                .font(.subheadline)
                     .foregroundColor(.secondary)
                     .padding(.bottom, 40)
                 
@@ -184,7 +184,7 @@ struct LoginView: View {
 }
 
 #Preview {
-    ContentView()
+        ContentView()
         .environmentObject(AuthService.shared)
-        .environmentObject(NavigationCoordinator())
-}
+            .environmentObject(NavigationCoordinator())
+    }

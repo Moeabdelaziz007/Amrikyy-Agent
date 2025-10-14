@@ -81,7 +81,7 @@ struct Payment: Codable {
     let description: String?
     let state: String?
     let createTime: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case id
         case amount
