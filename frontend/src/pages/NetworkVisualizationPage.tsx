@@ -99,7 +99,7 @@ const NetworkVisualizationPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen gradient-bg p-6">
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between">

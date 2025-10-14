@@ -96,9 +96,9 @@ const ChatPage: React.FC = () => {
   };
 
   return (
-    <div className="flex h-[calc(100vh-88px)] bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
-      {/* Chat Section */}
-      <div className="flex-1 flex flex-col min-w-0">
+    <div className="flex h-[calc(100vh-88px)] gradient-bg">
+      {/* Chat Section - 60% width on desktop */}
+      <div className="flex-1 lg:w-[60%] flex flex-col min-w-0">
         {/* Chat Header */}
         <div className="glass-effect p-4 border-b border-white/10">
           <div className="flex items-center justify-between">
@@ -133,14 +133,14 @@ const ChatPage: React.FC = () => {
         <ChatInput onSend={handleSendMessage} disabled={isTyping} />
       </div>
 
-      {/* Workflow Sidebar */}
+      {/* Workflow Sidebar - 40% width on desktop */}
       <motion.div
         initial={{ x: 400, opacity: 0 }}
         animate={{ 
           x: showWorkflow ? 0 : 400, 
           opacity: showWorkflow ? 1 : 0 
         }}
-        className={`w-96 border-l border-white/10 overflow-y-auto ${
+        className={`lg:w-[40%] w-96 border-l border-white/10 overflow-y-auto ${
           showWorkflow ? 'block' : 'hidden lg:block'
         }`}
       >
