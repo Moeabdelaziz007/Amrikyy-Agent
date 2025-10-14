@@ -9,7 +9,14 @@ const WhatsAppClient = require('../src/whatsapp/whatsappClient');
 const ZaiClient = require('../src/ai/zaiClient');
 
 const whatsappClient = new WhatsAppClient();
-const zaiClient = new ZaiClient();
+// Initialize Z.ai client only if API key is available
+let zaiClient = null;
+try {
+  zaiClient = new ZaiClient();
+} catch (error) {
+  console.warn('⚠️ Z.ai client not initialized:', error.message);
+  console.warn('WhatsApp AI features will be disabled');
+}
 
 // Store conversation history (in production, use database)
 const conversations = new Map();
@@ -135,24 +142,30 @@ async function handleIncomingMessage(message, metadata) {
       { role: 'user', content: messageText }
     ];
 
-    // Get AI response
-    const aiResponse = await zaiClient.chatCompletion(aiMessages, {
-      maxTokens: 500,
-      temperature: 0.7
-    });
+    // Get AI response (only if Z.ai client is available)
+    if (zaiClient) {
+      const aiResponse = await zaiClient.chatCompletion(aiMessages, {
+        maxTokens: 500,
+        temperature: 0.7
+      });
 
-    if (aiResponse.success) {
-      // Save to history
-      history.push(
-        { role: 'user', content: messageText },
-        { role: 'assistant', content: aiResponse.content }
-      );
-      conversations.set(from, history.slice(-20));
+      if (aiResponse.success) {
+        // Save to history
+        history.push(
+          { role: 'user', content: messageText },
+          { role: 'assistant', content: aiResponse.content }
+        );
+        conversations.set(from, history.slice(-20));
 
-      // Send response
-      await whatsappClient.sendMessage(from, aiResponse.content);
+        // Send response
+        await whatsappClient.sendMessage(from, aiResponse.content);
+      } else {
+        await whatsappClient.sendMessage(from, 'عذراً، حدث خطأ في معالجة رسالتك. يرجى المحاولة مرة أخرى.');
+      }
     } else {
-      await whatsappClient.sendMessage(from, 'عذراً، حدث خطأ في معالجة رسالتك. يرجى المحاولة مرة أخرى.');
+      // Fallback response when AI is not available
+      const fallbackResponse = 'مرحباً! أنا مايا، مساعدة السفر الذكية. حالياً أعمل في وضع محدود. يرجى المحاولة لاحقاً.';
+      await whatsappClient.sendMessage(from, fallbackResponse);
     }
 
   } catch (error) {

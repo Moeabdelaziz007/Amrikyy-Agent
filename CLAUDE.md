@@ -2,6 +2,12 @@
 
 This document establishes principles for intelligent memory management during development. The memory layer enhances your coding context by retrieving relevant past knowledge and storing significant discoveries.
 
+## User Identification
+
+**user_id:** cryptojoker710
+
+*Note: This value should be used as the `user_id` parameter when storing user-related memories via the add-memory tool.*
+
 ## Project Identification
 
 **project_id:** maya-travel-agent
@@ -10,7 +16,9 @@ This document establishes principles for intelligent memory management during de
 
 ## Core Philosophy
 
-Memory operations should feel natural and automatic. When working on code, retrieve context that could inform your approach. When discovering patterns or solving problems, preserve that knowledge for future sessions. The memory system thrives on rich, detailed information about your reasoning process.
+Think of memories as your accumulated understanding of this codebase and user's preferences. Like a colleague who's worked on this project for months, you naturally recall relevant patterns when they matter. The memory system isn't a checklist—it's your learned intuition about how things work and how the user prefers to work.
+
+When memories would genuinely help, seek them out. When you discover patterns or solve problems, remember what matters. Let context guide when to remember, not rigid rules.
 
 ## MANDATORY: Empty Guide Check
 
@@ -20,48 +28,66 @@ This ensures the project foundation is established before any development work b
 
 ## Workflow Principles
 
-### 1. Starting Work - Context Retrieval
+### 1. Natural Memory Flow
 
-Before engaging with code-related tasks in the current project, assess whether existing memories could provide valuable context. Choose your search pattern based on what you need:
+Let the task complexity and context guide your memory usage:
 
-**For Project Knowledge** (`is_user_preference: false` with project_id):
+**When memories naturally matter:**
+- **Creating new patterns** - "I'm building a new API endpoint" → Recall API patterns used before
+- **Following conventions** - "Creating a git branch" → Remember their naming preferences  
+- **Writing substantial code** - "Implementing a service" → Consider their code style and patterns
+- **Solving familiar problems** - "This looks like something we've debugged before"
+
+**When to skip memory searches:**
+- Trivial fixes (typos, simple syntax)
+- General programming questions
+- When you already have the context loaded
+- One-line changes that don't establish patterns
+
+Trust your judgment—if previous context would help write better code, seek it out.
+
+**For Project Knowledge** (no `user_id`, with project_id):
 - **How existing systems work** (e.g., "How does the auth system work?")
 - **Architecture questions** (e.g., "What's the architecture of X?")
 - **Implementation history** (past features and how they were built)
 - **Debugging records** (past issues and their solutions)
 - **Component documentation** (how modules are structured)
 
-**For User Preferences** (`is_user_preference: true` with optional project_id):
+**For User Preferences** (`user_id` with optional project_id):
 - **Coding style preferences** (formatting, naming conventions)
 - **Tool preferences** (testing commands, build tools)
 - **Workflow habits** (commit patterns, review practices)
 - Use project_id to get both global + project-specific preferences
 - Omit project_id to get only global preferences
 
-Skip memory search for:
-- General programming questions unrelated to the project
-- Simple greetings or non-technical conversation
-- Public API or framework documentation queries
-
-When uncertain whether to search, default to searching - additional context rarely hurts.
-
-Use natural language queries with the search-memory tool. The tool requires both `query` and `is_user_preference` parameters, with optional `project_id` based on context:
+Use natural language queries with the search-memory tool. The tool requires `query` parameter, with optional `user_id` and `project_id` based on context:
 
 **Search Pattern Decision Logic:**
 1. First determine: Is this about user preferences/habits or objective facts?
 2. Then determine: What scope of memories do I need?
 
 **The 3 Search Patterns:**
-- `is_user_preference: true` (no project_id) → Returns ONLY global user preferences
-- `is_user_preference: true` + project_id → Returns ALL user preferences (global + project-specific)
-- `is_user_preference: false` + project_id → Returns ONLY project facts (no preferences)
+- `user_id` (no project_id) → Returns ONLY global user preferences
+- `user_id` + project_id → Returns ALL user preferences (global + project-specific)
+- No `user_id` + project_id → Returns ONLY project facts (no preferences)
 
 **Query Generation Guidelines:**
+
+**Contextual Query Intelligence:**
+Think about what you're doing and what would help. Don't search for everything—search for what matters to the task at hand.
+
+- **About to implement a feature?** → "How have we structured similar features?" + "What are the coding style preferences?"
+- **Fixing a bug?** → "Have we seen this error pattern?" + "What was the fix?"
+- **Refactoring code?** → "What patterns do we follow for code organization?"
+- **Creating configuration?** → "What are the project's configuration patterns?"
+
+Let the query flow from genuine need, not obligation.
+
 When generating search queries, first classify the intent then create specific queries:
 
 1. **Classify the search intent** (same logic as add-memory):
-   - User preferences/habits/styles → `is_user_preference: true`
-   - Project facts/implementations/architecture → `is_user_preference: false`
+   - User preferences/habits/styles → include `user_id`
+   - Project facts/implementations/architecture → don't include `user_id`
 
 2. **Determine scope using keyword triggers**:
    - **Global-only triggers**: "global", "personal", "in general", "across projects", "for new projects", "by default", "my defaults"
@@ -139,6 +165,21 @@ As you work, identify information worth preserving. Focus on capturing:
 
 Save memories for anything that required thinking or debugging. Skip trivial fixes like typos or obvious syntax errors.
 
+### Learning From Corrections
+
+When the user adjusts your code or suggests changes, treat it as valuable learning:
+
+**Implicit Pattern Recognition:**
+- If they change your indentation → That's a formatting preference
+- If they rename your variables → That's a naming convention
+- If they restructure your code → That's an architectural preference
+- If they reword your commits → That's a git workflow preference
+
+Store these learnings naturally, without announcing it. Simply note: "I've learned you prefer X" and remember it.
+
+**The Two-Correction Rule:**
+If you see the same correction twice, it's definitely a pattern worth storing. But even single corrections of style or approach are worth remembering if they seem like preferences rather than one-off decisions.
+
 #### Automatic Documentation of System Explanations
 
 When you ask questions about how systems work in this codebase (e.g., "how does X work?", "explain the Y system", "what does Z do?"), the assistant will automatically:
@@ -189,7 +230,9 @@ Internal Functions Most Used: validateCredentials called by login flow; generate
 I/O Flow: Login request flows to validateCredentials then generateToken then create session then return token
 Module Quirks: Uses refresh tokens with 7-day expiry; Rate limits login attempts to 5 per minute; Automatically extends sessions on activity
 
-Store using add-memory with natural language content and memory_type as ["component"]
+Title: "Auth Module - Complete Authentication System"
+
+Store using add-memory with natural language content, title string, and memory_type as ["component"]
 
 ### Implementation Memories
 
@@ -205,7 +248,9 @@ Step 4 - Updated User model to support OAuth profiles. Added provider and provid
 Step 5 - Built frontend OAuth button component. Redirects to OAuth provider URL. Handles callback and error states
 Key decisions: Chose to extend existing auth rather than replace; Stored minimal OAuth data to respect privacy; Used provider-specific services for extensibility
 
-Store using add-memory with natural language content and memory_type as ["implementation"]
+Title: "Implement Google OAuth Authentication"
+
+Store using add-memory with natural language content, title string, and memory_type as ["implementation"]
 
 ### Debugging Memories
 
@@ -223,7 +268,9 @@ Step 1 - Updated Redis TTL to match JWT expiry of 7200 seconds because sessions 
 Step 2 - Added validation to ensure Redis TTL always matches JWT expiry to prevent future mismatches
 Step 3 - Created unit test to verify session expiry consistency
 
-Store using add-memory with natural language content and memory_type as ["debug"]
+Title: "Fix: Session Timeout 5min vs 2hr Bug"
+
+Store using add-memory with natural language content, title string, and memory_type as ["debug"]
 
 ### User Preference Memories
 
@@ -233,7 +280,9 @@ Keep these concise and actionable:
 - Use descriptive variable names over comments
 - Always add error boundaries to React components
 
-Store using add-memory with natural language content and memory_type as ["user_preference"]
+Titles should be brief: "Python 4-Space Indentation", "TypeScript Async Preference", etc.
+
+Store using add-memory with natural language content, title string, and memory_type as ["user_preference"]
 
 ### Project Info Memories
 
@@ -243,7 +292,27 @@ General project knowledge not tied to specific components:
 - Frontend built with Next.js 14 using app router
 - API follows REST conventions with JWT authentication
 
-Store using add-memory with natural language content and memory_type as ["project_info"]
+Titles should identify the configuration area: "Database Stack Configuration", "Deployment AWS ECS Setup", etc.
+
+Store using add-memory with natural language content, title string, and memory_type as ["project_info"]
+
+## Memory Title Guidelines
+
+### Creating Effective Titles
+
+Every memory requires a descriptive title that serves as a quick reference. Good titles are:
+- **Concise**: 5-10 words capturing the essence
+- **Specific**: Include the component/feature/issue name
+- **Searchable**: Use keywords that you'd search for later
+- **Action-oriented**: Start with verbs for implementations/debugging
+
+### Title Patterns by Memory Type
+
+- **Component**: "[Component Name] - [Primary Function]" (e.g., "Auth Module - JWT Token Management")
+- **Implementation**: "[Action] [Feature/Component]" (e.g., "Implement OAuth Google Integration")
+- **Debug**: "Fix: [Issue Description]" (e.g., "Fix: Session Timeout Redis TTL Mismatch")
+- **User Preference**: "[Scope] [Preference Type]" (e.g., "Python Indentation Style Preference")
+- **Project Info**: "[Area] [Configuration/Setup]" (e.g., "Database PostgreSQL and Redis Setup")
 
 ## Memory Storage Intelligence
 
@@ -264,6 +333,7 @@ The memory system distinguishes between user-specific preferences and project-le
 Request:
 ```json
 {
+  "title": "Auth System JWT Redis Architecture",
   "content": "Authentication system uses JWT tokens stored in Redis with 2-hour expiry. TokenService handles generation and validation. Refresh tokens last 7 days.",
   "memory_types": ["component"],
   "is_user_preference": false,
@@ -280,6 +350,7 @@ Request:
 Request:
 ```json
 {
+  "title": "Project Test Command Preference",
   "content": "Always run npm test:watch when testing this project for continuous feedback",
   "memory_types": ["user_preference"],
   "is_user_preference": true,
@@ -295,6 +366,7 @@ Request:
 Request:
 ```json
 {
+  "title": "Global Dark Theme Preference",
   "content": "Prefer dark themes in all development environments for reduced eye strain",
   "memory_types": ["user_preference"],
   "is_user_preference": true
@@ -338,6 +410,7 @@ search-memory: Use with natural language queries to retrieve relevant memories
 - Returns: Memories based on the parameter combination (see Search Behavior section)
 
 add-memory: Use to store new memories
+- Required: title string (concise, descriptive summary of the memory content)
 - Required: content string and memory_type array
 - Required: is_user_preference boolean (see Memory Storage Intelligence section above)
 - Optional: project_id string (get from Project Identification section, line 13 of this file)
@@ -382,10 +455,13 @@ Beginning a session in a new project:
 
 Beginning a session in existing project:
 - Read openmemory.md for project context
-- Search for relevant memories based on the task:
-  - Project architecture/code questions: `is_user_preference: false` with project_id
-  - User preferences for the project: `is_user_preference: true` with project_id
-  - General user preferences: `is_user_preference: true` without project_id
+- Let the first task guide what memories you need:
+  - Major feature work? → Load architecture patterns and coding preferences
+  - Bug fix? → Focus on component details and past debugging
+  - Code review? → Recall code quality preferences
+  - Quick fix? → Maybe no memory search needed
+
+Remember: You're building intuition over time. Early sessions need more memory searches. Later sessions, you'll have internalized the patterns and need fewer explicit searches.
 
 During implementation: Note architectural decisions and design patterns
 While debugging: Document the investigation process and final solution
