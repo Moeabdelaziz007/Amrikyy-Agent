@@ -12,7 +12,8 @@ import {
   Search,
   Home,
   Users,
-  BarChart3
+  BarChart3,
+  Network
 } from 'lucide-react';
 import { AuthProvider, useAuth } from './components/Auth/AuthProvider';
 import LoginForm from './components/Auth/LoginForm';
@@ -22,6 +23,10 @@ import Destinations from './components/Destinations';
 import BudgetTracker from './components/BudgetTracker';
 import TripHistory from './components/TripHistory';
 import AIAssistant from './components/AIAssistant';
+import ChatPage from './pages/ChatPage';
+import DashboardPage from './pages/DashboardPage';
+import TripDetailsPage from './pages/TripDetailsPage';
+import NetworkVisualizationPage from './pages/NetworkVisualizationPage';
 import ErrorBoundary from './components/ErrorBoundary';
 import AuthCallback from './pages/AuthCallback';
 import AmrikyyMainPage from './pages/AmrikyyMainPage';
@@ -42,7 +47,7 @@ interface Trip {
 
 const AppContent: React.FC = () => {
   const { user, loading } = useAuth();
-  const [currentPage, setCurrentPage] = useState<'landing' | 'dashboard' | 'agents' | 'hologram' | 'analytics'>('landing');
+  const [currentPage, setCurrentPage] = useState<'landing' | 'dashboard' | 'agents' | 'hologram' | 'analytics' | 'chat' | 'network' | 'trip-details'>('landing');
   const [activeTab, setActiveTab] = useState('planner');
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
 
@@ -162,61 +167,72 @@ const AppContent: React.FC = () => {
           </motion.div>
           
           {/* Top Navigation */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-2">
             <button
               onClick={() => setCurrentPage('landing')}
-              className={`px-4 py-2 rounded-lg transition-all ${
+              className={`px-3 py-2 rounded-lg transition-all text-sm ${
                 currentPage === 'landing' 
                   ? 'bg-blue-500 text-white' 
                   : 'text-gray-300 hover:bg-white/10'
               }`}
             >
-              <Home className="w-5 h-5 inline mr-2" />
+              <Home className="w-4 h-4 inline mr-1" />
               Home
             </button>
             <button
-              onClick={() => setCurrentPage('agents')}
-              className={`px-4 py-2 rounded-lg transition-all ${
-                currentPage === 'agents' 
+              onClick={() => setCurrentPage('chat')}
+              className={`px-3 py-2 rounded-lg transition-all text-sm ${
+                currentPage === 'chat' 
                   ? 'bg-blue-500 text-white' 
                   : 'text-gray-300 hover:bg-white/10'
               }`}
             >
-              <Users className="w-5 h-5 inline mr-2" />
-              Agents
-            </button>
-            <button
-              onClick={() => setCurrentPage('hologram')}
-              className={`px-4 py-2 rounded-lg transition-all ${
-                currentPage === 'hologram' 
-                  ? 'bg-blue-500 text-white' 
-                  : 'text-gray-300 hover:bg-white/10'
-              }`}
-            >
-              <Bot className="w-5 h-5 inline mr-2" />
-              Hologram
-            </button>
-            <button
-              onClick={() => setCurrentPage('analytics')}
-              className={`px-4 py-2 rounded-lg transition-all ${
-                currentPage === 'analytics' 
-                  ? 'bg-blue-500 text-white' 
-                  : 'text-gray-300 hover:bg-white/10'
-              }`}
-            >
-              <BarChart3 className="w-5 h-5 inline mr-2" />
-              Analytics
+              <Bot className="w-4 h-4 inline mr-1" />
+              Chat
             </button>
             <button
               onClick={() => setCurrentPage('dashboard')}
-              className={`px-4 py-2 rounded-lg transition-all ${
+              className={`px-3 py-2 rounded-lg transition-all text-sm ${
                 currentPage === 'dashboard' 
                   ? 'bg-blue-500 text-white' 
                   : 'text-gray-300 hover:bg-white/10'
               }`}
             >
-              <Compass className="w-5 h-5 inline mr-2" />
+              <Compass className="w-4 h-4 inline mr-1" />
               Dashboard
+            </button>
+            <button
+              onClick={() => setCurrentPage('network')}
+              className={`px-3 py-2 rounded-lg transition-all text-sm ${
+                currentPage === 'network' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'text-gray-300 hover:bg-white/10'
+              }`}
+            >
+              <Network className="w-4 h-4 inline mr-1" />
+              Network
+            </button>
+            <button
+              onClick={() => setCurrentPage('agents')}
+              className={`px-3 py-2 rounded-lg transition-all text-sm ${
+                currentPage === 'agents' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'text-gray-300 hover:bg-white/10'
+              }`}
+            >
+              <Users className="w-4 h-4 inline mr-1" />
+              Agents
+            </button>
+            <button
+              onClick={() => setCurrentPage('analytics')}
+              className={`px-3 py-2 rounded-lg transition-all text-sm ${
+                currentPage === 'analytics' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'text-gray-300 hover:bg-white/10'
+              }`}
+            >
+              <BarChart3 className="w-4 h-4 inline mr-1" />
+              Analytics
             </button>
           </div>
 
@@ -249,11 +265,15 @@ const AppContent: React.FC = () => {
       {/* Main Content Area */}
       <div>
         {currentPage === 'landing' && <AmrikyyMainPage />}
+        {currentPage === 'chat' && <ChatPage />}
+        {currentPage === 'dashboard' && <DashboardPage />}
+        {currentPage === 'network' && <NetworkVisualizationPage />}
+        {currentPage === 'trip-details' && <TripDetailsPage />}
         {currentPage === 'agents' && <AgentGallery />}
         {currentPage === 'hologram' && <HologramDemo />}
         {currentPage === 'analytics' && <Analytics />}
         
-        {currentPage === 'dashboard' && (
+        {currentPage === 'planner' && (
           <>
             {/* Dashboard Navigation Tabs */}
             <motion.nav 
