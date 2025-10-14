@@ -179,25 +179,37 @@ const HologramWorkflow: React.FC<HologramWorkflowProps> = ({
   return (
     <div className="relative w-full">
       {/* Hologram Container */}
-      <div className="relative p-8 rounded-2xl overflow-hidden"
+      <div className="relative p-8 rounded-2xl overflow-hidden glass-effect-enhanced"
         style={{
-          background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1))',
-          backdropFilter: 'blur(16px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
         }}
       >
-        {/* Animated Background Grid */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute inset-0" 
-            style={{
-              backgroundImage: `
-                linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px)
-              `,
-              backgroundSize: '30px 30px',
-              animation: 'grid-flow 20s linear infinite',
-            }}
-          />
+        {/* Holographic Grid Background */}
+        <div className="hologram-grid" />
+        
+        {/* Floating Particles */}
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-1 h-1 bg-blue-400 rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+              }}
+              animate={{
+                y: [0, -20, 0],
+                opacity: [0.2, 0.8, 0.2],
+                scale: [1, 1.5, 1],
+              }}
+              transition={{
+                duration: 2 + Math.random() * 2,
+                repeat: Infinity,
+                delay: Math.random() * 2,
+                ease: 'easeInOut',
+              }}
+            />
+          ))}
         </div>
 
         {/* Header */}
