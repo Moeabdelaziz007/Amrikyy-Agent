@@ -120,13 +120,9 @@ app.get('/api/health', (req, res) => {
 const aladdinRoutes = require('./src/routes/aladdin');
 app.use('/api/aladdin', aladdinRoutes);
 
-// Trip routes
-app.get('/api/trips', (req, res) => {
-    res.json({
-        trips: [],
-        message: 'Trips endpoint ready'
-    });
-});
+// Bookings routes
+const bookingRoutes = require('./routes/bookings');
+app.use('/api/bookings', bookingRoutes);
 
 // AI Assistant routes
 app.post('/api/ai/chat', (req, res) => {

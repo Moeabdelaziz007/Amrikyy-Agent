@@ -362,7 +362,7 @@ const TripDetailsPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen p-6 space-y-6">
+    <div className="min-h-screen gradient-bg p-6 space-y-6">
       {/* Header */}
       <div className="glass-effect rounded-2xl overflow-hidden">
         {/* Hero Image */}

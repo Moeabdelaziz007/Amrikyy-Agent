@@ -69,12 +69,12 @@ const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen p-6 space-y-8">
+    <div className="min-h-screen gradient-bg p-6 lg:p-8 space-y-12">
       {/* Welcome Banner */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass-effect p-8 rounded-2xl"
+        className="glass-effect-enhanced p-8 rounded-2xl"
       >
         <div className="flex items-center justify-between">
           <div>
@@ -99,29 +99,63 @@ const DashboardPage: React.FC = () => {
       </motion.div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <StatCard
-          title="Total Trips"
-          value={stats.totalTrips}
-          icon={Plane}
-          trend={{ value: 12, isPositive: true }}
-          color="#3B82F6"
-        />
-        <StatCard
-          title="Money Saved"
-          value={`$${stats.moneySaved.toLocaleString()}`}
-          icon={DollarSign}
-          trend={{ value: 8, isPositive: true }}
-          color="#10B981"
-        />
-        <StatCard
-          title="Destinations"
-          value={stats.destinationsVisited}
-          icon={MapPin}
-          trend={{ value: 5, isPositive: true }}
-          color="#8B5CF6"
-        />
-      </div>
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.1
+            }
+          }
+        }}
+        className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
+      >
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0 }
+          }}
+        >
+          <StatCard
+            title="Total Trips"
+            value={stats.totalTrips}
+            icon={Plane}
+            trend={{ value: 12, isPositive: true }}
+            color="#3B82F6"
+          />
+        </motion.div>
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0 }
+          }}
+        >
+          <StatCard
+            title="Money Saved"
+            value={`$${stats.moneySaved.toLocaleString()}`}
+            icon={DollarSign}
+            trend={{ value: 8, isPositive: true }}
+            color="#10B981"
+          />
+        </motion.div>
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0 }
+          }}
+        >
+          <StatCard
+            title="Destinations"
+            value={stats.destinationsVisited}
+            icon={MapPin}
+            trend={{ value: 5, isPositive: true }}
+            color="#8B5CF6"
+          />
+        </motion.div>
+      </motion.div>
 
       {/* Recent Trips */}
       <div>
@@ -135,18 +169,32 @@ const DashboardPage: React.FC = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {trips.map((trip, index) => (
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.15
+              }
+            }
+          }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {trips.map((trip) => (
             <motion.div
               key={trip.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0 }
+              }}
             >
               <TripCard {...trip} onClick={() => handleTripClick(trip.id)} />
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
 
       {/* Recommended Destinations */}
