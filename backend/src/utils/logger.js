@@ -28,6 +28,10 @@ class Logger {
   warn(message, meta = {}) {
     console.warn(`[WARN] [${this.module}] ${message}`, meta);
   }
+
+  success(message, meta = {}) {
+    console.log(`[SUCCESS] [${this.module}] ✅ ${message}`, meta);
+  }
 }
 
 module.exports = {
