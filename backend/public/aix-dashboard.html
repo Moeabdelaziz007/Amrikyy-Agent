@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIX v3.0 Agent Dashboard - Maya Travel Agent</title>
+    <title>AIX Agent Simulation Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -363,8 +363,8 @@
 </head>
 <body>
     <div class="header">
-        <h1>🎯 AIX v3.0 Agent Dashboard - Maya Travel Agent</h1>
-        <p>Real-time Multi-Agent Coordination & Communication (Athena + Delphi + Cipher)</p>
+        <h1>🎯 AIX Agent Simulation Dashboard</h1>
+        <p>Real-time Multi-Agent Coordination & Communication</p>
     </div>
 
     <div class="stats-panel">
@@ -381,8 +381,8 @@
             <div class="stat-label">Avg Ping Time</div>
         </div>
         <div class="stat-card">
-            <div class="stat-value" id="avgDNA">93</div>
-            <div class="stat-label">Avg Quality Score</div>
+            <div class="stat-value" id="avgDNA">88</div>
+            <div class="stat-label">Avg DNA Score</div>
         </div>
     </div>
 
@@ -401,47 +401,47 @@
     </div>
 
     <div class="network-topology">
-        <h3 style="margin-bottom: 15px;">🌐 Agent Network Topology (Hierarchical + Mesh Hybrid)</h3>
+        <h3 style="margin-bottom: 15px;">🌐 Agent Network Topology</h3>
         <div class="topology-canvas" id="topologyCanvas">
             <!-- Network visualization will be drawn here -->
         </div>
     </div>
 
     <script>
-        // AIX v3.0 Maya Travel Agent Team
+        // Agent simulation data
         const agents = [
             {
-                id: 'athena-lead-001',
-                name: 'Athena 🎯',
-                species: 'lead-orchestrator',
+                id: 'gemini-qa',
+                name: 'Gemini QA',
+                species: 'qa-specialist',
                 status: 'online',
                 load: 45,
-                dna: 95,
-                level: 'Master',
-                capabilities: ['strategic_planning', 'team_coordination', 'quality_assurance', 'synthesis'],
-                position: { x: 50, y: 20 }  // Top center (lead)
+                dna: 87,
+                level: 'Expert',
+                capabilities: ['security_scan', 'code_review', 'test_generation'],
+                position: { x: 20, y: 30 }
             },
             {
-                id: 'delphi-researcher-001',
-                name: 'Delphi 🔍',
-                species: 'research-specialist',
+                id: 'cursor-dev',
+                name: 'Cursor Dev',
+                species: 'developer',
                 status: 'busy',
                 load: 78,
-                dna: 98,
-                level: 'Expert',
-                capabilities: ['web_research', 'source_validation', 'data_analysis', 'synthesis'],
-                position: { x: 25, y: 70 }  // Bottom left
+                dna: 92,
+                level: 'Master',
+                capabilities: ['code_generation', 'bug_fixing', 'refactoring'],
+                position: { x: 50, y: 50 }
             },
             {
-                id: 'cipher-technical-001',
-                name: 'Cipher ⚙️',
-                species: 'technical-specialist',
+                id: 'ona-orchestrator',
+                name: 'Ona',
+                species: 'coordinator',
                 status: 'online',
-                load: 52,
+                load: 30,
                 dna: 95,
-                level: 'Expert',
-                capabilities: ['technical_writing', 'system_design', 'code_generation', 'api_design'],
-                position: { x: 75, y: 70 }  // Bottom right
+                level: 'Master',
+                capabilities: ['task_management', 'workflow_optimization'],
+                position: { x: 80, y: 30 }
             }
         ];
 
@@ -452,7 +452,6 @@
             renderAgentCards();
             renderNetworkTopology();
             startSimulation();
-            addMessage('System', 'All Agents', 'AIX v3.0 Team initialized successfully! ✅', 'complete');
         }
 
         // Render agent cards
@@ -474,25 +473,25 @@
                     
                     <div class="agent-info">
                         <div class="info-row">
-                            <span class="label">Role:</span>
+                            <span class="label">Species:</span>
                             <span class="value">${agent.species}</span>
                         </div>
                         <div class="info-row">
-                            <span class="label">Workload:</span>
+                            <span class="label">Load:</span>
                             <span class="value">${agent.load}%</span>
                         </div>
                         <div class="progress-bar">
                             <div class="progress-fill" style="width: ${agent.load}%"></div>
                         </div>
                         <div class="info-row">
-                            <span class="label">Skills:</span>
-                            <span class="value">${agent.capabilities.length} capabilities</span>
+                            <span class="label">Capabilities:</span>
+                            <span class="value">${agent.capabilities.length}</span>
                         </div>
                     </div>
 
                     <div class="dna-score">
                         <div class="dna-value">${agent.dna}</div>
-                        <div class="dna-level">Quality Score - ${agent.level}</div>
+                        <div class="dna-level">DNA Score - ${agent.level}</div>
                     </div>
 
                     <div class="agent-actions">
@@ -500,7 +499,7 @@
                             📡 Ping
                         </button>
                         <button class="btn btn-message" onclick="messageAgent('${agent.id}')">
-                            💬 Assign Task
+                            💬 Message
                         </button>
                     </div>
                 `;
@@ -517,7 +516,7 @@
             // Clear existing nodes and lines
             canvas.innerHTML = '';
 
-            // Draw connection lines (hierarchical + peer collaboration)
+            // Draw connection lines
             agents.forEach((agent, i) => {
                 agents.forEach((other, j) => {
                     if (i < j) {
@@ -584,60 +583,49 @@
         function pingAgent(agentId) {
             const agent = agents.find(a => a.id === agentId);
             const pingTime = Math.floor(Math.random() * 20) + 5;
-            addMessage('Dashboard', agent.name, `Ping: ${pingTime}ms - Status: ${agent.status.toUpperCase()} - Load: ${agent.load}%`, 'info');
+            addMessage('Dashboard', agent.name, `Ping: ${pingTime}ms - Status: ${agent.status.toUpperCase()}`, 'info');
+            
+            // Animate ping
+            const buttons = document.querySelectorAll('.btn-ping');
+            buttons.forEach(btn => {
+                if (btn.textContent.includes('Ping')) {
+                    btn.style.animation = 'pulse 0.5s';
+                    setTimeout(() => btn.style.animation = '', 500);
+                }
+            });
         }
 
-        // Message agent (assign task)
+        // Message agent
         function messageAgent(agentId) {
             const agent = agents.find(a => a.id === agentId);
-            
-            const tasks = {
-                'athena-lead-001': [
-                    'Analyze and decompose new feature request',
-                    'Review team outputs and synthesize report',
-                    'Coordinate security sprint tasks',
-                    'Quality assurance check on deliverables'
-                ],
-                'delphi-researcher-001': [
-                    'Research competitive AI frameworks',
-                    'Validate technical claims in documentation',
-                    'Analyze market trends for travel industry',
-                    'Find sources for security best practices'
-                ],
-                'cipher-technical-001': [
-                    'Document new API endpoints',
-                    'Create system architecture diagram',
-                    'Write implementation guide for feature X',
-                    'Generate code examples for tutorials'
-                ]
-            };
-            
-            const agentTasks = tasks[agentId] || ['Generic task assignment'];
-            const task = agentTasks[Math.floor(Math.random() * agentTasks.length)];
-            
-            addMessage('Dashboard', agent.name, `📋 TASK: ${task}`, 'request');
+            const messages = [
+                'Can you help with security scan?',
+                'Status update please',
+                'Ready for next task?',
+                'Check code quality in module X',
+                'Run tests on latest commit'
+            ];
+            const msg = messages[Math.floor(Math.random() * messages.length)];
+            addMessage('Dashboard', agent.name, msg, 'request');
             
             // Simulate response
             setTimeout(() => {
                 const responses = [
-                    '✓ Task accepted - ETA 15 minutes',
-                    '🔄 Starting work now...',
-                    '✓ Will prioritize this - updating status',
-                    '📊 Task analysis complete - beginning execution'
+                    '✓ On it!',
+                    'Starting now...',
+                    'Will do, ETA 5 mins',
+                    'Processing request...',
+                    'Roger that!'
                 ];
                 const response = responses[Math.floor(Math.random() * responses.length)];
                 addMessage(agent.name, 'Dashboard', response, 'complete');
-                
-                // Update agent load
-                agent.load = Math.min(95, agent.load + 15);
-                renderAgentCards();
-            }, 1500);
+            }, 1000);
         }
 
         // Focus on specific agent
         function focusAgent(agentId) {
             const agent = agents.find(a => a.id === agentId);
-            alert(`🤖 Agent Profile\n\nName: ${agent.name}\nRole: ${agent.species}\nQuality Score: ${agent.dna}/100\nLevel: ${agent.level}\n\nCapabilities:\n${agent.capabilities.map(c => '• ' + c.replace(/_/g, ' ')).join('\n')}`);
+            alert(`Agent: ${agent.name}\nSpecies: ${agent.species}\nDNA Score: ${agent.dna}\nCapabilities: ${agent.capabilities.join(', ')}`);
         }
 
         // Start simulation
@@ -650,50 +638,36 @@
                     
                     if (from !== to) {
                         const messages = [
-                            'Research task completed ✓',
-                            'Need technical validation on findings',
-                            'Documentation draft ready for review',
-                            'Running quality checks...',
-                            'Synthesis complete - ready for delivery',
-                            'Security analysis: 3 issues found',
-                            'Code examples generated successfully'
+                            'Task completed ✓',
+                            'Need help with X',
+                            'Found 3 issues',
+                            'Running tests...',
+                            'Code review done',
+                            'Security scan complete'
                         ];
                         const msg = messages[Math.floor(Math.random() * messages.length)];
                         addMessage(from.name, to.name, msg, 'info');
                     }
                 }
-            }, 4000);
+            }, 3000);
 
             // Simulate load changes
             setInterval(() => {
                 agents.forEach(agent => {
-                    // Gradually move towards 60-70% optimal utilization
-                    const target = 65;
-                    agent.load = Math.max(30, Math.min(90, agent.load + (target - agent.load) * 0.1 + (Math.random() - 0.5) * 10));
+                    agent.load = Math.max(10, Math.min(95, agent.load + (Math.random() - 0.5) * 20));
                 });
                 renderAgentCards();
-            }, 3000);
+            }, 5000);
 
             // Update average ping
             setInterval(() => {
-                const ping = Math.floor(Math.random() * 15) + 8;
+                const ping = Math.floor(Math.random() * 10) + 8;
                 document.getElementById('avgPing').textContent = `${ping}ms`;
             }, 2000);
-            
-            // Update average DNA score
-            setInterval(() => {
-                const avgDNA = Math.floor(agents.reduce((sum, a) => sum + a.dna, 0) / agents.length);
-                document.getElementById('avgDNA').textContent = avgDNA;
-            }, 5000);
         }
 
         // Initialize on load
         init();
-        
-        console.log('🎯 AIX v3.0 Dashboard initialized');
-        console.log('📊 Monitoring 3 agents: Athena (Lead), Delphi (Research), Cipher (Technical)');
-        console.log('🔗 Network topology: Hybrid (Hierarchical + Mesh)');
     </script>
 </body>
 </html>
-

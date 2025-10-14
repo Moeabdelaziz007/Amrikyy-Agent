@@ -533,3 +533,48 @@ FROM public.destinations d WHERE d.name = 'Istanbul';
 INSERT INTO public.prayer_locations (destination_id, name, type, address, capacity, facilities)
 SELECT d.id, 'National Mosque of Malaysia', 'mosque', 'Jalan Perdana, Kuala Lumpur', 15000, ARRAY['parking', 'ablution', 'library', 'classes']
 FROM public.destinations d WHERE d.name = 'Kuala Lumpur';
+-- Travel offers indexes (for current implementation)
+CREATE INDEX IF NOT EXISTS idx_travel_offers_destination
+  ON public.travel_offers(destination);
+
+CREATE INDEX IF NOT EXISTS idx_travel_offers_category
+  ON public.travel_offers(category);
+
+CREATE INDEX IF NOT EXISTS idx_travel_offers_price
+  ON public.travel_offers(price);
+
+CREATE INDEX IF NOT EXISTS idx_travel_offers_priority
+  ON public.travel_offers(priority DESC);
+
+CREATE INDEX IF NOT EXISTS idx_travel_offers_active
+  ON public.travel_offers(is_active);
+
+-- Offer interactions indexes (for current implementation)
+CREATE INDEX IF NOT EXISTS idx_offer_interactions_user_id
+  ON public.offer_interactions(telegram_id);
+
+CREATE INDEX IF NOT EXISTS idx_offer_interactions_offer_id
+  ON public.offer_interactions(offer_id);
+
+CREATE INDEX IF NOT EXISTS idx_offer_interactions_type
+  ON public.offer_interactions(interaction_type);
+
+CREATE INDEX IF NOT EXISTS idx_offer_interactions_timestamp
+  ON public.offer_interactions(timestamp DESC);
+
+-- Composite indexes for analytics queries
+CREATE INDEX IF NOT EXISTS idx_offer_interactions_user_timestamp
+  ON public.offer_interactions(telegram_id, timestamp DESC);
+
+CREATE INDEX IF NOT EXISTS idx_offer_interactions_offer_type
+  ON public.offer_interactions(offer_id, interaction_type);
+
+-- Verify indexes created
+SELECT
+  schemaname,
+  tablename,
+  indexname,
+  indexdef
+FROM pg_indexes
+WHERE schemaname = 'public'
+ORDER BY tablename, indexname;

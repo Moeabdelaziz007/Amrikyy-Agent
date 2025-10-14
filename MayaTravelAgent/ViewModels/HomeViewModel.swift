@@ -55,7 +55,7 @@ class HomeViewModel: BaseViewModel {
             print("Failed to load destinations: \(error)")
         }
     }
-    
+
     func refreshData() {
         loadData()
     }

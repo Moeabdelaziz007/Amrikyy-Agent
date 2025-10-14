@@ -1,4 +1,15 @@
-# UI Improvements Guide
+# UI Improvements Guide (Root + Kombai Suggestions)
+
+> **Note:** No Figma file was provided; attach your Figma using @Figma for pixel-perfect code.
+
+This guide summarizes modern UI improvements applied to the Maya Travel Agent React app, consolidating best practices from root-level audits and AI code analysis tools (Kombai).
+
+## What's Inside
+
+- Root-level visual and accessibility enhancements
+- Detailed before/after code samples for common UI components
+- Guidance for addressing found issues, lint errors, and dependency installations
+- Performance and DX (developer experience) recommendations
 ## Modern Design Patterns for Maya Travel Agent
 
 **Target:** React/TypeScript Frontend  

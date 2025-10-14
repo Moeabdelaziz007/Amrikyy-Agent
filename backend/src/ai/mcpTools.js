@@ -18,7 +18,7 @@ class MCPTools {
       // Location & Map Tools
       nearby_attractions: this.getNearbyAttractions.bind(this),
       local_restaurants: this.getLocalRestaurants.bind(this),
-      public_transport: this.getPublicTransport.bind(this),
+      public_transport: this.getLocalTransport.bind(this),
       safety_alerts: this.getSafetyAlerts.bind(this),
       
       // Cultural & Religious Tools
@@ -611,6 +611,58 @@ class MCPTools {
         attractions: [
           { name: 'معلم 1', distance: '2 كم', rating: 4.5 },
           { name: 'معلم 2', distance: '5 كم', rating: 4.8 }
+        ]
+      }
+    };
+  }
+
+  async getLocalRestaurants(params) {
+    const { location, cuisine_type = 'all', price_range = 'all' } = params;
+    return {
+      success: true,
+      data: {
+        restaurants: [
+          { name: 'مطعم محلي 1', cuisine: 'عربي', price_range: '$$', rating: 4.5 },
+          { name: 'مطعم محلي 2', cuisine: 'إيطالي', price_range: '$$$', rating: 4.8 }
+        ]
+      }
+    };
+  }
+
+  async getSafetyAlerts(params) {
+    const { location } = params;
+    return {
+      success: true,
+      data: {
+        alerts: [
+          { type: 'weather', level: 'low', message: 'طقس معتدل متوقع' },
+          { type: 'health', level: 'low', message: 'لا توجد تحذيرات صحية' }
+        ]
+      }
+    };
+  }
+
+  async getCulturalEvents(params) {
+    const { location, date } = params;
+    return {
+      success: true,
+      data: {
+        events: [
+          { name: 'مهرجان ثقافي', date: '2024-12-01', type: 'festival' },
+          { name: 'معرض فني', date: '2024-12-15', type: 'exhibition' }
+        ]
+      }
+    };
+  }
+
+  async getLocalCustoms(params) {
+    const { location } = params;
+    return {
+      success: true,
+      data: {
+        customs: [
+          { name: 'تحية الترحيب', description: 'السلام عليكم' },
+          { name: 'الضيافة', description: 'الترحيب بالضيوف' }
         ]
       }
     };
