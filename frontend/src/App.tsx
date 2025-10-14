@@ -9,7 +9,10 @@ import {
   Bot,
   Settings,
   User,
-  Search
+  Search,
+  Home,
+  Users,
+  BarChart3
 } from 'lucide-react';
 import { AuthProvider, useAuth } from './components/Auth/AuthProvider';
 import LoginForm from './components/Auth/LoginForm';
@@ -21,6 +24,10 @@ import TripHistory from './components/TripHistory';
 import AIAssistant from './components/AIAssistant';
 import ErrorBoundary from './components/ErrorBoundary';
 import AuthCallback from './pages/AuthCallback';
+import AmrikyyMainPage from './pages/AmrikyyMainPage';
+import AgentGallery from './pages/AgentGallery';
+import HologramDemo from './pages/HologramDemo';
+import Analytics from './pages/Analytics';
 import { initTelegramWebApp, isTelegramWebApp } from './telegram-webapp';
 
 interface Trip {
@@ -35,6 +42,7 @@ interface Trip {
 
 const AppContent: React.FC = () => {
   const { user, loading } = useAuth();
+  const [currentPage, setCurrentPage] = useState<'landing' | 'dashboard' | 'agents' | 'hologram' | 'analytics'>('landing');
   const [activeTab, setActiveTab] = useState('planner');
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
 
@@ -43,10 +51,8 @@ const AppContent: React.FC = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     
-    // Check for auth callback parameters
     if (urlParams.get('access_token') || urlParams.get('error') || 
         hashParams.get('access_token') || hashParams.get('error')) {
-      // We're on an auth callback page, let AuthCallback component handle it
       return;
     }
   }, []);
@@ -57,6 +63,7 @@ const AppContent: React.FC = () => {
       initTelegramWebApp();
     }
   }, []);
+
   const [trips, setTrips] = useState<Trip[]>([
     {
       id: '1',
@@ -78,15 +85,15 @@ const AppContent: React.FC = () => {
     }
   ]);
 
-  const tabs = [
+  const dashboardTabs = [
     { id: 'planner', label: 'Trip Planner', icon: Compass },
     { id: 'destinations', label: 'Destinations', icon: MapPin },
     { id: 'budget', label: 'Budget', icon: DollarSign },
     { id: 'history', label: 'History', icon: Calendar },
-    { id: 'ai', label: 'Maya AI', icon: Bot }
+    { id: 'ai', label: 'Amrikyy AI', icon: Bot }
   ];
 
-  const renderContent = () => {
+  const renderDashboardContent = () => {
     switch (activeTab) {
       case 'planner':
         return <TripPlanner trips={trips} setTrips={setTrips} />;
@@ -103,7 +110,7 @@ const AppContent: React.FC = () => {
     }
   };
 
-  // Check if we're on an auth callback page and show the callback component
+  // Check auth callback
   const urlParams = new URLSearchParams(window.location.search);
   const hashParams = new URLSearchParams(window.location.hash.substring(1));
   
@@ -112,127 +119,184 @@ const AppContent: React.FC = () => {
     return <AuthCallback />;
   }
 
-  // Show loading spinner while checking auth
+  // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <h1 className="text-2xl font-bold maya-text">Maya Trips</h1>
-          <p className="text-gray-600 mt-2">Loading your travel assistant...</p>
+          <h1 className="text-2xl font-bold amrikyy-text">Amrikyy</h1>
+          <p className="text-gray-400 mt-2">Loading your AI travel companion...</p>
         </div>
       </div>
     );
   }
 
-  // Show auth forms if not logged in
+  // Show landing page if not logged in
   if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          {authMode === 'login' ? (
-            <LoginForm 
-              onSuccess={() => {/* Handle login success */}} 
-              onSwitchToSignup={() => setAuthMode('signup')} 
-            />
-          ) : (
-            <SignupForm 
-              onSuccess={() => {/* Handle signup success */}} 
-              onSwitchToLogin={() => setAuthMode('login')} 
-            />
-          )}
-        </div>
-      </div>
-    );
+    return <AmrikyyMainPage />;
   }
 
+  // Logged in - show dashboard
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       {/* Header */}
       <motion.header 
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="glass-effect p-6 shadow-lg"
+        className="glass-effect p-6 shadow-lg sticky top-0 z-40"
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <motion.div 
-            className="flex items-center space-x-3"
+            className="flex items-center space-x-3 cursor-pointer"
             whileHover={{ scale: 1.05 }}
+            onClick={() => setCurrentPage('landing')}
           >
-            <div className="p-3 maya-gradient rounded-xl">
+            <div className="p-3 amrikyy-gradient rounded-xl">
               <Plane className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold maya-text">Maya Trips</h1>
-              <p className="text-gray-600 text-sm">Your AI Travel Assistant</p>
+              <h1 className="text-2xl font-bold amrikyy-text">Amrikyy</h1>
+              <p className="text-gray-400 text-sm">AI Travel Platform</p>
             </div>
           </motion.div>
           
+          {/* Top Navigation */}
+          <div className="hidden md:flex items-center gap-4">
+            <button
+              onClick={() => setCurrentPage('landing')}
+              className={`px-4 py-2 rounded-lg transition-all ${
+                currentPage === 'landing' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'text-gray-300 hover:bg-white/10'
+              }`}
+            >
+              <Home className="w-5 h-5 inline mr-2" />
+              Home
+            </button>
+            <button
+              onClick={() => setCurrentPage('agents')}
+              className={`px-4 py-2 rounded-lg transition-all ${
+                currentPage === 'agents' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'text-gray-300 hover:bg-white/10'
+              }`}
+            >
+              <Users className="w-5 h-5 inline mr-2" />
+              Agents
+            </button>
+            <button
+              onClick={() => setCurrentPage('hologram')}
+              className={`px-4 py-2 rounded-lg transition-all ${
+                currentPage === 'hologram' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'text-gray-300 hover:bg-white/10'
+              }`}
+            >
+              <Bot className="w-5 h-5 inline mr-2" />
+              Hologram
+            </button>
+            <button
+              onClick={() => setCurrentPage('analytics')}
+              className={`px-4 py-2 rounded-lg transition-all ${
+                currentPage === 'analytics' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'text-gray-300 hover:bg-white/10'
+              }`}
+            >
+              <BarChart3 className="w-5 h-5 inline mr-2" />
+              Analytics
+            </button>
+            <button
+              onClick={() => setCurrentPage('dashboard')}
+              className={`px-4 py-2 rounded-lg transition-all ${
+                currentPage === 'dashboard' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'text-gray-300 hover:bg-white/10'
+              }`}
+            >
+              <Compass className="w-5 h-5 inline mr-2" />
+              Dashboard
+            </button>
+          </div>
+
           <div className="flex items-center space-x-4">
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
+              className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
             >
-              <Search className="w-5 h-5 text-gray-700" />
+              <Search className="w-5 h-5 text-gray-300" />
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
+              className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
             >
-              <Settings className="w-5 h-5 text-gray-700" />
+              <Settings className="w-5 h-5 text-gray-300" />
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
+              className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
             >
-              <User className="w-5 h-5 text-gray-700" />
+              <User className="w-5 h-5 text-gray-300" />
             </motion.button>
           </div>
         </div>
       </motion.header>
 
-      {/* Navigation Tabs */}
-      <motion.nav 
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.1 }}
-        className="max-w-7xl mx-auto px-6 py-4"
-      >
-        <div className="flex space-x-1 bg-white/20 backdrop-blur-sm rounded-2xl p-2">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <motion.button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 px-4 py-3 rounded-xl transition-all duration-200 ${
-                  activeTab === tab.id
-                    ? 'bg-white text-blue-600 shadow-lg'
-                    : 'text-gray-600 hover:text-blue-600 hover:bg-white/50'
-                }`}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Icon className="w-5 h-5" />
-                <span className="font-medium">{tab.label}</span>
-              </motion.button>
-            );
-          })}
-        </div>
-      </motion.nav>
+      {/* Main Content Area */}
+      <div>
+        {currentPage === 'landing' && <AmrikyyMainPage />}
+        {currentPage === 'agents' && <AgentGallery />}
+        {currentPage === 'hologram' && <HologramDemo />}
+        {currentPage === 'analytics' && <Analytics />}
+        
+        {currentPage === 'dashboard' && (
+          <>
+            {/* Dashboard Navigation Tabs */}
+            <motion.nav 
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.1 }}
+              className="max-w-7xl mx-auto px-6 py-4"
+            >
+              <div className="flex space-x-1 glass-effect rounded-2xl p-2">
+                {dashboardTabs.map((tab) => {
+                  const Icon = tab.icon;
+                  return (
+                    <motion.button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center space-x-2 px-4 py-3 rounded-xl transition-all duration-200 ${
+                        activeTab === tab.id
+                          ? 'bg-blue-500 text-white shadow-lg'
+                          : 'text-gray-300 hover:text-white hover:bg-white/10'
+                      }`}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span className="font-medium">{tab.label}</span>
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </motion.nav>
 
-      {/* Main Content */}
-      <motion.main
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="max-w-7xl mx-auto px-6 pb-8"
-      >
-        {renderContent()}
-      </motion.main>
+            {/* Dashboard Content */}
+            <motion.main
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="max-w-7xl mx-auto px-6 pb-8"
+            >
+              {renderDashboardContent()}
+            </motion.main>
+          </>
+        )}
+      </div>
     </div>
   );
 };
