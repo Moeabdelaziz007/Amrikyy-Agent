@@ -208,6 +208,10 @@ app.use('/api/ai', aiLimiter, aiRoutes);
 const whatsappRoutes = require('./routes/whatsapp');
 app.use('/api/whatsapp', webhookLimiter, whatsappRoutes);
 
+// Agent Registry routes
+const agentRoutes = require('./routes/agents');
+app.use('/api/agents', agentRoutes);
+
 // Advanced Telegram Bot (only start if token is provided)
 if (process.env.TELEGRAM_BOT_TOKEN) {
   const advancedTelegramBot = require('./advanced-telegram-bot');
@@ -253,11 +257,19 @@ app.use('*', (req, res) => {
     });
 });
 
-// Start server
-app.listen(PORT, () => {
+// Start server with WebSocket support
+const server = app.listen(PORT, () => {
     console.log(`🚀 Maya Trips server running on port ${PORT}`);
     console.log(`📱 Frontend: http://localhost:3000`);
     console.log(`🔧 Backend API: http://localhost:${PORT}`);
 });
+
+// Setup WebSocket for real-time workflow updates
+const WebSocket = require('ws');
+const { setupWorkflowWebSocket } = require('./src/websocket/workflowHandler');
+
+const wss = new WebSocket.Server({ server, path: '/ws/workflow' });
+setupWorkflowWebSocket(wss);
+console.log('🔌 WebSocket server ready at ws://localhost:' + PORT + '/ws/workflow');
 
 module.exports = app;
