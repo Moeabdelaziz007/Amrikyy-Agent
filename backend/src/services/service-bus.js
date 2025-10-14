@@ -3,7 +3,13 @@
  * Event streaming service for real-time communication between BossAgent and Skills
  */
 
-const { Kafka } = require('@confluentinc/kafka-javascript');
+let Kafka;
+try {
+  Kafka = require('@confluentinc/kafka-javascript').Kafka;
+} catch (error) {
+  console.warn('⚠️ Kafka module not installed. ServiceBus will run in mock mode.');
+  Kafka = null;
+}
 const logger = require('../utils/logger');
 
 class ServiceBus {
@@ -91,6 +97,13 @@ class ServiceBus {
    */
   async connect() {
     try {
+      // Check if Kafka is available
+      if (!Kafka) {
+        logger.warn('⚠️ Kafka module not available. Running in mock mode.');
+        this.isConnected = false;
+        return { success: false, mockMode: true, message: 'Kafka not installed' };
+      }
+
       // Validate configuration
       if (!this.config['bootstrap.servers'] ||
           !this.config['sasl.username'] ||
