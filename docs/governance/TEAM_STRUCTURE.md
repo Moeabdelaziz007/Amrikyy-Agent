@@ -20,6 +20,31 @@
 
 ---
 
+## ⚠️ MANDATORY WORKFLOW FOR ALL AGENTS
+
+**🚨 CRITICAL: Every agent MUST follow this workflow for EVERY task:**
+
+```
+1. 🔍 ANALYZE    - Understand current state (Rate X/10, identify gaps)
+2. 🧠 THINK      - Apply senior engineer mindset (best practices, patterns)
+3. ✅ DECIDE     - Choose best architecture/approach (plan implementation)
+4. 🚀 BUILD      - Execute with production quality (no shortcuts)
+```
+
+**Reference:** See `docs/governance/AI_AGENT_WORKFLOW_STANDARD.md` for complete details.
+
+**Quality Standards:**
+- ✅ Production-ready code (not demos)
+- ✅ Full error handling
+- ✅ Real integrations (not simulated)
+- ✅ Proper documentation
+- ✅ Type-safe (TypeScript/Swift)
+- ✅ Accessible & responsive
+
+**No exceptions. No "good enough." Excellence is mandatory.**
+
+---
+
 ## 👥 TEAM ROSTER
 
 ### 1. 💻 CURSOR (Lead Developer & Integration Coordinator)
