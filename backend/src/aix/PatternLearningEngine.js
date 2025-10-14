@@ -22,7 +22,7 @@ class PatternLearningEngine {
   constructor(options = {}) {
     // Memory systems
     this.memory = {
-      shortTerm: new Map(), // Recent interactions (last 100)
+      shortTerm: new Map(), // Recent interactions (last 500 - increased)
       longTerm: new Map(), // Consolidated patterns
       episodic: [], // Event sequences
       semantic: new Map() // Learned knowledge
@@ -47,9 +47,10 @@ class PatternLearningEngine {
 
     // Pattern thresholds
     this.thresholds = {
-      minOccurrences: 3, // Minimum to detect pattern
-      confidence: 0.7, // Minimum confidence to act
-      decay: 0.95 // Memory decay factor
+      minOccurrences: 2, // Minimum to detect pattern (reduced for faster detection)
+      confidence: 0.6, // Minimum confidence to act (reduced for more patterns)
+      decay: 0.95, // Memory decay factor
+      similarityThreshold: 0.5 // Similarity threshold for pattern matching (reduced from 0.7)
     };
 
     // Learning rate
@@ -76,7 +77,7 @@ class PatternLearningEngine {
     });
 
     // Keep short-term memory limited
-    if (this.memory.shortTerm.size > 100) {
+    if (this.memory.shortTerm.size > 500) {
       const oldest = Array.from(this.memory.shortTerm.keys())[0];
       this.memory.shortTerm.delete(oldest);
     }
@@ -458,7 +459,7 @@ class PatternLearningEngine {
    */
   findSimilarPattern(item) {
     for (const pattern of this.memory.longTerm.values()) {
-      if (this.calculateSimilarity(item, pattern.data) > 0.8) {
+      if (this.calculateSimilarity(item, pattern.data) > this.thresholds.similarityThreshold) {
         return pattern;
       }
     }
@@ -490,7 +491,7 @@ class PatternLearningEngine {
   shouldCreatePattern(item) {
     // Check if seen multiple times in short-term
     const similar = Array.from(this.memory.shortTerm.values())
-      .filter(i => this.calculateSimilarity(item, i) > 0.7);
+      .filter(i => this.calculateSimilarity(item, i) > this.thresholds.similarityThreshold);
 
     return similar.length >= this.thresholds.minOccurrences;
   }
