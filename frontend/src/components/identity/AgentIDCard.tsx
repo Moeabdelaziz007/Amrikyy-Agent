@@ -236,7 +236,7 @@ const AgentIDCard: React.FC<AgentIDCardProps> = ({ agent, onClose }) => {
         </motion.div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes breathe {
           0%, 100% {
             transform: scale(1);
