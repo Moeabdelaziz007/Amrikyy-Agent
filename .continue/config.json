@@ -234,6 +234,13 @@
     }
   ],
   "allowAnonymousTelemetry": false,
+  "reranker": {
+    "name": "none"
+  },
+  "tabAutocompleteOptions": {
+    "useCopyBuffer": false,
+    "maxPromptTokens": 1024
+  },
   "docs": [
     {
       "title": "Maya Travel Agent GitHub",
