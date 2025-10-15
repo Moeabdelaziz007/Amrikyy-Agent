@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "github.com/chroma-core/chroma": {
+      "command": "node",
+      "args": ["/Users/Shared/maya-travel-agent/mcp-servers/chroma/build/index.js"],
+      "env": {
+        "CHROMA_HOST": "localhost",
+        "CHROMA_PORT": "8000"
+      },
+      "disabled": true,
+      "autoApprove": []
+    }
+  },
+  "mcpPerformance": {
+    "maxConcurrentServers": 2,
+    "memoryLimit": "512MB",
+    "enableAutoCleanup": true,
+    "cleanupInterval": 300000
+  }
+}

@@ -91,27 +91,40 @@ b) **Component Tests:** Outdated assertions
    - "Maya Trips" branding text mismatch
 
 #### Solution:
-- Fix Playwright configuration (vitest vs playwright context)
-- Update test assertions to match current UI
-- Add proper ARIA roles to forms
+// DEBUG SECTION
 
-### 5. Test Infrastructure Improvements
+- Investigate Playwright test failures:  
+  - Check for misconfiguration between vitest and Playwright contexts  
+  - Add console logs to `test.describe()` blocks to trace execution  
+  - Print out test file imports & environment to ensure correct test runner
+
+- Debug assertion errors for component tests:  
+  - Log rendered output when "Loading your travel assistant..." is not found  
+  - Print available form role attributes in test dom  
+  - Compare expected vs actual branding text for "Maya Trips"  
+  - Capture screenshots on failure
+
+- Inspect ARIA roles in forms:  
+  - Output HTML of forms in failed tests  
+  - Validate assigned ARIA roles using accessibility testing tools
+
+### 5. Test Infrastructure Debugging
 **Priority:** P1
 
-#### Needed:
+#### Investigate:
 a) **Test Database Setup:**
-   - Local Supabase instance with Docker
-   - Automated schema migrations for tests
-   - Seed data fixtures
+   - Inspect Docker logs for local Supabase issues
+   - Print output of automated schema migration scripts
+   - Log seed data insertion results and check DB state after
 
 b) **Test Isolation:**
-   - Proper beforeEach/afterEach cleanup
-   - Transaction rollbacks
-   - Parallel test execution safety
+   - Log beforeEach/afterEach lifecycle calls for test suites
+   - Output database state before and after transaction rollbacks
+   - Check parallel test execution logs for resource conflicts
 
 c) **Test Performance:**
-   - Reduce 28-second backend test time
-   - Parallel test runners
+   - Profile backend test times with debug output to identify slow steps
+   - Enable verbose logs for parallel test runners
    - Smart test selection
 
 ---

@@ -1,0 +1,257 @@
+{
+  "version": "2.0.0",
+  "name": "Maya Travel Agent - Professional MCP Configuration",
+  "description": "Enterprise-grade MCP configuration optimized for travel agent development",
+  "metadata": {
+    "author": "Claude 4.5 Super Intelligence",
+    "created": "2024-01-15",
+    "lastUpdated": "2024-01-15",
+    "performance": {
+      "targetMemoryUsage": "80MB",
+      "targetStartupTime": "5s",
+      "targetResponseTime": "500ms"
+    }
+  },
+  "inputs": [
+    {
+      "id": "openai_api_key",
+      "type": "promptString",
+      "description": "OpenAI API key for AI-powered travel assistance",
+      "password": true,
+      "validation": {
+        "required": true,
+        "pattern": "^sk-[A-Za-z0-9]{48}$",
+        "errorMessage": "Invalid OpenAI API key format"
+      }
+    },
+    {
+      "id": "amadeus_api_key",
+      "type": "promptString",
+      "description": "Amadeus API key for flight and hotel data",
+      "password": true,
+      "validation": {
+        "required": false,
+        "pattern": "^[A-Za-z0-9]{32}$",
+        "errorMessage": "Invalid Amadeus API key format"
+      }
+    },
+    {
+      "id": "amadeus_secret",
+      "type": "promptString",
+      "description": "Amadeus API secret for authentication",
+      "password": true,
+      "validation": {
+        "required": false,
+        "pattern": "^[A-Za-z0-9]{32}$",
+        "errorMessage": "Invalid Amadeus API secret format"
+      }
+    },
+    {
+      "id": "google_maps_api_key",
+      "type": "promptString",
+      "description": "Google Maps API key for location services",
+      "password": true,
+      "validation": {
+        "required": false,
+        "pattern": "^AIza[A-Za-z0-9]{35}$",
+        "errorMessage": "Invalid Google Maps API key format"
+      }
+    },
+    {
+      "id": "weather_api_key",
+      "type": "promptString",
+      "description": "OpenWeather API key for weather data",
+      "password": true,
+      "validation": {
+        "required": false,
+        "pattern": "^[A-Za-z0-9]{32}$",
+        "errorMessage": "Invalid OpenWeather API key format"
+      }
+    },
+    {
+      "id": "supabase_url",
+      "type": "promptString",
+      "description": "Supabase project URL",
+      "password": false,
+      "validation": {
+        "required": true,
+        "pattern": "^https://[a-z0-9]+\\.supabase\\.co$",
+        "errorMessage": "Invalid Supabase URL format"
+      }
+    },
+    {
+      "id": "supabase_anon_key",
+      "type": "promptString",
+      "description": "Supabase anonymous key",
+      "password": true,
+      "validation": {
+        "required": true,
+        "pattern": "^eyJ[A-Za-z0-9]+\\.[A-Za-z0-9]+\\.[A-Za-z0-9_-]+$",
+        "errorMessage": "Invalid Supabase anonymous key format"
+      }
+    },
+    {
+      "id": "github_token",
+      "type": "promptString",
+      "description": "GitHub personal access token for repository operations",
+      "password": true,
+      "validation": {
+        "required": false,
+        "pattern": "^ghp_[A-Za-z0-9]{36}$",
+        "errorMessage": "Invalid GitHub token format"
+      }
+    }
+  ],
+  "servers": {
+    "travel-assistant": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "./backend/src/ai/travelMCP.js"
+      ],
+      "env": {
+        "NODE_ENV": "production",
+        "OPENAI_API_KEY": "${input:openai_api_key}",
+        "AMADEUS_API_KEY": "${input:amadeus_api_key}",
+        "AMADEUS_SECRET": "${input:amadeus_secret}",
+        "GOOGLE_MAPS_API_KEY": "${input:google_maps_api_key}",
+        "WEATHER_API_KEY": "${input:weather_api_key}",
+        "LOG_LEVEL": "info",
+        "ENABLE_CACHING": "true",
+        "CACHE_TTL": "300"
+      },
+      "metadata": {
+        "description": "Custom travel assistant MCP server with real API integrations",
+        "version": "2.0.0",
+        "capabilities": [
+          "flight_search",
+          "hotel_search", 
+          "weather_forecast",
+          "attractions_search",
+          "budget_calculation",
+          "visa_requirements",
+          "prayer_times"
+        ],
+        "performance": {
+          "memoryLimit": "100MB",
+          "requestTimeout": "30s",
+          "maxConcurrentRequests": 10
+        }
+      }
+    },
+    "supabase": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "supabase-mcp@latest"
+      ],
+      "env": {
+        "SUPABASE_URL": "${input:supabase_url}",
+        "SUPABASE_ANON_KEY": "${input:supabase_anon_key}",
+        "SUPABASE_SERVICE_ROLE_KEY": "${input:supabase_service_role_key}"
+      },
+      "metadata": {
+        "description": "Supabase database operations for user data and trip management",
+        "version": "1.0.0",
+        "capabilities": [
+          "database_queries",
+          "user_authentication",
+          "trip_storage",
+          "conversation_history"
+        ]
+      }
+    },
+    "git-integration": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:github_token}"
+      },
+      "metadata": {
+        "description": "GitHub integration for version control and collaboration",
+        "version": "1.0.0",
+        "capabilities": [
+          "repository_access",
+          "issue_management",
+          "pull_request_operations",
+          "code_review"
+        ]
+      }
+    },
+    "file-system": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/Shared/maya-travel-agent"
+      ],
+      "metadata": {
+        "description": "File system operations for project management",
+        "version": "1.0.0",
+        "capabilities": [
+          "file_operations",
+          "directory_management",
+          "content_search",
+          "backup_operations"
+        ]
+      }
+    }
+  },
+  "performance": {
+    "monitoring": {
+      "enabled": true,
+      "metrics": [
+        "response_time",
+        "memory_usage",
+        "error_rate",
+        "request_volume"
+      ],
+      "alerting": {
+        "responseTimeThreshold": "1000ms",
+        "memoryThreshold": "150MB",
+        "errorRateThreshold": "5%"
+      }
+    },
+    "caching": {
+      "enabled": true,
+      "strategy": "lru",
+      "maxSize": "50MB",
+      "ttl": "300s"
+    },
+    "rate_limiting": {
+      "enabled": true,
+      "requests_per_minute": 60,
+      "burst_limit": 10
+    }
+  },
+  "security": {
+    "api_key_rotation": {
+      "enabled": true,
+      "rotation_interval": "90d"
+    },
+    "access_logging": {
+      "enabled": true,
+      "log_level": "info"
+    },
+    "error_handling": {
+      "sanitize_errors": true,
+      "log_sensitive_data": false
+    }
+  },
+  "health_checks": {
+    "enabled": true,
+    "interval": "60s",
+    "endpoints": [
+      "travel-assistant",
+      "supabase",
+      "git-integration",
+      "file-system"
+    ]
+  }
+}

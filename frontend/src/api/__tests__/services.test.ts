@@ -4,7 +4,7 @@ import { api } from '../client'
 
 // Mock the client module
 vi.mock('../client')
-const mockedApi = vi.mocked(api) as {
+const mockedApi = vi.mocked(api) as unknown as {
   post: ReturnType<typeof vi.fn>
   get: ReturnType<typeof vi.fn>
   put: ReturnType<typeof vi.fn>

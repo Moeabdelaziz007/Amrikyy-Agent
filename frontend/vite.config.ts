@@ -11,7 +11,8 @@ export default defineConfig({
       clientPort: 5173,
     },
     watch: {
-      usePolling: true,
+      usePolling: false,
+      interval: 300,
     },
     // Allow all hosts for Gitpod
     allowedHosts: ['all'],
@@ -23,7 +24,15 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          ui: ['lucide-react', 'framer-motion'],
+        },
+      },
+    },
   },
   define: {
     'import.meta.env': {

@@ -83,8 +83,13 @@ class HealthMonitor {
    */
   async checkZaiHealth() {
     const startTime = Date.now();
-    
+
     try {
+      // Check if Z.ai client is properly initialized
+      if (!this.zaiClient || !this.zaiClient.apiKey) {
+        throw new Error('Z.ai client not properly initialized - missing API key');
+      }
+
       const result = await this.zaiClient.healthCheck();
       const responseTime = Date.now() - startTime;
       

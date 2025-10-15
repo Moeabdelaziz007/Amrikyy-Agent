@@ -59,6 +59,7 @@
 
 ## Component Interaction Diagram
 
+// End of Selection
 ```
 ┌─────────────┐
 │   Browser   │

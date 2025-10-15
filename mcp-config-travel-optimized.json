@@ -1,0 +1,87 @@
+{
+  "inputs": [
+    {
+      "id": "openai_api_key",
+      "type": "promptString",
+      "description": "OpenAI API key for AI-powered travel assistance",
+      "password": true
+    },
+    {
+      "id": "amadeus_api_key",
+      "type": "promptString",
+      "description": "Amadeus API key for flight and hotel data",
+      "password": true
+    },
+    {
+      "id": "google_maps_api_key",
+      "type": "promptString",
+      "description": "Google Maps API key for location services",
+      "password": true
+    },
+    {
+      "id": "weather_api_key",
+      "type": "promptString",
+      "description": "OpenWeather API key for weather data",
+      "password": true
+    },
+    {
+      "id": "supabase_url",
+      "type": "promptString",
+      "description": "Supabase project URL",
+      "password": false
+    },
+    {
+      "id": "supabase_anon_key",
+      "type": "promptString",
+      "description": "Supabase anonymous key",
+      "password": true
+    }
+  ],
+  "servers": {
+    "travel-assistant": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "./backend/src/ai/travelMCP.js"
+      ],
+      "env": {
+        "OPENAI_API_KEY": "${input:openai_api_key}",
+        "AMADEUS_API_KEY": "${input:amadeus_api_key}",
+        "GOOGLE_MAPS_API_KEY": "${input:google_maps_api_key}",
+        "WEATHER_API_KEY": "${input:weather_api_key}"
+      }
+    },
+    "supabase": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "supabase-mcp@latest"
+      ],
+      "env": {
+        "SUPABASE_URL": "${input:supabase_url}",
+        "SUPABASE_ANON_KEY": "${input:supabase_anon_key}"
+      }
+    },
+    "git-integration": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:github_token}"
+      }
+    },
+    "file-system": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/Shared/maya-travel-agent"
+      ]
+    }
+  }
+}
