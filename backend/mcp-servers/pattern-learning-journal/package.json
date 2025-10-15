@@ -1,0 +1,31 @@
+{
+  "name": "@amrikyy/pattern-learning-journal",
+  "version": "1.0.0",
+  "description": "Pattern Learning Journal - Integrates Private Journal MCP with Pattern Learning Agent DNA",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "mcp",
+    "journal",
+    "pattern-learning",
+    "ai",
+    "semantic-search"
+  ],
+  "author": "Mohamed Abdelaziz",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@xenova/transformers": "^2.17.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "jest": "^29.0.0"
+  }
+}
