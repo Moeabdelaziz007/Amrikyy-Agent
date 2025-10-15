@@ -1,6 +1,37 @@
 import Foundation
 import Combine
 
+enum HTTPMethod: String {
+    case GET, POST, PUT, DELETE, PATCH
+}
+
+enum NetworkError: LocalizedError {
+    case invalidURL
+    case invalidResponse
+    case serverError(String)
+    case decodingError(DecodingError)
+    case noData
+
+    var errorDescription: String? {
+        switch self {
+        case .invalidURL:
+            return "Invalid URL"
+        case .invalidResponse:
+            return "Invalid response from server"
+        case .serverError(let message):
+            return "Server error: \(message)"
+        case .decodingError(let error):
+            return "Failed to decode response: \(error.localizedDescription)"
+        case .noData:
+            return "No data received from server"
+        }
+    }
+}
+
+protocol APIServiceProtocol {
+import Foundation
+import Combine
+
 protocol APIServiceProtocol {
     func request<T: Decodable>(_ endpoint: APIEndpoint) -> AnyPublisher<T, Error>
     func request(_ endpoint: APIEndpoint) -> AnyPublisher<Void, Error>
