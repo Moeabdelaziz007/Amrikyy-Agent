@@ -116,6 +116,10 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Authentication routes
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes);
+
 // Aladdin Agent routes
 const aladdinRoutes = require('./src/routes/aladdin');
 app.use('/api/aladdin', aladdinRoutes);
