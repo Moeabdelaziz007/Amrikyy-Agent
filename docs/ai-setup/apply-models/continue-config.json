@@ -1,0 +1,146 @@
+{
+  "models": [
+    {
+      "title": "Morph Fast Apply",
+      "provider": "morph",
+      "model": "morph-fast-apply",
+      "apiBase": "https://api.morphllm.com",
+      "apiKey": "${MORPH_API_KEY}",
+      "roles": ["apply"],
+      "description": "Fastest apply model for quick iterations",
+      "contextLength": 8192,
+      "completionOptions": {
+        "temperature": 0.1,
+        "topP": 0.95,
+        "maxTokens": 2048
+      },
+      "promptTemplates": {
+        "apply": "Original: {{{original_code}}}\nNew: {{{new_code}}}\n\nPlease generate the final code without any markers or explanations."
+      }
+    },
+    
+    {
+      "title": "Relace Instant Apply",
+      "provider": "relace",
+      "model": "instant-apply",
+      "apiBase": "https://api.relace.ai",
+      "apiKey": "${RELACE_API_KEY}",
+      "roles": ["apply"],
+      "description": "Precise apply model for complex diffs",
+      "contextLength": 16384,
+      "completionOptions": {
+        "temperature": 0.05,
+        "topP": 0.98,
+        "maxTokens": 4096
+      },
+      "promptTemplates": {
+        "apply": "Generate a precise diff to transform:\n\nORIGINAL CODE:\n{{{original_code}}}\n\nINTO NEW CODE:\n{{{new_code}}}\n\nProvide only the exact changes needed, no explanations."
+      }
+    },
+    
+    {
+      "title": "Claude 3.5 Haiku Apply",
+      "provider": "anthropic",
+      "model": "claude-3-5-haiku-latest",
+      "apiKey": "${ANTHROPIC_API_KEY}",
+      "roles": ["apply"],
+      "description": "Fast and cost-effective fallback apply model",
+      "contextLength": 200000,
+      "completionOptions": {
+        "temperature": 0.1,
+        "topP": 0.95,
+        "maxTokens": 4096
+      },
+      "promptTemplates": {
+        "apply": "Context: This is part of {{{file_path}}}\n\nOriginal:\n{{{original_code}}}\n\nDesired:\n{{{new_code}}}\n\nGenerate the exact code to replace the original, maintaining style and conventions."
+      }
+    },
+    
+    {
+      "title": "Claude 3.5 Sonnet Apply",
+      "provider": "anthropic",
+      "model": "claude-3-5-sonnet-latest",
+      "apiKey": "${ANTHROPIC_API_KEY}",
+      "roles": ["apply"],
+      "description": "Maximum accuracy for critical production changes",
+      "contextLength": 200000,
+      "completionOptions": {
+        "temperature": 0.05,
+        "topP": 0.98,
+        "maxTokens": 8192
+      },
+      "promptTemplates": {
+        "apply": "Safely refactor this code:\n\nCurrent:\n{{{original_code}}}\n\nTarget:\n{{{new_code}}}\n\nEnsure no functionality is lost. Generate only the final code."
+      }
+    }
+  ],
+  
+  "applySettings": {
+    "defaultModel": "morph-fast-apply",
+    "fallbackChain": [
+      "morph-fast-apply",
+      "relace-instant-apply",
+      "claude-3-5-haiku-latest",
+      "claude-3-5-sonnet-latest"
+    ],
+    
+    "autoSelect": true,
+    "selectionCriteria": {
+      "quickEdit": "morph-fast-apply",
+      "complexRefactor": "relace-instant-apply",
+      "productionCode": "claude-3-5-sonnet-latest",
+      "costConscious": "claude-3-5-haiku-latest"
+    },
+    
+    "qualityChecks": {
+      "preApply": [
+        "syntaxValidation",
+        "styleConsistency",
+        "importVerification"
+      ],
+      "postApply": [
+        "syntaxValid",
+        "testsPass",
+        "noRegressions"
+      ]
+    },
+    
+    "rollback": {
+      "enabled": true,
+      "backupBeforeApply": true,
+      "autoRollbackOn": [
+        "syntaxError",
+        "testFailure",
+        "typeError"
+      ]
+    },
+    
+    "performance": {
+      "caching": {
+        "enabled": true,
+        "duration": "24h",
+        "maxSize": "100MB"
+      },
+      "batching": {
+        "enabled": true,
+        "maxBatchSize": 10
+      },
+      "parallel": {
+        "enabled": true,
+        "maxParallel": 5
+      }
+    }
+  },
+  
+  "monitoring": {
+    "enabled": true,
+    "logAllApplies": true,
+    "trackMetrics": [
+      "successRate",
+      "averageTime",
+      "rollbackFrequency",
+      "modelUsage"
+    ],
+    "dailySummary": true
+  }
+}
