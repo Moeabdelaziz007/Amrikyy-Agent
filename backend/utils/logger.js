@@ -18,9 +18,14 @@ class Logger {
     this.currentLevel = process.env.LOG_LEVEL 
       ? this.logLevels[process.env.LOG_LEVEL.toUpperCase()] 
       : this.logLevels.INFO;
+
+    this.logToConsole = process.env.LOG_TO_CONSOLE ? process.env.LOG_TO_CONSOLE === 'true' : true;
+    this.logToFile = process.env.LOG_TO_FILE ? process.env.LOG_TO_FILE === 'true' : true;
     
     this.logDir = path.join(__dirname, '../logs');
-    this.ensureLogDirectory();
+    if (this.logToFile) {
+      this.ensureLogDirectory();
+    }
     
     this.colors = {
       ERROR: '\x1b[31m', // Red
@@ -53,12 +58,16 @@ class Logger {
     const logFile = path.join(this.logDir, `${level.toLowerCase()}.log`);
     const allLogsFile = path.join(this.logDir, 'all.log');
     
-    try {
-      fs.appendFileSync(logFile, formattedLog.formatted + '\n');
-      fs.appendFileSync(allLogsFile, formattedLog.formatted + '\n');
-    } catch (error) {
-      console.error('Failed to write to log file:', error);
-    }
+    fs.appendFile(logFile, formattedLog.formatted + '\n', (err) => {
+      if (err) {
+        console.error('Failed to write to log file:', err);
+      }
+    });
+    fs.appendFile(allLogsFile, formattedLog.formatted + '\n', (err) => {
+      if (err) {
+        console.error('Failed to write to all-logs file:', err);
+      }
+    });
   }
 
   log(level, message, meta = {}) {
@@ -68,12 +77,14 @@ class Logger {
 
     const formattedLog = this.formatMessage(level, message, meta);
     
-    // Console output with colors
-    const color = this.colors[level] || this.colors.RESET;
-    console.log(`${color}${formattedLog.formatted}${this.colors.RESET}`);
+    if (this.logToConsole) {
+      const color = this.colors[level] || this.colors.RESET;
+      console.log(`${color}${formattedLog.formatted}${this.colors.RESET}`);
+    }
     
-    // File output
-    this.writeToFile(level, formattedLog);
+    if (this.logToFile) {
+      this.writeToFile(level, formattedLog);
+    }
   }
 
   error(message, error = null, meta = {}) {
@@ -137,6 +148,9 @@ class Logger {
 
   // Rotate logs (keep last 7 days)
   rotateLogs() {
+    if (!this.logToFile) {
+      return;
+    }
     const files = fs.readdirSync(this.logDir);
     const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
     
@@ -156,8 +170,10 @@ class Logger {
 const logger = new Logger();
 
 // Rotate logs daily
-setInterval(() => {
-  logger.rotateLogs();
-}, 24 * 60 * 60 * 1000);
+if (logger.logToFile) {
+  setInterval(() => {
+    logger.rotateLogs();
+  }, 24 * 60 * 60 * 1000);
+}
 
 module.exports = logger;

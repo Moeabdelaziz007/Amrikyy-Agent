@@ -6,6 +6,9 @@
 const fetch = require('node-fetch');
 
 class GeminiClient {
+  /**
+   * Initializes the Gemini client with configuration from environment variables.
+   */
   constructor() {
     this.apiKey = process.env.GEMINI_API_KEY;
     this.baseUrl = 'https://generativelanguage.googleapis.com/v1';
@@ -15,15 +18,23 @@ class GeminiClient {
   }
 
   /**
-   * Send chat completion request to Gemini
+   * Sends a chat completion request to the Gemini API.
+   * @param {Array<object>} messages - An array of message objects (e.g., {role: 'user', content: '...'})
+   * @param {object} [options={}] - Optional settings to override defaults (e.g., temperature, maxTokens).
+   * @returns {Promise<{success: boolean, data: object|null, content: string, error: string|null}>} 
+   *          An object containing the success status, API data, extracted content, and any error message.
    */
   async chatCompletion(messages, options = {}) {
     try {
       // Convert messages to Gemini format
-      const contents = this.convertMessagesToGemini(messages);
+      const { contents, systemInstruction } = this.convertMessagesToGemini(messages);
       
       const requestBody = {
         contents: contents,
+        // Add system instruction if it exists
+        ...(systemInstruction && { 
+          system_instruction: { parts: [{ text: systemInstruction }] } 
+        }),
         generationConfig: {
           temperature: options.temperature || this.temperature,
           maxOutputTokens: options.maxTokens || this.maxTokens,
@@ -33,11 +44,12 @@ class GeminiClient {
       };
 
       const response = await fetch(
-        `${this.baseUrl}/models/${this.model}:generateContent?key=${this.apiKey}`,
+        `${this.baseUrl}/models/${this.model}:generateContent`,
         {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'x-goog-api-key': this.apiKey
           },
           body: JSON.stringify(requestBody)
         }
@@ -55,7 +67,8 @@ class GeminiClient {
       
       return {
         success: true,
-        data: data,
+        data,
+        error: null,
         content: content
       };
 
@@ -64,21 +77,27 @@ class GeminiClient {
       return {
         success: false,
         error: error.message,
+        data: null,
         content: 'عذراً، حدث خطأ في معالجة طلبك. يرجى المحاولة مرة أخرى.'
       };
     }
   }
 
   /**
-   * Convert OpenAI-style messages to Gemini format
+   * Converts an array of OpenAI-style messages into the format required by the Gemini API.
+   * It separates the system prompt from the user/assistant messages.
+   * @param {Array<object>} messages - The array of messages to convert.
+   * @returns {{contents: Array<object>, systemInstruction: string}} An object containing the formatted contents and the system instruction.
    */
   convertMessagesToGemini(messages) {
     const contents = [];
     let systemInstruction = '';
-    
+    // Separate system instruction from other messages
     for (const msg of messages) {
       if (msg.role === 'system') {
         systemInstruction = msg.content;
+        // Combine multiple system messages if they exist
+        systemInstruction += `${msg.content}\n`;
         continue;
       }
       
@@ -87,20 +106,19 @@ class GeminiClient {
         parts: [{ text: msg.content }]
       });
     }
-    
-    // Prepend system instruction to first user message if exists
-    if (systemInstruction && contents.length > 0 && contents[0].role === 'user') {
-      contents[0].parts[0].text = `${systemInstruction}\n\n${contents[0].parts[0].text}`;
-    }
-    
-    return contents;
+    return { contents, systemInstruction: systemInstruction.trim() };
   }
 
   /**
-   * Generate travel recommendations
+   * Generates travel recommendations for a given destination, budget, and preferences.
+   * @param {string} destination - The travel destination.
+   * @param {string} budget - The user's budget (e.g., "$1000").
+   * @param {string} duration - The duration of the trip (e.g., "7 days").
+   * @param {Array<string>} [preferences=[]] - A list of user preferences (e.g., ['beaches', 'history']).
+   * @returns {Promise<object>} The result from the chatCompletion method.
    */
   async generateTravelRecommendations(destination, budget, duration, preferences = []) {
-    const systemPrompt = `أنت Maya، مساعد سفر ذكي متخصص في التخطيط للرحلات. 
+    const systemPrompt = `You are Maya, an expert AI travel assistant specializing in Arabic and English travel planning.
     قدم توصيات سفر مفصلة وعملية تتضمن:
     - 3-5 أماكن يجب زيارتها
     - توصيات الطعام المحلي
@@ -108,7 +126,7 @@ class GeminiClient {
     - نصائح لتوفير المال
     - رؤى ثقافية
     - نصائح السلامة
-    استجب بالعربية ما لم يُطلب منك الإنجليزية.`;
+    Respond in Arabic unless specifically asked in English.`;
 
     const userPrompt = `خطط لرحلة مدتها ${duration} إلى ${destination} بميزانية ${budget}. 
     التفضيلات: ${preferences.join(', ')}. 
@@ -126,10 +144,16 @@ class GeminiClient {
   }
 
   /**
-   * Generate budget analysis
+   * Generates a detailed budget analysis and cost-saving recommendations for a trip.
+   * @param {object} tripData - An object containing trip details.
+   * @param {string} tripData.destination - The travel destination.
+   * @param {number} tripData.duration - The trip duration in days.
+   * @param {number} tripData.travelers - The number of travelers.
+   * @param {number} totalBudget - The total budget for the trip.
+   * @returns {Promise<object>} The result from the chatCompletion method.
    */
   async generateBudgetAnalysis(tripData, totalBudget) {
-    const systemPrompt = `أنت Maya، مستشار مالي للسفر. قم بتحليل تكاليف الرحلة وقدم:
+    const systemPrompt = `You are Maya, a financial travel advisor. Analyze trip costs and provide:
     - تفصيل مفصل للميزانية
     - توصيات لتوفير التكاليف
     - خيارات بديلة
@@ -156,11 +180,14 @@ class GeminiClient {
   }
 
   /**
-   * Generate chat response
+   * Generates a conversational response to a user's message, maintaining context from history.
+   * @param {string} userMessage - The user's most recent message.
+   * @param {Array<object>} [conversationHistory=[]] - An array of previous messages in the conversation.
+   * @returns {Promise<object>} The result from the chatCompletion method.
    */
   async generateChatResponse(userMessage, conversationHistory = []) {
-    const systemPrompt = `أنت Maya، مساعد سفر ذكي ودود. 
-    تساعد المستخدمين في:
+    const systemPrompt = `You are Maya, a friendly and knowledgeable AI travel assistant. 
+    You help users with:
     - تخطيط السفر والتوصيات
     - تحليل الميزانية
     - معلومات الوجهات
@@ -168,7 +195,7 @@ class GeminiClient {
     - نصائح ونصائح السفر
     
     كن محادثاً ومفيداً وقدم نصائح عملية.
-    استجب بالعربية ما لم يُطلب منك الإنجليزية.`;
+    Respond in Arabic unless specifically asked in English.`;
 
     const messages = [
       { role: 'system', content: systemPrompt },
@@ -183,10 +210,13 @@ class GeminiClient {
   }
 
   /**
-   * Generate destination insights
+   * Generates comprehensive insights for a specific travel destination.
+   * @param {string} destination - The name of the destination.
+   * @param {string} [travelType='leisure'] - The type of travel (e.g., 'business', 'leisure', 'adventure').
+   * @returns {Promise<object>} The result from the chatCompletion method.
    */
   async generateDestinationInsights(destination, travelType = 'leisure') {
-    const systemPrompt = `أنت Maya، خبير وجهات السفر. قدم رؤى شاملة حول الوجهات بما في ذلك:
+    const systemPrompt = `You are Maya, a travel destination expert. Provide comprehensive insights about destinations including:
     - أفضل وقت للزيارة
     - الظروف الجوية
     - المعالم الثقافية
@@ -211,10 +241,16 @@ class GeminiClient {
   }
 
   /**
-   * Generate payment recommendations
+   * Generates recommendations for payment methods and booking strategies for a trip.
+   * @param {object} tripDetails - An object containing trip information.
+   * @param {string} tripDetails.destination - The travel destination.
+   * @param {number} tripDetails.budget - The trip budget.
+   * @param {number} tripDetails.duration - The trip duration in days.
+   * @param {string} [paymentMethod='credit_card'] - The user's preferred payment method.
+   * @returns {Promise<object>} The result from the chatCompletion method.
    */
   async generatePaymentRecommendations(tripDetails, paymentMethod = 'credit_card') {
-    const systemPrompt = `أنت Maya، مستشار مالي للسفر. قدم نصائح الدفع والحجز بما في ذلك:
+    const systemPrompt = `You are Maya, a travel financial advisor. Provide payment and booking advice including:
     - أفضل طرق الدفع للسفر
     - استراتيجيات صرف العملات
     - توصيات التأمين على السفر
@@ -242,7 +278,8 @@ class GeminiClient {
   }
 
   /**
-   * Health check
+   * Performs a health check on the Gemini API by sending a simple test message.
+   * @returns {Promise<{success: boolean, status: string, error: string|null}>} An object indicating the health status.
    */
   async healthCheck() {
     try {
