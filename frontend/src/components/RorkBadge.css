@@ -1,0 +1,124 @@
+.rork-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.rork-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  text-decoration: none;
+  color: white;
+}
+
+.rork-badge:active {
+  transform: translateY(0);
+}
+
+/* Logo */
+.rork-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.rork-logo svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Text */
+.rork-text {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.rork-text-minimal {
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Detailed variant */
+.rork-content-detailed {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rork-title {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.rork-subtitle {
+  font-size: 11px;
+  opacity: 0.9;
+  font-weight: 400;
+}
+
+/* Arrow */
+.rork-arrow {
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.rork-badge:hover .rork-arrow {
+  transform: translateX(4px);
+}
+
+/* Variants */
+.rork-badge-minimal {
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+.rork-badge-detailed {
+  padding: 12px 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .rork-badge {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+  
+  .rork-badge-detailed {
+    padding: 10px 16px;
+  }
+  
+  .rork-title {
+    font-size: 13px;
+  }
+  
+  .rork-subtitle {
+    font-size: 10px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .rork-badge {
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+  }
+  
+  .rork-badge:hover {
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+  }
+}
