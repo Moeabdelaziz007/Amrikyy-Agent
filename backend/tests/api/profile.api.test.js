@@ -43,7 +43,7 @@ describe('Profile API Tests', () => {
 
   describe('GET /api/profile', () => {
     it('should return user profile with valid token', async () => {
-      SupabaseDB.prototype.getUserProfile = jest.fn().resolvedValue(mockUser);
+      SupabaseDB.prototype.getUserProfile = jest.fn().mockResolvedValue(mockUser);
 
       const response = await request(app)
         .get('/api/profile')
@@ -76,7 +76,7 @@ describe('Profile API Tests', () => {
     });
 
     it('should return 404 if user not found', async () => {
-      SupabaseDB.prototype.getUserProfile = jest.fn().resolvedValue(null);
+      SupabaseDB.prototype.getUserProfile = jest.fn().mockResolvedValue(null);
 
       const response = await request(app)
         .get('/api/profile')
@@ -94,8 +94,8 @@ describe('Profile API Tests', () => {
         bio: 'Updated bio'
       };
 
-      SupabaseDB.prototype.getUserProfile = jest.fn().resolvedValue(mockUser);
-      SupabaseDB.prototype.updateUserProfile = jest.fn().resolvedValue({ ...mockUser, ...updates });
+      SupabaseDB.prototype.getUserProfile = jest.fn().mockResolvedValue(mockUser);
+      SupabaseDB.prototype.updateUserProfile = jest.fn().mockResolvedValue({ ...mockUser, ...updates });
 
       const response = await request(app)
         .put('/api/profile')
@@ -108,7 +108,7 @@ describe('Profile API Tests', () => {
     });
 
     it('should validate required fields', async () => {
-      SupabaseDB.prototype.getUserProfile = jest.fn().resolvedValue(mockUser);
+      SupabaseDB.prototype.getUserProfile = jest.fn().mockResolvedValue(mockUser);
 
       const response = await request(app)
         .put('/api/profile')
@@ -121,7 +121,7 @@ describe('Profile API Tests', () => {
     });
 
     it('should validate email format', async () => {
-      SupabaseDB.prototype.getUserProfile = jest.fn().resolvedValue(mockUser);
+      SupabaseDB.prototype.getUserProfile = jest.fn().mockResolvedValue(mockUser);
 
       const response = await request(app)
         .put('/api/profile')
@@ -138,8 +138,8 @@ describe('Profile API Tests', () => {
         bio: '<img src=x onerror=alert(1)>'
       };
 
-      SupabaseDB.prototype.getUserProfile = jest.fn().resolvedValue(mockUser);
-      SupabaseDB.prototype.updateUserProfile = jest.fn().resolvedValue(mockUser);
+      SupabaseDB.prototype.getUserProfile = jest.fn().mockResolvedValue(mockUser);
+      SupabaseDB.prototype.updateUserProfile = jest.fn().mockResolvedValue(mockUser);
 
       const response = await request(app)
         .put('/api/profile')
@@ -154,8 +154,8 @@ describe('Profile API Tests', () => {
 
   describe('POST /api/profile/avatar', () => {
     it('should upload avatar successfully', async () => {
-      SupabaseDB.prototype.getUserProfile = jest.fn().resolvedValue(mockUser);
-      SupabaseDB.prototype.updateUserProfile = jest.fn().resolvedValue(mockUser);
+      SupabaseDB.prototype.getUserProfile = jest.fn().mockResolvedValue(mockUser);
+      SupabaseDB.prototype.updateUserProfile = jest.fn().mockResolvedValue(mockUser);
 
       const response = await request(app)
         .post('/api/profile/avatar')
@@ -199,8 +199,8 @@ describe('Profile API Tests', () => {
         upcoming_trips: 2
       };
 
-      SupabaseDB.prototype.getUserProfile = jest.fn().resolvedValue(mockUser);
-      SupabaseDB.prototype.getUserStats = jest.fn().resolvedValue(mockStats);
+      SupabaseDB.prototype.getUserProfile = jest.fn().mockResolvedValue(mockUser);
+      SupabaseDB.prototype.getUserStats = jest.fn().mockResolvedValue(mockStats);
 
       const response = await request(app)
         .get('/api/profile/stats')
@@ -214,8 +214,8 @@ describe('Profile API Tests', () => {
 
   describe('DELETE /api/profile', () => {
     it('should delete account successfully', async () => {
-      SupabaseDB.prototype.getUserProfile = jest.fn().resolvedValue(mockUser);
-      SupabaseDB.prototype.deleteUserAccount = jest.fn().resolvedValue(true);
+      SupabaseDB.prototype.getUserProfile = jest.fn().mockResolvedValue(mockUser);
+      SupabaseDB.prototype.deleteUserAccount = jest.fn().mockResolvedValue(true);
 
       const response = await request(app)
         .delete('/api/profile')
@@ -227,7 +227,7 @@ describe('Profile API Tests', () => {
     });
 
     it('should require confirmation', async () => {
-      SupabaseDB.prototype.getUserProfile = jest.fn().resolvedValue(mockUser);
+      SupabaseDB.prototype.getUserProfile = jest.fn().mockResolvedValue(mockUser);
 
       const response = await request(app)
         .delete('/api/profile')
@@ -241,7 +241,7 @@ describe('Profile API Tests', () => {
 
   describe('Error Handling', () => {
     it('should handle database errors gracefully', async () => {
-      SupabaseDB.prototype.getUserProfile = jest.fn().rejectedValue(new Error('DB Error'));
+      SupabaseDB.prototype.getUserProfile = jest.fn().mockRejectedValue(new Error('DB Error'));
 
       const response = await request(app)
         .get('/api/profile')

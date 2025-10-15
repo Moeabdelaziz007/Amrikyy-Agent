@@ -9,5 +9,8 @@ module.exports = {
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
   verbose: true,
-  testTimeout: 10000
+  testTimeout: 10000,
+  transformIgnorePatterns: [
+    "/node_modules/(?!chai)/"
+  ]
 };
