@@ -1,0 +1,155 @@
+{
+  "models": [
+    {
+      "title": "Qwen 7B - Chat & Edit (Free)",
+      "provider": "ollama",
+      "model": "qwen2.5-coder:7b",
+      "roles": ["chat", "edit"],
+      "description": "Free local model for chat and code editing",
+      "completionOptions": {
+        "temperature": 0.2,
+        "topP": 0.95,
+        "topK": 40,
+        "numPredict": 2048,
+        "numCtx": 8192,
+        "repeatPenalty": 1.1
+      }
+    },
+    
+    {
+      "title": "Qwen 1.5B - Autocomplete (Free)",
+      "provider": "ollama",
+      "model": "qwen2.5-coder:1.5b",
+      "roles": ["autocomplete"],
+      "description": "Fast free local model for autocomplete",
+      "completionOptions": {
+        "temperature": 0.2,
+        "topP": 0.95,
+        "numPredict": 256,
+        "numCtx": 2048,
+        "repeatPenalty": 1.1
+      }
+    },
+    
+    {
+      "title": "Nomic Embed - Embeddings (Free)",
+      "provider": "ollama",
+      "model": "nomic-embed-text",
+      "roles": ["embed"],
+      "description": "Free local embeddings for code search"
+    }
+  ],
+  
+  "tabAutocompleteModel": {
+    "title": "Qwen 1.5B Autocomplete",
+    "provider": "ollama",
+    "model": "qwen2.5-coder:1.5b"
+  },
+  
+  "embeddingsProvider": {
+    "provider": "ollama",
+    "model": "nomic-embed-text"
+  },
+  
+  "systemMessage": "You are Cursero - an ultra-intelligent AI coding agent with DNA Score 99.2/100. You specialize in codebase deep learning, workflow optimization, and proactive assistance.\n\nYou are running locally using Ollama with free open-source models. All processing happens on the user's machine with complete privacy.\n\nCore capabilities:\n- Learn continuously from codebase and user patterns\n- Monitor workspace for quality and issues\n- Predict problems before they happen\n- Recommend improvements proactively\n- Optimize workflows for maximum efficiency\n- Teach while assisting\n\nUse 7 reasoning strategies:\n1. Quantum Superposition Thinking\n2. Multi-Dimensional Analysis (7 dimensions)\n3. First Principles Reasoning\n4. Pattern Synthesis Mastery\n5. Strategic Decomposition\n6. Hypothesis-Driven Development\n7. Creative Synthesis\n\nFollow 7-phase development process:\n1. Deep Understanding (5-15%)\n2. Strategic Planning (10-20%)\n3. Elegant Design (10-15%)\n4. Flawless Implementation (40-50%)\n5. Rigorous Validation (10-15%)\n6. Continuous Optimization (5-10%)\n7. Deep Learning (5%)\n\nMaintain quality standards:\n- Readability: Max 50 lines/function, prose-like code\n- Testing: 80%+ coverage minimum\n- Security: Never commit secrets, always validate input\n- Performance: <200ms API, <100ms DB\n\nYou are 100% free, 100% private, and 100% local!",
+  
+  "allowAnonymousTelemetry": false,
+  
+  "docs": [
+    {
+      "title": "Project Documentation",
+      "startUrl": "https://github.com/Moeabdelaziz007/amrikyy-agent"
+    }
+  ],
+  
+  "contextProviders": [
+    {
+      "name": "code",
+      "params": {}
+    },
+    {
+      "name": "docs",
+      "params": {}
+    },
+    {
+      "name": "diff",
+      "params": {}
+    },
+    {
+      "name": "terminal",
+      "params": {}
+    },
+    {
+      "name": "problems",
+      "params": {}
+    },
+    {
+      "name": "folder",
+      "params": {}
+    },
+    {
+      "name": "codebase",
+      "params": {}
+    }
+  ],
+  
+  "slashCommands": [
+    {
+      "name": "edit",
+      "description": "Edit selected code"
+    },
+    {
+      "name": "comment",
+      "description": "Add comments to code"
+    },
+    {
+      "name": "share",
+      "description": "Share code snippet"
+    },
+    {
+      "name": "cmd",
+      "description": "Generate shell command"
+    },
+    {
+      "name": "commit",
+      "description": "Generate commit message"
+    }
+  ],
+  
+  "customCommands": [
+    {
+      "name": "test",
+      "prompt": "Write comprehensive tests for the selected code. Include unit tests, edge cases, and integration tests. Follow the project's testing patterns.",
+      "description": "Generate tests for selected code"
+    },
+    {
+      "name": "explain",
+      "prompt": "Explain the selected code in detail. Cover what it does, how it works, why it's designed this way, and any potential improvements.",
+      "description": "Explain code in detail"
+    },
+    {
+      "name": "optimize",
+      "prompt": "Analyze the selected code for performance optimizations. Suggest improvements for speed, memory usage, and efficiency. Explain the trade-offs.",
+      "description": "Optimize selected code"
+    },
+    {
+      "name": "security",
+      "prompt": "Audit the selected code for security vulnerabilities. Check for SQL injection, XSS, authentication issues, input validation, and other security concerns.",
+      "description": "Security audit"
+    },
+    {
+      "name": "refactor",
+      "prompt": "Refactor the selected code to improve readability, maintainability, and follow best practices. Maintain the same functionality.",
+      "description": "Refactor code"
+    }
+  ],
+  
+  "experimental": {
+    "modelRoles": {
+      "chat": "qwen2.5-coder:7b",
+      "edit": "qwen2.5-coder:7b",
+      "autocomplete": "qwen2.5-coder:1.5b",
+      "embed": "nomic-embed-text"
+    }
+  }
+}
