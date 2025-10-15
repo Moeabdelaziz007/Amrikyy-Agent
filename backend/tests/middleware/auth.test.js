@@ -46,7 +46,7 @@ describe('Auth Middleware Tests', () => {
       );
 
       req.headers.authorization = `Bearer ${token}`;
-      SupabaseDB.prototype.getUserProfile = jest.fn().resolvedValue(mockUser);
+      SupabaseDB.prototype.getUserProfile = jest.fn().mockResolvedValue(mockUser);
 
       await authenticateToken(req, res, next);
 
@@ -112,7 +112,7 @@ describe('Auth Middleware Tests', () => {
       );
 
       req.headers.authorization = `Bearer ${token}`;
-      SupabaseDB.prototype.getUserProfile = jest.fn().resolvedValue(null);
+      SupabaseDB.prototype.getUserProfile = jest.fn().mockResolvedValue(null);
 
       await authenticateToken(req, res, next);
 
@@ -131,7 +131,7 @@ describe('Auth Middleware Tests', () => {
       );
 
       req.headers.authorization = `Bearer ${token}`;
-      SupabaseDB.prototype.getUserProfile = jest.fn().rejectedValue(
+      SupabaseDB.prototype.getUserProfile = jest.fn().mockRejectedValue(
         new Error('Database connection failed')
       );
 
@@ -150,7 +150,7 @@ describe('Auth Middleware Tests', () => {
       );
 
       req.headers.authorization = `Bearer ${token}`;
-      SupabaseDB.prototype.getUserProfile = jest.fn().resolvedValue(mockUser);
+      SupabaseDB.prototype.getUserProfile = jest.fn().mockResolvedValue(mockUser);
 
       await optionalAuth(req, res, next);
 
@@ -238,7 +238,7 @@ describe('Auth Middleware Tests', () => {
       );
 
       req.headers.authorization = `Bearer ${token}`;
-      SupabaseDB.prototype.getUserProfile = jest.fn().resolvedValue(mockUser);
+      SupabaseDB.prototype.getUserProfile = jest.fn().mockResolvedValue(mockUser);
 
       const requests = Array(100).fill().map(() =>
         authenticateToken(req, res, next)
