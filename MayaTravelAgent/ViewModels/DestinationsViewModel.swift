@@ -15,8 +15,23 @@ class DestinationsViewModel: BaseViewModel {
     /// Loading state for UI feedback
     @Published var isLoading = false
 
+    /// Loading state for pagination
+    @Published var isLoadingMore = false
+
     /// Error message for UI display
     @Published var error: String?
+
+    /// Current page for pagination
+    private var currentPage = 1
+
+    /// Page size for pagination
+    private let pageSize = 20
+
+    /// Whether there are more pages to load
+    @Published var hasMorePages = true
+
+    /// Whether currently searching
+    @Published var isSearching = false
 
     /// Search text for real-time filtering
     @Published var searchText = ""
@@ -57,30 +72,145 @@ class DestinationsViewModel: BaseViewModel {
 
     // MARK: - Data Loading
 
-    /// Loads destinations from API
-    func loadDestinations() {
+    /// Loads destinations from API with pagination support
+    /// - Parameters:
+    ///   - page: Page number (default: 1)
+    ///   - limit: Number of destinations per page (default: 20)
+    func loadDestinations(page: Int = 1, limit: Int = 20) {
         Task {
-            await fetchDestinations()
+            await fetchDestinationsFromAPI(page: page, limit: limit)
         }
     }
 
-    /// Fetches destinations from API with error handling
+    /// Fetches destinations from API with pagination and error handling
     @MainActor
-    private func fetchDestinations() async {
+    private func fetchDestinationsFromAPI(page: Int = 1, limit: Int = 20) async {
         isLoading = true
         error = nil
 
         do {
-            // TODO: Replace with actual API call when backend is ready
-            // For now, using mock data
-            let mockDestinations = createMockDestinations()
-            destinations = mockDestinations
+            let tripService = TripService.shared
+            let newDestinations = try await tripService.getDestinations(page: page, limit: limit)
+
+            if page == 1 {
+                destinations = newDestinations
+            } else {
+                destinations.append(contentsOf: newDestinations)
+            }
+
+            currentPage = page
+            hasMorePages = newDestinations.count >= limit
+            applyFilters()
+        } catch {
+            self.error = error.localizedDescription
+            // Fallback to mock data if API fails
+            if page == 1 {
+                destinations = createMockDestinations()
+                applyFilters()
+            }
+        }
+
+        isLoading = false
+    }
+
+    /// Loads more destinations for pagination
+    func loadMoreDestinations() {
+        guard hasMorePages && !isLoadingMore && !isLoading else { return }
+
+        Task {
+            await fetchMoreDestinations()
+        }
+    }
+
+    /// Fetches additional destinations for pagination
+    @MainActor
+    private func fetchMoreDestinations() async {
+        isLoadingMore = true
+
+        do {
+            let nextPage = currentPage + 1
+            let tripService = TripService.shared
+            let newDestinations = try await tripService.getDestinations(page: nextPage, limit: pageSize)
+
+            destinations.append(contentsOf: newDestinations)
+            currentPage = nextPage
+            hasMorePages = newDestinations.count >= pageSize
             applyFilters()
         } catch {
             self.error = error.localizedDescription
         }
 
-        isLoading = false
+        isLoadingMore = false
+    }
+
+    /// Searches destinations with query and pagination
+    /// - Parameters:
+    ///   - query: Search query string
+    ///   - page: Page number (default: 1)
+    ///   - limit: Number of destinations per page (default: 20)
+    func searchDestinations(query: String, page: Int = 1, limit: Int = 20) {
+        guard !query.isEmpty else {
+            // If query is empty, load all destinations
+            loadDestinations(page: page, limit: limit)
+            return
+        }
+
+        Task {
+            await fetchDestinationsByQuery(query: query, page: page, limit: limit)
+        }
+    }
+
+    /// Fetches destinations by search query
+    @MainActor
+    private func fetchDestinationsByQuery(query: String, page: Int = 1, limit: Int = 20) async {
+        isSearching = true
+        error = nil
+
+        do {
+            let tripService = TripService.shared
+            let searchResults = try await tripService.searchDestinations(query: query, page: page, limit: limit)
+
+            if page == 1 {
+                destinations = searchResults
+            } else {
+                destinations.append(contentsOf: searchResults)
+            }
+
+            currentPage = page
+            hasMorePages = searchResults.count >= limit
+            applyFilters()
+        } catch {
+            self.error = error.localizedDescription
+            // Fallback to filtered mock data
+            let mockDestinations = createMockDestinations()
+            let filteredResults = mockDestinations.filter { destination in
+                destination.name.localizedCaseInsensitiveContains(query) ||
+                destination.country.localizedCaseInsensitiveContains(query) ||
+                destination.description?.localizedCaseInsensitiveContains(query) == true
+            }
+
+            if page == 1 {
+                destinations = filteredResults
+            } else {
+                destinations.append(contentsOf: filteredResults)
+            }
+            applyFilters()
+        }
+
+        isSearching = false
+    }
+
+    /// Fetches a single destination by ID
+    /// - Parameter id: Destination ID
+    /// - Returns: Destination if found
+    func getDestination(id: String) async throws -> Destination? {
+        let tripService = TripService.shared
+        return try await tripService.getDestination(id: id)
+    }
+
+    /// Legacy method for backward compatibility
+    func loadDestinations() {
+        loadDestinations(page: 1, limit: pageSize)
     }
 
     // MARK: - Filtering Logic
