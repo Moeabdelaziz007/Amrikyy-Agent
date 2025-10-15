@@ -47,7 +47,7 @@ interface Trip {
 
 const AppContent: React.FC = () => {
   const { user, loading } = useAuth();
-  const [currentPage, setCurrentPage] = useState<'landing' | 'dashboard' | 'agents' | 'hologram' | 'analytics' | 'chat' | 'network' | 'trip-details'>('landing');
+  const [currentPage, setCurrentPage] = useState<'landing' | 'dashboard' | 'agents' | 'hologram' | 'analytics' | 'chat' | 'network' | 'trip-details' | 'profile' | 'notifications'>('landing');
   const [activeTab, setActiveTab] = useState('planner');
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
 
@@ -272,6 +272,8 @@ const AppContent: React.FC = () => {
         {currentPage === 'agents' && <AgentGallery />}
         {currentPage === 'hologram' && <HologramDemo />}
         {currentPage === 'analytics' && <Analytics />}
+        {currentPage === 'profile' && <ProfileSettingsPage />}
+        {currentPage === 'notifications' && <NotificationsPage />}
         
         {currentPage === 'planner' && (
           <>
