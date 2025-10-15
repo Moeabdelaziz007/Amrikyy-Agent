@@ -1,4 +1,4 @@
-# 🤖 Automated Systems Improvement Plan - Maya Travel Agent
+# 🤖 Automated Systems Improvement Plan - Amrikyy Travel Agent
 
 **Expert Analysis Date:** October 10, 2025  
 **Plan Status:** In Progress  
@@ -88,7 +88,7 @@ a) **Playwright E2E Tests:** Wrong test context configuration
 b) **Component Tests:** Outdated assertions
    - "Loading your travel assistant..." text not found
    - Form role attributes missing
-   - "Maya Trips" branding text mismatch
+   - "Amrikyy Trips" branding text mismatch
 
 #### Solution:
 - Fix Playwright configuration (vitest vs playwright context)

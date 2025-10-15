@@ -1,5 +1,5 @@
 /**
- * JWT Authentication Middleware for Maya Travel Agent API
+ * JWT Authentication Middleware for Amrikyy Travel Agent API
  * Handles JWT token validation and user authentication
  */
 

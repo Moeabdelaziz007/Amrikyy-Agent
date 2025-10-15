@@ -29,7 +29,7 @@ export default defineConfig({
     'import.meta.env': {
       VITE_SUPABASE_URL: JSON.stringify(process.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co'),
       VITE_SUPABASE_ANON_KEY: JSON.stringify(process.env.VITE_SUPABASE_ANON_KEY || 'your_supabase_anon_key'),
-      VITE_APP_NAME: JSON.stringify(process.env.VITE_APP_NAME || 'Maya Trips'),
+      VITE_APP_NAME: JSON.stringify(process.env.VITE_APP_NAME || 'Amrikyy Trips'),
       VITE_APP_VERSION: JSON.stringify(process.env.VITE_APP_VERSION || '1.0.0'),
       VITE_ENVIRONMENT: JSON.stringify(process.env.VITE_ENVIRONMENT || 'development'),
     }

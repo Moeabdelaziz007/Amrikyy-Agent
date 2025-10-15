@@ -1,5 +1,5 @@
 /**
- * Enterprise-grade Error Handler for Maya Travel Agent
+ * Enterprise-grade Error Handler for Amrikyy Travel Agent
  * Provides centralized error handling with recovery strategies
  */
 

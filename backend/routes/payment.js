@@ -4,7 +4,7 @@ const router = express.Router();
 // Payment service integration
 class PaymentService {
   // Stripe integration with payment links
-  static async createStripePayment(amount, currency = 'USD', description = 'Maya Trips Payment') {
+  static async createStripePayment(amount, currency = 'USD', description = 'Amrikyy Trips Payment') {
     try {
       // Create Stripe payment link using MCP tool
       const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -15,7 +15,7 @@ class PaymentService {
         currency: currency.toLowerCase(),
         product_data: {
           name: description,
-          description: `Maya Trips - ${description}`,
+          description: `Amrikyy Trips - ${description}`,
         },
       });
 
@@ -55,7 +55,7 @@ class PaymentService {
   }
 
   // PayPal integration
-  static async createPayPalPayment(amount, currency = 'USD', description = 'Maya Trips Payment') {
+  static async createPayPalPayment(amount, currency = 'USD', description = 'Amrikyy Trips Payment') {
     try {
       // This would integrate with PayPal API
       const payment = {
@@ -79,7 +79,7 @@ class PaymentService {
   static async createTelegramPayment(
     amount,
     currency = 'USD',
-    description = 'Maya Trips Payment',
+    description = 'Amrikyy Trips Payment',
     chatId
   ) {
     try {

@@ -313,7 +313,7 @@ All 7 critical security vulnerabilities in STREAM 1 have been **successfully fix
 
 **Test the dashboard:**
 ```bash
-cd /Users/Shared/maya-travel-agent/backend
+cd /Users/Shared/amrikyy-travel-agent/backend
 npm start
 # Then visit: http://localhost:5000/aix-dashboard.html
 ```

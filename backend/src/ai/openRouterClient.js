@@ -1,7 +1,7 @@
 /**
  * OpenRouter API Client
  * Access to multiple AI models through OpenRouter
- * Cost-effective AI provider for Maya Travel Agent
+ * Cost-effective AI provider for Amrikyy Travel Agent
  */
 
 const fetch = require('node-fetch');
@@ -126,8 +126,8 @@ class OpenRouterClient {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${this.apiKey}`,
-          'HTTP-Referer': 'https://maya-travel-agent.com',
-          'X-Title': 'Maya Travel Agent'
+          'HTTP-Referer': 'https://amrikyy-travel-agent.com',
+          'X-Title': 'Amrikyy Travel Agent'
         },
         body: JSON.stringify(requestBody)
       });

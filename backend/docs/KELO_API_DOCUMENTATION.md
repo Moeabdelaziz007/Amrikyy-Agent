@@ -1,13 +1,13 @@
 # Kelo AI API Documentation
 **Version:** 1.0.0  
 **Last Updated:** October 13, 2025  
-**Base URL:** `https://api.maya-travel-agent.com/api/kelo`
+**Base URL:** `https://api.amrikyy-travel-agent.com/api/kelo`
 
 ---
 
 ## 🚀 **Overview**
 
-The Kelo AI API provides advanced AI-powered capabilities for the Maya Travel Agent platform. Built with cost optimization and performance in mind, it offers intelligent model selection, context management, and real-time AI interactions.
+The Kelo AI API provides advanced AI-powered capabilities for the Amrikyy Travel Agent platform. Built with cost optimization and performance in mind, it offers intelligent model selection, context management, and real-time AI interactions.
 
 ### **Key Features**
 - **Cost-Optimized AI:** Smart model selection based on task complexity
@@ -25,7 +25,7 @@ All API requests require authentication via API key:
 ```bash
 curl -H "Authorization: Bearer YOUR_API_KEY" \
      -H "Content-Type: application/json" \
-     https://api.maya-travel-agent.com/api/kelo/chat
+     https://api.amrikyy-travel-agent.com/api/kelo/chat
 ```
 
 ---
@@ -443,7 +443,7 @@ Contact support to obtain your API key.
 ### **2. Test Connection**
 ```bash
 curl -H "Authorization: Bearer YOUR_API_KEY" \
-     https://api.maya-travel-agent.com/api/kelo/status
+     https://api.amrikyy-travel-agent.com/api/kelo/status
 ```
 
 ### **3. Make Your First Request**
@@ -452,19 +452,19 @@ curl -X POST \
      -H "Authorization: Bearer YOUR_API_KEY" \
      -H "Content-Type: application/json" \
      -d '{"message": "Hello!"}' \
-     https://api.maya-travel-agent.com/api/kelo/chat
+     https://api.amrikyy-travel-agent.com/api/kelo/chat
 ```
 
 ---
 
 ## 📞 **Support**
 
-- **Documentation:** https://docs.maya-travel-agent.com
-- **Support Email:** support@maya-travel-agent.com
-- **Status Page:** https://status.maya-travel-agent.com
+- **Documentation:** https://docs.amrikyy-travel-agent.com
+- **Support Email:** support@amrikyy-travel-agent.com
+- **Status Page:** https://status.amrikyy-travel-agent.com
 
 ---
 
 **Last Updated:** October 13, 2025  
 **API Version:** 1.0.0  
-**Maintained By:** Maya Travel Agent Team
+**Maintained By:** Amrikyy Travel Agent Team

@@ -7,7 +7,7 @@ const USE_MOCK_AUTH = !(import.meta as any).env?.VITE_SUPABASE_URL ||
                       (import.meta as any).env?.VITE_SUPABASE_URL?.includes('your-project') ||
                       (import.meta as any).env?.VITE_SUPABASE_ANON_KEY?.includes('placeholder');
 
-// Auth service for Maya Trips
+// Auth service for Amrikyy Trips
 export class AuthService {
   // Sign up with email and password
   static async signUp(email: string, password: string, fullName?: string) {

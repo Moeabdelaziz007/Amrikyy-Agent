@@ -432,7 +432,7 @@ Create a **stunning, modern, AI-first interface** that makes users feel like the
 
 ### **6. Landing Page Hero**
 
-**Inspired by:** maya-travel-agent.lovable.app
+**Inspired by:** amrikyy-travel-agent.lovable.app
 
 **Layout:**
 ```
@@ -1042,7 +1042,7 @@ const glassStyle = {
 
 ## 📚 **Reference Links**
 
-- Maya Travel Agent: https://maya-travel-agent.lovable.app/ (avatar inspiration)
+- Amrikyy Travel Agent: https://amrikyy-travel-agent.lovable.app/ (avatar inspiration)
 - Sorare Basic: https://sorare-basic-44568.lovable.app (grid layout)
 - Tailwind CSS: https://tailwindcss.com/docs
 - Framer Motion: https://www.framer.com/motion

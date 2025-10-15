@@ -1,5 +1,5 @@
 /**
- * Rate Limiting Middleware for Maya Trips API
+ * Rate Limiting Middleware for Amrikyy Trips API
  * Protects endpoints from abuse and ensures fair usage
  */
 

@@ -44,10 +44,10 @@ Rename all "Maya" references to "Amrikyy" throughout the entire project.
 ## 🔧 **Renaming Rules**
 
 ```
-Maya Travel Agent    → Amrikyy Travel Agent
-Maya Trips          → Amrikyy Trips
-maya-travel-agent   → amrikyy-travel-agent
-MayaTravelAgent     → AmrikyyTravelAgent
+Amrikyy Travel Agent    → Amrikyy Travel Agent
+Amrikyy Trips          → Amrikyy Trips
+amrikyy-travel-agent   → amrikyy-travel-agent
+AmrikyyTravelAgent     → AmrikyyTravelAgent
 MayaTravelApp       → AmrikyyTravelApp
 mayaPersona         → amrikyyPersona
 maya-trips          → amrikyy-trips

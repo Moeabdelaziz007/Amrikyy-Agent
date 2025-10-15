@@ -468,7 +468,7 @@ function calculateTripBudget(destination, days, preferences) {
 4. Cursor reviews and integrates
 
 **Example Task:**
-"Kombai, look at this design from maya-travel-agent.lovable.app. Create the Agent ID card component with flip animation, glassmorphism effect, and hexagonal avatar frame. Make it responsive for mobile."
+"Kombai, look at this design from amrikyy-travel-agent.lovable.app. Create the Agent ID card component with flip animation, glassmorphism effect, and hexagonal avatar frame. Make it responsive for mobile."
 
 ---
 

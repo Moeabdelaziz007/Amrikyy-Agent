@@ -49,7 +49,7 @@
   },
   
   "cursor.ai.project_context": {
-    "project_id": "maya-travel-agent",
+    "project_id": "amrikyy-travel-agent",
     "tech_stack": ["React", "TypeScript", "Node.js", "Express", "Supabase", "AIX"],
     "ai_agents": ["Maya", "Kelo", "Pattern Learning Agent", "Ona", "NanoCoordinator"],
     "primary_language": "TypeScript/JavaScript",

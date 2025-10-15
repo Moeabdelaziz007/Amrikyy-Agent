@@ -1,4 +1,4 @@
-# 🧪 Maya Trips Frontend - دليل الاختبار
+# 🧪 Amrikyy Trips Frontend - دليل الاختبار
 
 ## 🚀 الوصول للتطبيق
 
@@ -235,7 +235,7 @@ npm run lint:fix
 
 ### معلومات المشروع:
 ```
-Project: Maya Trips
+Project: Amrikyy Trips
 Type: Travel Planning Web App
 Tech Stack: React + TypeScript + Vite + Tailwind CSS
 Backend: Supabase

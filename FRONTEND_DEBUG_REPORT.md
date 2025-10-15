@@ -1,5 +1,5 @@
 # Frontend Debug Report
-## Maya Travel Agent - React/TypeScript Web Application
+## Amrikyy Travel Agent - React/TypeScript Web Application
 
 **Date:** October 13, 2025  
 **Debugged By:** Cursor AI Agent  

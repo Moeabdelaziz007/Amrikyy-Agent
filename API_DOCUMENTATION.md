@@ -1,4 +1,4 @@
-# 📚 Maya Travel Agent - API Documentation
+# 📚 Amrikyy Travel Agent - API Documentation
 
 ## Table of Contents
 - [Overview](#overview)
@@ -159,7 +159,7 @@ RateLimit-Reset: 1699564800
 **Response**:
 ```json
 {
-  "message": "Maya Trips API Server",
+  "message": "Amrikyy Trips API Server",
   "version": "1.0.0",
   "status": "running",
   "timestamp": "2024-10-09T12:00:00.000Z"
@@ -1094,7 +1094,7 @@ try {
 ## Support
 
 For API support and questions:
-- **GitHub Issues**: [Repository Issues](https://github.com/Moeabdelaziz007/maya-travel-agent/issues)
+- **GitHub Issues**: [Repository Issues](https://github.com/Moeabdelaziz007/amrikyy-travel-agent/issues)
 - **Documentation**: [Project Documentation](./README.md)
 - **Rate Limiting**: [Rate Limiting Guide](./RATE_LIMITING_GUIDE.md)
 
@@ -1102,4 +1102,4 @@ For API support and questions:
 
 **Last Updated**: 2024-10-09  
 **API Version**: 1.0.0  
-**Maintained by**: Maya Trips Team
+**Maintained by**: Amrikyy Trips Team

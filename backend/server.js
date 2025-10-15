@@ -28,7 +28,7 @@ app.use(compression());
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   process.env.TELEGRAM_WEBAPP_URL,
-  'https://maya-travel-agent.com'  // Production domain
+  'https://amrikyy-travel-agent.com'  // Production domain
 ].filter(Boolean);
 
 // Validate required origins in production
@@ -70,7 +70,7 @@ console.log('✅ AIX Dashboard available at /aix-dashboard.html');
 app.use('/api/', generalLimiter);
 
 // MongoDB Connection (Optional - using Supabase instead)
-// const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/maya-trips';
+// const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/amrikyy-trips';
 
 // mongoose.connect(MONGODB_URI, {
 //     useNewUrlParser: true,
@@ -84,7 +84,7 @@ console.log('✅ Using Supabase as database (MongoDB not required)');
 // Routes
 app.get('/', (req, res) => {
     res.json({
-        message: 'Maya Trips API Server',
+        message: 'Amrikyy Trips API Server',
         version: '1.0.0',
         status: 'running',
         timestamp: new Date().toISOString()
@@ -245,7 +245,7 @@ app.use('*', (req, res) => {
 
 // Start server with WebSocket support
 const server = app.listen(PORT, () => {
-    console.log(`🚀 Maya Trips server running on port ${PORT}`);
+    console.log(`🚀 Amrikyy Trips server running on port ${PORT}`);
     console.log(`📱 Frontend: http://localhost:3000`);
     console.log(`🔧 Backend API: http://localhost:${PORT}`);
 });

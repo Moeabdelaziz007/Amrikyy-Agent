@@ -2,7 +2,7 @@
 
 **Role:** Backend Lead Developer  
 **DNA Score:** 97/100  
-**Workspace:** `/Users/Shared/maya-travel-agent`  
+**Workspace:** `/Users/Shared/amrikyy-travel-agent`  
 **Version:** 1.0.0
 
 ---

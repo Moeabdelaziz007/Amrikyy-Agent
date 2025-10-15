@@ -1,5 +1,5 @@
 /**
- * Maya Travel Agent - Telegram Bot (No AI Version)
+ * Amrikyy Travel Agent - Telegram Bot (No AI Version)
  * Works without Z.ai API - Uses predefined responses
  */
 
@@ -102,7 +102,7 @@ bot.onText(
   safeHandler(async (msg) => {
     const chatId = msg.chat.id;
     const welcomeMessage = `
-🌍 مرحباً بك في Maya Trips!
+🌍 مرحباً بك في Amrikyy Trips!
 
 أنا مساعد السفر الذكي الذي سيساعدك في:
 
@@ -141,7 +141,7 @@ bot.onText(
   safeHandler(async (msg) => {
     const chatId = msg.chat.id;
     const helpMessage = `
-🆘 مساعدة Maya Trips
+🆘 مساعدة Amrikyy Trips
 
 الأوامر المتاحة:
 /start - بدء المحادثة
@@ -157,7 +157,7 @@ bot.onText(
 
 📞 الدعم الفني:
 📧 support@mayatrips.com
-💬 @MayaTripsSupport
+💬 @AmrikyyTripsSupport
   `;
 
     await bot.sendMessage(chatId, helpMessage);

@@ -1,6 +1,6 @@
 /**
  * Moonshot AI API Client
- * Advanced AI provider for Maya Travel Agent
+ * Advanced AI provider for Amrikyy Travel Agent
  * Using Moonshot's powerful models
  */
 

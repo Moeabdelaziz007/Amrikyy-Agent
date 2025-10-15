@@ -1,5 +1,5 @@
 # Backend Security Audit & Code Review Report
-## Maya Travel Agent - Critical Security Assessment
+## Amrikyy Travel Agent - Critical Security Assessment
 
 **Date:** October 13, 2025  
 **Audited By:** Security Review Team  

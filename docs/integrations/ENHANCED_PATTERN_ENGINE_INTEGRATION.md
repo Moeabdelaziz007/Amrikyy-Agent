@@ -11,7 +11,7 @@
 ### 1. Install Dependencies
 
 ```bash
-cd /Users/Shared/maya-travel-agent/backend
+cd /Users/Shared/amrikyy-travel-agent/backend
 npm install sqlite3 --save
 ```
 

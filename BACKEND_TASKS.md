@@ -1,5 +1,5 @@
 # Backend Tasks & Progress Tracker
-## Maya Travel Agent - Node.js/Express Backend
+## Amrikyy Travel Agent - Node.js/Express Backend
 
 **Date:** October 13, 2025  
 **Platform:** Node.js + Express + Supabase  

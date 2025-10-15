@@ -1,4 +1,4 @@
-# ✅ Documentation Complete - Maya Travel Agent
+# ✅ Documentation Complete - Amrikyy Travel Agent
 
 ## 🎉 Documentation Status: COMPLETE
 
@@ -293,7 +293,7 @@ All documentation has been successfully created, organized, and pushed to the re
 
 Found an issue with the documentation?
 
-1. **Check existing issues**: [GitHub Issues](https://github.com/Moeabdelaziz007/maya-travel-agent/issues)
+1. **Check existing issues**: [GitHub Issues](https://github.com/Moeabdelaziz007/amrikyy-travel-agent/issues)
 2. **Create new issue**: Use "Documentation" label
 3. **Submit PR**: Fix it yourself
 
@@ -362,7 +362,7 @@ Found an issue with the documentation?
 
 ### Project Documentation: COMPLETE ✅
 
-The Maya Travel Agent project now has:
+The Amrikyy Travel Agent project now has:
 
 - ✅ **Complete API documentation**
 - ✅ **Comprehensive architecture guides**
@@ -388,7 +388,7 @@ The Maya Travel Agent project now has:
 
 ## 🎯 Summary
 
-The Maya Travel Agent project is now **fully documented** and **production-ready**!
+The Amrikyy Travel Agent project is now **fully documented** and **production-ready**!
 
 All documentation is:
 - ✅ **Comprehensive** - Covers all aspects
@@ -404,7 +404,7 @@ All documentation is:
 **Documentation Completed**: 2024-10-09  
 **Total Time**: ~3 hours  
 **Status**: ✅ COMPLETE  
-**Maintained by**: Maya Trips Team
+**Maintained by**: Amrikyy Trips Team
 
 ---
 

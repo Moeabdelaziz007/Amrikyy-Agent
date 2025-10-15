@@ -1,5 +1,5 @@
 /**
- * Comprehensive Conversation Manager for Maya Travel Agent
+ * Comprehensive Conversation Manager for Amrikyy Travel Agent
  * Handles conversation state, context, and history
  */
 

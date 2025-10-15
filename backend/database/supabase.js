@@ -1,5 +1,5 @@
 /**
- * Supabase Database Client for Maya Travel Agent
+ * Supabase Database Client for Amrikyy Travel Agent
  * Persistent storage for user profiles, conversations, and travel offers
  */
 

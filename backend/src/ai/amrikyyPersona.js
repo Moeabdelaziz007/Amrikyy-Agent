@@ -1,9 +1,9 @@
 /**
  * Maya AI Persona - Professional Travel Agent
- * Advanced personality system for Maya Trips AI Assistant
+ * Advanced personality system for Amrikyy Trips AI Assistant
  */
 
-class MayaPersona {
+class AmrikyyPersona {
   constructor() {
     this.personality = {
       name: 'مايا',
@@ -425,4 +425,4 @@ ${Object.entries(this.specializations.budget_optimization)
   }
 }
 
-module.exports = MayaPersona;
+module.exports = AmrikyyPersona;

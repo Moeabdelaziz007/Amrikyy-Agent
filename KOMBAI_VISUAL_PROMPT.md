@@ -6,10 +6,10 @@
 
 ## 🎯 **COMPONENT 1: CHAT INTERFACE**
 
-### **Reference:** maya-travel-agent.lovable.app
+### **Reference:** amrikyy-travel-agent.lovable.app
 
 ### **Screenshot Instructions:**
-1. Go to: https://maya-travel-agent.lovable.app/
+1. Go to: https://amrikyy-travel-agent.lovable.app/
 2. Take screenshot of the chat interface
 3. Note these elements:
    - Chat messages layout
@@ -501,7 +501,7 @@ When converting designs, ensure:
 ### **Take These Screenshots:**
 
 1. **Chat Interface:**
-   - URL: https://maya-travel-agent.lovable.app/
+   - URL: https://amrikyy-travel-agent.lovable.app/
    - Capture: Full page with chat + sidebar
    - Focus on: Message bubbles, input field, avatar
 

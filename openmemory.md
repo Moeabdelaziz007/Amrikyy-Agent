@@ -1,8 +1,8 @@
-# OpenMemory Guide - Maya Travel Agent
+# OpenMemory Guide - Amrikyy Travel Agent
 
 ## Project Overview
 
-Maya Travel Agent is an AI-powered travel assistant application that provides intelligent trip planning, budget analysis, and destination recommendations. The system integrates multiple platforms (Web, Telegram, WhatsApp) and offers comprehensive travel services powered by Z.ai GLM-4.6 AI model.
+Amrikyy Travel Agent is an AI-powered travel assistant application that provides intelligent trip planning, budget analysis, and destination recommendations. The system integrates multiple platforms (Web, Telegram, WhatsApp) and offers comprehensive travel services powered by Z.ai GLM-4.6 AI model.
 
 ### Key Features
 - **AI-Powered Intelligence**: Smart recommendations, budget analysis, destination insights, multimodal analysis
@@ -154,7 +154,7 @@ Define your project-specific namespaces below. The AI will use these description
 - **geminiClient.js**: Google Gemini API client (alternative AI provider)
 - **tools.js**: AI tools for function calling - getWeather, searchFlights, findHotels, getHalalRestaurants, getPrayerTimes
 - **mcpTools.js**: Model Context Protocol tools for advanced AI capabilities
-- **mayaPersona.js**: Maya personality and conversation style definitions
+- **amrikyyPersona.js**: Amrikyy personality and conversation style definitions
 - **culture.js**: Cultural context system prompts, supports Arabic and English responses
 - **userProfiling.js**: User preference tracking and personalization logic
 
@@ -213,7 +213,7 @@ Define your project-specific namespaces below. The AI will use these description
 - **Graceful degradation**: Returns 429 with retry-after header
 
 ### Pattern 3: AI Integration
-- **Personality injection**: Maya persona applied to all AI responses
+- **Personality injection**: Amrikyy persona applied to all AI responses
 - **Cultural awareness**: buildCulturalSystemPrompt() for Arabic/English context
 - **Tool calling**: Function calling for weather, flights, hotels, prayer times
 - **Conversation context**: Maintains conversation history for continuity

@@ -124,7 +124,7 @@ const safeHandler = (handler) => {
 bot.onText(/\/start/, safeHandler(async (msg) => {
   const chatId = msg.chat.id;
   const welcomeMessage = `
-🌍 مرحباً بك في Maya Trips!
+🌍 مرحباً بك في Amrikyy Trips!
 
 أنا مساعد السفر الذكي الذي سيساعدك في:
 
@@ -170,7 +170,7 @@ bot.onText(/\/start/, safeHandler(async (msg) => {
 bot.onText(/\/help/, safeHandler(async (msg) => {
   const chatId = msg.chat.id;
   const helpMessage = `
-🆘 مساعدة Maya Trips
+🆘 مساعدة Amrikyy Trips
 
 الأوامر المتاحة:
 /start - بدء المحادثة
@@ -189,7 +189,7 @@ bot.onText(/\/help/, safeHandler(async (msg) => {
 
 📞 الدعم الفني:
 📧 support@mayatrips.com
-💬 @MayaTripsSupport
+💬 @AmrikyyTripsSupport
   `;
   
   await bot.sendMessage(chatId, helpMessage, {
@@ -211,7 +211,7 @@ bot.onText(/\/help/, safeHandler(async (msg) => {
 bot.onText(/\/payment/, safeHandler(async (msg) => {
   const chatId = msg.chat.id;
   const paymentMessage = `
-💳 نظام الدفع الآمن - Maya Trips
+💳 نظام الدفع الآمن - Amrikyy Trips
 
 🔗 إنشاء روابط دفع آمنة مع Stripe:
 
@@ -255,7 +255,7 @@ bot.onText(/^(\d+(?:\.\d{1,2})?)$/, async (msg, match) => {
 💳 تأكيد الدفع
 
 المبلغ: $${amount.toFixed(2)}
-الوصف: Maya Trips Payment
+الوصف: Amrikyy Trips Payment
 
 اختر طريقة الدفع:
     `;
@@ -399,7 +399,7 @@ bot.on('callback_query', safeHandler(async (callbackQuery) => {
     } else if (data === 'help') {
       bot.sendMessage(chatId, '❓ المساعدة\n\nكيف يمكنني مساعدتك؟');
     } else if (data === 'support') {
-      bot.sendMessage(chatId, '📞 الدعم الفني\n\nتواصل معنا:\n📧 support@mayatrips.com\n💬 @MayaTripsSupport');
+      bot.sendMessage(chatId, '📞 الدعم الفني\n\nتواصل معنا:\n📧 support@mayatrips.com\n💬 @AmrikyyTripsSupport');
     } else if (data === 'stats') {
       const userSummary = await conversationManager.getSummary(userId);
       const systemStats = healthMonitor.getMetricsSummary();
@@ -446,7 +446,7 @@ bot.on('callback_query', safeHandler(async (callbackQuery) => {
           body: JSON.stringify({
             amount: paymentAmount,
             currency: 'USD',
-            description: 'Maya Trips Payment',
+            description: 'Amrikyy Trips Payment',
             customerEmail: callbackQuery.from.email
           }),
         });
@@ -488,7 +488,7 @@ bot.on('callback_query', safeHandler(async (callbackQuery) => {
       // Create payment
       const paymentResult = await PaymentService.createTelegramPayment(
         paymentAmount,
-        'Maya Trips Payment',
+        'Amrikyy Trips Payment',
         chatId.toString()
       );
       
@@ -542,7 +542,7 @@ bot.on('text', safeHandler(async (msg) => {
   
   switch (nextAction.action) {
     case 'greet':
-      response = '👋 مرحباً بك في Maya Trips! كيف يمكنني مساعدتك اليوم؟';
+      response = '👋 مرحباً بك في Amrikyy Trips! كيف يمكنني مساعدتك اليوم؟';
       keyboard = {
         inline_keyboard: [
           [
@@ -720,7 +720,7 @@ bot.on('message', safeHandler(async (msg) => {
 العملة: ${payment.currency}
 معرف الدفع: ${payment.telegram_payment_charge_id}
 
-شكراً لاستخدام Maya Trips! 🚀
+شكراً لاستخدام Amrikyy Trips! 🚀
     `;
     
     await bot.sendMessage(chatId, successMessage);

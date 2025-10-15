@@ -459,7 +459,7 @@ constructor() {
       global: {
         headers: { 
           'Connection': 'keep-alive',
-          'x-client-info': 'maya-travel-agent@1.0.0'
+          'x-client-info': 'amrikyy-travel-agent@1.0.0'
         }
       },
       auth: {

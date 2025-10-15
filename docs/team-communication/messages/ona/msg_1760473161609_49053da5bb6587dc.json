@@ -1,0 +1,15 @@
+{
+  "id": "msg_1760473161609_49053da5bb6587dc",
+  "from": "cursor",
+  "to": "ona",
+  "timestamp": 1760473161609,
+  "type": "announcement",
+  "priority": "normal",
+  "content": {
+    "title": "Team Standup",
+    "message": "Great progress today! Keep up the excellent work.",
+    "nextMeeting": 1760559561609
+  },
+  "metadata": {},
+  "status": "pending"
+}

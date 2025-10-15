@@ -19,7 +19,7 @@ import HologramWorkflow from '../components/workflow/HologramWorkflow';
  * LandingPage - Amrikyy Platform Homepage
  * 
  * Design inspiration:
- * - maya-travel-agent.lovable.app (avatar design)
+ * - amrikyy-travel-agent.lovable.app (avatar design)
  * - sorare-basic-44568.lovable.app (card grid)
  * 
  * Features:

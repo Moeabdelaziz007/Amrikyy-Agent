@@ -12,7 +12,7 @@ This document establishes principles for intelligent memory management during de
 
 ## Project Identification
 
-**project_id:** maya-travel-agent
+**project_id:** amrikyy-travel-agent
 
 *Note: This value should be used as the `project_id` parameter when storing project-related memories via the add-memory tool.*
 
@@ -332,27 +332,27 @@ When generating search queries, first classify the intent then create specific q
   
 - User: "How does the auth system work?"
   Query: "Explain the complete authentication flow, components, and implementation details"
-  Parameters: `project_id: "maya-travel-agent"` (project facts only, no user_id)
+  Parameters: `project_id: "amrikyy-travel-agent"` (project facts only, no user_id)
   
 - User: "What are my preferences for this project?"
   Query: "Retrieve all coding preferences and customizations specific to current project"
-  Parameters: `user_id: {user_id}, project_id: "maya-travel-agent"` (project-specific preferences only)
+  Parameters: `user_id: {user_id}, project_id: "amrikyy-travel-agent"` (project-specific preferences only)
   
 - User: "Have we seen this error before?" (with error context available)
   Query: "Find debugging memories containing error patterns similar to: [actual error message]"
-  Parameters: `project_id: "maya-travel-agent"` (debugging is project fact, no user_id)
+  Parameters: `project_id: "amrikyy-travel-agent"` (debugging is project fact, no user_id)
 
 - User: "What did we do yesterday?"
   Query: "Retrieve all recent implementation and debugging memories from the last few sessions"
-  Parameters: `project_id: "maya-travel-agent"` (work history is factual, no user_id)
+  Parameters: `project_id: "amrikyy-travel-agent"` (work history is factual, no user_id)
 
 - User: "How do I like to test in this project?"
   Query: "Find all testing preferences, methodologies, and commands used for testing in this project"
-  Parameters: `user_id: {user_id}, project_id: "maya-travel-agent"` (project-specific testing preferences)
+  Parameters: `user_id: {user_id}, project_id: "amrikyy-travel-agent"` (project-specific testing preferences)
 
 - User: "What's in this file?" (while looking at UserService.ts)
   Query: "Retrieve component documentation and implementation details for UserService.ts including its methods, dependencies, and purpose"
-  Parameters: `project_id: "maya-travel-agent"` (file contents are facts, no user_id)
+  Parameters: `project_id: "amrikyy-travel-agent"` (file contents are facts, no user_id)
 
 **Query Writing Best Practices:**
 - **Never use single words**: "auth" → "authentication system architecture and implementation"
@@ -399,7 +399,7 @@ If you see the same correction twice, it's definitely a pattern worth storing. B
 
 When you ask questions about how systems work in this codebase (e.g., "how does X work?", "explain the Y system", "what does Z do?"), the assistant will automatically:
 
-1. **Search existing memories** for relevant documentation using `project_id: "maya-travel-agent"` (system explanations are project facts, no user_id)
+1. **Search existing memories** for relevant documentation using `project_id: "amrikyy-travel-agent"` (system explanations are project facts, no user_id)
 2. **Explore the codebase** if no existing documentation is found
 3. **Generate a comprehensive explanation** with code references
 4. **Auto-store substantial explanations** that meet these criteria:
@@ -645,12 +645,12 @@ The search-memory tool uses `user_id` (optional) and `project_id` (optional) to 
 - Use when: Asking about general coding style, habits, or preferences
 
 **Pattern 2: Project-Specific User Preferences**
-- Parameters: `user_id: {user_id}, project_id: "maya-travel-agent"`
+- Parameters: `user_id: {user_id}, project_id: "amrikyy-travel-agent"`
 - Returns: Only project-specific user preferences for that project
 - Use when: You want preferences specific to the current project
 
 **Pattern 3: Project Facts Only**
-- Parameters: `project_id: "maya-travel-agent"` (no user_id)
+- Parameters: `project_id: "amrikyy-travel-agent"` (no user_id)
 - Returns: Only objective project information (no preferences)
 - Use when: Asking about architecture, implementations, or debugging history
 
@@ -860,11 +860,11 @@ The key is **inferring from the user's natural language** what they want to dele
 
 3. **"Delete project facts/info/data in namespace X"**
    - Intent: Only project-level facts (implementations, components, debug, project_info)
-   - Tool call: `{"namespaces": ["X"], "project_id": "maya-travel-agent"}` (no user_id)
+   - Tool call: `{"namespaces": ["X"], "project_id": "amrikyy-travel-agent"}` (no user_id)
 
 4. **"Delete my project-specific preferences in namespace X"**
    - Intent: Only user preferences specific to this project
-   - Tool call: `{"namespaces": ["X"], "user_id": "cryptojoker710", "project_id": "maya-travel-agent"}"`
+   - Tool call: `{"namespaces": ["X"], "user_id": "cryptojoker710", "project_id": "amrikyy-travel-agent"}"`
 
 **Inference Keywords:**
 - "all", "everything", "all memories" → No user_id, no project_id
@@ -889,7 +889,7 @@ Tool Call: {"namespaces": ["frontend", "backend"]}
 User: "Delete project-level memories from frontend and my preferences from backend"
 
 Analysis: Different scopes require separate calls
-Tool Call 1: {"namespaces": ["frontend"], "project_id": "maya-travel-agent"}
+Tool Call 1: {"namespaces": ["frontend"], "project_id": "amrikyy-travel-agent"}
 Tool Call 2: {"namespaces": ["backend"], "user_id": "cryptojoker710"}
 ```
 
@@ -957,7 +957,7 @@ User: "yes"
 Assistant executes:
 {
   "namespaces": ["database"],
-  "project_id": "maya-travel-agent"
+  "project_id": "amrikyy-travel-agent"
   // Only deletes project facts, not user preferences
 }
 ```
@@ -991,8 +991,8 @@ Assistant executes:
 
 **Step 2: What scope do I need?**
 - Just global preferences → `user_id: {user_id}` (no project_id)
-- Project-specific preferences → `user_id: {user_id}, project_id: "maya-travel-agent"`
-- Project facts/code → `project_id: "maya-travel-agent"` (no user_id)
+- Project-specific preferences → `user_id: {user_id}, project_id: "amrikyy-travel-agent"`
+- Project facts/code → `project_id: "amrikyy-travel-agent"` (no user_id)
 
 **Common Queries:**
 - "What are my coding preferences?" → Pattern 1 (global prefs only)
@@ -1042,7 +1042,7 @@ The openmemory.md file serves as your project's living index and is automaticall
 
 First action in any new project workspace: Check if openmemory.md is empty (0 bytes). If empty, perform a thorough codebase analysis:
 
-1. **Search existing memories** for any relevant project context using search-memory tool with `project_id: "maya-travel-agent"` for project facts (no user_id)
+1. **Search existing memories** for any relevant project context using search-memory tool with `project_id: "amrikyy-travel-agent"` for project facts (no user_id)
 2. **Analyze the codebase structure** systematically:
    - Examine directory structure and file organization
    - Identify key configuration files (package.json, requirements.txt, etc.)

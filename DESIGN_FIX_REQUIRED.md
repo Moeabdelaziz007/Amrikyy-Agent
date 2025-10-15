@@ -18,7 +18,7 @@ The frontend pages work functionally BUT the design is **too basic** and doesn't
 ## ✅ **WHAT WE WANT:**
 
 **Reference Inspiration:**
-- https://maya-travel-agent.lovable.app/ (avatar style, chat bubbles)
+- https://amrikyy-travel-agent.lovable.app/ (avatar style, chat bubbles)
 - https://sorare-basic-44568.lovable.app/ (card hover effects, grid layout)
 - Apple website (premium feel, smooth animations)
 - Stripe dashboard (clean, professional)

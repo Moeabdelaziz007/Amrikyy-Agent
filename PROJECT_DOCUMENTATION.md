@@ -1,4 +1,4 @@
-# Maya Travel Agent - Project Documentation
+# Amrikyy Travel Agent - Project Documentation
 # مايا مساعد السفر - وثائق المشروع
 
 ## 📋 Table of Contents / جدول المحتويات
@@ -16,7 +16,7 @@
 ## 🎯 Project Overview / نظرة عامة على المشروع
 
 ### English
-**Maya Travel Agent** is an intelligent travel planning system powered by advanced AI technology. It provides personalized travel recommendations, budget analysis, destination insights, and comprehensive travel planning services.
+**Amrikyy Travel Agent** is an intelligent travel planning system powered by advanced AI technology. It provides personalized travel recommendations, budget analysis, destination insights, and comprehensive travel planning services.
 
 **Key Features:**
 - AI-powered travel recommendations
@@ -152,8 +152,8 @@
 #### Quick Start
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/maya-travel-agent.git
-cd maya-travel-agent
+git clone https://github.com/your-org/amrikyy-travel-agent.git
+cd amrikyy-travel-agent
 
 # Install dependencies
 npm install
@@ -208,8 +208,8 @@ npm run dev
 #### البدء السريع
 ```bash
 # استنساخ المستودع
-git clone https://github.com/your-org/maya-travel-agent.git
-cd maya-travel-agent
+git clone https://github.com/your-org/amrikyy-travel-agent.git
+cd amrikyy-travel-agent
 
 # تثبيت التبعيات
 npm install
@@ -437,8 +437,8 @@ Authorization: Bearer <token>
 2. **Application Deployment**
    ```bash
    # Clone and setup
-   git clone https://github.com/your-org/maya-travel-agent.git
-   cd maya-travel-agent
+   git clone https://github.com/your-org/amrikyy-travel-agent.git
+   cd amrikyy-travel-agent
    npm install
    
    # Build for production
@@ -479,8 +479,8 @@ Authorization: Bearer <token>
 2. **نشر التطبيق**
    ```bash
    # استنساخ وإعداد
-   git clone https://github.com/your-org/maya-travel-agent.git
-   cd maya-travel-agent
+   git clone https://github.com/your-org/amrikyy-travel-agent.git
+   cd amrikyy-travel-agent
    npm install
    
    # بناء للإنتاج
@@ -560,12 +560,12 @@ We welcome contributions! Please follow these steps:
 ### English
 - **Email**: support@maya-travel.com
 - **Documentation**: https://docs.maya-travel.com
-- **Issues**: https://github.com/your-org/maya-travel-agent/issues
+- **Issues**: https://github.com/your-org/amrikyy-travel-agent/issues
 
 ### العربية
 - **البريد الإلكتروني**: support@maya-travel.com
 - **الوثائق**: https://docs.maya-travel.com
-- **المشاكل**: https://github.com/your-org/maya-travel-agent/issues
+- **المشاكل**: https://github.com/your-org/amrikyy-travel-agent/issues
 
 ---
 
@@ -577,6 +577,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Made with ❤️ by the Maya Travel Agent Team**
+**Made with ❤️ by the Amrikyy Travel Agent Team**
 
 **صُنع بـ ❤️ من فريق مايا مساعد السفر**

@@ -1,4 +1,4 @@
-# OpenRouter API Integration - Maya Travel Agent
+# OpenRouter API Integration - Amrikyy Travel Agent
 
 ## 🔑 **API Configuration**
 
@@ -154,4 +154,4 @@ curl http://localhost:5000/api/kelo/models
 
 **Status:** ✅ **READY FOR PRODUCTION**  
 **Last Updated:** October 13, 2025  
-**Maintained By:** Maya Travel Agent Team
+**Maintained By:** Amrikyy Travel Agent Team

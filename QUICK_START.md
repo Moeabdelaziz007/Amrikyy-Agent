@@ -94,7 +94,7 @@ python3 backend/src/nano_agents/nano_analyst.py
 
 ### **Morning:**
 ```bash
-cd /Users/Shared/maya-travel-agent
+cd /Users/Shared/amrikyy-travel-agent
 ./activate-ai-team.sh
 # Choose agent to work with
 ```

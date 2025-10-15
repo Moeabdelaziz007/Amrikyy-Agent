@@ -1,5 +1,5 @@
 /**
- * PM2 Ecosystem Configuration for Maya Travel Agent
+ * PM2 Ecosystem Configuration for Amrikyy Travel Agent
  * Production-ready process management
  */
 
@@ -71,8 +71,8 @@ module.exports = {
       user: 'deploy',
       host: 'your-server.com',
       ref: 'origin/main',
-      repo: 'https://github.com/Moeabdelaziz007/maya-travel-agent.git',
-      path: '/var/www/maya-travel-agent',
+      repo: 'https://github.com/Moeabdelaziz007/amrikyy-travel-agent.git',
+      path: '/var/www/amrikyy-travel-agent',
       'post-deploy': 'cd backend && npm install && pm2 reload ecosystem.config.js --env production',
       'pre-setup': 'apt-get install git',
     },
@@ -81,8 +81,8 @@ module.exports = {
       user: 'deploy',
       host: 'staging-server.com',
       ref: 'origin/develop',
-      repo: 'https://github.com/Moeabdelaziz007/maya-travel-agent.git',
-      path: '/var/www/maya-travel-agent-staging',
+      repo: 'https://github.com/Moeabdelaziz007/amrikyy-travel-agent.git',
+      path: '/var/www/amrikyy-travel-agent-staging',
       'post-deploy': 'cd backend && npm install && pm2 reload ecosystem.config.js --env staging',
     },
   },

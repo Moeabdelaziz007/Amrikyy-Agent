@@ -1,5 +1,5 @@
 /**
- * Secure Supabase Database Client for Maya Travel Agent
+ * Secure Supabase Database Client for Amrikyy Travel Agent
  * Persistent storage for user profiles, conversations, and travel offers
  *
  * SECURITY FIXES IMPLEMENTED:
@@ -41,7 +41,7 @@ class SecureSupabaseDB {
         global: {
           headers: {
             'Connection': 'keep-alive',
-            'x-client-info': 'maya-travel-agent@1.0.0'
+            'x-client-info': 'amrikyy-travel-agent@1.0.0'
           }
         },
         auth: {

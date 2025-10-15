@@ -47,7 +47,7 @@ const AuthCallback: React.FC = () => {
 
         if (data.session && data.user) {
           setStatus('success');
-          setMessage('Email confirmed successfully! Welcome to Maya Trips!');
+          setMessage('Email confirmed successfully! Welcome to Amrikyy Trips!');
           setUser(data.user);
           
           // Redirect to dashboard after 3 seconds

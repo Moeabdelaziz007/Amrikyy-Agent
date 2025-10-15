@@ -77,7 +77,7 @@
 - Performance metrics and targets
 - Continuous learning mechanisms
 - Use cases and deployment instructions
-- Integration with Maya Travel Agent
+- Integration with Amrikyy Travel Agent
 
 **The Three Agents:**
 
@@ -447,7 +447,7 @@ Skills: 7 expert capabilities
 ### **Files Location:**
 
 ```
-Maya Travel Agent Project
+Amrikyy Travel Agent Project
 ├── AIX_V3_SPECIFICATION_REVIEW.md         (929 lines)
 ├── AIX_AGENT_TEAM_SPECIFICATIONS.md       (966 lines)
 ├── AIX_V3_IMPLEMENTATION_GUIDE.md         (936 lines)

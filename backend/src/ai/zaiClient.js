@@ -1,6 +1,6 @@
 /**
  * Z.ai GLM-4.6 API Client
- * Professional integration for Maya Trips AI Assistant
+ * Professional integration for Amrikyy Trips AI Assistant
  */
 
 const fetch = require('node-fetch');
