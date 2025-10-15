@@ -194,6 +194,10 @@ app.use('/api/whatsapp', webhookLimiter, whatsappRoutes);
 const agentRoutes = require('./routes/agents');
 app.use('/api/agents', agentRoutes);
 
+// Telegram Integration routes
+const telegramIntegrationRoutes = require('./routes/telegram-integration');
+app.use('/api/telegram', telegramIntegrationRoutes);
+
 // Advanced Telegram Bot (only start if token is provided)
 if (process.env.TELEGRAM_BOT_TOKEN) {
   const advancedTelegramBot = require('./advanced-telegram-bot');
