@@ -1,0 +1,166 @@
+{
+  "models": [
+    {
+      "title": "Codestral Autocomplete (Primary)",
+      "provider": "mistral",
+      "model": "codestral-latest",
+      "apiKey": "${MISTRAL_API_KEY}",
+      "roles": ["autocomplete"],
+      "priority": 1,
+      "description": "Best quality hosted autocomplete model",
+      "completionOptions": {
+        "temperature": 0.2,
+        "topP": 0.95,
+        "maxTokens": 256,
+        "frequencyPenalty": 0.0,
+        "presencePenalty": 0.0
+      }
+    },
+    
+    {
+      "title": "Mercury Coder (Next Edit)",
+      "provider": "inception",
+      "model": "mercury-coder",
+      "apiKey": "${INCEPTION_API_KEY}",
+      "roles": ["autocomplete", "next_edit"],
+      "priority": 2,
+      "description": "Advanced autocomplete with Next Edit prediction",
+      "completionOptions": {
+        "temperature": 0.1,
+        "topP": 0.95,
+        "maxTokens": 512
+      }
+    },
+    
+    {
+      "title": "Qwen 1.5B Local (Fast Fallback)",
+      "provider": "ollama",
+      "model": "qwen2.5-coder:1.5b",
+      "roles": ["autocomplete"],
+      "priority": 3,
+      "description": "Fast local autocomplete for privacy",
+      "completionOptions": {
+        "temperature": 0.2,
+        "topP": 0.95,
+        "maxTokens": 256,
+        "numPredict": 256,
+        "numCtx": 2048,
+        "repeatPenalty": 1.1
+      }
+    },
+    
+    {
+      "title": "Qwen 7B Local (Quality Fallback)",
+      "provider": "ollama",
+      "model": "qwen2.5-coder:7b",
+      "roles": ["autocomplete"],
+      "priority": 4,
+      "description": "Higher quality local autocomplete",
+      "completionOptions": {
+        "temperature": 0.2,
+        "topP": 0.95,
+        "maxTokens": 256,
+        "numPredict": 256,
+        "numCtx": 4096,
+        "repeatPenalty": 1.1
+      }
+    }
+  ],
+  
+  "autocomplete": {
+    "enabled": true,
+    "debounceDelay": 300,
+    "maxPromptTokens": 2048,
+    "prefixPercentage": 0.85,
+    "maxSuffixPercentage": 0.25,
+    "template": "default",
+    
+    "multilineCompletions": "auto",
+    "useCache": true,
+    "useOtherFiles": true,
+    "onlyMyCode": false,
+    
+    "disableInFiles": [
+      "*.md",
+      "*.txt",
+      ".env",
+      ".env.*",
+      "*.log"
+    ]
+  },
+  
+  "modelSelection": {
+    "strategy": "priority_based",
+    "fallbackChain": [
+      "codestral-latest",
+      "mercury-coder",
+      "qwen2.5-coder:1.5b",
+      "qwen2.5-coder:7b"
+    ],
+    
+    "autoSwitch": {
+      "enabled": true,
+      "conditions": {
+        "offline": "qwen2.5-coder:1.5b",
+        "slow_network": "qwen2.5-coder:1.5b",
+        "api_error": "qwen2.5-coder:1.5b",
+        "rate_limited": "qwen2.5-coder:7b"
+      }
+    }
+  },
+  
+  "performance": {
+    "caching": {
+      "enabled": true,
+      "duration": "1h",
+      "maxSize": "50MB"
+    },
+    
+    "prefetching": {
+      "enabled": true,
+      "triggerOnIdle": true,
+      "idleTime": 500
+    },
+    
+    "optimization": {
+      "batchRequests": false,
+      "parallelRequests": 1,
+      "maxConcurrent": 1
+    }
+  },
+  
+  "quality": {
+    "minConfidence": 0.3,
+    "filterDuplicates": true,
+    "filterInvalid": true,
+    "postProcessing": {
+      "trimWhitespace": true,
+      "fixIndentation": true,
+      "removeComments": false
+    }
+  },
+  
+  "privacy": {
+    "preferLocal": false,
+    "sensitiveFiles": [
+      "*.key",
+      "*.pem",
+      "*.env",
+      "*secret*",
+      "*password*"
+    ],
+    "useLocalForSensitive": true
+  },
+  
+  "monitoring": {
+    "enabled": true,
+    "trackMetrics": [
+      "acceptanceRate",
+      "latency",
+      "modelUsage",
+      "errorRate"
+    ],
+    "logCompletions": false,
+    "dailySummary": true
+  }
+}
