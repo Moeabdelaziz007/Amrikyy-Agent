@@ -124,6 +124,14 @@ app.use('/api/aladdin', aladdinRoutes);
 const bookingRoutes = require('./routes/bookings');
 app.use('/api/bookings', bookingRoutes);
 
+// Trips routes
+const tripRoutes = require('./routes/trips');
+app.use('/api/trips', tripRoutes);
+
+// Expenses routes
+const expenseRoutes = require('./routes/expenses');
+app.use('/api/expenses', expenseRoutes);
+
 // AI Assistant routes
 app.post('/api/ai/chat', (req, res) => {
     const { message } = req.body;
@@ -136,30 +144,8 @@ app.post('/api/ai/chat', (req, res) => {
 });
 
 // Destinations routes
-app.get('/api/destinations', (req, res) => {
-    res.json({
-        destinations: [
-            {
-                id: 1,
-                name: 'Tokyo',
-                country: 'Japan',
-                image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400',
-                rating: 4.8,
-                priceRange: '$$$',
-                bestTime: 'Mar-May, Sep-Nov'
-            },
-            {
-                id: 2,
-                name: 'Paris',
-                country: 'France',
-                image: 'https://images.unsplash.com/photo-1502602898536-47ad22581b52?w=400',
-                rating: 4.9,
-                priceRange: '$$$$',
-                bestTime: 'Apr-Jun, Sep-Oct'
-            }
-        ]
-    });
-});
+const destinationRoutes = require('./routes/destinations');
+app.use('/api/destinations', destinationRoutes);
 
 // Analytics ingestion (in-memory demo) with rate limiting
 const analyticsEvents = [];
