@@ -14,6 +14,32 @@ const jwt = require('jsonwebtoken');
 const { createClient } = require('@supabase/supabase-js');
 const router = express.Router();
 
+// ============================================================================
+// SECURITY: Validate JWT Secret at Startup
+// ============================================================================
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  console.error('❌ FATAL: JWT_SECRET environment variable is required');
+  console.error('Generate a secure secret: openssl rand -base64 32');
+  process.exit(1);
+}
+
+if (JWT_SECRET.length < 32) {
+  console.error('❌ FATAL: JWT_SECRET must be at least 32 characters');
+  console.error('Current length:', JWT_SECRET.length);
+  process.exit(1);
+}
+
+const WEAK_SECRETS = ['dev_jwt_secret', 'secret', 'test', 'development', 'password'];
+if (WEAK_SECRETS.includes(JWT_SECRET)) {
+  console.error('❌ FATAL: JWT_SECRET is too weak. Use a strong random secret.');
+  console.error('Generate one: openssl rand -base64 32');
+  process.exit(1);
+}
+
+console.log('✅ JWT_SECRET validated successfully');
+
 // Supabase service client (service role)
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
@@ -64,12 +90,12 @@ class MiniAppService {
     try {
       // This would integrate with Telegram Bot API
       const bot = require('../telegram-bot');
-
+      
       if (bot && chatId) {
         await bot.sendMessage(chatId, message);
         return { success: true };
       }
-
+      
       return { success: false, error: 'Bot not available or chat ID missing' };
     } catch (error) {
       return { success: false, error: error.message };
@@ -87,28 +113,32 @@ class MiniAppService {
   static async sendPaymentLink(amount, description, chatId) {
     try {
       const PaymentService = require('./payment');
-
+      
       // Create payment link
       const paymentResult = await PaymentService.createStripePayment(amount, 'USD', description);
-
+      
       if (paymentResult.success) {
         // Send payment link to user
         const message = `💳 Payment Link Created!\n\nAmount: $${amount}\nDescription: ${description}\n\nLink: ${paymentResult.data.url}`;
-
+        
         if (chatId) {
           const bot = require('../telegram-bot');
           if (bot) {
             await bot.sendMessage(chatId, message, {
               reply_markup: {
-                inline_keyboard: [[{ text: '🔗 Open Payment Link', url: paymentResult.data.url }]],
-              },
+                inline_keyboard: [
+                  [
+                    { text: '🔗 Open Payment Link', url: paymentResult.data.url }
+                  ]
+                ]
+              }
             });
           }
         }
-
+        
         return { success: true, paymentLink: paymentResult.data.url };
       }
-
+      
       return { success: false, error: paymentResult.error };
     } catch (error) {
       return { success: false, error: error.message };
@@ -119,14 +149,14 @@ class MiniAppService {
   static async shareTrip(tripData, chatId) {
     try {
       const message = `🗺️ Trip Shared!\n\nDestination: ${tripData.destination}\nDates: ${tripData.startDate} - ${tripData.endDate}\nBudget: $${tripData.budget}`;
-
+      
       if (chatId) {
         const bot = require('../telegram-bot');
         if (bot) {
           await bot.sendMessage(chatId, message);
         }
       }
-
+      
       return { success: true };
     } catch (error) {
       return { success: false, error: error.message };
@@ -145,10 +175,10 @@ class MiniAppService {
           startDate: '2024-03-15',
           endDate: '2024-03-22',
           budget: 2500,
-          status: 'planned',
-        },
+          status: 'planned'
+        }
       ];
-
+      
       return { success: true, trips };
     } catch (error) {
       return { success: false, error: error.message };
@@ -174,9 +204,9 @@ class MiniAppService {
         { command: 'help', description: 'Get help' },
         { command: 'payment', description: 'Create payment link' },
         { command: 'trip', description: 'Plan a trip' },
-        { command: 'budget', description: 'Manage budget' },
+        { command: 'budget', description: 'Manage budget' }
       ];
-
+      
       return { success: true, commands };
     } catch (error) {
       return { success: false, error: error.message };
@@ -190,18 +220,18 @@ class MiniAppService {
         info: 'ℹ️',
         success: '✅',
         warning: '⚠️',
-        error: '❌',
+        error: '❌'
       };
-
+      
       const formattedMessage = `${emoji[type]} ${message}`;
-
+      
       if (chatId) {
         const bot = require('../telegram-bot');
         if (bot) {
           await bot.sendMessage(chatId, formattedMessage);
         }
       }
-
+      
       return { success: true };
     } catch (error) {
       return { success: false, error: error.message };
@@ -230,9 +260,11 @@ router.post('/auth/telegram', async (req, res) => {
     if (error) return res.status(500).json({ error: error.message });
 
     // Issue short-lived JWT with sub = telegram_id for RLS
-    const token = jwt.sign({ sub: String(id) }, process.env.JWT_SECRET || 'dev_jwt_secret', {
-      expiresIn: '1h',
-    });
+    const token = jwt.sign(
+      { sub: String(id) },
+      JWT_SECRET,  // ✅ SECURITY FIX: No fallback, validated at startup
+      { expiresIn: '1h' }
+    );
 
     res.json({ token, profile });
   } catch (e) {
@@ -244,32 +276,32 @@ router.post('/auth/telegram', async (req, res) => {
 router.post('/send-message', async (req, res) => {
   try {
     const { message, chat_id } = req.body;
-
+    
     if (!message) {
       return res.status(400).json({
         success: false,
-        error: 'Message is required',
+        error: 'Message is required'
       });
     }
 
     const result = await MiniAppService.sendMessage(message, chat_id);
-
+    
     if (result.success) {
       res.json({
         success: true,
-        message: 'Message sent successfully',
+        message: 'Message sent successfully'
       });
     } else {
       res.status(400).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     res.status(500).json({
       success: false,
       error: 'Internal server error',
-      message: error.message,
+      message: error.message
     });
   }
 });
@@ -278,33 +310,33 @@ router.post('/send-message', async (req, res) => {
 router.post('/send-payment-link', async (req, res) => {
   try {
     const { amount, description, chat_id } = req.body;
-
+    
     if (!amount || amount <= 0) {
       return res.status(400).json({
         success: false,
-        error: 'Amount is required and must be greater than 0',
+        error: 'Amount is required and must be greater than 0'
       });
     }
 
     const result = await MiniAppService.sendPaymentLink(amount, description, chat_id);
-
+    
     if (result.success) {
       res.json({
         success: true,
         paymentLink: result.paymentLink,
-        message: 'Payment link sent successfully',
+        message: 'Payment link sent successfully'
       });
     } else {
       res.status(400).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     res.status(500).json({
       success: false,
       error: 'Internal server error',
-      message: error.message,
+      message: error.message
     });
   }
 });
@@ -313,32 +345,32 @@ router.post('/send-payment-link', async (req, res) => {
 router.post('/share-trip', async (req, res) => {
   try {
     const { trip, chat_id } = req.body;
-
+    
     if (!trip) {
       return res.status(400).json({
         success: false,
-        error: 'Trip data is required',
+        error: 'Trip data is required'
       });
     }
 
     const result = await MiniAppService.shareTrip(trip, chat_id);
-
+    
     if (result.success) {
       res.json({
         success: true,
-        message: 'Trip shared successfully',
+        message: 'Trip shared successfully'
       });
     } else {
       res.status(400).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     res.status(500).json({
       success: false,
       error: 'Internal server error',
-      message: error.message,
+      message: error.message
     });
   }
 });
@@ -347,25 +379,25 @@ router.post('/share-trip', async (req, res) => {
 router.get('/user-trips', async (req, res) => {
   try {
     const { user_id } = req.query;
-
+    
     const result = await MiniAppService.getUserTrips(user_id);
-
+    
     if (result.success) {
       res.json({
         success: true,
-        trips: result.trips,
+        trips: result.trips
       });
     } else {
       res.status(400).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     res.status(500).json({
       success: false,
       error: 'Internal server error',
-      message: error.message,
+      message: error.message
     });
   }
 });
@@ -374,25 +406,25 @@ router.get('/user-trips', async (req, res) => {
 router.post('/sync-user', async (req, res) => {
   try {
     const userData = req.body;
-
+    
     const result = await MiniAppService.syncUserData(userData);
-
+    
     if (result.success) {
       res.json({
         success: true,
-        message: 'User data synced successfully',
+        message: 'User data synced successfully'
       });
     } else {
       res.status(400).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     res.status(500).json({
       success: false,
       error: 'Internal server error',
-      message: error.message,
+      message: error.message
     });
   }
 });
@@ -401,23 +433,23 @@ router.post('/sync-user', async (req, res) => {
 router.get('/bot-commands', async (req, res) => {
   try {
     const result = await MiniAppService.getBotCommands();
-
+    
     if (result.success) {
       res.json({
         success: true,
-        commands: result.commands,
+        commands: result.commands
       });
     } else {
       res.status(400).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     res.status(500).json({
       success: false,
       error: 'Internal server error',
-      message: error.message,
+      message: error.message
     });
   }
 });
@@ -426,32 +458,32 @@ router.get('/bot-commands', async (req, res) => {
 router.post('/send-notification', async (req, res) => {
   try {
     const { message, type, chat_id } = req.body;
-
+    
     if (!message) {
       return res.status(400).json({
         success: false,
-        error: 'Message is required',
+        error: 'Message is required'
       });
     }
 
     const result = await MiniAppService.sendNotification(message, type, chat_id);
-
+    
     if (result.success) {
       res.json({
         success: true,
-        message: 'Notification sent successfully',
+        message: 'Notification sent successfully'
       });
     } else {
       res.status(400).json({
         success: false,
-        error: result.error,
+        error: result.error
       });
     }
   } catch (error) {
     res.status(500).json({
       success: false,
       error: 'Internal server error',
-      message: error.message,
+      message: error.message
     });
   }
 });

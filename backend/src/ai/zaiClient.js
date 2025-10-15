@@ -4,10 +4,31 @@
  */
 
 const fetch = require('node-fetch');
+const crypto = require('crypto');
 
 class ZaiClient {
   constructor() {
-    this.apiKey = process.env.ZAI_API_KEY;
+    // ============================================================================
+    // SECURITY: Encrypted API Key Storage
+    // ============================================================================
+    const apiKey = process.env.ZAI_API_KEY;
+    
+    if (!apiKey) {
+      throw new Error('❌ FATAL: ZAI_API_KEY environment variable is required');
+    }
+    
+    if (apiKey.length < 20) {
+      throw new Error('❌ FATAL: ZAI_API_KEY appears invalid (too short)');
+    }
+    
+    // Encrypt and store API key in memory
+    this.encryptedKey = this._encryptApiKey(apiKey);
+    
+    // Clear from process.env for security
+    delete process.env.ZAI_API_KEY;
+    
+    console.log('✅ Z.ai API key encrypted and stored securely');
+    
     // Use Coding API endpoint for GLM Coding Plan
     this.baseUrl = process.env.ZAI_API_BASE_URL || 'https://api.z.ai/api/coding/paas/v4';
     this.model = process.env.ZAI_MODEL || 'glm-4.6';
@@ -16,6 +37,48 @@ class ZaiClient {
     // Optional provider hints for performance/memory behavior
     this.enableKvCacheOffload = process.env.ZAI_ENABLE_KV_OFFLOAD === 'true';
     this.attentionImpl = process.env.ZAI_ATTENTION_IMPL || null; // e.g., 'flash-attn-3'
+  }
+  
+  /**
+   * Encrypt API key using AES-256-GCM
+   * @private
+   */
+  _encryptApiKey(plaintext) {
+    const algorithm = 'aes-256-gcm';
+    const masterKey = process.env.MASTER_ENCRYPTION_KEY || crypto.randomBytes(32);
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv(algorithm, masterKey, iv);
+    
+    let encrypted = cipher.update(plaintext, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    const authTag = cipher.getAuthTag();
+    
+    return {
+      encrypted,
+      iv: iv.toString('hex'),
+      authTag: authTag.toString('hex')
+    };
+  }
+  
+  /**
+   * Decrypt API key for use
+   * @private
+   */
+  _decryptApiKey() {
+    const algorithm = 'aes-256-gcm';
+    const masterKey = process.env.MASTER_ENCRYPTION_KEY || crypto.randomBytes(32);
+    const decipher = crypto.createDecipheriv(
+      algorithm,
+      masterKey,
+      Buffer.from(this.encryptedKey.iv, 'hex')
+    );
+    
+    decipher.setAuthTag(Buffer.from(this.encryptedKey.authTag, 'hex'));
+    
+    let decrypted = decipher.update(this.encryptedKey.encrypted, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    
+    return decrypted;
   }
 
   /**
@@ -31,16 +94,13 @@ class ZaiClient {
         messages: messages,
         temperature: options.temperature || this.temperature,
         max_tokens: options.maxTokens || this.maxTokens,
-        stream: options.stream || false,
+        stream: options.stream || false
       };
 
       // Forward advanced options if provided, or from env defaults
       const providerHints = {
-        kv_cache_offload:
-          options.enableKvCacheOffload !== undefined
-            ? options.enableKvCacheOffload
-            : this.enableKvCacheOffload || undefined,
-        attention: options.attentionImpl || this.attentionImpl || undefined,
+        kv_cache_offload: options.enableKvCacheOffload !== undefined ? options.enableKvCacheOffload : (this.enableKvCacheOffload || undefined),
+        attention: options.attentionImpl || this.attentionImpl || undefined
       };
       // Only attach if any value present to avoid sending noisy nulls
       if (providerHints.kv_cache_offload !== undefined || providerHints.attention !== undefined) {
@@ -52,9 +112,9 @@ class ZaiClient {
         headers: {
           'Content-Type': 'application/json',
           'Accept-Language': 'en-US,en',
-          Authorization: `Bearer ${this.apiKey}`,
+          'Authorization': `Bearer ${this._decryptApiKey()}`  // ✅ SECURITY: Use encrypted key
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify(requestBody)
       });
 
       if (!response.ok) {
@@ -63,23 +123,23 @@ class ZaiClient {
       }
 
       const data = await response.json();
-
+      
       // Extract content from response (GLM-4.6 uses reasoning_content)
       const message = data.choices?.[0]?.message;
-      const content =
-        message?.content || message?.reasoning_content || data.output || 'No response generated';
-
+      const content = message?.content || message?.reasoning_content || data.output || 'No response generated';
+      
       return {
         success: true,
         data: data,
-        content: content,
+        content: content
       };
+
     } catch (error) {
       console.error('Z.ai API Error:', error);
       return {
         success: false,
         error: error.message,
-        content: 'Sorry, I encountered an error. Please try again.',
+        content: 'Sorry, I encountered an error. Please try again.'
       };
     }
   }
@@ -109,17 +169,13 @@ class ZaiClient {
       mediaDescriptionLines.push(`Video provided: ${videoUrl}`);
     }
 
-    const mediaContext =
-      mediaDescriptionLines.length > 0
-        ? `\nMedia context:\n${mediaDescriptionLines.join('\n')}`
-        : '';
+    const mediaContext = mediaDescriptionLines.length > 0
+      ? `\nMedia context:\n${mediaDescriptionLines.join('\n')}`
+      : '';
 
     const messages = [
       { role: 'system', content: systemPrompt },
-      {
-        role: 'user',
-        content: `${prompt || 'Analyze the provided media for trip planning.'}${mediaContext}`,
-      },
+      { role: 'user', content: `${prompt || 'Analyze the provided media for trip planning.'}${mediaContext}` }
     ];
 
     // Reuse chatCompletion; provider_hints will carry KV offload and attention impl
@@ -127,7 +183,7 @@ class ZaiClient {
       temperature: options.temperature ?? 0.4,
       maxTokens: options.maxTokens ?? 900,
       enableKvCacheOffload: options.enableKvCacheOffload,
-      attentionImpl: options.attentionImpl,
+      attentionImpl: options.attentionImpl
     });
   }
 
@@ -156,12 +212,12 @@ class ZaiClient {
 
     const messages = [
       { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt },
+      { role: 'user', content: userPrompt }
     ];
 
     return await this.chatCompletion(messages, {
       temperature: 0.8,
-      maxTokens: 1500,
+      maxTokens: 1500
     });
   }
 
@@ -189,12 +245,12 @@ class ZaiClient {
 
     const messages = [
       { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt },
+      { role: 'user', content: userPrompt }
     ];
 
     return await this.chatCompletion(messages, {
       temperature: 0.6,
-      maxTokens: 1200,
+      maxTokens: 1200
     });
   }
 
@@ -219,12 +275,12 @@ class ZaiClient {
     const messages = [
       { role: 'system', content: systemPrompt },
       ...conversationHistory,
-      { role: 'user', content: userMessage },
+      { role: 'user', content: userMessage }
     ];
 
     return await this.chatCompletion(messages, {
       temperature: 0.7,
-      maxTokens: 1000,
+      maxTokens: 1000
     });
   }
 
@@ -250,12 +306,12 @@ class ZaiClient {
 
     const messages = [
       { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt },
+      { role: 'user', content: userPrompt }
     ];
 
     return await this.chatCompletion(messages, {
       temperature: 0.8,
-      maxTokens: 1800,
+      maxTokens: 1800
     });
   }
 
@@ -284,12 +340,12 @@ class ZaiClient {
 
     const messages = [
       { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt },
+      { role: 'user', content: userPrompt }
     ];
 
     return await this.chatCompletion(messages, {
       temperature: 0.6,
-      maxTokens: 1000,
+      maxTokens: 1000
     });
   }
 
@@ -301,24 +357,25 @@ class ZaiClient {
     try {
       const testMessages = [
         { role: 'system', content: 'You are a helpful assistant.' },
-        { role: 'user', content: 'Hello, are you working?' },
+        { role: 'user', content: 'Hello, are you working?' }
       ];
 
       const response = await this.chatCompletion(testMessages, {
         maxTokens: 50,
-        temperature: 0.1,
+        temperature: 0.1
       });
 
       return {
         success: response.success,
         status: response.success ? 'healthy' : 'unhealthy',
-        error: response.error || null,
+        error: response.error || null
       };
+
     } catch (error) {
       return {
         success: false,
         status: 'unhealthy',
-        error: error.message,
+        error: error.message
       };
     }
   }

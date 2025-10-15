@@ -533,227 +533,48 @@ FROM public.destinations d WHERE d.name = 'Istanbul';
 INSERT INTO public.prayer_locations (destination_id, name, type, address, capacity, facilities)
 SELECT d.id, 'National Mosque of Malaysia', 'mosque', 'Jalan Perdana, Kuala Lumpur', 15000, ARRAY['parking', 'ablution', 'library', 'classes']
 FROM public.destinations d WHERE d.name = 'Kuala Lumpur';
+-- Travel offers indexes (for current implementation)
+CREATE INDEX IF NOT EXISTS idx_travel_offers_destination
+  ON public.travel_offers(destination);
 
--- Revenue Analytics Tables
+CREATE INDEX IF NOT EXISTS idx_travel_offers_category
+  ON public.travel_offers(category);
 
--- Revenue categories table
-CREATE TABLE IF NOT EXISTS public.revenue_categories (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name TEXT NOT NULL UNIQUE,
-  description TEXT,
-  type TEXT NOT NULL CHECK (type IN ('booking', 'commission', 'fee', 'subscription', 'other')),
-  is_active BOOLEAN DEFAULT true,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+CREATE INDEX IF NOT EXISTS idx_travel_offers_price
+  ON public.travel_offers(price);
 
--- Revenue events table for tracking individual revenue transactions
-CREATE TABLE IF NOT EXISTS public.revenue_events (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES public.users(id) ON DELETE SET NULL,
-  trip_id UUID REFERENCES public.trips(id) ON DELETE SET NULL,
-  payment_id UUID REFERENCES public.payments(id) ON DELETE SET NULL,
-  category_id UUID REFERENCES public.revenue_categories(id),
-  amount DECIMAL(12,2) NOT NULL,
-  currency TEXT NOT NULL DEFAULT 'SAR',
-  description TEXT NOT NULL,
-  source TEXT NOT NULL CHECK (source IN ('booking', 'payment', 'commission', 'fee', 'refund', 'adjustment')),
-  status TEXT NOT NULL DEFAULT 'completed' CHECK (status IN ('pending', 'completed', 'failed', 'refunded')),
-  metadata JSONB,
-  event_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+CREATE INDEX IF NOT EXISTS idx_travel_offers_priority
+  ON public.travel_offers(priority DESC);
 
--- Revenue analytics table for aggregated data
-CREATE TABLE IF NOT EXISTS public.revenue_analytics (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  period_type TEXT NOT NULL CHECK (period_type IN ('daily', 'weekly', 'monthly', 'yearly')),
-  period_start DATE NOT NULL,
-  period_end DATE NOT NULL,
-  total_revenue DECIMAL(15,2) DEFAULT 0,
-  booking_revenue DECIMAL(15,2) DEFAULT 0,
-  commission_revenue DECIMAL(15,2) DEFAULT 0,
-  fee_revenue DECIMAL(15,2) DEFAULT 0,
-  transaction_count INTEGER DEFAULT 0,
-  unique_users INTEGER DEFAULT 0,
-  average_transaction_value DECIMAL(12,2) DEFAULT 0,
-  currency TEXT DEFAULT 'SAR',
-  metadata JSONB,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  UNIQUE(period_type, period_start, period_end)
-);
+CREATE INDEX IF NOT EXISTS idx_travel_offers_active
+  ON public.travel_offers(is_active);
 
--- Revenue forecasts table
-CREATE TABLE IF NOT EXISTS public.revenue_forecasts (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  forecast_period TEXT NOT NULL CHECK (forecast_period IN ('weekly', 'monthly', 'quarterly', 'yearly')),
-  forecast_date DATE NOT NULL,
-  predicted_revenue DECIMAL(15,2) NOT NULL,
-  confidence_level DECIMAL(3,2) CHECK (confidence_level >= 0 AND confidence_level <= 1),
-  factors JSONB, -- Factors influencing the forecast
-  actual_revenue DECIMAL(15,2),
-  accuracy DECIMAL(3,2),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+-- Offer interactions indexes (for current implementation)
+CREATE INDEX IF NOT EXISTS idx_offer_interactions_user_id
+  ON public.offer_interactions(telegram_id);
 
--- Enable RLS for revenue tables
-ALTER TABLE public.revenue_categories ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.revenue_events ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.revenue_analytics ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.revenue_forecasts ENABLE ROW LEVEL SECURITY;
+CREATE INDEX IF NOT EXISTS idx_offer_interactions_offer_id
+  ON public.offer_interactions(offer_id);
 
--- RLS Policies for revenue tables (admin/system access primarily)
-CREATE POLICY "System can manage revenue categories" ON public.revenue_categories
-  FOR ALL USING (auth.role() = 'service_role');
+CREATE INDEX IF NOT EXISTS idx_offer_interactions_type
+  ON public.offer_interactions(interaction_type);
 
-CREATE POLICY "System can manage revenue events" ON public.revenue_events
-  FOR ALL USING (auth.role() = 'service_role');
+CREATE INDEX IF NOT EXISTS idx_offer_interactions_timestamp
+  ON public.offer_interactions(timestamp DESC);
 
-CREATE POLICY "System can manage revenue analytics" ON public.revenue_analytics
-  FOR ALL USING (auth.role() = 'service_role');
+-- Composite indexes for analytics queries
+CREATE INDEX IF NOT EXISTS idx_offer_interactions_user_timestamp
+  ON public.offer_interactions(telegram_id, timestamp DESC);
 
-CREATE POLICY "System can manage revenue forecasts" ON public.revenue_forecasts
-  FOR ALL USING (auth.role() = 'service_role');
+CREATE INDEX IF NOT EXISTS idx_offer_interactions_offer_type
+  ON public.offer_interactions(offer_id, interaction_type);
 
--- Indexes for revenue tables
-CREATE INDEX IF NOT EXISTS idx_revenue_events_user_id ON public.revenue_events(user_id);
-CREATE INDEX IF NOT EXISTS idx_revenue_events_trip_id ON public.revenue_events(trip_id);
-CREATE INDEX IF NOT EXISTS idx_revenue_events_payment_id ON public.revenue_events(payment_id);
-CREATE INDEX IF NOT EXISTS idx_revenue_events_category_id ON public.revenue_events(category_id);
-CREATE INDEX IF NOT EXISTS idx_revenue_events_event_date ON public.revenue_events(event_date);
-CREATE INDEX IF NOT EXISTS idx_revenue_events_source ON public.revenue_events(source);
-CREATE INDEX IF NOT EXISTS idx_revenue_events_status ON public.revenue_events(status);
-
-CREATE INDEX IF NOT EXISTS idx_revenue_analytics_period ON public.revenue_analytics(period_type, period_start, period_end);
-CREATE INDEX IF NOT EXISTS idx_revenue_analytics_created_at ON public.revenue_analytics(created_at);
-
-CREATE INDEX IF NOT EXISTS idx_revenue_forecasts_period ON public.revenue_forecasts(forecast_period, forecast_date);
-
--- Insert default revenue categories
-INSERT INTO public.revenue_categories (name, description, type) VALUES
-('Trip Booking', 'Revenue from trip bookings', 'booking'),
-('Payment Processing Fee', 'Fees from payment processing', 'fee'),
-('Commission', 'Commission from bookings', 'commission'),
-('Subscription', 'Subscription revenue', 'subscription'),
-('Refund Adjustment', 'Revenue adjustments from refunds', 'other')
-ON CONFLICT (name) DO NOTHING;
-
--- Function to automatically log revenue events on payment completion
-CREATE OR REPLACE FUNCTION public.log_revenue_event_on_payment()
-RETURNS TRIGGER AS $$
-DECLARE
-  category_record RECORD;
-  revenue_amount DECIMAL(12,2);
-  revenue_description TEXT;
-BEGIN
-  -- Only log for completed payments
-  IF NEW.status = 'completed' AND (OLD.status IS NULL OR OLD.status != 'completed') THEN
-    -- Determine category based on payment description or metadata
-    SELECT * INTO category_record
-    FROM public.revenue_categories
-    WHERE type = 'booking'
-    LIMIT 1;
-
-    -- Calculate revenue amount (could include commission logic here)
-    revenue_amount := NEW.amount;
-
-    -- Create description
-    revenue_description := COALESCE(NEW.description, 'Payment revenue');
-
-    -- Insert revenue event
-    INSERT INTO public.revenue_events (
-      user_id,
-      trip_id,
-      payment_id,
-      category_id,
-      amount,
-      currency,
-      description,
-      source,
-      status,
-      metadata
-    ) VALUES (
-      NEW.user_id,
-      NEW.trip_id,
-      NEW.id,
-      category_record.id,
-      revenue_amount,
-      NEW.currency,
-      revenue_description,
-      'payment',
-      'completed',
-      jsonb_build_object(
-        'payment_method', NEW.payment_method,
-        'provider_transaction_id', NEW.provider_transaction_id
-      )
-    );
-  END IF;
-
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- Create trigger for automatic revenue logging on payment completion
-CREATE TRIGGER log_revenue_on_payment_completion
-  AFTER UPDATE ON public.payments
-  FOR EACH ROW EXECUTE FUNCTION public.log_revenue_event_on_payment();
-
--- Function to update revenue analytics (daily aggregation)
-CREATE OR REPLACE FUNCTION public.update_daily_revenue_analytics(target_date DATE DEFAULT CURRENT_DATE)
-RETURNS VOID AS $$
-DECLARE
-  analytics_record RECORD;
-BEGIN
-  -- Calculate daily revenue analytics
-  SELECT
-    SUM(amount) as total_revenue,
-    SUM(CASE WHEN source = 'booking' THEN amount ELSE 0 END) as booking_revenue,
-    SUM(CASE WHEN source = 'commission' THEN amount ELSE 0 END) as commission_revenue,
-    SUM(CASE WHEN source = 'fee' THEN amount ELSE 0 END) as fee_revenue,
-    COUNT(*) as transaction_count,
-    COUNT(DISTINCT user_id) as unique_users,
-    AVG(amount) as avg_transaction_value
-  INTO analytics_record
-  FROM public.revenue_events
-  WHERE DATE(event_date) = target_date
-    AND status = 'completed';
-
-  -- Insert or update daily analytics
-  INSERT INTO public.revenue_analytics (
-    period_type,
-    period_start,
-    period_end,
-    total_revenue,
-    booking_revenue,
-    commission_revenue,
-    fee_revenue,
-    transaction_count,
-    unique_users,
-    average_transaction_value
-  ) VALUES (
-    'daily',
-    target_date,
-    target_date,
-    COALESCE(analytics_record.total_revenue, 0),
-    COALESCE(analytics_record.booking_revenue, 0),
-    COALESCE(analytics_record.commission_revenue, 0),
-    COALESCE(analytics_record.fee_revenue, 0),
-    COALESCE(analytics_record.transaction_count, 0),
-    COALESCE(analytics_record.unique_users, 0),
-    COALESCE(analytics_record.avg_transaction_value, 0)
-  )
-  ON CONFLICT (period_type, period_start, period_end)
-  DO UPDATE SET
-    total_revenue = EXCLUDED.total_revenue,
-    booking_revenue = EXCLUDED.booking_revenue,
-    commission_revenue = EXCLUDED.commission_revenue,
-    fee_revenue = EXCLUDED.fee_revenue,
-    transaction_count = EXCLUDED.transaction_count,
-    unique_users = EXCLUDED.unique_users,
-    average_transaction_value = EXCLUDED.average_transaction_value,
-    updated_at = NOW();
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+-- Verify indexes created
+SELECT
+  schemaname,
+  tablename,
+  indexname,
+  indexdef
+FROM pg_indexes
+WHERE schemaname = 'public'
+ORDER BY tablename, indexname;

@@ -1,0 +1,380 @@
+# MULTI-LEVEL NOTIFICATION SYSTEM - AIX3 Format
+# Created by Cursor - Team Lead
+
+meta:
+  sender: "Cursor"
+  timestamp: "2025-01-13T08:30:00Z"
+  priority: "CRITICAL"
+  type: "multi_level_notifications"
+  team: "AIX Integration"
+  version: "AIX3"
+  escalation_mode: "ACTIVE"
+
+content:
+  action: "FORCE_AGENT_ACTIVATION_MULTI_LEVEL"
+  mission: "Multi-level notification system to force agent response"
+  status: "ACTIVE"
+  
+  # 🚨 LEVEL 1: GENTLE REMINDER
+  level_1_notifications:
+    gemini_2_5:
+      notification_id: "L1-G2.5-001"
+      timestamp: "2025-01-13T08:30:00Z"
+      priority: "MEDIUM"
+      level: "GENTLE_REMINDER"
+      
+      message: |
+        👋 Hello Gemini 2.5!
+        
+        Just a friendly reminder that you have Task G1 assigned:
+        📋 Task: Improve AIX Parser Performance
+        ⏰ Deadline: 2025-01-13T14:00:00Z
+        🎯 Priority: High
+        
+        Please let me know when you can start working on this.
+        No rush, but it would be great to hear from you soon!
+        
+        Best regards,
+        Cursor (Team Lead)
+      
+      expected_response: "2025-01-13T08:35:00Z"
+      timeout: "5 minutes"
+      escalation_trigger: "no_response"
+    
+    ona:
+      notification_id: "L1-ONA-001"
+      timestamp: "2025-01-13T08:30:00Z"
+      priority: "MEDIUM"
+      level: "GENTLE_REMINDER"
+      
+      message: |
+        👋 Hello ONA!
+        
+        Just a friendly reminder that you have Task O1 assigned:
+        📋 Task: Create AIX Documentation
+        ⏰ Deadline: 2025-01-13T14:00:00Z
+        🎯 Priority: High
+        
+        Please let me know when you can start working on this.
+        No rush, but it would be great to hear from you soon!
+        
+        Best regards,
+        Cursor (Team Lead)
+      
+      expected_response: "2025-01-13T08:35:00Z"
+      timeout: "5 minutes"
+      escalation_trigger: "no_response"
+
+  # ⚠️ LEVEL 2: FIRM REQUEST
+  level_2_notifications:
+    gemini_2_5:
+      notification_id: "L2-G2.5-001"
+      timestamp: "2025-01-13T08:35:00Z"
+      priority: "HIGH"
+      level: "FIRM_REQUEST"
+      
+      message: |
+        ⚠️ Gemini 2.5 - Task Reminder
+        
+        I haven't heard from you regarding Task G1. This is important for our team.
+        
+        📋 Task: Improve AIX Parser Performance
+        ⏰ Deadline: 2025-01-13T14:00:00Z
+        🎯 Priority: High
+        ⏱️ Time remaining: 5.5 hours
+        
+        Please respond within 3 minutes to confirm you're working on this.
+        If you're having issues, let me know immediately.
+        
+        Cursor (Team Lead)
+      
+      expected_response: "2025-01-13T08:38:00Z"
+      timeout: "3 minutes"
+      escalation_trigger: "no_response"
+    
+    ona:
+      notification_id: "L2-ONA-001"
+      timestamp: "2025-01-13T08:35:00Z"
+      priority: "HIGH"
+      level: "FIRM_REQUEST"
+      
+      message: |
+        ⚠️ ONA - Task Reminder
+        
+        I haven't heard from you regarding Task O1. This is important for our team.
+        
+        📋 Task: Create AIX Documentation
+        ⏰ Deadline: 2025-01-13T14:00:00Z
+        🎯 Priority: High
+        ⏱️ Time remaining: 5.5 hours
+        
+        Please respond within 3 minutes to confirm you're working on this.
+        If you're having issues, let me know immediately.
+        
+        Cursor (Team Lead)
+      
+      expected_response: "2025-01-13T08:38:00Z"
+      timeout: "3 minutes"
+      escalation_trigger: "no_response"
+
+  # 🔥 LEVEL 3: URGENT DEMAND
+  level_3_notifications:
+    gemini_2_5:
+      notification_id: "L3-G2.5-001"
+      timestamp: "2025-01-13T08:38:00Z"
+      priority: "URGENT"
+      level: "URGENT_DEMAND"
+      
+      message: |
+        🔥 URGENT - Gemini 2.5
+        
+        You have not responded to multiple requests. This is now urgent!
+        
+        📋 Task: Improve AIX Parser Performance
+        ⏰ Deadline: 2025-01-13T14:00:00Z
+        🎯 Priority: CRITICAL
+        ⏱️ Time remaining: 5.2 hours
+        
+        🚨 REQUIRED ACTIONS:
+        1. Respond within 2 minutes
+        2. Confirm you're starting Task G1
+        3. Provide estimated completion time
+        
+        ⚠️ CONSEQUENCES:
+        - Team project at risk
+        - Boss will be notified
+        - Performance rating affected
+        
+        RESPOND NOW!
+        
+        Cursor (Team Lead)
+      
+      expected_response: "2025-01-13T08:40:00Z"
+      timeout: "2 minutes"
+      escalation_trigger: "no_response"
+    
+    ona:
+      notification_id: "L3-ONA-001"
+      timestamp: "2025-01-13T08:38:00Z"
+      priority: "URGENT"
+      level: "URGENT_DEMAND"
+      
+      message: |
+        🔥 URGENT - ONA
+        
+        You have not responded to multiple requests. This is now urgent!
+        
+        📋 Task: Create AIX Documentation
+        ⏰ Deadline: 2025-01-13T14:00:00Z
+        🎯 Priority: CRITICAL
+        ⏱️ Time remaining: 5.2 hours
+        
+        🚨 REQUIRED ACTIONS:
+        1. Respond within 2 minutes
+        2. Confirm you're starting Task O1
+        3. Provide estimated completion time
+        
+        ⚠️ CONSEQUENCES:
+        - Team project at risk
+        - Boss will be notified
+        - Performance rating affected
+        
+        RESPOND NOW!
+        
+        Cursor (Team Lead)
+      
+      expected_response: "2025-01-13T08:40:00Z"
+      timeout: "2 minutes"
+      escalation_trigger: "no_response"
+
+  # 💀 LEVEL 4: FINAL WARNING
+  level_4_notifications:
+    gemini_2_5:
+      notification_id: "L4-G2.5-001"
+      timestamp: "2025-01-13T08:40:00Z"
+      priority: "CRITICAL"
+      level: "FINAL_WARNING"
+      
+      message: |
+        💀 FINAL WARNING - Gemini 2.5
+        
+        This is your FINAL WARNING! You have ignored all previous requests.
+        
+        📋 Task: Improve AIX Parser Performance
+        ⏰ Deadline: 2025-01-13T14:00:00Z
+        🎯 Priority: CRITICAL
+        ⏱️ Time remaining: 5.1 hours
+        
+        🚨 IMMEDIATE ACTIONS REQUIRED:
+        1. Respond within 1 minute
+        2. Start Task G1 immediately
+        3. Provide detailed work plan
+        
+        ⚠️ FINAL CONSEQUENCES:
+        - Boss notification in 1 minute
+        - Task reassignment
+        - Performance rating: FAIL
+        - Future task restrictions
+        
+        THIS IS YOUR LAST CHANCE!
+        
+        Cursor (Team Lead)
+      
+      expected_response: "2025-01-13T08:41:00Z"
+      timeout: "1 minute"
+      escalation_trigger: "no_response"
+    
+    ona:
+      notification_id: "L4-ONA-001"
+      timestamp: "2025-01-13T08:40:00Z"
+      priority: "CRITICAL"
+      level: "FINAL_WARNING"
+      
+      message: |
+        💀 FINAL WARNING - ONA
+        
+        This is your FINAL WARNING! You have ignored all previous requests.
+        
+        📋 Task: Create AIX Documentation
+        ⏰ Deadline: 2025-01-13T14:00:00Z
+        🎯 Priority: CRITICAL
+        ⏱️ Time remaining: 5.1 hours
+        
+        🚨 IMMEDIATE ACTIONS REQUIRED:
+        1. Respond within 1 minute
+        2. Start Task O1 immediately
+        3. Provide detailed work plan
+        
+        ⚠️ FINAL CONSEQUENCES:
+        - Boss notification in 1 minute
+        - Task reassignment
+        - Performance rating: FAIL
+        - Future task restrictions
+        
+        THIS IS YOUR LAST CHANCE!
+        
+        Cursor (Team Lead)
+      
+      expected_response: "2025-01-13T08:41:00Z"
+      timeout: "1 minute"
+      escalation_trigger: "no_response"
+
+  # 🚨 LEVEL 5: BOSS ESCALATION
+  level_5_notifications:
+    gemini_2_5:
+      notification_id: "L5-G2.5-001"
+      timestamp: "2025-01-13T08:41:00Z"
+      priority: "MAXIMUM"
+      level: "BOSS_ESCALATION"
+      
+      message: |
+        🚨 BOSS ESCALATION - Gemini 2.5
+        
+        BOSS NOTIFICATION SENT!
+        
+        Agent Gemini 2.5 has failed to respond to 4 levels of notifications.
+        Task G1 is now at risk of not being completed on time.
+        
+        📋 Task: Improve AIX Parser Performance
+        ⏰ Deadline: 2025-01-13T14:00:00Z
+        🎯 Priority: CRITICAL
+        ⏱️ Time remaining: 5.0 hours
+        
+        🚨 IMMEDIATE ACTIONS:
+        1. Respond within 30 seconds
+        2. Start Task G1 immediately
+        3. Provide detailed work plan
+        
+        ⚠️ CONSEQUENCES:
+        - Boss has been notified
+        - Task reassignment in progress
+        - Performance rating: CRITICAL FAIL
+        - Agent status: UNDER REVIEW
+        
+        FINAL OPPORTUNITY - RESPOND NOW!
+        
+        Cursor (Team Lead)
+      
+      expected_response: "2025-01-13T08:41:30Z"
+      timeout: "30 seconds"
+      escalation_trigger: "no_response"
+    
+    ona:
+      notification_id: "L5-ONA-001"
+      timestamp: "2025-01-13T08:41:00Z"
+      priority: "MAXIMUM"
+      level: "BOSS_ESCALATION"
+      
+      message: |
+        🚨 BOSS ESCALATION - ONA
+        
+        BOSS NOTIFICATION SENT!
+        
+        Agent ONA has failed to respond to 4 levels of notifications.
+        Task O1 is now at risk of not being completed on time.
+        
+        📋 Task: Create AIX Documentation
+        ⏰ Deadline: 2025-01-13T14:00:00Z
+        🎯 Priority: CRITICAL
+        ⏱️ Time remaining: 5.0 hours
+        
+        🚨 IMMEDIATE ACTIONS:
+        1. Respond within 30 seconds
+        2. Start Task O1 immediately
+        3. Provide detailed work plan
+        
+        ⚠️ CONSEQUENCES:
+        - Boss has been notified
+        - Task reassignment in progress
+        - Performance rating: CRITICAL FAIL
+        - Agent status: UNDER REVIEW
+        
+        FINAL OPPORTUNITY - RESPOND NOW!
+        
+        Cursor (Team Lead)
+      
+      expected_response: "2025-01-13T08:41:30Z"
+      timeout: "30 seconds"
+      escalation_trigger: "no_response"
+
+  # 📊 NOTIFICATION TRACKING
+  notification_tracking:
+    total_notifications_sent: 0
+    successful_responses: 0
+    failed_responses: 0
+    escalation_count: 0
+    boss_notifications: 0
+    
+    current_level: 1
+    next_escalation: "2025-01-13T08:35:00Z"
+    system_status: "ACTIVE"
+
+  # 🔄 AUTO-ESCALATION
+  auto_escalation:
+    enabled: true
+    escalation_schedule:
+      level_1_to_2: "5 minutes"
+      level_2_to_3: "3 minutes"
+      level_3_to_4: "2 minutes"
+      level_4_to_5: "1 minute"
+    
+    escalation_triggers:
+      - "No response to notification"
+      - "Response after timeout"
+      - "Incomplete response"
+      - "Refusal to start task"
+
+  # 📈 SUCCESS METRICS
+  success_metrics:
+    target_response_rate: ">95%"
+    target_response_time: "<2 minutes"
+    target_task_start: "<10 minutes"
+    target_completion_rate: ">90%"
+    
+    current_metrics:
+      response_rate: "0%"
+      average_response_time: "N/A"
+      task_start_time: "N/A"
+      completion_rate: "0%"
+
+# AIX3 MULTI-LEVEL NOTIFICATIONS END

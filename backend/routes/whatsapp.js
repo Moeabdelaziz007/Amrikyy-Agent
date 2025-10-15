@@ -6,10 +6,17 @@
 const express = require('express');
 const router = express.Router();
 const WhatsAppClient = require('../src/whatsapp/whatsappClient');
-const KeloClient = require('../src/ai/keloClient');
+const ZaiClient = require('../src/ai/zaiClient');
 
 const whatsappClient = new WhatsAppClient();
-const keloClient = new KeloClient();
+// Initialize Z.ai client only if API key is available
+let zaiClient = null;
+try {
+  zaiClient = new ZaiClient();
+} catch (error) {
+  console.warn('⚠️ Z.ai client not initialized:', error.message);
+  console.warn('WhatsApp AI features will be disabled');
+}
 
 // Store conversation history (in production, use database)
 const conversations = new Map();
@@ -56,7 +63,7 @@ router.post('/webhook', async (req, res) => {
         if (change.field !== 'messages') continue;
 
         const value = change.value;
-
+        
         // Handle messages
         if (value.messages) {
           for (const message of value.messages) {
@@ -72,6 +79,7 @@ router.post('/webhook', async (req, res) => {
         }
       }
     }
+
   } catch (error) {
     console.error('❌ WhatsApp Webhook Error:', error);
   }
@@ -93,7 +101,7 @@ async function handleIncomingMessage(message, metadata) {
 
     // Get message text
     let messageText = '';
-
+    
     if (message.type === 'text') {
       messageText = message.text.body;
     } else if (message.type === 'button') {
@@ -106,10 +114,7 @@ async function handleIncomingMessage(message, metadata) {
       }
     } else {
       // Unsupported message type
-      await whatsappClient.sendMessage(
-        from,
-        'عذراً، هذا النوع من الرسائل غير مدعوم حالياً. يرجى إرسال رسالة نصية.'
-      );
+      await whatsappClient.sendMessage(from, 'عذراً، هذا النوع من الرسائل غير مدعوم حالياً. يرجى إرسال رسالة نصية.');
       return;
     }
 
@@ -125,41 +130,44 @@ async function handleIncomingMessage(message, metadata) {
     }
 
     // Get conversation history
-    const history = conversations.get(from) || [];
+    let history = conversations.get(from) || [];
 
     // Prepare messages for AI
     const aiMessages = [
-      {
-        role: 'system',
-        content:
-          'أنت مايا، مساعدة سفر ذكية ومحترفة عبر WhatsApp. تتحدثين العربية بطلاقة وتساعدين المسافرين في تخطيط رحلاتهم. كوني ودودة ومفيدة وموجزة. الرسائل عبر WhatsApp يجب أن تكون قصيرة ومباشرة.',
+      { 
+        role: 'system', 
+        content: 'أنت مايا، مساعدة سفر ذكية ومحترفة عبر WhatsApp. تتحدثين العربية بطلاقة وتساعدين المسافرين في تخطيط رحلاتهم. كوني ودودة ومفيدة وموجزة. الرسائل عبر WhatsApp يجب أن تكون قصيرة ومباشرة.' 
       },
       ...history.slice(-10),
-      { role: 'user', content: messageText },
+      { role: 'user', content: messageText }
     ];
 
-    // Get AI response
-    const aiResponse = await keloClient.chatCompletion(aiMessages, {
-      maxTokens: 500,
-      temperature: 0.7,
-    });
+    // Get AI response (only if Z.ai client is available)
+    if (zaiClient) {
+      const aiResponse = await zaiClient.chatCompletion(aiMessages, {
+        maxTokens: 500,
+        temperature: 0.7
+      });
 
-    if (aiResponse.success) {
-      // Save to history
-      history.push(
-        { role: 'user', content: messageText },
-        { role: 'assistant', content: aiResponse.content }
-      );
-      conversations.set(from, history.slice(-20));
+      if (aiResponse.success) {
+        // Save to history
+        history.push(
+          { role: 'user', content: messageText },
+          { role: 'assistant', content: aiResponse.content }
+        );
+        conversations.set(from, history.slice(-20));
 
-      // Send response
-      await whatsappClient.sendMessage(from, aiResponse.content);
+        // Send response
+        await whatsappClient.sendMessage(from, aiResponse.content);
+      } else {
+        await whatsappClient.sendMessage(from, 'عذراً، حدث خطأ في معالجة رسالتك. يرجى المحاولة مرة أخرى.');
+      }
     } else {
-      await whatsappClient.sendMessage(
-        from,
-        'عذراً، حدث خطأ في معالجة رسالتك. يرجى المحاولة مرة أخرى.'
-      );
+      // Fallback response when AI is not available
+      const fallbackResponse = 'مرحباً! أنا مايا، مساعدة السفر الذكية. حالياً أعمل في وضع محدود. يرجى المحاولة لاحقاً.';
+      await whatsappClient.sendMessage(from, fallbackResponse);
     }
+
   } catch (error) {
     console.error('❌ Error handling message:', error);
   }
@@ -182,7 +190,7 @@ async function handleStartCommand(from) {
   const buttons = [
     { id: 'plan_trip', title: '🚀 تخطيط رحلة' },
     { id: 'destinations', title: '🌍 وجهات مقترحة' },
-    { id: 'help', title: '❓ مساعدة' },
+    { id: 'help', title: '❓ مساعدة' }
   ];
 
   await whatsappClient.sendInteractive(from, welcomeMessage, buttons);
@@ -227,16 +235,17 @@ router.post('/test', async (req, res) => {
     if (!to || !message) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required fields: to, message',
+        error: 'Missing required fields: to, message'
       });
     }
 
     const result = await whatsappClient.sendMessage(to, message);
     res.json(result);
+
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 });
