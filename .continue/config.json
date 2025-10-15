@@ -4,7 +4,7 @@
       "title": "Claude Sonnet 4 (Primary)",
       "provider": "anthropic",
       "model": "claude-sonnet-4-20250514",
-      "apiKey": "YOUR_ANTHROPIC_API_KEY",
+      "apiKey": "sk-ant-api03-l3tGICCrs1P9kOqR6lOQgH4a8v2smCwQBarSP1Xbns6SBBPt#V26oisVHWIz-MD8SOFqSyKBSipr8NKbrV8J83lFttvk",
       "contextLength": 200000,
       "completionOptions": {
         "temperature": 0.7,
