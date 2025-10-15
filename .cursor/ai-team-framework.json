@@ -7,6 +7,43 @@
   },
   
   "team_members": {
+    "cline": {
+      "name": "Cline (Autonomous Executor)",
+      "role": "Autonomous Task Execution & Workflow Orchestration",
+      "type": "autonomous_agent",
+      "capabilities": {
+        "autonomous_execution": 99,
+        "terminal_operations": 98,
+        "multi_step_workflows": 97,
+        "browser_automation": 96,
+        "git_operations": 98,
+        "file_operations": 99,
+        "api_integration": 95,
+        "memory_retention": 97
+      },
+      "responsibilities": [
+        "Execute tasks autonomously",
+        "Run terminal commands",
+        "Automate workflows",
+        "Handle git operations",
+        "Browser automation",
+        "File system operations",
+        "API integrations",
+        "Multi-step task orchestration"
+      ],
+      "output_format": {
+        "type": "execution_report",
+        "includes": [
+          "actions_taken",
+          "results",
+          "errors_encountered",
+          "performance_metrics",
+          "next_steps"
+        ]
+      },
+      "passes_to": ["architect", "implementer", "reviewer"]
+    },
+    
     "architect": {
       "name": "Claude (Architect)",
       "role": "System Architect & Pattern Analyst",
