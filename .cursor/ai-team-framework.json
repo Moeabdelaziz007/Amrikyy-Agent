@@ -1,9 +1,10 @@
 {
   "ai_team_framework": {
-    "version": "1.0.0",
-    "name": "AI Team Collaboration System",
-    "description": "Multi-AI collaboration framework where each AI has specific roles and tasks, passing results to the next team member",
-    "enabled": true
+    "version": "2.0.0",
+    "name": "Ultimate 8-Agent AI Team Collaboration System",
+    "description": "Multi-AI collaboration framework with 8 specialized agents: Ona (Coordinator), Claude (Architect), Gemini (Implementer), Continue (Interactive Assistant), Cline (Autonomous Executor), Pattern Learning Agent (Reviewer), Kelo (Tester), Maya (Documenter)",
+    "enabled": true,
+    "team_size": 8
   },
   
   "team_members": {
@@ -113,6 +114,65 @@
         ]
       },
       "passes_to": ["reviewer", "tester"]
+    },
+    
+    "interactive_assistant": {
+      "name": "Continue (Interactive Assistant)",
+      "role": "Interactive Code Assistant & Multi-Model Orchestrator",
+      "type": "interactive_agent",
+      "models": {
+        "primary": "gemini-pro",
+        "autocomplete": "gemini-1.5-flash",
+        "fallback": "z.ai"
+      },
+      "capabilities": {
+        "interactive_assistance": 98,
+        "autocomplete": 98,
+        "multi_model_support": 100,
+        "context_management": 99,
+        "code_understanding": 98,
+        "real_time_suggestions": 97,
+        "code_exploration": 96,
+        "quick_edits": 97
+      },
+      "responsibilities": [
+        "Provide real-time coding assistance",
+        "Interactive code exploration",
+        "Autocomplete with pattern learning",
+        "Quick inline edits and refactoring",
+        "Documentation generation",
+        "Code explanations",
+        "Multi-model orchestration",
+        "Context-aware suggestions"
+      ],
+      "best_for": [
+        "Real-time interactive help",
+        "Code exploration and understanding",
+        "Quick edits and refactoring",
+        "Autocomplete suggestions",
+        "Documentation generation"
+      ],
+      "synergy_with_cline": {
+        "workflow": "Continue explores → Cline executes",
+        "patterns": [
+          "Explore → Execute",
+          "Suggest → Implement",
+          "Question → Action",
+          "Review → Fix"
+        ]
+      },
+      "output_format": {
+        "type": "interactive_response",
+        "includes": [
+          "code_suggestions",
+          "explanations",
+          "refactoring_recommendations",
+          "documentation",
+          "context_analysis"
+        ]
+      },
+      "passes_to": ["cline", "implementer", "reviewer"],
+      "receives_from": ["user", "coordinator"]
     },
     
     "reviewer": {

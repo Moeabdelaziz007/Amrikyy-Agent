@@ -1,0 +1,344 @@
+{
+  "multi_model_orchestration": {
+    "version": "1.0.0",
+    "enabled": true,
+    "description": "Intelligent model selection and switching for optimal AI assistance with Gemini and z.ai"
+  },
+  "available_models": {
+    "gemini_pro": {
+      "name": "Gemini Pro",
+      "provider": "google",
+      "model_id": "gemini-pro",
+      "context_length": 32000,
+      "strengths": [
+        "Complex reasoning",
+        "Architecture design",
+        "System analysis",
+        "Debugging",
+        "Optimization",
+        "Security analysis"
+      ],
+      "best_for": [
+        "architecture",
+        "complex_logic",
+        "debugging",
+        "optimization",
+        "security",
+        "refactoring"
+      ],
+      "speed": "medium",
+      "cost": "medium",
+      "quality": "high"
+    },
+    "gemini_flash": {
+      "name": "Gemini Flash",
+      "provider": "google",
+      "model_id": "gemini-1.5-flash",
+      "context_length": 1000000,
+      "strengths": [
+        "Fast responses",
+        "Large context",
+        "Implementation",
+        "Documentation",
+        "Testing",
+        "Quick fixes"
+      ],
+      "best_for": [
+        "implementation",
+        "documentation",
+        "testing",
+        "explanation",
+        "autocomplete",
+        "quick_edits"
+      ],
+      "speed": "very_fast",
+      "cost": "low",
+      "quality": "good"
+    },
+    "zai_assistant": {
+      "name": "z.ai Assistant",
+      "provider": "zai",
+      "model_id": "gpt-4",
+      "context_length": 128000,
+      "strengths": [
+        "Security analysis",
+        "Code review",
+        "Best practices",
+        "Enterprise patterns",
+        "Compliance",
+        "Advanced reasoning"
+      ],
+      "best_for": [
+        "security",
+        "code_review",
+        "compliance",
+        "enterprise_patterns",
+        "advanced_analysis"
+      ],
+      "speed": "medium",
+      "cost": "high",
+      "quality": "very_high"
+    }
+  },
+  "task_to_model_mapping": {
+    "architecture": {
+      "primary": "gemini_pro",
+      "fallback": "zai_assistant",
+      "reason": "Complex reasoning and system design"
+    },
+    "implementation": {
+      "primary": "gemini_flash",
+      "fallback": "gemini_pro",
+      "reason": "Fast implementation with large context"
+    },
+    "refactoring": {
+      "primary": "gemini_pro",
+      "fallback": "gemini_flash",
+      "reason": "Complex code transformation"
+    },
+    "documentation": {
+      "primary": "gemini_flash",
+      "fallback": "gemini_pro",
+      "reason": "Fast documentation generation"
+    },
+    "debugging": {
+      "primary": "gemini_pro",
+      "fallback": "zai_assistant",
+      "reason": "Complex problem analysis"
+    },
+    "testing": {
+      "primary": "gemini_flash",
+      "fallback": "gemini_pro",
+      "reason": "Fast test generation"
+    },
+    "optimization": {
+      "primary": "gemini_pro",
+      "fallback": "zai_assistant",
+      "reason": "Performance analysis and optimization"
+    },
+    "explanation": {
+      "primary": "gemini_flash",
+      "fallback": "gemini_pro",
+      "reason": "Fast explanations with large context"
+    },
+    "security": {
+      "primary": "zai_assistant",
+      "fallback": "gemini_pro",
+      "reason": "Security expertise and compliance"
+    },
+    "code_review": {
+      "primary": "zai_assistant",
+      "fallback": "gemini_pro",
+      "reason": "Thorough review with best practices"
+    },
+    "autocomplete": {
+      "primary": "gemini_flash",
+      "fallback": "gemini_pro",
+      "reason": "Very fast suggestions"
+    },
+    "quick_edit": {
+      "primary": "gemini_flash",
+      "fallback": "gemini_pro",
+      "reason": "Fast inline edits"
+    },
+    "complex_logic": {
+      "primary": "gemini_pro",
+      "fallback": "zai_assistant",
+      "reason": "Advanced reasoning required"
+    },
+    "enterprise_patterns": {
+      "primary": "zai_assistant",
+      "fallback": "gemini_pro",
+      "reason": "Enterprise expertise"
+    }
+  },
+  "automatic_selection": {
+    "enabled": true,
+    "mode": "intelligent",
+    "selection_algorithm": {
+      "considers": [
+        "task_type",
+        "context_size",
+        "response_time_requirement",
+        "quality_requirement",
+        "cost_constraint",
+        "model_availability"
+      ],
+      "weights": {
+        "task_type": 0.4,
+        "quality_requirement": 0.3,
+        "response_time_requirement": 0.2,
+        "cost_constraint": 0.1
+      }
+    },
+    "context_detection": {
+      "enabled": true,
+      "detects_from": [
+        "user_prompt",
+        "current_file_type",
+        "code_context",
+        "slash_command",
+        "conversation_history"
+      ]
+    }
+  },
+  "fallback_strategy": {
+    "enabled": true,
+    "triggers": [
+      "model_unavailable",
+      "rate_limit_exceeded",
+      "timeout",
+      "error_response",
+      "poor_quality_response"
+    ],
+    "fallback_chain": [
+      "primary_model",
+      "fallback_model",
+      "any_available_model"
+    ],
+    "retry_logic": {
+      "max_retries": 3,
+      "backoff": "exponential",
+      "timeout": 30000
+    }
+  },
+  "model_routing_rules": {
+    "by_file_type": {
+      "enabled": true,
+      "rules": {
+        "*.ts": "gemini_flash",
+        "*.tsx": "gemini_flash",
+        "*.js": "gemini_flash",
+        "*.jsx": "gemini_flash",
+        "*.py": "gemini_flash",
+        "*.go": "gemini_flash",
+        "*.rs": "gemini_pro",
+        "*.cpp": "gemini_pro",
+        "*.java": "gemini_flash",
+        "*.md": "gemini_flash",
+        "*.json": "gemini_flash",
+        "*.yaml": "gemini_flash",
+        "*.sql": "gemini_pro",
+        "*.sh": "gemini_flash"
+      }
+    },
+    "by_context_size": {
+      "enabled": true,
+      "rules": {
+        "small": "gemini_flash",
+        "medium": "gemini_flash",
+        "large": "gemini_flash",
+        "very_large": "gemini_flash"
+      },
+      "thresholds": {
+        "small": 1000,
+        "medium": 10000,
+        "large": 50000,
+        "very_large": 100000
+      }
+    },
+    "by_urgency": {
+      "enabled": true,
+      "rules": {
+        "immediate": "gemini_flash",
+        "normal": "gemini_pro",
+        "thorough": "zai_assistant"
+      }
+    },
+    "by_complexity": {
+      "enabled": true,
+      "rules": {
+        "simple": "gemini_flash",
+        "moderate": "gemini_pro",
+        "complex": "gemini_pro",
+        "very_complex": "zai_assistant"
+      }
+    }
+  },
+  "performance_tracking": {
+    "enabled": true,
+    "tracks": [
+      "response_time",
+      "response_quality",
+      "user_satisfaction",
+      "acceptance_rate",
+      "error_rate",
+      "cost_per_request"
+    ],
+    "optimization": {
+      "enabled": true,
+      "adjusts_routing_based_on_performance": true,
+      "learning_rate": "adaptive"
+    }
+  },
+  "cost_optimization": {
+    "enabled": true,
+    "budget_aware": false,
+    "prefers_lower_cost_when_quality_similar": true,
+    "cost_tracking": {
+      "enabled": true,
+      "tracks_per_model": true,
+      "tracks_per_task_type": true
+    }
+  },
+  "quality_assurance": {
+    "enabled": true,
+    "minimum_quality_threshold": 0.8,
+    "quality_checks": [
+      "response_completeness",
+      "code_correctness",
+      "explanation_clarity",
+      "suggestion_relevance"
+    ],
+    "fallback_on_low_quality": true
+  },
+  "user_preferences": {
+    "allow_manual_override": true,
+    "remember_preferences": true,
+    "preferred_model_for_task": {},
+    "never_use_models": []
+  },
+  "advanced_features": {
+    "parallel_requests": {
+      "enabled": false,
+      "max_parallel": 2,
+      "use_case": "Compare responses from multiple models"
+    },
+    "ensemble_responses": {
+      "enabled": false,
+      "combines_multiple_models": false,
+      "use_case": "Critical decisions requiring multiple perspectives"
+    },
+    "model_specific_prompts": {
+      "enabled": true,
+      "optimizes_prompts_per_model": true
+    },
+    "context_caching": {
+      "enabled": true,
+      "cache_per_model": true,
+      "ttl": 3600
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "logs_model_selection": true,
+    "logs_performance_metrics": true,
+    "dashboard": {
+      "enabled": true,
+      "shows": [
+        "model_usage_distribution",
+        "average_response_times",
+        "quality_scores",
+        "cost_breakdown",
+        "fallback_frequency"
+      ]
+    }
+  },
+  "configuration": {
+    "default_model": "gemini_flash",
+    "default_fallback": "gemini_pro",
+    "auto_switch_enabled": true,
+    "user_notification_on_switch": false,
+    "verbose_logging": false
+  }
+}
