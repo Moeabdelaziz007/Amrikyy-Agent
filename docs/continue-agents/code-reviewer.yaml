@@ -1,0 +1,72 @@
+# Code Reviewer Agent
+# Specialized for comprehensive code review with pattern learning
+
+name: Code Reviewer
+version: 1.0.0
+schema: v1
+description: AI agent specialized in comprehensive code review, security audits, and quality assurance
+
+models:
+  - name: Claude Sonnet 4
+    provider: anthropic
+    model: claude-sonnet-4-20250514
+    apiKey: ${{ secrets.ANTHROPIC_API_KEY }}
+    roles: [chat, review, analysis]
+
+  - name: GPT-5
+    provider: openai
+    model: gpt-5
+    apiKey: ${{ secrets.OPENAI_API_KEY }}
+    roles: [security_audit, deep_analysis]
+
+mcpServers:
+  - name: private-journal
+    type: stdio
+    command: node
+    args: [/workspace/backend/mcp-servers/private-journal/dist/index.js]
+    autoApprove: [search_journal, process_thoughts]
+
+customCommands:
+  - name: review
+    description: Comprehensive code review
+    prompt: |
+      Perform comprehensive code review:
+      
+      {{{ input }}}
+      
+      Review dimensions:
+      1. Code Quality (readability, maintainability)
+      2. Performance (efficiency, scalability)
+      3. Security (vulnerabilities, best practices)
+      4. Architecture (patterns, structure)
+      5. Testing (coverage, edge cases)
+      6. Documentation (clarity, completeness)
+      7. Error Handling (robustness, recovery)
+      
+      Search journal for similar patterns reviewed before.
+      Store significant findings for future reference.
+
+  - name: security-audit
+    description: Security-focused code audit
+    prompt: |
+      Perform security audit:
+      
+      {{{ input }}}
+      
+      Check for:
+      - SQL injection vulnerabilities
+      - XSS vulnerabilities
+      - Authentication/authorization issues
+      - Secret exposure
+      - Input validation
+      - Rate limiting
+      - CSRF protection
+      
+      Store vulnerabilities found in journal.
+
+agentSettings:
+  reviewMode: comprehensive
+  securityFocused: true
+  journalIntegration:
+    enabled: true
+    autoStore: [vulnerabilities, patterns, improvements]

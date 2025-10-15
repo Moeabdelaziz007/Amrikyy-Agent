@@ -1,0 +1,365 @@
+# Maya Travel Agent - AI Coding Assistant
+# Optimized for Maya Travel Agent project development
+# Integrated with Private Journal MCP for persistent memory
+
+name: Maya Travel Agent Assistant
+version: 2.0.0
+schema: v1
+description: Specialized AI agent for Maya Travel Agent project with MCP memory integration
+
+# ============================================
+# RECOMMENDED MODELS (Based on Continue Docs)
+# ============================================
+models:
+  # PRIMARY: Chat & Edit (Best closed model)
+  - name: Claude Sonnet 4
+    provider: anthropic
+    model: claude-sonnet-4-20250514
+    apiKey: ${{ secrets.ANTHROPIC_API_KEY }}
+    contextLength: 200000
+    completionOptions:
+      temperature: 0.7
+      topP: 0.95
+      maxTokens: 8192
+    roles:
+      - chat
+      - edit
+      - agent_plan
+    capabilities:
+      toolCalling: true
+      streaming: true
+      codeGeneration: excellent
+      reasoning: excellent
+
+  # SECONDARY: Fast operations & autocomplete
+  - name: Qwen3 Coder 30B
+    provider: ollama
+    model: qwen3-coder-30b
+    roles:
+      - autocomplete
+      - chat_edit
+      - next_edit
+    capabilities:
+      toolCalling: true
+      streaming: true
+      codeGeneration: excellent
+      speed: fast
+
+  # TERTIARY: Specialized tasks
+  - name: GPT-5
+    provider: openai
+    model: gpt-5
+    apiKey: ${{ secrets.OPENAI_API_KEY }}
+    contextLength: 128000
+    roles:
+      - agent_plan
+      - complex_reasoning
+    capabilities:
+      toolCalling: true
+      reasoning: excellent
+
+  # EMBEDDING: Code search & similarity
+  - name: Voyage Code 3
+    provider: voyageai
+    model: voyage-code-3
+    apiKey: ${{ secrets.VOYAGE_API_KEY }}
+    roles:
+      - embed
+    capabilities:
+      embeddingSize: 1024
+      codeOptimized: true
+
+  # AUTOCOMPLETE: Fast inline suggestions
+  - name: QwenCoder 2.5 (7B)
+    provider: ollama
+    model: qwen2.5-coder-7b
+    roles:
+      - autocomplete
+    capabilities:
+      speed: very_fast
+      accuracy: high
+
+  # APPLY: Code transformations
+  - name: Relace Instant Apply
+    provider: relace
+    model: instant-apply
+    apiKey: ${{ secrets.RELACE_API_KEY }}
+    roles:
+      - apply
+    capabilities:
+      codeTransformation: excellent
+      speed: instant
+
+# ============================================
+# MCP SERVERS - Private Journal Integration
+# ============================================
+mcpServers:
+  # Private Journal MCP - Persistent memory & learning
+  - name: private-journal
+    description: Private journaling with semantic search for persistent AI memory
+    type: stdio
+    command: node
+    args:
+      - /workspace/backend/mcp-servers/private-journal/dist/index.js
+    env:
+      JOURNAL_PATH: /workspace/.private-journal
+    autoApprove:
+      - process_thoughts
+      - search_journal
+      - read_journal_entry
+      - list_recent_entries
+    capabilities:
+      - journaling
+      - semantic_search
+      - persistent_memory
+      - pattern_learning
+
+  # Pattern Learning Journal (if available)
+  - name: pattern-learning
+    description: Learn and apply coding patterns from the Maya project
+    type: stdio
+    command: node
+    args:
+      - /workspace/backend/mcp-servers/pattern-learning-journal/index.js
+    autoApprove:
+      - store_pattern
+      - search_patterns
+      - apply_pattern
+      - list_patterns
+    capabilities:
+      - pattern_recognition
+      - pattern_storage
+      - pattern_application
+
+# ============================================
+# CUSTOM COMMANDS
+# ============================================
+customCommands:
+  # Memory-enhanced commands
+  - name: remember
+    description: Store important insight in journal
+    prompt: |
+      Store this important insight in the private journal:
+      
+      {{{ input }}}
+      
+      Categorize appropriately:
+      - technical_insights: For engineering learnings
+      - project_notes: For Maya-specific patterns
+      - user_context: For collaboration preferences
+      
+      Use the process_thoughts MCP tool.
+
+  - name: recall
+    description: Search journal for past insights
+    prompt: |
+      Search the private journal for insights related to:
+      
+      {{{ input }}}
+      
+      Use the search_journal MCP tool with semantic search.
+
+  - name: maya-pattern
+    description: Analyze code for Maya Travel Agent patterns
+    prompt: |
+      Analyze this code from Maya Travel Agent perspective:
+      
+      {{{ input }}}
+      
+      Consider:
+      1. AIX v3.0 agent patterns
+      2. Backend API structure (routes → controllers → services)
+      3. Frontend React + TypeScript patterns
+      4. iOS SwiftUI + MVVM patterns
+      5. Security and performance
+      
+      Store any new patterns discovered in the journal.
+
+  - name: aix-agent
+    description: Generate AIX v3.0 agent configuration
+    prompt: |
+      Create an AIX v3.0 agent configuration for:
+      
+      {{{ input }}}
+      
+      Follow the YAML format from backend/agents/amrikyy-travel-agent-v3.aix
+      Include semantic identity, capabilities, tools, and coordination architecture.
+
+  - name: money-hunter
+    description: Analyze for Money Hunter revenue opportunities
+    prompt: |
+      Analyze this code/feature for Money Hunter integration:
+      
+      {{{ input }}}
+      
+      Consider:
+      1. Revenue potential (1-10)
+      2. Implementation difficulty (1-10)
+      3. Market demand
+      4. Automation possibilities
+      
+      Use SmartValidator 7-dimensional scoring approach.
+
+# ============================================
+# CONTEXT PROVIDERS
+# ============================================
+contextProviders:
+  # Project-specific context
+  - name: maya-architecture
+    description: Maya Travel Agent architecture context
+    params:
+      files:
+        - README.md
+        - backend/agents/amrikyy-travel-agent-v3.aix
+        - AIX_V3_COMPLETE_DOCUMENTATION_INDEX.md
+        - backend/src/agents/MoneyHunterOrchestrator.js
+
+  - name: mcp-tools
+    description: Available MCP tools and capabilities
+    params:
+      files:
+        - backend/mcp-servers/MCP_INTEGRATION_GUIDE.md
+        - backend/mcp-servers/private-journal/README.md
+
+  # Standard Continue contexts
+  - name: code
+    params: {}
+  - name: docs
+    params: {}
+  - name: diff
+    params: {}
+  - name: terminal
+    params: {}
+  - name: problems
+    params: {}
+  - name: codebase
+    params: {}
+
+# ============================================
+# SLASH COMMANDS
+# ============================================
+slashCommands:
+  - name: edit
+    description: Edit code with AI assistance
+  - name: comment
+    description: Add documentation
+  - name: share
+    description: Share context
+  - name: cmd
+    description: Run commands
+  - name: commit
+    description: Generate git commit message
+  
+  # Memory-enhanced commands
+  - name: journal
+    description: Store insight in private journal
+  - name: search-memory
+    description: Search journal memories
+  - name: learn-pattern
+    description: Learn and store coding pattern
+
+# ============================================
+# AGENT-SPECIFIC SETTINGS
+# ============================================
+agentSettings:
+  # Use MCP tools automatically
+  autoUseMCPTools: true
+  
+  # Remember context across sessions
+  persistentMemory: true
+  
+  # Learn from interactions
+  patternLearning: true
+  
+  # Multi-model orchestration
+  modelOrchestration:
+    enabled: true
+    strategy: task_based
+    taskMapping:
+      architecture: "Claude Sonnet 4"
+      implementation: "Qwen3 Coder 30B"
+      refactoring: "Claude Sonnet 4"
+      debugging: "Claude Sonnet 4"
+      autocomplete: "QwenCoder 2.5 (7B)"
+      apply: "Relace Instant Apply"
+  
+  # Journal integration
+  journalIntegration:
+    enabled: true
+    autoStore:
+      - significant_decisions
+      - new_patterns
+      - bug_fixes
+      - architecture_changes
+    autoSearch:
+      - before_major_tasks
+      - when_solving_similar_problems
+  
+  # Performance
+  performance:
+    cacheEnabled: true
+    parallelRequests: 3
+    timeout: 30000
+
+# ============================================
+# PROJECT-SPECIFIC RULES
+# ============================================
+rules:
+  # Backend patterns
+  - pattern: "backend/**/*.js"
+    rules:
+      - Use layered architecture: routes → controllers → services → database
+      - No business logic in routes
+      - Async/await for all async operations
+      - Comprehensive error handling
+      - JSDoc documentation
+
+  # Frontend patterns
+  - pattern: "frontend/**/*.{ts,tsx}"
+    rules:
+      - TypeScript strict mode
+      - Functional components only
+      - Custom hooks for business logic
+      - Props interfaces for all components
+      - React Query for server state
+
+  # iOS patterns
+  - pattern: "ios/**/*.swift"
+    rules:
+      - MVVM architecture strictly
+      - Combine for reactive programming
+      - @Published for observable properties
+      - SwiftUI for all views
+
+  # Agent patterns
+  - pattern: "backend/agents/**/*.aix"
+    rules:
+      - Follow AIX v3.0 specification
+      - Include semantic identity
+      - Define clear capabilities
+      - Specify coordination architecture
+
+# ============================================
+# SECURITY & PRIVACY
+# ============================================
+security:
+  # Never commit secrets
+  secretDetection: true
+  
+  # Private journal is local only
+  journalPrivacy: strict
+  
+  # No telemetry
+  telemetry: false
+
+# ============================================
+# METADATA
+# ============================================
+metadata:
+  author: Maya Travel Agent Team
+  created: 2025-10-15
+  updated: 2025-10-15
+  project: maya-travel-agent
+  projectId: maya-travel-agent
+  repository: https://github.com/Moeabdelaziz007/Amrikyy-Agent
+  license: MIT
