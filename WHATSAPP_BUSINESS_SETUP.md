@@ -2,7 +2,7 @@
 
 ## 📋 نظرة عامة
 
-دليل شامل للحصول على WhatsApp Business API Token ودمجه مع Maya Travel Agent Bot.
+دليل شامل للحصول على WhatsApp Business API Token ودمجه مع Amrikyy Travel Agent Bot.
 
 ---
 
@@ -26,7 +26,7 @@
 3. **اختر نوع التطبيق:** "Business"
 4. **املأ المعلومات:**
    ```
-   App Name: Maya Travel Agent
+   App Name: Amrikyy Travel Agent
    App Contact Email: your-email@example.com
    Business Account: [اختر أو أنشئ حساب أعمال]
    ```
@@ -83,7 +83,7 @@ EAAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
    ```
 4. **اضغط:** "Create System User"
 5. **اضغط:** "Generate New Token"
-6. **اختر التطبيق:** Maya Travel Agent
+6. **اختر التطبيق:** Amrikyy Travel Agent
 7. **اختر الصلاحيات:**
    - ✅ `whatsapp_business_messaging`
    - ✅ `whatsapp_business_management`

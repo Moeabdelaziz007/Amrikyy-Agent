@@ -1,5 +1,5 @@
 /**
- * @fileoverview Type definitions for Maya Travel Agent
+ * @fileoverview Type definitions for Amrikyy Travel Agent
  * @module types
  */
 

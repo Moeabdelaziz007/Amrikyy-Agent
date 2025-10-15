@@ -1,6 +1,6 @@
-# 📚 Documentation Index - Maya Travel Agent
+# 📚 Documentation Index - Amrikyy Travel Agent
 
-Welcome to the Maya Travel Agent documentation! This index will help you find the information you need quickly.
+Welcome to the Amrikyy Travel Agent documentation! This index will help you find the information you need quickly.
 
 ---
 
@@ -211,7 +211,7 @@ code blocks
 
 If you find issues with the documentation:
 
-1. **Check existing issues**: [GitHub Issues](https://github.com/Moeabdelaziz007/maya-travel-agent/issues)
+1. **Check existing issues**: [GitHub Issues](https://github.com/Moeabdelaziz007/amrikyy-travel-agent/issues)
 2. **Create new issue**: Use "Documentation" label
 3. **Submit PR**: Fix it yourself and submit a pull request
 
@@ -302,12 +302,12 @@ docs/                        # Documentation
 
 For additional support:
 
-- **GitHub Issues**: [Report Issues](https://github.com/Moeabdelaziz007/maya-travel-agent/issues)
-- **GitHub Discussions**: [Ask Questions](https://github.com/Moeabdelaziz007/maya-travel-agent/discussions)
+- **GitHub Issues**: [Report Issues](https://github.com/Moeabdelaziz007/amrikyy-travel-agent/issues)
+- **GitHub Discussions**: [Ask Questions](https://github.com/Moeabdelaziz007/amrikyy-travel-agent/discussions)
 - **Email**: Contact the maintainers
 
 ---
 
 **Last Updated**: 2024-10-09  
 **Version**: 1.0.0  
-**Maintained by**: Maya Trips Team
+**Maintained by**: Amrikyy Trips Team

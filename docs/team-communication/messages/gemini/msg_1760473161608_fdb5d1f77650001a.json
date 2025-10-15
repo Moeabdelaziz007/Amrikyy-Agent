@@ -1,0 +1,15 @@
+{
+  "id": "msg_1760473161608_fdb5d1f77650001a",
+  "from": "cursor",
+  "to": "gemini",
+  "timestamp": 1760473161608,
+  "type": "request",
+  "priority": "normal",
+  "content": {
+    "subject": "Performance Analysis Request",
+    "body": "Please analyze the AIXParser.js performance and provide optimization recommendations.",
+    "deadline": 1760480361608
+  },
+  "metadata": {},
+  "status": "pending"
+}

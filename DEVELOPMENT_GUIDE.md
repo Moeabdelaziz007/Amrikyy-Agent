@@ -1,4 +1,4 @@
-# 🛠️ Development Guide - Maya Travel Agent
+# 🛠️ Development Guide - Amrikyy Travel Agent
 
 ## Table of Contents
 - [Development Environment Setup](#development-environment-setup)
@@ -78,7 +78,7 @@ Create `.vscode/extensions.json`:
 ### Monorepo Layout
 
 ```
-maya-travel-agent/
+amrikyy-travel-agent/
 ├── frontend/           # React application
 ├── backend/            # Node.js server
 ├── docs/              # Documentation
@@ -862,4 +862,4 @@ npm run test:coverage
 
 **Last Updated**: 2024-10-09  
 **Version**: 1.0.0  
-**Maintained by**: Maya Trips Team
+**Maintained by**: Amrikyy Trips Team

@@ -1,8 +1,8 @@
-# 💳 دليل إعداد نظام الدفع - Maya Trips
+# 💳 دليل إعداد نظام الدفع - Amrikyy Trips
 
 ## 🎯 نظرة عامة
 
-تم إضافة نظام دفع شامل لـ Maya Trips يدعم:
+تم إضافة نظام دفع شامل لـ Amrikyy Trips يدعم:
 - 💳 **Stripe** - بطاقات الائتمان
 - 🅿️ **PayPal** - دفع عبر PayPal
 - 📱 **Telegram Bot** - دفع عبر التلجرام
@@ -129,7 +129,7 @@ Content-Type: application/json
   "amount": 100.50,
   "currency": "USD",
   "paymentMethod": "telegram",
-  "description": "Maya Trips Payment",
+  "description": "Amrikyy Trips Payment",
   "chatId": "telegram_chat_id"
 }
 ```

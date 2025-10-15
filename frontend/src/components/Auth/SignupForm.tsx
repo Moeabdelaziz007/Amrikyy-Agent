@@ -60,7 +60,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSuccess, onSwitchToLogin }) =
       className="bg-white rounded-2xl p-8 shadow-xl max-w-md w-full"
     >
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold maya-text mb-2">Join Maya Trips</h2>
+        <h2 className="text-3xl font-bold maya-text mb-2">Join Amrikyy Trips</h2>
         <p className="text-gray-600">Create your account and start planning</p>
       </div>
 

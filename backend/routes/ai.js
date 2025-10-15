@@ -1,5 +1,5 @@
 /**
- * AI Routes for Maya Trips
+ * AI Routes for Amrikyy Trips
  * Z.ai GLM-4.6 Integration
  */
 

@@ -223,7 +223,7 @@ curl "https://generativelanguage.googleapis.com/v1/models?key=YOUR_KEY"
 
 ### للمشاكل التقنية
 - Logs: `backend/logs/error.log`
-- GitHub Issues: [Repository](https://github.com/Moeabdelaziz007/maya-travel-agent/issues)
+- GitHub Issues: [Repository](https://github.com/Moeabdelaziz007/amrikyy-travel-agent/issues)
 
 ### للوثائق
 - `README_BOT.md` - وثائق كاملة

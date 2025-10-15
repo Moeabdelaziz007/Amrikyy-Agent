@@ -1,6 +1,6 @@
 /**
  * Kelo AI API Client
- * Advanced AI provider for Maya Travel Agent
+ * Advanced AI provider for Amrikyy Travel Agent
  * Replaces Gemini 2.5 with enhanced capabilities
  */
 
@@ -83,7 +83,7 @@ class KeloClient {
       content: msg.content,
       metadata: {
         timestamp: new Date().toISOString(),
-        source: 'maya-travel-agent'
+        source: 'amrikyy-travel-agent'
       }
     }));
   }

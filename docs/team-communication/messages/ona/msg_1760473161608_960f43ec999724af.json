@@ -1,0 +1,30 @@
+{
+  "id": "msg_1760473161608_960f43ec999724af",
+  "from": "system",
+  "to": "ona",
+  "timestamp": 1760473161608,
+  "type": "task",
+  "priority": "high",
+  "content": {
+    "taskId": "msg_1760473161607_fffb218239b88a76",
+    "title": "Document AIX Communication Hub",
+    "description": "Create comprehensive documentation for the new communication system",
+    "deadline": 1760476761607,
+    "requirements": [
+      "API documentation",
+      "Usage examples",
+      "Integration guide"
+    ],
+    "deliverables": [
+      "README.md",
+      "API_REFERENCE.md",
+      "EXAMPLES.md"
+    ],
+    "status": "pending"
+  },
+  "metadata": {
+    "createdAt": 1760473161608,
+    "createdBy": "cursor"
+  },
+  "status": "pending"
+}

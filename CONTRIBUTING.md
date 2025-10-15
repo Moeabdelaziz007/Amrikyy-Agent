@@ -1,6 +1,6 @@
-# 🤝 Contributing to Maya Travel Agent
+# 🤝 Contributing to Amrikyy Travel Agent
 
-Thank you for your interest in contributing to Maya Travel Agent! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to Amrikyy Travel Agent! This document provides guidelines and instructions for contributing to the project.
 
 ---
 
@@ -55,13 +55,13 @@ We are committed to providing a welcoming and inclusive environment for all cont
 1. **Fork the repository** on GitHub
 2. **Clone your fork**:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/maya-travel-agent.git
-   cd maya-travel-agent
+   git clone https://github.com/YOUR_USERNAME/amrikyy-travel-agent.git
+   cd amrikyy-travel-agent
    ```
 
 3. **Add upstream remote**:
    ```bash
-   git remote add upstream https://github.com/Moeabdelaziz007/maya-travel-agent.git
+   git remote add upstream https://github.com/Moeabdelaziz007/amrikyy-travel-agent.git
    ```
 
 4. **Install dependencies**:
@@ -691,6 +691,6 @@ By contributing, you agree that your contributions will be licensed under the MI
 
 ---
 
-**Thank you for contributing to Maya Travel Agent! 🎉**
+**Thank you for contributing to Amrikyy Travel Agent! 🎉**
 
 Your contributions help make this project better for everyone.

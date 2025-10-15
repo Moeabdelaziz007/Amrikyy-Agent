@@ -4,7 +4,7 @@
 
 ### 1. **Hero Section Redesign**
 - **Male Avatar**: Replaced emoji with professional male AI avatar using pravatar.cc
-- **Two-Column Layout**: Content on left, avatar card on right (inspired by Maya Travel Agent)
+- **Two-Column Layout**: Content on left, avatar card on right (inspired by Amrikyy Travel Agent)
 - **Modern Card Design**: Avatar displayed in glassmorphic card with stats
 - **Status Indicator**: Live "Online" badge with pulse animation
 - **Brand Identity**: "Amrikyy Basic" branding prominently displayed
@@ -52,7 +52,7 @@
 - ✅ "Coming Soon" placeholder cards
 - ✅ Clean, organized sections
 
-### From Maya Travel Agent:
+### From Amrikyy Travel Agent:
 - ✅ Hero section with avatar showcase
 - ✅ Two-column layout (content + visual)
 - ✅ Glassmorphic card design
@@ -116,7 +116,7 @@
 ## 🔗 References
 
 - **Sorare Basic**: https://sorare-basic-44568.lovable.app/
-- **Maya Travel Agent**: https://maya-travel-agent.lovable.app/
+- **Amrikyy Travel Agent**: https://amrikyy-travel-agent.lovable.app/
 
 ## ✨ Result
 

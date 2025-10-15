@@ -1,6 +1,6 @@
 /**
  * Revenue Analytics Service
- * Handles revenue tracking, analytics, and reporting for the Maya Travel Agent system
+ * Handles revenue tracking, analytics, and reporting for the Amrikyy Travel Agent system
  */
 
 const { createClient } = require('@supabase/supabase-js');

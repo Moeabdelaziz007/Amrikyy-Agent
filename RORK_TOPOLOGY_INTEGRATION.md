@@ -1,9 +1,9 @@
-# Rork.com Topology Concepts - Maya Travel Agent Integration
+# Rork.com Topology Concepts - Amrikyy Travel Agent Integration
 ## How Professional App Topology Enhances Our Multi-Platform Architecture
 
 **Date:** October 13, 2025  
 **Platform:** rork.com Mobile App Development  
-**Application:** Maya Travel Agent (iOS + Web + Backend + AIX Agents)
+**Application:** Amrikyy Travel Agent (iOS + Web + Backend + AIX Agents)
 
 ---
 
@@ -21,7 +21,7 @@
 
 **Definition:** Visual representation of app components and their interconnections ([Source](https://faddom.com/what-is-application-topology-and-why-map-your-application-topology/))
 
-**Maya Travel Agent Current Topology:**
+**Amrikyy Travel Agent Current Topology:**
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -259,7 +259,7 @@ iOS → Backend → Cache → Z.ai
 
 ## 🎯 CONCLUSION
 
-**Rork.com topology concepts perfectly complement Maya Travel Agent!**
+**Rork.com topology concepts perfectly complement Amrikyy Travel Agent!**
 
 **Current State:**
 - ✅ iOS uses layered topology (MVVM)

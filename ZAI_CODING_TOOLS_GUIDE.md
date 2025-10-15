@@ -27,7 +27,7 @@ export ANTHROPIC_BASE_URL=https://api.z.ai/api/anthropic
 export ANTHROPIC_AUTH_TOKEN=4e4ab4737d0b4f0ca810ae233d4cbad3.BY1p4wRAwHCezeMh
 
 # بدء Claude Code
-cd /path/to/maya-travel-agent
+cd /path/to/amrikyy-travel-agent
 claude
 ```
 
@@ -142,7 +142,7 @@ claude
 
 3. **افتح المشروع**
    ```bash
-   cursor /path/to/maya-travel-agent
+   cursor /path/to/amrikyy-travel-agent
    ```
 
 4. **استخدم AI**
@@ -431,7 +431,7 @@ export ANTHROPIC_BASE_URL=https://api.z.ai/api/anthropic
 export ANTHROPIC_AUTH_TOKEN=4e4ab4737d0b4f0ca810ae233d4cbad3.BY1p4wRAwHCezeMh
 
 # 3. افتح المشروع
-cd /path/to/maya-travel-agent
+cd /path/to/amrikyy-travel-agent
 claude
 
 # 4. جرب أول أمر

@@ -1,7 +1,7 @@
 # AIX Integration Test Report
-## Maya Travel Agent - DNA Scoring System Implementation
+## Amrikyy Travel Agent - DNA Scoring System Implementation
 
-**Project**: Maya Travel Agent AIX Integration  
+**Project**: Amrikyy Travel Agent AIX Integration  
 **Test Date**: 2025-01-13  
 **Test Duration**: 45 minutes  
 **Status**: ✅ PASSED  

@@ -1,6 +1,6 @@
 /**
  * ESLint Configuration v9.0.0
- * Modern configuration for Maya Travel Agent Backend
+ * Modern configuration for Amrikyy Travel Agent Backend
  */
 
 import js from '@eslint/js';

@@ -1,5 +1,5 @@
 /**
- * Profile API Routes for Maya Travel Agent
+ * Profile API Routes for Amrikyy Travel Agent
  * Handles user profile management, avatar uploads, and user statistics
  *
  * Endpoints:

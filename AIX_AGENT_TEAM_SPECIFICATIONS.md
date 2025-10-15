@@ -9,7 +9,7 @@
 
 ## 🎯 EXECUTIVE SUMMARY
 
-This document presents a **complete, production-ready AIX v3.0 agent team** consisting of three specialized agents designed to work together seamlessly. This team represents the gold standard for multi-agent AI coordination and serves as a reference implementation for the Maya Travel Agent project.
+This document presents a **complete, production-ready AIX v3.0 agent team** consisting of three specialized agents designed to work together seamlessly. This team represents the gold standard for multi-agent AI coordination and serves as a reference implementation for the Amrikyy Travel Agent project.
 
 **Team Composition:**
 - **Athena**: Lead Orchestrator - Strategic planning and team coordination
@@ -332,9 +332,9 @@ aix team task create \
   --priority high
 ```
 
-### **Integration with Maya Travel Agent:**
+### **Integration with Amrikyy Travel Agent:**
 
-The Maya Travel Agent project currently has **44 AIX agent files** in `backend/agents/`. This team (Athena + Delphi + Cipher) can serve as:
+The Amrikyy Travel Agent project currently has **44 AIX agent files** in `backend/agents/`. This team (Athena + Delphi + Cipher) can serve as:
 
 1. **Reference Implementation**: Gold standard for agent design
 2. **Coordination Layer**: Orchestrate existing 44 agents
@@ -501,10 +501,10 @@ This AIX v3.0 agent team (Athena + Delphi + Cipher) represents **best-in-class A
 - ✅ Production-ready with 9.5/10 quality score
 - ✅ Enterprise-grade security and performance
 - ✅ Comprehensive and maintainable
-- ✅ Perfect reference implementation for Maya Travel Agent
+- ✅ Perfect reference implementation for Amrikyy Travel Agent
 - ✅ Scalable from small teams to large enterprises
 
-**Recommendation:** Deploy this team as the coordination layer for Maya Travel Agent's existing 44 AIX agents, using Athena as the orchestrator, Delphi for research validation, and Cipher for technical documentation.
+**Recommendation:** Deploy this team as the coordination layer for Amrikyy Travel Agent's existing 44 AIX agents, using Athena as the orchestrator, Delphi for research validation, and Cipher for technical documentation.
 
 ---
 

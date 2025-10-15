@@ -82,11 +82,11 @@ docker --version
 cd /Users/Shared
 
 # Clone (if not already cloned)
-git clone https://github.com/Moeabdelaziz007/maya-travel-agent.git
-cd maya-travel-agent
+git clone https://github.com/Moeabdelaziz007/amrikyy-travel-agent.git
+cd amrikyy-travel-agent
 
 # Or if already cloned, just pull latest
-cd /Users/Shared/maya-travel-agent
+cd /Users/Shared/amrikyy-travel-agent
 git pull origin main
 ```
 
@@ -517,7 +517,7 @@ Click "Send Request" above each section
 **Quick Access Folders:**
 
 ```
-maya-travel-agent/
+amrikyy-travel-agent/
 ├── frontend/src/          # Frontend development
 │   ├── components/        # React components
 │   ├── pages/            # Routes
@@ -565,7 +565,7 @@ Cursor will prompt: "Install Recommended Extensions?" → Click **Install All**
 
 ```bash
 # 1. Navigate to project
-cd /Users/Shared/maya-travel-agent
+cd /Users/Shared/amrikyy-travel-agent
 
 # 2. Pull latest changes
 git pull origin main
@@ -669,7 +669,7 @@ git checkout main
 ```bash
 # Every Friday
 cd /Users/Shared
-cp -r maya-travel-agent maya-backup-$(date +%Y-%m-%d)
+cp -r amrikyy-travel-agent maya-backup-$(date +%Y-%m-%d)
 ```
 
 ---

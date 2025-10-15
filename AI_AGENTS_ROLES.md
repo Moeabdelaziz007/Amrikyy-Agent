@@ -1,7 +1,7 @@
 # 👥 AI Agents - Roles & Skills Definition
 
 **Last Updated:** 2025-10-13 07:00 UTC  
-**Project:** Maya Travel Agent (Amrikyy Platform)
+**Project:** Amrikyy Travel Agent (Amrikyy Platform)
 
 ---
 
@@ -224,7 +224,7 @@ Ona: Approves ✅
 
 ## 🎯 Current Project Context
 
-### Project: **Maya Travel Agent (Amrikyy Platform)**
+### Project: **Amrikyy Travel Agent (Amrikyy Platform)**
 
 **Tech Stack:**
 - Frontend: React 18 + TypeScript + Vite + Tailwind CSS

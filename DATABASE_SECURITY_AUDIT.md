@@ -1,5 +1,5 @@
 # Database Integration Security Audit
-## Maya Travel Agent - Supabase PostgreSQL Integration Review
+## Amrikyy Travel Agent - Supabase PostgreSQL Integration Review
 
 **Date:** October 13, 2025  
 **Audited By:** Database Security Team  
@@ -591,7 +591,7 @@ router.get('/api/trips', dbUserLimiter, async (req, res) => {
 # Daily database backup script
 
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-BACKUP_DIR="/backups/maya-travel-agent"
+BACKUP_DIR="/backups/amrikyy-travel-agent"
 SUPABASE_PROJECT_REF="your-project-ref"
 
 # Export profiles table
@@ -926,7 +926,7 @@ class OptimizedSupabaseClient {
         },
         global: {
           headers: {
-            'x-application-name': 'maya-travel-agent'
+            'x-application-name': 'amrikyy-travel-agent'
           }
         }
       }

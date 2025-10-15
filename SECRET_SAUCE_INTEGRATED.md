@@ -143,7 +143,7 @@ Agents know **exactly what to do** with learned patterns.
 
 1. **Install dependency:**
 ```bash
-cd /Users/Shared/maya-travel-agent/backend
+cd /Users/Shared/amrikyy-travel-agent/backend
 npm install sqlite3
 ```
 

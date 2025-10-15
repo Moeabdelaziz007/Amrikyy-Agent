@@ -1,7 +1,7 @@
 # AIX Agents Conversion Report
-## Maya Travel Agent - Complete AIX v0.1.0 Conversion
+## Amrikyy Travel Agent - Complete AIX v0.1.0 Conversion
 
-**Project**: Maya Travel Agent AIX Integration  
+**Project**: Amrikyy Travel Agent AIX Integration  
 **Conversion Date**: 2025-01-13  
 **Duration**: 1 hour  
 **Status**: ✅ SUCCESS  

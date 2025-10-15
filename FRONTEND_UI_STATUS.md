@@ -1,5 +1,5 @@
 # Frontend UI Status Report
-## Maya Travel Agent - React/TypeScript Web Application
+## Amrikyy Travel Agent - React/TypeScript Web Application
 
 **Date:** October 13, 2025  
 **Tech Stack:** React 18 + TypeScript + Vite + Tailwind CSS  

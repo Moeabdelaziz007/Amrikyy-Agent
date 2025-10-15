@@ -118,7 +118,7 @@ frontend/src/
 
 ### **iOS (SwiftUI + MVVM):**
 ```
-MayaTravelAgent/
+AmrikyyTravelAgent/
 ├── Models/           7 models
 │   ├── User.swift
 │   ├── TravelPlan.swift
@@ -412,7 +412,7 @@ Status:              ✅ Clean, pushed
 #### **1. Deploy Database (5 min)**
 ```bash
 1. Go to https://supabase.com
-2. Create project: "maya-travel-agent"
+2. Create project: "amrikyy-travel-agent"
 3. Open SQL Editor
 4. Run: supabase-complete-schema.sql
 5. ✅ Done!

@@ -432,7 +432,7 @@ For innovation:
 
 ## 🎯 PROJECT-SPECIFIC CONTEXT
 
-### Maya Travel Agent Architecture
+### Amrikyy Travel Agent Architecture
 
 **Backend (Node.js + Express):**
 ```

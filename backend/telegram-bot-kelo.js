@@ -1,5 +1,5 @@
 /**
- * Maya Travel Agent - Telegram Bot (Kelo AI Version)
+ * Amrikyy Travel Agent - Telegram Bot (Kelo AI Version)
  * Uses Kelo AI for advanced AI responses
  * Replaces Gemini 2.5 with enhanced capabilities
  */
@@ -63,7 +63,7 @@ bot.setMyCommands(commands);
 
 // Welcome message
 const welcomeMessage = `
-🎉 مرحباً بك في Maya Travel Agent!
+🎉 مرحباً بك في Amrikyy Travel Agent!
 
 أنا مساعد السفر الذكي المدعوم بـ Kelo AI 🤖
 

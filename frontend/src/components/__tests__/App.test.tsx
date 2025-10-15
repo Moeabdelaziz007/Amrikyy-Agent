@@ -22,8 +22,8 @@ describe('App Component', () => {
     })
   })
 
-  it('displays Maya Trips branding', () => {
+  it('displays Amrikyy Trips branding', () => {
     render(<App />)
-    expect(screen.getByText('Maya Trips')).toBeInTheDocument()
+    expect(screen.getByText('Amrikyy Trips')).toBeInTheDocument()
   })
 })

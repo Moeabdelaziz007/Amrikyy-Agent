@@ -24,7 +24,7 @@ router.get('/opportunities', async (req, res) => {
 
     // Create analysis prompt for Kelo AI
     const analysisPrompt = `
-      Analyze revenue opportunities for Maya Travel Agent based on:
+      Analyze revenue opportunities for Amrikyy Travel Agent based on:
       - Period: ${period}
       - Category: ${category}
       - Limit: ${limit} opportunities
@@ -98,7 +98,7 @@ router.post('/analyze', async (req, res) => {
     }
 
     const analysisPrompt = `
-      Analyze the following revenue data for Maya Travel Agent:
+      Analyze the following revenue data for Amrikyy Travel Agent:
       
       Data: ${JSON.stringify(data)}
       Metrics: ${metrics.join(', ')}
@@ -164,7 +164,7 @@ router.get('/forecast', async (req, res) => {
     } = req.query;
 
     const forecastPrompt = `
-      Generate a revenue forecast for Maya Travel Agent:
+      Generate a revenue forecast for Amrikyy Travel Agent:
       - Period: ${months} months
       - Confidence level: ${confidence}
       - Scenario: ${scenario}

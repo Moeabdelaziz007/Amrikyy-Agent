@@ -1,7 +1,7 @@
-# Kombai AI Execution Prompt: Maya Trips Frontend Improvement & Hardening
+# Kombai AI Execution Prompt: Amrikyy Trips Frontend Improvement & Hardening
 
 ## CONTEXT YOU MUST ASSUME
-- **Project name**: `Maya Trips - AI Travel Assistant`
+- **Project name**: `Amrikyy Trips - AI Travel Assistant`
 - **Repository URL**: `https://github.com/USERNAME/Maya-Trips.git` (provide read/write credentials to Kombai)
 - **Primary frontend stack**: `React 18 + TypeScript + Vite + Tailwind CSS`
 - **Backend/API**: `Node.js + Express REST API at /api`
@@ -12,7 +12,7 @@
 - **Production environment**: `Vercel/Netlify` (to be configured)
 
 ## OBJECTIVE (what Kombai must deliver)
-1. Detect, diagnose, and fix frontend bugs and performance regressions in the Maya Trips React application.
+1. Detect, diagnose, and fix frontend bugs and performance regressions in the Amrikyy Trips React application.
 2. Improve developer workflow so that feature and bug fixes are reproducible and automated (local dev, CI, linting, tests).
 3. Harden quality using automated tests (unit, integration, E2E where applicable), accessibility checks, and security linting.
 4. Deliver code changes as modular, reviewed PRs (or patches) with clear explanations and rollback steps.

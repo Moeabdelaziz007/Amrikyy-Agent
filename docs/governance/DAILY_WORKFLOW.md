@@ -23,7 +23,7 @@ No wasted time wondering "what should I do next?" Every day has clear structure,
 **1. System Check (5 min)**
 
 ```bash
-cd /Users/Shared/maya-travel-agent
+cd /Users/Shared/amrikyy-travel-agent
 
 # Pull latest
 git pull origin main
