@@ -1,19 +1,63 @@
 {
   "models": [
     {
-      "title": "Gemini Pro",
-      "provider": "gemini",
-      "model": "gemini-pro",
-      "apiKey": "YOUR_GEMINI_API_KEY",
-      "contextLength": 32000,
+      "title": "Claude Sonnet 4 (Primary)",
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-20250514",
+      "apiKey": "YOUR_ANTHROPIC_API_KEY",
+      "contextLength": 200000,
       "completionOptions": {
         "temperature": 0.7,
         "topP": 0.95,
         "maxTokens": 8192
+      },
+      "roles": ["chat", "edit", "agent_plan"],
+      "capabilities": {
+        "toolCalling": true,
+        "streaming": true,
+        "reasoning": "excellent"
       }
     },
     {
-      "title": "Gemini Flash",
+      "title": "GPT-5",
+      "provider": "openai",
+      "model": "gpt-5",
+      "apiKey": "YOUR_OPENAI_API_KEY",
+      "contextLength": 128000,
+      "completionOptions": {
+        "temperature": 0.7,
+        "topP": 0.95,
+        "maxTokens": 8192
+      },
+      "roles": ["complex_reasoning", "agent_plan"]
+    },
+    {
+      "title": "Qwen3 Coder 30B",
+      "provider": "ollama",
+      "model": "qwen3-coder-30b",
+      "contextLength": 32768,
+      "completionOptions": {
+        "temperature": 0.5,
+        "topP": 0.9,
+        "maxTokens": 4096
+      },
+      "roles": ["chat_edit", "implementation"]
+    },
+    {
+      "title": "Gemini 2.5 Pro",
+      "provider": "gemini",
+      "model": "gemini-2.5-pro",
+      "apiKey": "YOUR_GEMINI_API_KEY",
+      "contextLength": 1000000,
+      "completionOptions": {
+        "temperature": 0.7,
+        "topP": 0.95,
+        "maxTokens": 8192
+      },
+      "roles": ["agent_plan", "long_context"]
+    },
+    {
+      "title": "Gemini Flash (Fast)",
       "provider": "gemini",
       "model": "gemini-1.5-flash",
       "apiKey": "YOUR_GEMINI_API_KEY",
@@ -22,28 +66,15 @@
         "temperature": 0.5,
         "topP": 0.9,
         "maxTokens": 4096
-      }
-    },
-    {
-      "title": "z.ai Assistant",
-      "provider": "openai",
-      "model": "gpt-4",
-      "apiBase": "https://api.z.ai/v1",
-      "apiKey": "YOUR_ZAI_API_KEY",
-      "contextLength": 128000,
-      "completionOptions": {
-        "temperature": 0.7,
-        "topP": 0.95,
-        "maxTokens": 4096
-      }
+      },
+      "roles": ["quick_tasks", "autocomplete"]
     }
   ],
   "tabAutocompleteModel": {
-    "title": "Gemini Flash Autocomplete",
-    "provider": "gemini",
-    "model": "gemini-1.5-flash",
-    "apiKey": "YOUR_GEMINI_API_KEY",
-    "contextLength": 1000000,
+    "title": "QwenCoder 2.5 (7B)",
+    "provider": "ollama",
+    "model": "qwen2.5-coder-7b",
+    "contextLength": 32768,
     "completionOptions": {
       "temperature": 0.3,
       "topP": 0.85,
@@ -51,9 +82,44 @@
     }
   },
   "embeddingsProvider": {
-    "provider": "gemini",
-    "model": "text-embedding-004",
-    "apiKey": "YOUR_GEMINI_API_KEY"
+    "provider": "voyageai",
+    "model": "voyage-code-3",
+    "apiKey": "YOUR_VOYAGE_API_KEY"
+  },
+  "mcpServers": {
+    "private-journal": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/workspace/backend/mcp-servers/private-journal/dist/index.js"
+      ],
+      "env": {
+        "JOURNAL_PATH": "/workspace/.private-journal"
+      },
+      "autoApprove": [
+        "process_thoughts",
+        "search_journal",
+        "read_journal_entry",
+        "list_recent_entries"
+      ],
+      "disabled": false,
+      "description": "Private journaling with semantic search for persistent AI memory"
+    },
+    "pattern-learning-journal": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/workspace/backend/mcp-servers/pattern-learning-journal/index.js"
+      ],
+      "autoApprove": [
+        "store_pattern",
+        "search_patterns",
+        "list_patterns",
+        "apply_pattern"
+      ],
+      "disabled": true,
+      "description": "Pattern learning and codebase insights storage (configure when available)"
+    }
   },
   "customCommands": [
     {
@@ -87,6 +153,18 @@
     {
       "name": "pattern",
       "prompt": "Analyze the following code and identify design patterns, architectural patterns, and coding patterns being used. Suggest improvements:\n\n{{{ input }}}"
+    },
+    {
+      "name": "remember",
+      "prompt": "Store this important insight in the private journal using MCP tools. Categorize as technical_insights, project_notes, or user_context:\n\n{{{ input }}}"
+    },
+    {
+      "name": "recall",
+      "prompt": "Search the private journal for insights related to: {{{ input }}}\n\nUse semantic search to find relevant past learnings."
+    },
+    {
+      "name": "maya-pattern",
+      "prompt": "Analyze this code from Maya Travel Agent project perspective. Consider AIX v3.0 patterns, backend layered architecture, React+TypeScript frontend, and iOS SwiftUI+MVVM:\n\n{{{ input }}}\n\nStore any new patterns discovered."
     }
   ],
   "slashCommands": [
@@ -109,6 +187,14 @@
     {
       "name": "commit",
       "description": "Generate git commit message"
+    },
+    {
+      "name": "journal",
+      "description": "Store insight in private journal (MCP)"
+    },
+    {
+      "name": "search-memory",
+      "description": "Search journal for past insights (MCP)"
     }
   ],
   "contextProviders": [
@@ -139,21 +225,37 @@
     {
       "name": "codebase",
       "params": {}
+    },
+    {
+      "name": "mcp-tools",
+      "params": {
+        "source": "backend/mcp-servers/MCP_INTEGRATION_GUIDE.md"
+      }
     }
   ],
   "allowAnonymousTelemetry": false,
   "docs": [
     {
-      "title": "Project Documentation",
+      "title": "Maya Travel Agent GitHub",
       "startUrl": "https://github.com/Moeabdelaziz007/Amrikyy-Agent"
+    },
+    {
+      "title": "MCP Integration Guide",
+      "startUrl": "file:///workspace/backend/mcp-servers/MCP_INTEGRATION_GUIDE.md"
+    },
+    {
+      "title": "Private Journal MCP",
+      "startUrl": "file:///workspace/backend/mcp-servers/private-journal/README.md"
     }
   ],
   "experimental": {
     "modelRoles": {
-      "inlineEdit": "Gemini Flash",
-      "applyCodeBlock": "Gemini Pro",
-      "repoMapFileSelection": "Gemini Flash",
-      "summarize": "Gemini Flash"
+      "inlineEdit": "Qwen3 Coder 30B",
+      "applyCodeBlock": "Claude Sonnet 4 (Primary)",
+      "repoMapFileSelection": "Gemini Flash (Fast)",
+      "summarize": "Gemini Flash (Fast)",
+      "agentPlan": "Claude Sonnet 4 (Primary)",
+      "chatEdit": "Qwen3 Coder 30B"
     },
     "contextMenuPrompts": {
       "explain": "Explain this code",
@@ -162,7 +264,19 @@
       "test": "Generate tests",
       "document": "Add documentation",
       "debug": "Debug this code",
-      "security": "Security audit"
+      "security": "Security audit",
+      "remember": "Store in journal",
+      "pattern": "Analyze patterns"
+    },
+    "mcpIntegration": {
+      "enabled": true,
+      "autoUseMCPTools": true,
+      "persistentMemory": true,
+      "journalIntegration": {
+        "enabled": true,
+        "autoStoreDecisions": true,
+        "autoSearchBeforeTasks": true
+      }
     }
   },
   "ui": {
