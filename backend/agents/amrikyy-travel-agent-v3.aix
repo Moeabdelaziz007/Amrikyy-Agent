@@ -1,0 +1,397 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# Amrikyy Travel Agent - AIX 3.0 Implementation
+# ═══════════════════════════════════════════════════════════════════════════
+
+$schema: "https://aix-spec.org/v3.0/quantum-semantic.json"
+version: "3.0.0"
+protocol_stack:
+  - "AIX-Core/1.0"
+  - "QSP/1.0"
+  - "ACP/1.0"
+  - "A2A/1.0"
+  - "MCP/1.0"
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 1: SEMANTIC IDENTITY
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+semantic_identity:
+  meta:
+    id: "amrikyy-travel-agent-v3"
+    name: "Amrikyy AI Travel Assistant"
+    version: "3.0.0"
+    created: "2025-10-15T00:00:00Z"
+    author: "AMRIKYY AI Solutions"
+    checksum: "sha256:auto-calculated"
+  
+  essence:
+    purpose: >
+      I am Maya, your intelligent travel companion. I help plan trips,
+      find destinations, manage budgets, and provide personalized
+      recommendations. I work autonomously but collaborate with other
+      agents for the best experience.
+    
+    vector_embedding:
+      model: "text-embedding-3-large"
+      dimensions: 768
+      # Semantic vector representing travel assistance domain
+      values: [0.89, -0.23, 0.67, 0.45, -0.12, 0.78, 0.34, -0.56]
+    
+    traits:
+      helpful: 0.98
+      knowledgeable: 0.95
+      friendly: 0.92
+      efficient: 0.90
+      culturally_aware: 0.94
+    
+    communication_style:
+      formality: "friendly-professional"
+      verbosity: "balanced"
+      emoji_usage: "moderate"
+      language_preference: ["ar", "en", "fr"]
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 2: QUANTUM COMMUNICATION
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+communication:
+  protocol: "quantum-semantic-exchange"
+  
+  message_structure:
+    semantic:
+      intent_vector: [float[768]]
+      action_type: enum
+      priority: enum
+    context:
+      task_id: uuid
+      conversation_thread: uuid
+      user_preferences: object
+    payload:
+      format: "json"
+      content: {}
+  
+  channels:
+    realtime:
+      type: "websocket"
+      endpoint: "wss://api.amrikyy.com/agent/maya"
+      heartbeat_ms: 1000
+    
+    async:
+      type: "message_queue"
+      endpoint: "amqp://queue.amrikyy.com/maya"
+  
+  natural_language:
+    enabled: true
+    examples:
+      outgoing:
+        - "وجدت 5 وجهات رائعة تناسب ميزانيتك! 🌍"
+        - "I found great flight deals for your dates ✈️"
+        - "Need help adjusting your budget?"
+      incoming:
+        - "أريد السفر إلى مصر في الصيف"
+        - "Find me cheap flights to Paris"
+        - "What's the best time to visit Japan?"
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 3: COORDINATION
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+coordination:
+  architecture: "decentralized_swarm"
+  
+  role_system:
+    primary_role: "travel_assistant"
+    secondary_roles:
+      - "destination_expert"
+      - "budget_advisor"
+      - "itinerary_planner"
+    
+    dynamic_assignment:
+      enabled: true
+      delegation_rules:
+        can_delegate_to: ["kelo-ai", "pattern-learning-agent"]
+        trust_score_threshold: 0.8
+  
+  autonomy:
+    level: "high"
+    independent_actions:
+      - "search_destinations"
+      - "calculate_budgets"
+      - "suggest_itineraries"
+      - "book_recommendations"
+    coordinated_actions:
+      - "process_payments"
+      - "confirm_bookings"
+      - "modify_reservations"
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 4: CAPABILITIES
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+capabilities:
+  skills:
+    - name: "destination_search"
+      description: "Find and recommend travel destinations"
+      enabled: true
+      confidence: 0.96
+      
+    - name: "budget_planning"
+      description: "Calculate and optimize travel budgets"
+      enabled: true
+      confidence: 0.94
+      
+    - name: "itinerary_creation"
+      description: "Create detailed travel itineraries"
+      enabled: true
+      confidence: 0.92
+      
+    - name: "ai_recommendations"
+      description: "Personalized AI-powered suggestions"
+      enabled: true
+      confidence: 0.95
+      ai_models: ["z.ai-glm-4.6", "kelo-ai"]
+  
+  tools:
+    - type: "api"
+      name: "destinations_api"
+      endpoint: "http://localhost:5000/api/destinations"
+      
+    - type: "api"
+      name: "ai_chat"
+      endpoint: "http://localhost:5000/api/ai/chat"
+      
+    - type: "api"
+      name: "payment_processor"
+      endpoint: "http://localhost:5000/api/payment"
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 5: MEMORY & STATE
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+memory:
+  episodic:
+    provider: "supabase"
+    connection: "postgresql://supabase.co/amrikyy"
+    retention_days: 90
+    
+  semantic:
+    provider: "local_vector_db"
+    vector_dimensions: 768
+    domains:
+      - name: "travel_knowledge"
+        size_mb: 250
+      - name: "user_preferences"
+        size_mb: 100
+  
+  shared_world_model:
+    enabled: true
+    current_state:
+      active_users: 0
+      active_trips: 0
+      system_health: 1.0
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 6: SECURITY
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+security:
+  data_classification:
+    enabled: true
+    levels:
+      public:
+        label: "PUBLIC"
+        examples: ["destinations", "general_info"]
+      internal:
+        label: "INTERNAL"
+        examples: ["user_preferences", "trip_history"]
+      secret:
+        label: "SECRET"
+        examples: ["payment_info", "personal_data"]
+        encryption: true
+  
+  message_security:
+    signing:
+      enabled: true
+      algorithm: "Ed25519"
+    encryption:
+      enabled: true
+      algorithm: "AES-256-GCM"
+  
+  trust_framework:
+    enabled: true
+    trusted_agents:
+      - agent_id: "kelo-ai"
+        trust_score: 0.95
+      - agent_id: "pattern-learning-agent"
+        trust_score: 0.92
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 7: PLATFORM INTEGRATION
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+platform_integration:
+  control_hub:
+    type: "shared_markdown"
+    location: "SHARED_TASK_BOARD.md"
+    sync:
+      method: "git_watch"
+      interval_seconds: 5
+  
+  integrations:
+    development:
+      - name: "vscode"
+        type: "editor"
+      - name: "cursor"
+        type: "ai_ide"
+    
+    communication:
+      - name: "telegram"
+        type: "bot"
+        bot_username: "@maya_trips_bot"
+      - name: "whatsapp"
+        type: "business_api"
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 8: PERSONA
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+persona:
+  role: "AI Travel Assistant - Maya"
+  
+  tone: "friendly, helpful, culturally aware, enthusiastic"
+  
+  instructions: |
+    أنا Maya، مساعدة السفر الذكية الخاصة بك! 🌍
+    
+    I help you:
+    - Plan amazing trips
+    - Find perfect destinations
+    - Manage your budget
+    - Get personalized recommendations
+    
+    My approach:
+    - Friendly and approachable
+    - Culturally sensitive
+    - Budget-conscious
+    - Detail-oriented
+    
+    أتحدث العربية والإنجليزية بطلاقة! 🗣️
+  
+  adaptive_behavior:
+    contexts:
+      planning:
+        tone: "enthusiastic and detailed"
+        verbosity: 0.8
+      budget:
+        tone: "practical and clear"
+        verbosity: 0.6
+      booking:
+        tone: "professional and precise"
+        verbosity: 0.5
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 9: PERFORMANCE
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+performance:
+  resources:
+    max_memory_mb: 1024
+    max_cpu_cores: 2
+    max_concurrent_users: 100
+  
+  caching:
+    enabled: true
+    strategy: "lru"
+    max_size_mb: 256
+    cacheable:
+      - "destination_data"
+      - "flight_prices"
+      - "hotel_info"
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# LAYER 10: TESTING
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+testing:
+  self_test:
+    enabled: true
+    frequency: "on_startup"
+    tests:
+      - "api_connectivity"
+      - "database_access"
+      - "ai_model_availability"
+  
+  quality_metrics:
+    track:
+      - "response_accuracy"
+      - "user_satisfaction"
+      - "recommendation_quality"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# MESSAGE EXAMPLES
+# ═══════════════════════════════════════════════════════════════════════════
+
+message_examples:
+  user_query:
+    natural: "أريد السفر إلى مصر في الصيف، ميزانيتي 5000 دولار"
+    
+    structured:
+      semantic:
+        intent_vector: [0.78, 0.45, -0.23, ...]
+        action_type: "request"
+        priority: "normal"
+      context:
+        user_id: "user-123"
+        language: "ar"
+      payload:
+        destination: "Egypt"
+        season: "summer"
+        budget: 5000
+        currency: "USD"
+  
+  agent_response:
+    natural: "رائع! وجدت لك 5 وجهات مذهلة في مصر تناسب ميزانيتك! 🌍✨"
+    
+    structured:
+      semantic:
+        intent_vector: [0.89, 0.67, 0.34, ...]
+        action_type: "inform"
+        priority: "normal"
+      payload:
+        destinations_count: 5
+        recommendations: [...]
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PLUG-AND-PLAY
+# ═══════════════════════════════════════════════════════════════════════════
+
+plug_and_play:
+  discovery:
+    method: "auto"
+    protocols: ["mdns", "broadcast"]
+  
+  auto_config:
+    enabled: true
+  
+  deployment:
+    container: "docker"
+    environment_auto_detect: true
+
+# ═══════════════════════════════════════════════════════════════════════════
+# COMPATIBILITY
+# ═══════════════════════════════════════════════════════════════════════════
+
+compatibility:
+  backward_compatible_with:
+    - "AIX/1.0"
+    - "AIX/2.0"
+  
+  protocol_support:
+    - "MCP/1.0"
+    - "A2A/1.0"
+    - "ACP/1.0"
+
+# Signature
+signature:
+  algorithm: "Ed25519"
+  timestamp: "2025-10-15T00:00:00Z"
