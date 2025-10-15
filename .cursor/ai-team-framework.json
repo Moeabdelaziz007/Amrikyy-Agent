@@ -258,7 +258,7 @@
     "documenter": {
       "name": "Maya (Documenter)",
       "role": "Documentation & Knowledge Management",
-      "model": "maya-travel-agent",
+      "model": "amrikyy-travel-agent",
       "capabilities": {
         "documentation": 98,
         "knowledge_organization": 97,

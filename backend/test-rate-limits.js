@@ -292,7 +292,7 @@ async function testRateLimitReset() {
  */
 async function runAllTests() {
   console.log('\n' + '='.repeat(60));
-  console.log('🧪 Maya Trips - Rate Limit Testing Suite');
+  console.log('🧪 Amrikyy Trips - Rate Limit Testing Suite');
   console.log('='.repeat(60) + '\n');
 
   log.info(`Testing API at: ${API_BASE_URL}`);

@@ -2,7 +2,7 @@
 
 > **Note:** No Figma file was provided; attach your Figma using @Figma for pixel-perfect code.
 
-This guide summarizes modern UI improvements applied to the Maya Travel Agent React app, consolidating best practices from root-level audits and AI code analysis tools (Kombai).
+This guide summarizes modern UI improvements applied to the Amrikyy Travel Agent React app, consolidating best practices from root-level audits and AI code analysis tools (Kombai).
 
 ## What's Inside
 
@@ -10,7 +10,7 @@ This guide summarizes modern UI improvements applied to the Maya Travel Agent Re
 - Detailed before/after code samples for common UI components
 - Guidance for addressing found issues, lint errors, and dependency installations
 - Performance and DX (developer experience) recommendations
-## Modern Design Patterns for Maya Travel Agent
+## Modern Design Patterns for Amrikyy Travel Agent
 
 **Target:** React/TypeScript Frontend  
 **Design System:** Tailwind CSS + Framer Motion  
@@ -663,5 +663,5 @@ const VirtualizedTripList = ({ trips }: { trips: Trip[] }) => {
 
 **Guide Version:** 1.0  
 **Last Updated:** October 13, 2025  
-**For:** Maya Travel Agent Frontend Team
+**For:** Amrikyy Travel Agent Frontend Team
 

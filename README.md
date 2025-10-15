@@ -1,4 +1,4 @@
-# 🌍 Maya Travel Agent - AI-Powered Travel Assistant
+# 🌍 Amrikyy Travel Agent - AI-Powered Travel Assistant
 
 > Your intelligent companion for seamless travel planning, powered by advanced AI and integrated with Telegram, WhatsApp, and payment systems.
 
@@ -94,8 +94,8 @@ Before you begin, ensure you have the following installed:
 #### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Moeabdelaziz007/maya-travel-agent.git
-cd maya-travel-agent
+git clone https://github.com/Moeabdelaziz007/amrikyy-travel-agent.git
+cd amrikyy-travel-agent
 ```
 
 #### 2. Install Dependencies
@@ -472,7 +472,7 @@ cd backend && npm update
 
 ## Contributing
 
-This project is part of the Maya Trips ecosystem - your intelligent travel companion.
+This project is part of the Amrikyy Trips ecosystem - your intelligent travel companion.
 
 ### Development Workflow
 1. Create a feature branch: `git checkout -b feature/your-feature`

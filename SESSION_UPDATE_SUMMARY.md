@@ -1,5 +1,5 @@
 # Session Update Summary
-## Maya Travel Agent - Complete Platform Review & Documentation
+## Amrikyy Travel Agent - Complete Platform Review & Documentation
 
 **Date:** October 13, 2025  
 **Session Duration:** ~3 hours  
@@ -36,7 +36,7 @@
 
 #### **Structure:**
 ```
-MayaTravelAgent/
+AmrikyyTravelAgent/
 ├── App/                    2 files  ✅
 ├── Models/                 6 files  ✅
 ├── Services/               5 files  ✅

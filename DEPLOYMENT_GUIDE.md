@@ -1,4 +1,4 @@
-# 🚀 Deployment Guide - Maya Travel Agent
+# 🚀 Deployment Guide - Amrikyy Travel Agent
 
 ## Table of Contents
 - [Pre-Deployment Checklist](#pre-deployment-checklist)
@@ -373,8 +373,8 @@ docker-compose down
 1. **Clone Repository**
    ```bash
    cd /var/www
-   git clone https://github.com/Moeabdelaziz007/maya-travel-agent.git
-   cd maya-travel-agent
+   git clone https://github.com/Moeabdelaziz007/amrikyy-travel-agent.git
+   cd amrikyy-travel-agent
    ```
 
 2. **Install Dependencies**
@@ -412,7 +412,7 @@ docker-compose down
        
        # Frontend
        location / {
-           root /var/www/maya-travel-agent/frontend/dist;
+           root /var/www/amrikyy-travel-agent/frontend/dist;
            try_files $uri $uri/ /index.html;
        }
        
@@ -703,7 +703,7 @@ done
 
 ```bash
 # Backup code
-git clone https://github.com/Moeabdelaziz007/maya-travel-agent.git backup-$(date +%Y%m%d)
+git clone https://github.com/Moeabdelaziz007/amrikyy-travel-agent.git backup-$(date +%Y%m%d)
 
 # Backup environment variables
 cp backend/.env backend/.env.backup-$(date +%Y%m%d)
@@ -751,4 +751,4 @@ sudo certbot certificates
 
 **Last Updated**: 2024-10-09  
 **Version**: 1.0.0  
-**Maintained by**: Maya Trips Team
+**Maintained by**: Amrikyy Trips Team

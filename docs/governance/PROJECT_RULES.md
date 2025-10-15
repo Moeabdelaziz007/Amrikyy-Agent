@@ -107,14 +107,14 @@ What are the results (good and bad)?
 **Principle:** All tools work in ONE workspace.
 
 **The Rule:**
-- ONE repository: `maya-travel-agent`
+- ONE repository: `amrikyy-travel-agent`
 - ONE IDE: Cursor (for AI-assisted development)
 - ONE terminal: Integrated terminal in Cursor
 - ONE .env file per package (no duplicates!)
 
 **Environment Structure:**
 ```
-maya-travel-agent/
+amrikyy-travel-agent/
 ├── .env                    # Root config (shared vars)
 ├── backend/.env            # Backend secrets only
 ├── frontend/.env           # Frontend public vars only

@@ -1,4 +1,4 @@
-# ⚡ QUICK DEPLOY GUIDE - Maya Travel Agent
+# ⚡ QUICK DEPLOY GUIDE - Amrikyy Travel Agent
 
 **5-Minute Deploy to Production!** 🚀
 
@@ -20,7 +20,7 @@ cd frontend
 vercel --prod
 
 # Done! ✅
-# Your frontend is LIVE at: https://maya-travel-agent.vercel.app
+# Your frontend is LIVE at: https://amrikyy-travel-agent.vercel.app
 ```
 
 **Note:** Backend will run locally for now, deploy later!
@@ -80,7 +80,7 @@ VITE_SUPABASE_ANON_KEY=eyJhbGc...
 ```bash
 # 1. Update Railway with Vercel URL:
 # Railway Dashboard → Variables:
-FRONTEND_URL=https://maya-travel-agent.vercel.app
+FRONTEND_URL=https://amrikyy-travel-agent.vercel.app
 
 # 2. Redeploy Railway (for CORS)
 railway up
@@ -100,10 +100,10 @@ vercel
 
 # Answer prompts:
 # Set up? Yes
-# Name? maya-travel-agent
+# Name? amrikyy-travel-agent
 # Deploy? Yes
 
-# URL will be: https://maya-travel-agent-xxx.vercel.app
+# URL will be: https://amrikyy-travel-agent-xxx.vercel.app
 ```
 
 **Backend will run locally** until you deploy it!
@@ -174,7 +174,7 @@ cd frontend
 vercel --prod
 
 # Backend can wait!
-# You'll get: https://maya-travel-agent.vercel.app
+# You'll get: https://amrikyy-travel-agent.vercel.app
 ```
 
 ### **Test Before Production:**

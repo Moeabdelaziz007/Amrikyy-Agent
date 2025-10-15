@@ -1,4 +1,4 @@
-# 🎉 Maya Travel Agent - Production Ready Report
+# 🎉 Amrikyy Travel Agent - Production Ready Report
 
 ## ✅ Completion Status
 
@@ -333,7 +333,7 @@ Overall Success Rate: 85.71%
 ### For Deployment Issues
 
 - **Documentation**: See DEPLOYMENT.md
-- **GitHub Issues**: [Repository Issues](https://github.com/Moeabdelaziz007/maya-travel-agent/issues)
+- **GitHub Issues**: [Repository Issues](https://github.com/Moeabdelaziz007/amrikyy-travel-agent/issues)
 - **Email**: support@mayatrips.com
 
 ### For Development Questions
@@ -371,7 +371,7 @@ Overall Success Rate: 85.71%
 
 ## 🎊 Conclusion
 
-The Maya Travel Agent Telegram Bot is **PRODUCTION READY** with:
+The Amrikyy Travel Agent Telegram Bot is **PRODUCTION READY** with:
 
 - ✅ **Robust Architecture**: Enterprise-grade design
 - ✅ **Comprehensive Features**: All core features implemented

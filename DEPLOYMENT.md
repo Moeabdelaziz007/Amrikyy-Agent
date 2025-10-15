@@ -1,8 +1,8 @@
-# Maya Travel Agent - Production Deployment Guide
+# Amrikyy Travel Agent - Production Deployment Guide
 
 ## 🚀 Overview
 
-This guide covers the complete deployment process for the Maya Travel Agent Telegram bot with enterprise-grade features.
+This guide covers the complete deployment process for the Amrikyy Travel Agent Telegram bot with enterprise-grade features.
 
 ## ✅ Pre-Deployment Checklist
 
@@ -143,13 +143,13 @@ Create `/etc/systemd/system/maya-bot.service`:
 
 ```ini
 [Unit]
-Description=Maya Travel Agent Bot
+Description=Amrikyy Travel Agent Bot
 After=network.target
 
 [Service]
 Type=simple
 User=your_user
-WorkingDirectory=/path/to/maya-travel-agent/backend
+WorkingDirectory=/path/to/amrikyy-travel-agent/backend
 ExecStart=/usr/bin/node telegram-bot.js
 Restart=always
 RestartSec=10
@@ -388,7 +388,7 @@ Success Rate: 100%
 
 For issues or questions:
 
-- GitHub Issues: [Repository Issues](https://github.com/Moeabdelaziz007/maya-travel-agent/issues)
+- GitHub Issues: [Repository Issues](https://github.com/Moeabdelaziz007/amrikyy-travel-agent/issues)
 - Email: support@mayatrips.com
 - Telegram: @MayaTripsSupport
 

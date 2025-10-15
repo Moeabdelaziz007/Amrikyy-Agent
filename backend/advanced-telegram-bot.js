@@ -5,7 +5,7 @@
 
 const TelegramBot = require('node-telegram-bot-api');
 const KeloClient = require('./src/ai/keloClient');
-const MayaPersona = require('./src/ai/mayaPersona');
+const AmrikyyPersona = require('./src/ai/amrikyyPersona');
 const MCPTools = require('./src/ai/mcpTools');
 const UserProfilingSystem = require('./src/ai/userProfiling');
 const SupabaseDB = require('./database/supabase');
@@ -25,7 +25,7 @@ class AdvancedTelegramBot {
 
     // Initialize AI components
     this.keloClient = new KeloClient();
-    this.mayaPersona = new MayaPersona();
+    this.amrikyyPersona = new AmrikyyPersona();
     this.mcpTools = new MCPTools();
     this.userProfiling = new UserProfilingSystem();
 
@@ -407,7 +407,7 @@ class AdvancedTelegramBot {
       const analytics = await this.db.getUserAnalytics(telegramId);
 
       // Enhanced system prompt with conversation control and user history
-      let systemPrompt = this.mayaPersona.generateSystemPrompt({
+      let systemPrompt = this.amrikyyPersona.generateSystemPrompt({
         user_name: memoryProfile?.basicInfo?.name || msg.from.first_name,
         user_preferences: memoryProfile?.preferences || {},
         conversation_history: conversationHistory,
@@ -1004,7 +1004,7 @@ ${offer.valid_until ? `⏰ <b>العرض ساري حتى:</b> ${new Date(offer.v
     const userProfile = this.userProfiling.getProfile(userId);
 
     // Generate personalized response using AI
-    const systemPrompt = this.mayaPersona.generateSystemPrompt({
+    const systemPrompt = this.amrikyyPersona.generateSystemPrompt({
       user_preferences: userProfile?.preferences || {},
       current_goal: 'destination_info',
     });

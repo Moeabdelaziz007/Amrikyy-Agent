@@ -236,7 +236,7 @@ Edit `~/.gemini/settings.json`:
 ~/.gemini/
 └── settings.json          ← API keys stored here (gitignored)
 
-/Users/Shared/maya-travel-agent/
+/Users/Shared/amrikyy-travel-agent/
 ├── .gitignore             ← Add .gemini/ here
 ├── .env                   ← Supabase keys already here
 ├── GEMINI.md              ← Instructions for Gemini

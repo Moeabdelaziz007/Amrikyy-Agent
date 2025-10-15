@@ -78,7 +78,7 @@ pip3 install websockets
 
 ```bash
 # 1. Navigate to backend
-cd /Users/Shared/maya-travel-agent/backend/src
+cd /Users/Shared/amrikyy-travel-agent/backend/src
 
 # 2. Start NanoCoordinator
 python3 nano_coordinator.py

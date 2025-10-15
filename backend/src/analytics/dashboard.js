@@ -1,6 +1,6 @@
 /**
  * Analytics Dashboard Service
- * Real-time analytics and metrics for Maya Travel Agent
+ * Real-time analytics and metrics for Amrikyy Travel Agent
  */
 
 class AnalyticsDashboard {

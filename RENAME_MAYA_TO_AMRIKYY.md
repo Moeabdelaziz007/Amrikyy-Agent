@@ -12,8 +12,8 @@ Old Name              → New Name
 Maya                  → Amrikyy
 maya                  → amrikyy
 MAYA                  → AMRIKYY
-Maya Travel Agent     → Amrikyy Travel Agent
-maya-travel-agent     → amrikyy-travel-agent
+Amrikyy Travel Agent     → Amrikyy Travel Agent
+amrikyy-travel-agent     → amrikyy-travel-agent
 MayaTrips            → AmrikyyTrips
 ```
 
@@ -62,9 +62,9 @@ MayaTrips            → AmrikyyTrips
 
 ### **Step 1: Documentation**
 Replace in all .md files:
-- "Maya Travel Agent" → "Amrikyy Travel Agent"
+- "Amrikyy Travel Agent" → "Amrikyy Travel Agent"
 - "Maya" → "Amrikyy"
-- "maya-travel-agent" → "amrikyy-travel-agent"
+- "amrikyy-travel-agent" → "amrikyy-travel-agent"
 
 ### **Step 2: Code**
 Replace in all .js, .ts, .tsx files:

@@ -1,5 +1,5 @@
 /**
- * Health Monitor for Maya Travel Agent
+ * Health Monitor for Amrikyy Travel Agent
  * Monitors system health, API status, and performance metrics
  */
 

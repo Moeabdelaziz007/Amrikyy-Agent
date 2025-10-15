@@ -1,5 +1,5 @@
 # 📚 Complete Documentation Index
-## Maya Travel Agent - All Reports & Guides
+## Amrikyy Travel Agent - All Reports & Guides
 
 **Generated:** October 13, 2025  
 **Total Documents:** 10 comprehensive reports  
@@ -296,7 +296,7 @@
 
 ### **For iOS Developers:**
 1. Read: `IOS_IMPLEMENTATION_PROGRESS.md`
-2. Review: Code in `MayaTravelAgent/` directory
+2. Review: Code in `AmrikyyTravelAgent/` directory
 3. Check: `MASTER_PROJECT_STATUS.md` for backend API status
 
 **Get:** iOS architecture, remaining work, API contracts
@@ -459,7 +459,7 @@ FINAL_SESSION_REPORT.md               # Comprehensive wrap-up
 DOCUMENTATION_INDEX_COMPLETE.md       # You are here
 ```
 
-**All files located in:** `/Users/Shared/maya-travel-agent/`  
+**All files located in:** `/Users/Shared/amrikyy-travel-agent/`  
 **All pushed to:** `origin/cursor/check-for-and-apply-updates-aa28`
 
 ---

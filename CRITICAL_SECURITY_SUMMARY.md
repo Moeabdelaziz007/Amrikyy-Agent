@@ -1,5 +1,5 @@
 # 🚨 CRITICAL SECURITY SUMMARY
-## Maya Travel Agent - Complete Backend Security Assessment
+## Amrikyy Travel Agent - Complete Backend Security Assessment
 
 **Date:** October 13, 2025  
 **Audit Scope:** Backend API + Database Integration + AI System  
@@ -14,7 +14,7 @@
 ╔═══════════════════════════════════════════════════════════════════════╗
 ║                    🔴 CRITICAL SECURITY ALERT                          ║
 ║                                                                        ║
-║  The Maya Travel Agent backend has 10 CRITICAL security               ║
+║  The Amrikyy Travel Agent backend has 10 CRITICAL security               ║
 ║  vulnerabilities that MUST be fixed before production deployment.     ║
 ║                                                                        ║
 ║  RISK LEVEL: CRITICAL                                                 ║

@@ -1,6 +1,6 @@
 /**
  * WhatsApp Business API Client
- * Enterprise-grade integration for Maya Travel Agent
+ * Enterprise-grade integration for Amrikyy Travel Agent
  */
 
 const axios = require('axios');

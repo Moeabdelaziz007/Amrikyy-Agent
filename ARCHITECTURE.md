@@ -1,4 +1,4 @@
-# 🏛️ Maya Travel Agent - Architecture Documentation
+# 🏛️ Amrikyy Travel Agent - Architecture Documentation
 
 ## System Architecture Overview
 
@@ -614,4 +614,4 @@ Success    Error
 
 **Last Updated**: 2024-10-09  
 **Version**: 1.0.0  
-**Maintained by**: Maya Trips Team
+**Maintained by**: Amrikyy Trips Team

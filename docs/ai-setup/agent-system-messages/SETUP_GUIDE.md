@@ -143,7 +143,7 @@ The default system message includes:
 - ✅ Performance regressions
 
 ### Project Context
-- ✅ Maya Travel Agent architecture
+- ✅ Amrikyy Travel Agent architecture
 - ✅ Backend patterns (Node.js + Express)
 - ✅ Frontend patterns (React + TypeScript)
 - ✅ iOS patterns (SwiftUI + MVVM)

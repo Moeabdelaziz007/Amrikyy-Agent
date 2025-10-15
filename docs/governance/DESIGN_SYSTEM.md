@@ -24,7 +24,7 @@
 
 ### Primary Inspiration
 
-**1. maya-travel-agent.lovable.app**
+**1. amrikyy-travel-agent.lovable.app**
 - Avatar design and animations
 - Chat interface aesthetics
 - Warm, approachable feel

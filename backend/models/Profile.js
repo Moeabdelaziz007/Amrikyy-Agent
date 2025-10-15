@@ -1,5 +1,5 @@
 /**
- * Profile Model for Maya Travel Agent
+ * Profile Model for Amrikyy Travel Agent
  * Handles user profile database operations with Supabase integration
  */
 

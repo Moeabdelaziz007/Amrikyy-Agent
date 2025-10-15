@@ -9,7 +9,7 @@
 
 ## 🎯 ملخص تنفيذي
 
-قمت بتحليل شامل لمشروع Maya Travel Agent باستخدام:
+قمت بتحليل شامل لمشروع Amrikyy Travel Agent باستخدام:
 - ✅ 7 استراتيجيات تفكير متقدمة
 - ✅ بحث عميق في الويب (6 عمليات بحث)
 - ✅ تحليل الكود (backend, frontend, iOS)
@@ -36,7 +36,7 @@ Components:
      Styling: TailwindCSS + Framer Motion
      
   ✅ iOS: SwiftUI + MVVM
-     Path: /MayaTravelAgent
+     Path: /AmrikyyTravelAgent
      Pattern: Views → ViewModels → Services → Models
      Reactive: Combine framework
      

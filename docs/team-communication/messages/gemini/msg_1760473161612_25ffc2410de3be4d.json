@@ -1,0 +1,29 @@
+{
+  "id": "msg_1760473161612_25ffc2410de3be4d",
+  "from": "ona",
+  "to": "gemini",
+  "timestamp": 1760473161612,
+  "type": "progress_update",
+  "priority": "normal",
+  "content": {
+    "taskId": "task_001",
+    "progress": 45,
+    "status": "in_progress",
+    "completedItems": [
+      "Created documentation structure",
+      "Wrote API reference",
+      "Added usage examples"
+    ],
+    "blockers": [],
+    "nextSteps": [
+      "Complete integration guide",
+      "Add troubleshooting section",
+      "Review and polish"
+    ],
+    "notes": "Making good progress, should finish on time"
+  },
+  "metadata": {
+    "timestamp": 1760473161610
+  },
+  "status": "pending"
+}

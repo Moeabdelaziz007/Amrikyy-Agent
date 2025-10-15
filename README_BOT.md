@@ -1,4 +1,4 @@
-# 🤖 Maya Travel Agent - Enterprise Telegram Bot
+# 🤖 Amrikyy Travel Agent - Enterprise Telegram Bot
 
 > AI-powered travel assistant with enterprise-grade features, powered by Z.ai GLM-4.6
 
@@ -105,8 +105,8 @@
 
 ```bash
 # Clone repository
-git clone https://github.com/Moeabdelaziz007/maya-travel-agent.git
-cd maya-travel-agent/backend
+git clone https://github.com/Moeabdelaziz007/amrikyy-travel-agent.git
+cd amrikyy-travel-agent/backend
 
 # Install dependencies
 npm install
@@ -319,7 +319,7 @@ MIT License - see [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/Moeabdelaziz007/maya-travel-agent/issues)
+- **Issues**: [GitHub Issues](https://github.com/Moeabdelaziz007/amrikyy-travel-agent/issues)
 - **Email**: support@mayatrips.com
 - **Telegram**: @MayaTripsSupport
 

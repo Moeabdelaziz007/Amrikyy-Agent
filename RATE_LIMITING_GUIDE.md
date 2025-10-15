@@ -1,4 +1,4 @@
-# 🛡️ Rate Limiting Guide - Maya Travel Agent
+# 🛡️ Rate Limiting Guide - Amrikyy Travel Agent
 
 ## Overview
 
@@ -344,4 +344,4 @@ If you're hitting rate limits and have a legitimate use case:
 
 **Last Updated**: 2024-10-09  
 **Version**: 1.0.0  
-**Maintained by**: Maya Trips Team
+**Maintained by**: Amrikyy Trips Team

@@ -1,5 +1,5 @@
 /**
- * Maya Travel Agent - Telegram Bot (Gemini AI Version)
+ * Amrikyy Travel Agent - Telegram Bot (Gemini AI Version)
  * Uses Google Gemini API for AI responses
  */
 
@@ -84,7 +84,7 @@ bot.onText(
   safeHandler(async (msg) => {
     const chatId = msg.chat.id;
     const welcomeMessage = `
-🌍 مرحباً بك في Maya Trips!
+🌍 مرحباً بك في Amrikyy Trips!
 
 أنا مساعد السفر الذكي المدعوم بـ Google Gemini AI 🤖
 
@@ -123,7 +123,7 @@ bot.onText(
   safeHandler(async (msg) => {
     const chatId = msg.chat.id;
     const helpMessage = `
-🆘 مساعدة Maya Trips
+🆘 مساعدة Amrikyy Trips
 
 الأوامر المتاحة:
 /start - بدء المحادثة
@@ -142,7 +142,7 @@ bot.onText(
 
 📞 الدعم الفني:
 📧 support@mayatrips.com
-💬 @MayaTripsSupport
+💬 @AmrikyyTripsSupport
   `;
 
     await bot.sendMessage(chatId, helpMessage);

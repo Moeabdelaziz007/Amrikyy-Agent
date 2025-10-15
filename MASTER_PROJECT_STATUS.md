@@ -1,8 +1,8 @@
 # Master Project Status Report
-## Maya Travel Agent - Complete Platform Overview
+## Amrikyy Travel Agent - Complete Platform Overview
 
 **Date:** October 13, 2025  
-**Project:** Maya Travel Agent (Amrikyy Platform)  
+**Project:** Amrikyy Travel Agent (Amrikyy Platform)  
 **Platform Coverage:** iOS Native + React Web + Telegram Bot + Backend API
 
 ---

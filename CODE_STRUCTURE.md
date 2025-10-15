@@ -13,7 +13,7 @@
 
 ## Project Overview
 
-Maya Travel Agent is a **monorepo** project using **npm workspaces** to manage both frontend and backend in a single repository.
+Amrikyy Travel Agent is a **monorepo** project using **npm workspaces** to manage both frontend and backend in a single repository.
 
 ### Technology Stack
 
@@ -38,7 +38,7 @@ Maya Travel Agent is a **monorepo** project using **npm workspaces** to manage b
 ## Directory Structure
 
 ```
-maya-travel-agent/
+amrikyy-travel-agent/
 ├── frontend/                    # React application
 │   ├── src/
 │   │   ├── api/                # API client services
@@ -796,4 +796,4 @@ function createTrip(data: Trip): Promise<Trip> {
 
 **Last Updated**: 2024-10-09  
 **Version**: 1.0.0  
-**Maintained by**: Maya Trips Team
+**Maintained by**: Amrikyy Trips Team

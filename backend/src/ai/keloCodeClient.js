@@ -1,7 +1,7 @@
 /**
  * Kelo Code API Client
  * Optimized for free and budget models
- * Cost-effective AI provider for Maya Travel Agent
+ * Cost-effective AI provider for Amrikyy Travel Agent
  */
 
 const fetch = require('node-fetch');

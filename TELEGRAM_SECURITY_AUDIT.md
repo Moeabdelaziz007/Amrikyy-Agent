@@ -1,5 +1,5 @@
 # Telegram Integration Security Audit
-## Maya Travel Agent - Complete Telegram Bot Review
+## Amrikyy Travel Agent - Complete Telegram Bot Review
 
 **Date:** October 13, 2025  
 **Scope:** 5 Telegram bot implementations + Mini App integration  
@@ -115,7 +115,7 @@ router.post('/auth/telegram', async (req, res) => {
       JWT_SECRET,  // No fallback - fail if missing
       { 
         expiresIn: '7d',
-        issuer: 'maya-travel-agent',
+        issuer: 'amrikyy-travel-agent',
         audience: 'maya-api'
       }
     );
@@ -741,7 +741,7 @@ bot.onText(/\/payment (.+)/, withRateLimit('payment', async (msg, match) => {
     });
     
     const paymentLink = await PaymentService.createStripePayment(amount, 'USD', 
-      `Maya Trips - Payment by User ${userId}`
+      `Amrikyy Trips - Payment by User ${userId}`
     );
     
     if (paymentLink.success) {
@@ -863,7 +863,7 @@ class BaseTelegramBot {
   async handleHelp(msg) {
     // Default help implementation
     await this.bot.sendMessage(msg.chat.id, 
-      '🤖 Maya Travel Agent\n\n' +
+      '🤖 Amrikyy Travel Agent\n\n' +
       'Available commands:\n' +
       '/start - Start the bot\n' +
       '/help - Show this help message\n' +
@@ -912,7 +912,7 @@ class ZaiTelegramBot extends BaseTelegramBot {
   
   async handleStart(msg) {
     await this.sendSafeMessage(msg.chat.id,
-      '👋 مرحباً! Welcome to Maya Travel Agent!\n\n' +
+      '👋 مرحباً! Welcome to Amrikyy Travel Agent!\n\n' +
       'I\'m Maya, your AI-powered travel assistant.'
     );
   }
