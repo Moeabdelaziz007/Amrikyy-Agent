@@ -313,6 +313,13 @@ Define your project-specific namespaces below. The AI will use these description
 
 ## Recent Changes
 
+- [2025-10-15 11:30]: Frontend auth integration complete - connected to backend API
+- [2025-10-15 11:30]: Created frontend/src/api/authService.ts (JWT token management)
+- [2025-10-15 11:30]: Created frontend/src/api/axiosConfig.ts (automatic token refresh)
+- [2025-10-15 11:30]: Updated AuthProvider with dual auth mode (backend API + Supabase)
+- [2025-10-15 11:30]: Created FRONTEND_AUTH_INTEGRATION_GUIDE.md (complete guide)
+- [2025-10-15 11:30]: Added .env.example with configuration options
+- [2025-10-15 11:30]: Automatic token refresh on 401 errors implemented
 - [2025-10-15 11:22]: Complete authentication system implemented with 8 endpoints
 - [2025-10-15 11:22]: Created backend/routes/auth.js with Supabase Auth integration
 - [2025-10-15 11:22]: Auth routes registered in server.js at /api/auth/*
