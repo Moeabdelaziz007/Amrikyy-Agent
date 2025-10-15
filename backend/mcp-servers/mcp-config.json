@@ -1,0 +1,35 @@
+{
+  "mcpServers": {
+    "private-journal": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/workspace/backend/mcp-servers/private-journal/dist/index.js"
+      ],
+      "description": "Private journaling with semantic search for thoughts, feelings, and technical insights",
+      "autoApprove": [
+        "process_thoughts",
+        "search_journal",
+        "read_journal_entry",
+        "list_recent_entries"
+      ],
+      "disabled": false,
+      "timeout": 60
+    },
+    "pattern-learning-journal": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/workspace/backend/mcp-servers/pattern-learning-journal/index.js"
+      ],
+      "description": "Pattern learning and codebase insights storage",
+      "autoApprove": [
+        "store_pattern",
+        "search_patterns",
+        "list_patterns"
+      ],
+      "disabled": false,
+      "timeout": 30
+    }
+  }
+}
