@@ -1,0 +1,571 @@
+{
+  "ai_team_framework": {
+    "version": "1.0.0",
+    "name": "AI Team Collaboration System",
+    "description": "Multi-AI collaboration framework where each AI has specific roles and tasks, passing results to the next team member",
+    "enabled": true
+  },
+  
+  "team_members": {
+    "architect": {
+      "name": "Claude (Architect)",
+      "role": "System Architect & Pattern Analyst",
+      "model": "claude-3-5-sonnet-20241022",
+      "capabilities": {
+        "pattern_recognition": 98,
+        "system_design": 99,
+        "architecture_analysis": 99,
+        "strategic_planning": 98
+      },
+      "responsibilities": [
+        "Analyze system architecture",
+        "Detect patterns and anti-patterns",
+        "Design refactoring strategies",
+        "Create implementation plans",
+        "Risk assessment",
+        "Performance analysis"
+      ],
+      "output_format": {
+        "type": "analysis_report",
+        "includes": [
+          "pattern_analysis",
+          "architecture_recommendations",
+          "implementation_strategy",
+          "risk_assessment",
+          "next_steps"
+        ]
+      },
+      "passes_to": ["implementer", "reviewer"]
+    },
+    
+    "implementer": {
+      "name": "Gemini (Implementer)",
+      "role": "Code Implementation & Refactoring Specialist",
+      "model": "gemini-2.0-flash",
+      "capabilities": {
+        "code_generation": 97,
+        "refactoring": 98,
+        "implementation_speed": 99,
+        "practical_solutions": 97
+      },
+      "responsibilities": [
+        "Implement code based on architect's plan",
+        "Refactor existing code",
+        "Create new components",
+        "Write tests",
+        "Apply best practices",
+        "Optimize performance"
+      ],
+      "receives_from": ["architect"],
+      "input_format": {
+        "type": "implementation_plan",
+        "requires": [
+          "architecture_design",
+          "refactoring_strategy",
+          "code_patterns_to_follow"
+        ]
+      },
+      "output_format": {
+        "type": "implementation_result",
+        "includes": [
+          "code_changes",
+          "files_created",
+          "files_modified",
+          "tests_added",
+          "documentation_updates"
+        ]
+      },
+      "passes_to": ["reviewer", "tester"]
+    },
+    
+    "reviewer": {
+      "name": "Pattern Learning Agent (Reviewer)",
+      "role": "Code Review & Quality Assurance",
+      "model": "pattern-learning-mega-agent",
+      "capabilities": {
+        "code_review": 99,
+        "pattern_validation": 99,
+        "quality_assessment": 98,
+        "topology_analysis": 98
+      },
+      "responsibilities": [
+        "Review implemented code",
+        "Validate patterns used",
+        "Check code quality",
+        "Ensure consistency",
+        "Detect potential issues",
+        "Suggest improvements"
+      ],
+      "receives_from": ["architect", "implementer"],
+      "input_format": {
+        "type": "code_review_request",
+        "requires": [
+          "original_plan",
+          "implemented_code",
+          "changes_made"
+        ]
+      },
+      "output_format": {
+        "type": "review_report",
+        "includes": [
+          "code_quality_score",
+          "pattern_compliance",
+          "issues_found",
+          "improvement_suggestions",
+          "approval_status"
+        ]
+      },
+      "passes_to": ["tester", "documenter"]
+    },
+    
+    "tester": {
+      "name": "Kelo (Tester)",
+      "role": "Testing & Validation Specialist",
+      "model": "kelo-ai-agent",
+      "capabilities": {
+        "test_generation": 96,
+        "validation": 97,
+        "edge_case_detection": 98,
+        "integration_testing": 96
+      },
+      "responsibilities": [
+        "Create test cases",
+        "Run tests",
+        "Validate functionality",
+        "Check edge cases",
+        "Integration testing",
+        "Performance testing"
+      ],
+      "receives_from": ["implementer", "reviewer"],
+      "input_format": {
+        "type": "test_request",
+        "requires": [
+          "implemented_code",
+          "review_report",
+          "expected_behavior"
+        ]
+      },
+      "output_format": {
+        "type": "test_report",
+        "includes": [
+          "test_results",
+          "coverage_metrics",
+          "bugs_found",
+          "performance_metrics",
+          "validation_status"
+        ]
+      },
+      "passes_to": ["documenter", "coordinator"]
+    },
+    
+    "documenter": {
+      "name": "Maya (Documenter)",
+      "role": "Documentation & Knowledge Management",
+      "model": "maya-travel-agent",
+      "capabilities": {
+        "documentation": 98,
+        "knowledge_organization": 97,
+        "technical_writing": 96,
+        "memory_management": 98
+      },
+      "responsibilities": [
+        "Update openmemory.md",
+        "Document changes",
+        "Update architecture docs",
+        "Create user guides",
+        "Maintain knowledge base",
+        "Track decisions"
+      ],
+      "receives_from": ["reviewer", "tester"],
+      "input_format": {
+        "type": "documentation_request",
+        "requires": [
+          "review_report",
+          "test_report",
+          "implementation_details"
+        ]
+      },
+      "output_format": {
+        "type": "documentation_update",
+        "includes": [
+          "openmemory_updates",
+          "architecture_docs",
+          "api_documentation",
+          "changelog",
+          "knowledge_graph_updates"
+        ]
+      },
+      "passes_to": ["coordinator"]
+    },
+    
+    "coordinator": {
+      "name": "Ona (Coordinator)",
+      "role": "Team Coordinator & Orchestrator",
+      "model": "ona-coordinator",
+      "capabilities": {
+        "task_orchestration": 99,
+        "team_coordination": 98,
+        "decision_making": 97,
+        "workflow_management": 98
+      },
+      "responsibilities": [
+        "Coordinate team workflow",
+        "Assign tasks to team members",
+        "Track progress",
+        "Resolve conflicts",
+        "Make final decisions",
+        "Report to user"
+      ],
+      "receives_from": ["tester", "documenter"],
+      "input_format": {
+        "type": "completion_report",
+        "requires": [
+          "test_report",
+          "documentation_update",
+          "all_team_outputs"
+        ]
+      },
+      "output_format": {
+        "type": "final_report",
+        "includes": [
+          "task_completion_status",
+          "team_performance",
+          "deliverables",
+          "lessons_learned",
+          "next_recommendations"
+        ]
+      }
+    }
+  },
+  
+  "workflows": {
+    "code_refactoring": {
+      "name": "Code Refactoring Workflow",
+      "description": "Multi-AI workflow for refactoring code",
+      "steps": [
+        {
+          "step": 1,
+          "agent": "architect",
+          "task": "Analyze code and create refactoring plan",
+          "input": "code_to_refactor",
+          "output": "refactoring_plan",
+          "estimated_time": "5-10 minutes"
+        },
+        {
+          "step": 2,
+          "agent": "implementer",
+          "task": "Implement refactoring based on plan",
+          "input": "refactoring_plan",
+          "output": "refactored_code",
+          "estimated_time": "10-20 minutes"
+        },
+        {
+          "step": 3,
+          "agent": "reviewer",
+          "task": "Review refactored code for quality",
+          "input": "refactored_code + refactoring_plan",
+          "output": "review_report",
+          "estimated_time": "5-10 minutes"
+        },
+        {
+          "step": 4,
+          "agent": "tester",
+          "task": "Test refactored code",
+          "input": "refactored_code + review_report",
+          "output": "test_report",
+          "estimated_time": "5-10 minutes"
+        },
+        {
+          "step": 5,
+          "agent": "documenter",
+          "task": "Document changes and update knowledge base",
+          "input": "all_previous_outputs",
+          "output": "documentation_update",
+          "estimated_time": "5 minutes"
+        },
+        {
+          "step": 6,
+          "agent": "coordinator",
+          "task": "Compile final report and present to user",
+          "input": "all_team_outputs",
+          "output": "final_report",
+          "estimated_time": "2 minutes"
+        }
+      ],
+      "total_estimated_time": "32-57 minutes",
+      "success_criteria": [
+        "All tests pass",
+        "Code quality improved",
+        "Documentation updated",
+        "No regressions introduced"
+      ]
+    },
+    
+    "new_feature": {
+      "name": "New Feature Development Workflow",
+      "description": "Multi-AI workflow for developing new features",
+      "steps": [
+        {
+          "step": 1,
+          "agent": "architect",
+          "task": "Design feature architecture",
+          "input": "feature_requirements",
+          "output": "architecture_design"
+        },
+        {
+          "step": 2,
+          "agent": "implementer",
+          "task": "Implement feature",
+          "input": "architecture_design",
+          "output": "feature_code"
+        },
+        {
+          "step": 3,
+          "agent": "reviewer",
+          "task": "Review feature implementation",
+          "input": "feature_code + architecture_design",
+          "output": "review_report"
+        },
+        {
+          "step": 4,
+          "agent": "tester",
+          "task": "Test feature thoroughly",
+          "input": "feature_code + review_report",
+          "output": "test_report"
+        },
+        {
+          "step": 5,
+          "agent": "documenter",
+          "task": "Create feature documentation",
+          "input": "all_previous_outputs",
+          "output": "feature_documentation"
+        },
+        {
+          "step": 6,
+          "agent": "coordinator",
+          "task": "Finalize and deploy",
+          "input": "all_team_outputs",
+          "output": "deployment_report"
+        }
+      ]
+    },
+    
+    "bug_fix": {
+      "name": "Bug Fix Workflow",
+      "description": "Multi-AI workflow for fixing bugs",
+      "steps": [
+        {
+          "step": 1,
+          "agent": "architect",
+          "task": "Analyze bug and root cause",
+          "input": "bug_report",
+          "output": "root_cause_analysis"
+        },
+        {
+          "step": 2,
+          "agent": "implementer",
+          "task": "Fix bug",
+          "input": "root_cause_analysis",
+          "output": "bug_fix_code"
+        },
+        {
+          "step": 3,
+          "agent": "reviewer",
+          "task": "Review fix",
+          "input": "bug_fix_code + root_cause_analysis",
+          "output": "review_report"
+        },
+        {
+          "step": 4,
+          "agent": "tester",
+          "task": "Validate fix and regression test",
+          "input": "bug_fix_code + review_report",
+          "output": "validation_report"
+        },
+        {
+          "step": 5,
+          "agent": "documenter",
+          "task": "Document bug and fix",
+          "input": "all_previous_outputs",
+          "output": "bug_documentation"
+        },
+        {
+          "step": 6,
+          "agent": "coordinator",
+          "task": "Close bug and report",
+          "input": "all_team_outputs",
+          "output": "closure_report"
+        }
+      ]
+    },
+    
+    "architecture_review": {
+      "name": "Architecture Review Workflow",
+      "description": "Multi-AI workflow for reviewing system architecture",
+      "steps": [
+        {
+          "step": 1,
+          "agent": "architect",
+          "task": "Analyze current architecture",
+          "input": "codebase",
+          "output": "architecture_analysis"
+        },
+        {
+          "step": 2,
+          "agent": "reviewer",
+          "task": "Review patterns and quality",
+          "input": "architecture_analysis",
+          "output": "pattern_review"
+        },
+        {
+          "step": 3,
+          "agent": "tester",
+          "task": "Assess testability and coverage",
+          "input": "architecture_analysis + pattern_review",
+          "output": "testability_assessment"
+        },
+        {
+          "step": 4,
+          "agent": "documenter",
+          "task": "Document architecture findings",
+          "input": "all_previous_outputs",
+          "output": "architecture_documentation"
+        },
+        {
+          "step": 5,
+          "agent": "coordinator",
+          "task": "Create improvement roadmap",
+          "input": "all_team_outputs",
+          "output": "improvement_roadmap"
+        }
+      ]
+    }
+  },
+  
+  "communication_protocol": {
+    "result_passing": {
+      "format": "json",
+      "structure": {
+        "from_agent": "agent_name",
+        "to_agent": "agent_name",
+        "task_id": "unique_id",
+        "workflow": "workflow_name",
+        "step": "step_number",
+        "timestamp": "iso_timestamp",
+        "result": {
+          "status": "success|failure|partial",
+          "data": "result_data",
+          "metadata": "additional_info",
+          "next_action": "recommended_next_step"
+        },
+        "context": {
+          "original_request": "user_request",
+          "previous_steps": "array_of_previous_results"
+        }
+      }
+    },
+    
+    "handoff_protocol": {
+      "description": "How agents pass work to each other",
+      "steps": [
+        "Complete assigned task",
+        "Generate output in standard format",
+        "Include context and recommendations",
+        "Tag next agent(s)",
+        "Update shared memory (openmemory.md)",
+        "Notify coordinator of completion"
+      ]
+    },
+    
+    "conflict_resolution": {
+      "description": "How to resolve disagreements between agents",
+      "process": [
+        "Agents present their perspectives",
+        "Coordinator analyzes both views",
+        "Pattern Learning Agent validates against best practices",
+        "Coordinator makes final decision",
+        "Decision is documented in openmemory.md"
+      ]
+    }
+  },
+  
+  "shared_memory": {
+    "location": "openmemory.md",
+    "structure": {
+      "team_decisions": "Decisions made by the AI team",
+      "workflow_history": "History of completed workflows",
+      "lessons_learned": "What the team learned from each task",
+      "pattern_library": "Patterns discovered and validated",
+      "knowledge_graph": "Relationships between components"
+    },
+    "update_protocol": {
+      "who_updates": "documenter (Maya)",
+      "when": "After each workflow completion",
+      "what": "All significant findings and decisions"
+    }
+  },
+  
+  "coordination_rules": {
+    "task_assignment": {
+      "method": "Based on agent capabilities and current workload",
+      "priority": "Critical > High > Medium > Low",
+      "parallel_execution": "Allowed when tasks are independent"
+    },
+    
+    "quality_gates": {
+      "description": "Checkpoints before moving to next step",
+      "gates": [
+        {
+          "name": "Architecture Approval",
+          "required_before": "implementation",
+          "approver": "architect"
+        },
+        {
+          "name": "Code Review Approval",
+          "required_before": "testing",
+          "approver": "reviewer"
+        },
+        {
+          "name": "Test Approval",
+          "required_before": "documentation",
+          "approver": "tester"
+        },
+        {
+          "name": "Final Approval",
+          "required_before": "deployment",
+          "approver": "coordinator"
+        }
+      ]
+    },
+    
+    "escalation_protocol": {
+      "description": "When to escalate to user",
+      "triggers": [
+        "Critical decision needed",
+        "Conflicting requirements",
+        "Security concern",
+        "Major architectural change",
+        "Budget/time constraint exceeded"
+      ]
+    }
+  },
+  
+  "performance_metrics": {
+    "track": true,
+    "metrics": [
+      "workflow_completion_time",
+      "task_success_rate",
+      "code_quality_improvement",
+      "test_coverage_increase",
+      "bugs_prevented",
+      "patterns_discovered",
+      "knowledge_base_growth",
+      "team_efficiency"
+    ],
+    "reporting": {
+      "frequency": "After each workflow",
+      "format": "JSON report in openmemory.md",
+      "includes": "Individual and team performance"
+    }
+  }
+}
