@@ -45,5 +45,25 @@
 	<false/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	
+	<!-- URL Scheme for Deep Linking -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>mayatravel</string>
+			</array>
+			<key>CFBundleURLName</key>
+			<string>com.amrikyy.mayatravel</string>
+		</dict>
+	</array>
+	
+	<!-- Queries Schemes (can open Telegram) -->
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>tg</string>
+		<string>telegram</string>
+	</array>
 </dict>
 </plist>
