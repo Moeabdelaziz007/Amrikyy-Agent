@@ -1,0 +1,15 @@
+backend
+MayaTravelAgent
+.git
+node_modules
+*.md
+*.txt
+.env
+.env.*
+activate-*.sh
+setup-*.sh
+docs
+tests
+*.test.js
+*.test.tsx
+*.spec.js
