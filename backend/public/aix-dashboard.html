@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIX Agent Simulation Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .agent-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .agent-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00d4ff, #7b2ff7, #ff006e);
+            border-radius: 15px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s;
+        }
+
+        .agent-card:hover::before {
+            opacity: 1;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-5px);
+            border-color: transparent;
+        }
+
+        .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .agent-name {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .agent-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-online { background: #00ff88; }
+        .status-busy { background: #ffaa00; }
+        .status-offline { background: #ff4444; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .agent-info {
+            margin: 15px 0;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .label {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        .value {
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #7b2ff7);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .agent-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .btn-ping {
+            background: linear-gradient(45deg, #00d4ff, #0099ff);
+        }
+
+        .btn-message {
+            background: linear-gradient(45deg, #7b2ff7, #b84fff);
+        }
+
+        .communication-panel {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .comm-header {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .message-stream {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .message-info { border-color: #00d4ff; }
+        .message-request { border-color: #ffaa00; }
+        .message-complete { border-color: #00ff88; }
+        .message-error { border-color: #ff4444; }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+
+        .message-content {
+            font-size: 0.95em;
+        }
+
+        .network-topology {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topology-canvas {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .agent-node {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .agent-node:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.8);
+        }
+
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(0, 212, 255, 0.5), rgba(123, 47, 247, 0.5));
+            transform-origin: left center;
+            pointer-events: none;
+            animation: pulse-line 2s infinite;
+        }
+
+        @keyframes pulse-line {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d4ff, #7b2ff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: #aaa;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .ping-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: ping-pulse 1s infinite;
+        }
+
+        @keyframes ping-pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        .dna-score {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(123, 47, 247, 0.2));
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .dna-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .dna-level {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 AIX Agent Simulation Dashboard</h1>
+        <p>Real-time Multi-Agent Coordination & Communication</p>
+    </div>
+
+    <div class="stats-panel">
+        <div class="stat-card">
+            <div class="stat-value" id="totalAgents">3</div>
+            <div class="stat-label">Active Agents</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="totalMessages">0</div>
+            <div class="stat-label">Messages Sent</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="avgPing">12ms</div>
+            <div class="stat-label">Avg Ping Time</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="avgDNA">88</div>
+            <div class="stat-label">Avg DNA Score</div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid" id="agentGrid">
+        <!-- Agent cards will be generated here -->
+    </div>
+
+    <div class="communication-panel">
+        <div class="comm-header">
+            <span>💬 Live Communication Stream</span>
+            <div class="ping-indicator"></div>
+        </div>
+        <div class="message-stream" id="messageStream">
+            <!-- Messages will appear here -->
+        </div>
+    </div>
+
+    <div class="network-topology">
+        <h3 style="margin-bottom: 15px;">🌐 Agent Network Topology</h3>
+        <div class="topology-canvas" id="topologyCanvas">
+            <!-- Network visualization will be drawn here -->
+        </div>
+    </div>
+
+    <script>
+        // Agent simulation data
+        const agents = [
+            {
+                id: 'gemini-qa',
+                name: 'Gemini QA',
+                species: 'qa-specialist',
+                status: 'online',
+                load: 45,
+                dna: 87,
+                level: 'Expert',
+                capabilities: ['security_scan', 'code_review', 'test_generation'],
+                position: { x: 20, y: 30 }
+            },
+            {
+                id: 'cursor-dev',
+                name: 'Cursor Dev',
+                species: 'developer',
+                status: 'busy',
+                load: 78,
+                dna: 92,
+                level: 'Master',
+                capabilities: ['code_generation', 'bug_fixing', 'refactoring'],
+                position: { x: 50, y: 50 }
+            },
+            {
+                id: 'ona-orchestrator',
+                name: 'Ona',
+                species: 'coordinator',
+                status: 'online',
+                load: 30,
+                dna: 95,
+                level: 'Master',
+                capabilities: ['task_management', 'workflow_optimization'],
+                position: { x: 80, y: 30 }
+            }
+        ];
+
+        let messageCount = 0;
+
+        // Initialize dashboard
+        function init() {
+            renderAgentCards();
+            renderNetworkTopology();
+            startSimulation();
+        }
+
+        // Render agent cards
+        function renderAgentCards() {
+            const grid = document.getElementById('agentGrid');
+            grid.innerHTML = '';
+
+            agents.forEach(agent => {
+                const card = document.createElement('div');
+                card.className = 'agent-card';
+                card.innerHTML = `
+                    <div class="agent-header">
+                        <div class="agent-name">${agent.name}</div>
+                        <div class="agent-status">
+                            <div class="status-dot status-${agent.status}"></div>
+                            <span>${agent.status}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="agent-info">
+                        <div class="info-row">
+                            <span class="label">Species:</span>
+                            <span class="value">${agent.species}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Load:</span>
+                            <span class="value">${agent.load}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${agent.load}%"></div>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Capabilities:</span>
+                            <span class="value">${agent.capabilities.length}</span>
+                        </div>
+                    </div>
+
+                    <div class="dna-score">
+                        <div class="dna-value">${agent.dna}</div>
+                        <div class="dna-level">DNA Score - ${agent.level}</div>
+                    </div>
+
+                    <div class="agent-actions">
+                        <button class="btn btn-ping" onclick="pingAgent('${agent.id}')">
+                            📡 Ping
+                        </button>
+                        <button class="btn btn-message" onclick="messageAgent('${agent.id}')">
+                            💬 Message
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Render network topology
+        function renderNetworkTopology() {
+            const canvas = document.getElementById('topologyCanvas');
+            const width = canvas.offsetWidth;
+            const height = canvas.offsetHeight;
+
+            // Clear existing nodes and lines
+            canvas.innerHTML = '';
+
+            // Draw connection lines
+            agents.forEach((agent, i) => {
+                agents.forEach((other, j) => {
+                    if (i < j) {
+                        const line = document.createElement('div');
+                        line.className = 'connection-line';
+                        
+                        const x1 = agent.position.x * width / 100;
+                        const y1 = agent.position.y * height / 100;
+                        const x2 = other.position.x * width / 100;
+                        const y2 = other.position.y * height / 100;
+                        
+                        const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                        const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+                        
+                        line.style.width = `${length}px`;
+                        line.style.left = `${x1}px`;
+                        line.style.top = `${y1}px`;
+                        line.style.transform = `rotate(${angle}deg)`;
+                        
+                        canvas.appendChild(line);
+                    }
+                });
+            });
+
+            // Draw agent nodes
+            agents.forEach(agent => {
+                const node = document.createElement('div');
+                node.className = 'agent-node';
+                node.innerHTML = agent.name.split(' ')[0];
+                node.style.left = `${agent.position.x}%`;
+                node.style.top = `${agent.position.y}%`;
+                node.style.transform = 'translate(-50%, -50%)';
+                node.onclick = () => focusAgent(agent.id);
+                canvas.appendChild(node);
+            });
+        }
+
+        // Add message to stream
+        function addMessage(from, to, content, type = 'info') {
+            const stream = document.getElementById('messageStream');
+            const message = document.createElement('div');
+            message.className = `message message-${type}`;
+            
+            const time = new Date().toLocaleTimeString();
+            message.innerHTML = `
+                <div class="message-header">
+                    <span><strong>${from}</strong> → ${to}</span>
+                    <span>${time}</span>
+                </div>
+                <div class="message-content">${content}</div>
+            `;
+            
+            stream.insertBefore(message, stream.firstChild);
+            messageCount++;
+            document.getElementById('totalMessages').textContent = messageCount;
+            
+            // Keep only last 20 messages
+            while (stream.children.length > 20) {
+                stream.removeChild(stream.lastChild);
+            }
+        }
+
+        // Ping agent
+        function pingAgent(agentId) {
+            const agent = agents.find(a => a.id === agentId);
+            const pingTime = Math.floor(Math.random() * 20) + 5;
+            addMessage('Dashboard', agent.name, `Ping: ${pingTime}ms - Status: ${agent.status.toUpperCase()}`, 'info');
+            
+            // Animate ping
+            const buttons = document.querySelectorAll('.btn-ping');
+            buttons.forEach(btn => {
+                if (btn.textContent.includes('Ping')) {
+                    btn.style.animation = 'pulse 0.5s';
+                    setTimeout(() => btn.style.animation = '', 500);
+                }
+            });
+        }
+
+        // Message agent
+        function messageAgent(agentId) {
+            const agent = agents.find(a => a.id === agentId);
+            const messages = [
+                'Can you help with security scan?',
+                'Status update please',
+                'Ready for next task?',
+                'Check code quality in module X',
+                'Run tests on latest commit'
+            ];
+            const msg = messages[Math.floor(Math.random() * messages.length)];
+            addMessage('Dashboard', agent.name, msg, 'request');
+            
+            // Simulate response
+            setTimeout(() => {
+                const responses = [
+                    '✓ On it!',
+                    'Starting now...',
+                    'Will do, ETA 5 mins',
+                    'Processing request...',
+                    'Roger that!'
+                ];
+                const response = responses[Math.floor(Math.random() * responses.length)];
+                addMessage(agent.name, 'Dashboard', response, 'complete');
+            }, 1000);
+        }
+
+        // Focus on specific agent
+        function focusAgent(agentId) {
+            const agent = agents.find(a => a.id === agentId);
+            alert(`Agent: ${agent.name}\nSpecies: ${agent.species}\nDNA Score: ${agent.dna}\nCapabilities: ${agent.capabilities.join(', ')}`);
+        }
+
+        // Start simulation
+        function startSimulation() {
+            // Simulate agent communication
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    const from = agents[Math.floor(Math.random() * agents.length)];
+                    const to = agents[Math.floor(Math.random() * agents.length)];
+                    
+                    if (from !== to) {
+                        const messages = [
+                            'Task completed ✓',
+                            'Need help with X',
+                            'Found 3 issues',
+                            'Running tests...',
+                            'Code review done',
+                            'Security scan complete'
+                        ];
+                        const msg = messages[Math.floor(Math.random() * messages.length)];
+                        addMessage(from.name, to.name, msg, 'info');
+                    }
+                }
+            }, 3000);
+
+            // Simulate load changes
+            setInterval(() => {
+                agents.forEach(agent => {
+                    agent.load = Math.max(10, Math.min(95, agent.load + (Math.random() - 0.5) * 20));
+                });
+                renderAgentCards();
+            }, 5000);
+
+            // Update average ping
+            setInterval(() => {
+                const ping = Math.floor(Math.random() * 10) + 8;
+                document.getElementById('avgPing').textContent = `${ping}ms`;
+            }, 2000);
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
