@@ -163,6 +163,19 @@ extension APIEndpoint {
         return APIEndpoint(path: "/api/travel/destinations?query=\(query)")
     }
 
+    static func destinations(page: Int = 1, limit: Int = 20) -> APIEndpoint {
+        return APIEndpoint(path: "/api/travel/destinations?page=\(page)&limit=\(limit)")
+    }
+
+    static func destinationsWithQuery(query: String, page: Int = 1, limit: Int = 20) -> APIEndpoint {
+        let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
+        return APIEndpoint(path: "/api/travel/destinations/search?query=\(encodedQuery)&page=\(page)&limit=\(limit)")
+    }
+
+    static func destination(id: String) -> APIEndpoint {
+        return APIEndpoint(path: "/api/travel/destinations/\(id)")
+    }
+
     static func chat(planId: String) -> APIEndpoint {
         return APIEndpoint(path: "/api/ai/chat", method: .POST)
     }
