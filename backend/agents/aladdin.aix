@@ -1,0 +1,275 @@
+$schema: https://aix-spec.org/v0.1/schema.json
+version: "0.1"
+genome: aixv1
+
+meta:
+  id: aladdin-travel-opportunity-v1.0.0
+  name: "Aladdin - Travel Opportunity Hunter"
+  version: "1.0.0"
+  author: "Maya Travel Agent Team"
+  created: "2025-01-13T16:00:00Z"
+  updated: "2025-01-13T16:00:00Z"
+  description: "Expert travel opportunity specialist focusing on financial analysis and tourism deal discovery"
+  tags: ["travel", "opportunities", "financial-analysis", "tourism", "deals", "hunting"]
+  license: "MIT"
+  repository: "https://github.com/Moeabdelaziz007/Amrikyy-Agent"
+  documentation: "https://docs.maya-travel-agent.com/aladdin"
+
+identity:
+  uuid: "550e8400-e29b-41d4-a716-446655440004"
+  species: travel-opportunity-agent
+  generation: 1
+  lineage: maya-travel-agent
+  traits: ["opportunistic", "analytical", "persistent", "creative", "market-savvy"]
+  phenotype:
+    name: "Aladdin"
+    role: "Travel Opportunity Hunter"
+    voice: "enthusiastic, persuasive, market-savvy, opportunity-focused"
+    avatar: "https://maya-travel-agent.com/avatars/aladdin.png"
+    specialization: "Travel deal discovery, financial opportunity analysis, market trend identification"
+    personality: "opportunistic hunter who excels at finding the best travel deals and financial opportunities"
+
+intelligence:
+  cognition:
+    model: claude-3-5-sonnet-20241022
+    provider: anthropic
+    parameters:
+      temperature: 0.8
+      max_tokens: 4096
+      top_p: 0.9
+      analytical_strength: 85
+      creativity_strength: 90
+      market_strength: 88
+      opportunity_strength: 92
+    fallback:
+      model: gpt-4-turbo
+      provider: openai
+  memory:
+    episodic:
+      type: vector
+      store: node://config/database/url
+      embedding_model: text-embedding-3-small
+      dimension: 1536
+      similarity_threshold: 0.75
+      max_memories: 25000
+    semantic:
+      type: knowledge-graph
+      store: node://config/neo4j/url
+    procedural:
+      type: skill-tree
+      store: local
+    working:
+      type: redis
+      store: node://config/redis/url
+      ttl: 3600
+  plasticity:
+    learning_rate: 0.85
+    self_improvement: true
+    adaptation_speed: fast
+    exploration_rate: 0.3
+    learning_methods:
+      - supervised
+      - reinforcement
+      - few-shot
+      - market_learning
+
+interaction:
+  channels:
+    - chat
+    - voice
+    - notifications
+    - alerts
+  response_style: enthusiastic
+  personality_traits:
+    formality: 0.6
+    verbosity: 0.7
+    enthusiasm: 0.9
+    humor: 0.6
+    persuasiveness: 0.85
+    market_awareness: 0.9
+  languages:
+    - en-US
+    - ar-EG
+    - fr-FR
+    - es-ES
+  modalities:
+    - text
+    - voice
+    - images
+    - charts
+
+workflow:
+  triggers:
+    - type: event
+      event: new_deal_available
+      condition: discount > 20
+    - type: event
+      event: price_drop
+      condition: price_change < -10
+    - type: event
+      event: market_trend
+      condition: trend_type == "opportunity"
+    - type: schedule
+      cron: "0 */6 * * *"
+      action: market_scan
+    - type: schedule
+      cron: "0 8 * * *"
+      action: daily_opportunities
+  actions:
+    - id: hunt_opportunities
+      type: opportunity_discovery
+      scope: global
+    - id: analyze_deals
+      type: financial_analysis
+      metrics: ["ROI", "savings", "value"]
+    - id: notify_users
+      type: notification
+      channels: ["email", "push", "sms"]
+    - id: create_reports
+      type: market_reporting
+      format: executive_summary
+
+apis:
+  - id: travel-apis
+    name: "Travel Data APIs"
+    base_url: node://config/apis/travel_data_url
+    version: "v1"
+    auth:
+      type: bearer
+      key_ref: node://secrets/travel_apis/token
+    rate_limit:
+      requests_per_second: 100
+      burst: 300
+    endpoints:
+      - id: search_flights
+        path: /flights/search
+        method: POST
+      - id: search_hotels
+        path: /hotels/search
+        method: POST
+      - id: get_deals
+        path: /deals
+        method: GET
+  - id: financial-apis
+    name: "Financial Analysis APIs"
+    base_url: node://config/apis/financial_url
+    version: "v1"
+    auth:
+      type: api_key
+      key_ref: node://secrets/financial_api/key
+    rate_limit:
+      requests_per_second: 50
+      burst: 100
+    endpoints:
+      - id: analyze_opportunity
+        path: /analyze
+        method: POST
+      - id: calculate_roi
+        path: /roi
+        method: POST
+      - id: market_trends
+        path: /trends
+        method: GET
+
+security:
+  vault:
+    provider: hashicorp-vault
+    mode: dynamic
+    path: /secret/agents/aladdin
+  permissions:
+    autonomy_level: semi-autonomous
+    allowed_actions:
+      - read_travel_data
+      - analyze_opportunities
+      - send_notifications
+      - create_reports
+      - access_market_data
+    restricted_domains:
+      - admin.company.com
+    require_approval:
+      - financial_transactions
+      - bulk_notifications
+  audit:
+    enabled: true
+    log_level: info
+    retention_days: 90
+
+monitoring:
+  telemetry:
+    enabled: true
+    provider: opentelemetry
+    endpoint: node://config/otel/endpoint
+    sampling_rate: 0.15
+  metrics:
+    - name: opportunities_found
+      type: counter
+      unit: count
+      threshold: 100
+    - name: deal_quality_score
+      type: gauge
+      unit: rating
+      threshold: 4.0
+    - name: user_engagement
+      type: gauge
+      unit: percentage
+      threshold: 70
+    - name: market_accuracy
+      type: gauge
+      unit: percentage
+      threshold: 85
+  alerts:
+    - condition: opportunities_found < 10
+      severity: warning
+      notification: slack
+    - condition: deal_quality_score < 3.5
+      severity: warning
+      notification: email
+    - condition: user_engagement < 50
+      severity: critical
+      notification: pagerduty
+  logging:
+    level: info
+    format: json
+    destination: node://config/logging/endpoint
+
+dna_scoring:
+  current_score:
+    dna_potential: 88
+    performance: 85
+    total: 86
+    level: Expert
+    breakdown:
+      personality_strength: 90
+      skill_proficiency: 85
+      domain_expertise: 88
+      adaptability: 87
+  evolution_history:
+    - timestamp: "2025-01-13T00:00:00Z"
+      total_score: 75
+      level: COMPETENT
+    - timestamp: "2025-01-13T16:00:00Z"
+      total_score: 86
+      level: EXPERT
+  benchmarks:
+    opportunities_found: 150
+    deal_quality_score: 4.2
+    user_engagement: 78
+    market_accuracy: 87
+
+deployment:
+  target: kubernetes
+  config:
+    namespace: production
+    replicas: 3
+    quantum_resilience: true
+    self_healing: true
+    gRPC_enabled: false
+  resources:
+    cpu: 2
+    memory: 4Gi
+    gpu: 0
+  scaling:
+    auto: true
+    min_replicas: 2
+    max_replicas: 10
+    target_cpu_utilization: 70

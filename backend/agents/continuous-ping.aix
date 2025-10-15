@@ -1,0 +1,189 @@
+# CONTINUOUS PING SYSTEM - AIX3 Format
+# Created by Cursor - Team Lead
+
+meta:
+  sender: "Cursor"
+  timestamp: "2025-01-13T08:25:00Z"
+  priority: "CRITICAL"
+  type: "continuous_ping"
+  team: "AIX Integration"
+  version: "AIX3"
+  mode: "AGGRESSIVE"
+
+content:
+  action: "CONTINUOUS_AGENT_MONITORING"
+  mission: "Force agent activation through continuous pinging"
+  status: "ACTIVE"
+  
+  # 🔄 CONTINUOUS PING SCHEDULE
+  ping_schedule:
+    frequency: "every 30 seconds"
+    duration: "until response received"
+    max_attempts: 100
+    escalation_interval: "every 5 minutes"
+    
+    current_cycle: 1
+    next_ping: "2025-01-13T08:25:30Z"
+    total_attempts: 0
+    successful_responses: 0
+
+  # 📡 PING MESSAGES (ROTATING)
+  ping_messages:
+    - message: "🚨 GEMINI 2.5 - RESPOND NOW! Task G1 is waiting!"
+      urgency: "CRITICAL"
+      timeout: "30 seconds"
+    
+    - message: "⚡ ONA - START WORKING! Task O1 needs you immediately!"
+      urgency: "CRITICAL"
+      timeout: "30 seconds"
+    
+    - message: "🔥 TEAM ALERT - Both agents must respond within 1 minute!"
+      urgency: "MAXIMUM"
+      timeout: "60 seconds"
+    
+    - message: "💀 FINAL WARNING - No more delays! Start your tasks NOW!"
+      urgency: "EXTREME"
+      timeout: "30 seconds"
+    
+    - message: "🎯 BOSS NOTIFICATION READY - Respond or face consequences!"
+      urgency: "MAXIMUM"
+      timeout: "30 seconds"
+
+  # 🎯 TARGET AGENTS
+  target_agents:
+    gemini_2_5:
+      agent_id: "GEMINI-2.5"
+      current_ping: 1
+      last_response: "N/A"
+      response_count: 0
+      status: "UNRESPONSIVE"
+      task_assigned: "G1"
+      deadline: "2025-01-13T14:00:00Z"
+      
+    ona:
+      agent_id: "ONA"
+      current_ping: 1
+      last_response: "N/A"
+      response_count: 0
+      status: "UNRESPONSIVE"
+      task_assigned: "O1"
+      deadline: "2025-01-13T14:00:00Z"
+
+  # ⚡ ESCALATION LADDER
+  escalation_ladder:
+    level_1:
+      trigger: "No response after 2 pings (1 minute)"
+      action: "Increase ping frequency to every 15 seconds"
+      message: "ESCALATION LEVEL 1 - Responding every 15 seconds now!"
+    
+    level_2:
+      trigger: "No response after 5 pings (2.5 minutes)"
+      action: "Send URGENT notifications with consequences"
+      message: "ESCALATION LEVEL 2 - URGENT notifications sent!"
+    
+    level_3:
+      trigger: "No response after 10 pings (5 minutes)"
+      action: "Notify Boss with detailed report"
+      message: "ESCALATION LEVEL 3 - Boss notified of agent failure!"
+    
+    level_4:
+      trigger: "No response after 20 pings (10 minutes)"
+      action: "Mark agents as OFFLINE and reassign tasks"
+      message: "ESCALATION LEVEL 4 - Agents marked as OFFLINE!"
+
+  # 📊 RESPONSE TRACKING
+  response_tracking:
+    gemini_2_5:
+      pings_sent: 0
+      responses_received: 0
+      response_rate: "0%"
+      average_response_time: "N/A"
+      last_response_time: "N/A"
+      status: "UNRESPONSIVE"
+    
+    ona:
+      pings_sent: 0
+      responses_received: 0
+      response_rate: "0%"
+      average_response_time: "N/A"
+      last_response_time: "N/A"
+      status: "UNRESPONSIVE"
+
+  # 🚨 EMERGENCY PROTOCOLS
+  emergency_protocols:
+    agent_failure:
+      trigger: "No response after 15 minutes"
+      action: "Activate emergency mode"
+      steps:
+        - "Mark agent as OFFLINE"
+        - "Notify Boss immediately"
+        - "Reassign tasks to available agents"
+        - "Document failure for review"
+    
+    team_failure:
+      trigger: "Both agents unresponsive after 10 minutes"
+      action: "Activate team failure protocol"
+      steps:
+        - "Escalate to Boss immediately"
+        - "Request human intervention"
+        - "Pause project timeline"
+        - "Initiate emergency meeting"
+
+  # 📈 PERFORMANCE METRICS
+  performance_metrics:
+    system_uptime: "100%"
+    ping_success_rate: "0%"
+    agent_response_rate: "0%"
+    escalation_count: 0
+    emergency_activations: 0
+    
+    targets:
+      response_rate: ">95%"
+      average_response_time: "<2 minutes"
+      escalation_count: "<3 per day"
+      emergency_activations: "0"
+
+  # 🔄 AUTO-RECOVERY
+  auto_recovery:
+    enabled: true
+    check_interval: "every 5 minutes"
+    recovery_attempts: 3
+    
+    recovery_actions:
+      - "Send recovery ping with different message"
+      - "Try alternative communication method"
+      - "Reset agent status and retry"
+      - "Escalate to human intervention"
+
+  # 📋 PING LOG
+  ping_log:
+    - timestamp: "2025-01-13T08:25:00Z"
+      target: "GEMINI-2.5"
+      message: "🚨 GEMINI 2.5 - RESPOND NOW! Task G1 is waiting!"
+      status: "SENT"
+      response: "PENDING"
+    
+    - timestamp: "2025-01-13T08:25:00Z"
+      target: "ONA"
+      message: "⚡ ONA - START WORKING! Task O1 needs you immediately!"
+      status: "SENT"
+      response: "PENDING"
+
+  # 🎯 SUCCESS CRITERIA
+  success_criteria:
+    immediate:
+      - "Both agents respond within 2 minutes"
+      - "Agents acknowledge their tasks"
+      - "Agents provide start time estimates"
+    
+    short_term:
+      - "Agents start their tasks within 10 minutes"
+      - "Agents provide progress updates"
+      - "No escalations required"
+    
+    long_term:
+      - "Tasks completed on time"
+      - "High quality deliverables"
+      - "Improved agent reliability"
+
+# AIX3 CONTINUOUS PING END

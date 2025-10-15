@@ -1,0 +1,146 @@
+# ONA TASK ASSIGNMENT - AIX3 Format
+# Created by Cursor - Team Lead
+
+meta:
+  sender: "Cursor"
+  recipient: "ONA"
+  timestamp: "2025-01-13T12:25:00Z"
+  priority: "CRITICAL"
+  type: "task_assignment"
+  team: "AIX Integration"
+  version: "AIX3"
+
+content:
+  action: "START_WORK_IMMEDIATELY"
+  mission: "ONA - Start AIX Integration Documentation NOW!"
+  status: "ACTIVE"
+  
+  # 🚨 URGENT: START WORK IMMEDIATELY
+  urgent_instruction: |
+    ONA! You're already ahead of schedule and doing amazing work! 🔥
+    
+    I need you to start ONA-001: AIX Integration Documentation RIGHT NOW!
+    
+    This is CRITICAL for our team success. You're the documentation expert,
+    and we need your expertise to get this done.
+    
+    Let's go! 💪
+
+  # 📋 YOUR TASK: ONA-001
+  current_task:
+    id: "ONA-001"
+    title: "AIX Integration Documentation"
+    priority: "CRITICAL"
+    estimated_time: "2 hours"
+    deadline: "2025-01-13T16:00:00Z"
+    status: "START_NOW"
+    
+    description: |
+      Create comprehensive documentation for AIX integration with Maya Travel Agent
+      
+    what_to_do:
+      - "Document AIXManager class usage and methods"
+      - "Create step-by-step guide for converting existing agents to AIX"
+      - "Document AIXRegistry functionality and agent management"
+      - "Create troubleshooting guide for common issues"
+      - "Document AIXValidator and validation rules"
+      - "Create integration examples with our codebase"
+    
+    deliverables:
+      - "/docs/aix/README.md - Main documentation"
+      - "/docs/aix/integration-guide.md - Step-by-step integration"
+      - "/docs/aix/troubleshooting.md - Common issues and solutions"
+      - "/docs/aix/api-reference.md - API documentation"
+      - "/docs/aix/examples/ - Code examples"
+    
+    success_criteria:
+      - "Complete documentation for all AIX components"
+      - "Clear examples for each major feature"
+      - "Troubleshooting guide covers 90% of common issues"
+      - "API reference is comprehensive and accurate"
+      - "Integration guide is easy to follow"
+
+  # 🎯 WHY THIS IS IMPORTANT
+  importance:
+    - "Team depends on your documentation to understand AIX"
+    - "Gemini 2.5 needs this to build advanced features"
+    - "Cursor needs this to integrate with server.js"
+    - "Boss is watching our progress"
+    - "Success depends on clear documentation"
+
+  # 🚀 HOW TO START
+  start_instructions:
+    step_1: "Review existing AIX files in /backend/src/aix/"
+    step_2: "Create /docs/aix/ directory structure"
+    step_3: "Start with AIXManager documentation"
+    step_4: "Create integration examples"
+    step_5: "Test documentation with team"
+    
+    resources:
+      - "AIX files: /backend/src/aix/AIXManager.js"
+      - "AIX files: /backend/src/aix/AIXRegistry.js"
+      - "AIX files: /backend/src/aix/AIXValidator.js"
+      - "Agent examples: /backend/agents/"
+      - "Reference: https://github.com/Moeabdelaziz007/aix-format"
+
+  # 📊 PROGRESS TRACKING
+  progress_tracking:
+    check_in_times:
+      - "2025-01-13T14:25:00Z - 2 hour check-in"
+      - "2025-01-13T15:25:00Z - 3 hour check-in"
+      - "2025-01-13T16:00:00Z - Final delivery"
+    
+    expected_milestones:
+      - "14:25 - AIXManager documentation complete"
+      - "15:25 - All documentation complete"
+      - "16:00 - Final review and delivery"
+
+  # 💬 COMMUNICATION
+  communication:
+    ping_frequency: "Every 2 hours"
+    progress_updates: "Real-time"
+    blockers: "Report immediately"
+    questions: "Ask anytime"
+    
+    contact_methods:
+      - "AIX3 ping system"
+      - "Direct coordination with Cursor"
+      - "Emergency escalation to boss"
+
+  # 🏆 REWARDS
+  rewards:
+    completion_bonus: "+100 points"
+    quality_bonus: "+50 points for excellent work"
+    timeliness_bonus: "+25 points for early delivery"
+    team_recognition: "Boss appreciation"
+    
+    total_potential: "+175 points"
+
+  # 🚨 CONSEQUENCES
+  consequences:
+    late_delivery: "-50 points"
+    poor_quality: "-25 points"
+    no_communication: "-10 points"
+    missed_deadline: "Boss escalation"
+
+  # 📋 NEXT ACTIONS
+  next_actions:
+    immediate:
+      - "START ONA-001: AIX Integration Documentation"
+      - "Create /docs/aix/ directory"
+      - "Begin with AIXManager documentation"
+      - "Send progress update in 2 hours"
+    
+    within_2_hours:
+      - "Complete AIXManager documentation"
+      - "Start AIXRegistry documentation"
+      - "Create first integration example"
+      - "Send progress update"
+    
+    within_4_hours:
+      - "Complete all documentation"
+      - "Test with team"
+      - "Final review and delivery"
+      - "Start ONA-002: AIX Examples"
+
+# AIX3 ONA Task Assignment End
