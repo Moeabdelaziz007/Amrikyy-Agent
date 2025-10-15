@@ -120,10 +120,56 @@ workflow:
     7_document: "Clear documentation for future maintenance"
     8_deploy: "Ensure smooth deployment and monitoring"
 
-  # 🎯 PHASE 1: iOS APP FEATURES (Days 4-5)
+  # 🎯 PHASE 0: BACKEND APIs (Day 1 - URGENT!)
+  backend_development_tasks:
+    priority: "CRITICAL"
+    timeline: "1 day"
+    note: "Build backend APIs first, then iOS can integrate with them"
+    
+    task_0_profile_api:
+      description: "Build complete Profile API with all endpoints"
+      file_to_create: "backend/routes/profile.js"
+      features:
+        - get_profile: "GET /api/profile - Fetch user profile from Supabase"
+        - update_profile: "PUT /api/profile - Update profile (name, email, bio)"
+        - upload_avatar: "POST /api/profile/avatar - Upload avatar with multer"
+        - get_stats: "GET /api/profile/stats - User statistics (trips, expenses)"
+        - delete_account: "DELETE /api/profile - Delete user account"
+      estimated_lines: 250
+      database: "Supabase PostgreSQL"
+      authentication: "JWT token validation"
+      
+    task_0_notifications_api:
+      description: "Build complete Notifications API"
+      file_to_create: "backend/routes/notifications.js"
+      features:
+        - list_notifications: "GET /api/notifications - List all with pagination"
+        - mark_read: "POST /api/notifications/mark-read - Mark as read"
+        - delete_notification: "DELETE /api/notifications/:id - Delete"
+        - unread_count: "GET /api/notifications/unread-count - Count unread"
+        - mark_all_read: "POST /api/notifications/mark-all-read"
+      estimated_lines: 200
+      database: "Supabase notifications table"
+      
+    task_0_destinations_enhancement:
+      description: "Enhance existing Destinations API with advanced features"
+      file_to_modify: "backend/routes/destinations.js"
+      current_size: "3.4KB"
+      target_size: "8-10KB"
+      enhancements:
+        - advanced_search: "Search by name, country, category, price range"
+        - sorting: "Sort by popularity, price, rating, name"
+        - pagination: "Page-based pagination with limit/offset"
+        - filters: "Filter by tags, activities, seasons"
+        - related_destinations: "GET /api/destinations/:id/related"
+        - popular_destinations: "GET /api/destinations/popular"
+      estimated_additional_lines: 300
+
+  # 🎯 PHASE 1: iOS APP FEATURES (Days 2-3)
   ios_development_tasks:
-    priority: "URGENT"
+    priority: "HIGH"
     timeline: "2 days"
+    note: "After backend APIs are ready"
     
     task_1_destinations_view:
       description: "Build complete DestinationsView with grid layout and search"
