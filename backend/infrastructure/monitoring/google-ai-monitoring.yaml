@@ -1,0 +1,468 @@
+# Google AI Services Monitoring Configuration
+# Prometheus, Grafana, and Alerting setup for Amrikyy AI services
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: amrikyy-monitoring
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+    
+    rule_files:
+      - "/etc/prometheus/rules/*.yml"
+    
+    alerting:
+      alertmanagers:
+        - static_configs:
+            - targets:
+              - alertmanager:9093
+    
+    scrape_configs:
+      # Google AI Services Metrics
+      - job_name: 'nlp-service'
+        static_configs:
+          - targets: ['nlp-service.amrikyy-production.svc.cluster.local:8080']
+        metrics_path: /metrics
+        scrape_interval: 30s
+      
+      - job_name: 'translation-service'
+        static_configs:
+          - targets: ['translation-service.amrikyy-production.svc.cluster.local:8080']
+        metrics_path: /metrics
+        scrape_interval: 30s
+      
+      - job_name: 'vision-service'
+        static_configs:
+          - targets: ['vision-service.amrikyy-production.svc.cluster.local:8080']
+        metrics_path: /metrics
+        scrape_interval: 30s
+      
+      # Kubernetes Metrics
+      - job_name: 'kubernetes-apiservers'
+        kubernetes_sd_configs:
+          - role: endpoints
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+            action: keep
+            regex: default;kubernetes;https
+      
+      - job_name: 'kubernetes-nodes'
+        kubernetes_sd_configs:
+          - role: node
+        relabel_configs:
+          - action: labelmap
+            regex: __meta_kubernetes_node_label_(.+)
+          - target_label: __address__
+            replacement: kubernetes.default.svc:443
+          - source_labels: [__meta_kubernetes_node_name]
+            regex: (.+)
+            target_label: __metrics_path__
+            replacement: /api/v1/nodes/${1}/proxy/metrics
+      
+      - job_name: 'kubernetes-pods'
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+            action: replace
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: $1:$2
+            target_label: __address__
+          - action: labelmap
+            regex: __meta_kubernetes_pod_label_(.+)
+          - source_labels: [__meta_kubernetes_namespace]
+            action: replace
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_pod_name]
+            action: replace
+            target_label: kubernetes_pod_name
+
+---
+# Alertmanager Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: amrikyy-monitoring
+data:
+  alertmanager.yml: |
+    global:
+      smtp_smarthost: 'smtp.gmail.com:587'
+      smtp_from: 'alerts@amrikyy.com'
+    
+    route:
+      group_by: ['alertname', 'cluster', 'service']
+      group_wait: 10s
+      group_interval: 10s
+      repeat_interval: 1h
+      receiver: 'web.hook'
+      routes:
+        - match:
+            severity: critical
+          receiver: 'critical-alerts'
+        - match:
+            severity: warning
+          receiver: 'warning-alerts'
+    
+    receivers:
+      - name: 'web.hook'
+        telegram_configs:
+          - bot_token: 'TELEGRAM_BOT_TOKEN'
+            api_url: 'https://api.telegram.org'
+            chat_id: -1001234567890
+            message: '🚨 {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+          
+      - name: 'critical-alerts'
+        telegram_configs:
+          - bot_token: 'TELEGRAM_BOT_TOKEN'
+            api_url: 'https://api.telegram.org'
+            chat_id: -1001234567890
+            message: '🔥 CRITICAL: {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+        slack_configs:
+          - api_url: 'SLACK_WEBHOOK_URL'
+            channel: '#alerts-critical'
+            title: 'Critical Alert'
+            text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+      
+      - name: 'warning-alerts'
+        slack_configs:
+          - api_url: 'SLACK_WEBHOOK_URL'
+            channel: '#alerts-warning'
+            title: 'Warning Alert'
+            text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+
+---
+# Prometheus Rules for Google AI Services
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-rules
+  namespace: amrikyy-monitoring
+data:
+  google-ai-alerts.yml: |
+    groups:
+      - name: google-ai-services
+        rules:
+          # NLP Service Alerts
+          - alert: NLPServiceHighErrorRate
+            expr: rate(nlp_service_errors_total[5m]) > 0.1
+            for: 5m
+            labels:
+              severity: warning
+              service: nlp-service
+            annotations:
+              summary: "NLP Service high error rate detected"
+              description: "NLP Service error rate is {{ $value }} errors per second"
+          
+          - alert: NLPServiceHighLatency
+            expr: histogram_quantile(0.95, rate(nlp_service_request_duration_seconds_bucket[5m])) > 2
+            for: 5m
+            labels:
+              severity: warning
+              service: nlp-service
+            annotations:
+              summary: "NLP Service high latency detected"
+              description: "NLP Service 95th percentile latency is {{ $value }} seconds"
+          
+          - alert: NLPServiceDown
+            expr: up{job="nlp-service"} == 0
+            for: 1m
+            labels:
+              severity: critical
+              service: nlp-service
+            annotations:
+              summary: "NLP Service is down"
+              description: "NLP Service has been down for more than 1 minute"
+          
+          # Translation Service Alerts
+          - alert: TranslationServiceHighErrorRate
+            expr: rate(translation_service_errors_total[5m]) > 0.1
+            for: 5m
+            labels:
+              severity: warning
+              service: translation-service
+            annotations:
+              summary: "Translation Service high error rate detected"
+              description: "Translation Service error rate is {{ $value }} errors per second"
+          
+          - alert: TranslationServiceQuotaExceeded
+            expr: translation_service_quota_exceeded_total > 0
+            for: 0m
+            labels:
+              severity: critical
+              service: translation-service
+            annotations:
+              summary: "Translation Service quota exceeded"
+              description: "Translation Service has exceeded its API quota"
+          
+          # Vision Service Alerts
+          - alert: VisionServiceHighMemoryUsage
+            expr: container_memory_usage_bytes{pod=~"vision-service-.*"} / container_spec_memory_limit_bytes > 0.9
+            for: 5m
+            labels:
+              severity: warning
+              service: vision-service
+            annotations:
+              summary: "Vision Service high memory usage"
+              description: "Vision Service memory usage is {{ $value | humanizePercentage }}"
+          
+          - alert: VisionServiceHighCPUUsage
+            expr: rate(container_cpu_usage_seconds_total{pod=~"vision-service-.*"}[5m]) > 0.8
+            for: 5m
+            labels:
+              severity: warning
+              service: vision-service
+            annotations:
+              summary: "Vision Service high CPU usage"
+              description: "Vision Service CPU usage is {{ $value | humanizePercentage }}"
+          
+          # Infrastructure Alerts
+          - alert: PodCrashLooping
+            expr: rate(kube_pod_container_status_restarts_total[15m]) > 0
+            for: 5m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Pod is crash looping"
+              description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} is crash looping"
+          
+          - alert: HighPodMemoryUsage
+            expr: container_memory_usage_bytes / container_spec_memory_limit_bytes > 0.9
+            for: 5m
+            labels:
+              severity: warning
+            annotations:
+              summary: "High memory usage in pod"
+              description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} is using {{ $value | humanizePercentage }} of its memory limit"
+          
+          # Cost Alerts
+          - alert: HighGoogleAICosts
+            expr: google_ai_cost_usd > 100
+            for: 1h
+            labels:
+              severity: warning
+            annotations:
+              summary: "High Google AI costs detected"
+              description: "Daily Google AI costs are ${{ $value }}"
+      
+      - name: google-ai-slos
+        rules:
+          # SLO: 99.9% uptime for AI services
+          - alert: AIServiceAvailabilitySLO
+            expr: sum(up{job=~"nlp-service|translation-service|vision-service"}) / count(up{job=~"nlp-service|translation-service|vision-service"}) < 0.999
+            for: 5m
+            labels:
+              severity: critical
+            annotations:
+              summary: "AI services availability SLO breached"
+              description: "AI services availability is {{ $value | humanizePercentage }}, below SLO of 99.9%"
+          
+          # SLO: 95th percentile latency < 1s
+          - alert: AIServiceLatencySLO
+            expr: histogram_quantile(0.95, rate(nlp_service_request_duration_seconds_bucket[5m])) > 1 or
+                histogram_quantile(0.95, rate(translation_service_request_duration_seconds_bucket[5m])) > 1 or
+                histogram_quantile(0.95, rate(vision_service_request_duration_seconds_bucket[5m])) > 1
+            for: 5m
+            labels:
+              severity: warning
+            annotations:
+              summary: "AI services latency SLO breached"
+              description: "AI services 95th percentile latency is above 1 second"
+
+---
+# Grafana Dashboard Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  namespace: amrikyy-monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  google-ai-services.json: |
+    {
+      "dashboard": {
+        "id": null,
+        "title": "Google AI Services - Amrikyy",
+        "tags": ["google-ai", "amrikyy"],
+        "timezone": "browser",
+        "panels": [
+          {
+            "id": 1,
+            "title": "NLP Service Request Rate",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(nlp_service_requests_total[5m])",
+                "legendFormat": "{{method}} - {{status}}"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+          },
+          {
+            "id": 2,
+            "title": "NLP Service Error Rate",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(nlp_service_errors_total[5m])",
+                "legendFormat": "Errors"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+          },
+          {
+            "id": 3,
+            "title": "Translation Service - Languages",
+            "type": "piechart",
+            "targets": [
+              {
+                "expr": "sum by (target_language) (translation_service_requests_total)",
+                "legendFormat": "{{target_language}}"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+          },
+          {
+            "id": 4,
+            "title": "Vision Service Processing Time",
+            "type": "heatmap",
+            "targets": [
+              {
+                "expr": "rate(vision_service_processing_duration_seconds_bucket[5m])",
+                "format": "heatmap"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+          },
+          {
+            "id": 5,
+            "title": "Google API Costs",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "sum by (service) (google_ai_cost_usd)",
+                "legendFormat": "{{service}}"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
+          },
+          {
+            "id": 6,
+            "title": "Service Health",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "up{job=~\"nlp-service|translation-service|vision-service\"}",
+                "legendFormat": "{{job}}"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+          }
+        ],
+        "time": {
+          "from": "now-1h",
+          "to": "now"
+        },
+        "refresh": "30s"
+      }
+    }
+  
+  system-overview.json: |
+    {
+      "dashboard": {
+        "id": null,
+        "title": "Amrikyy System Overview",
+        "tags": ["system", "amrikyy"],
+        "timezone": "browser",
+        "panels": [
+          {
+            "id": 1,
+            "title": "Cluster Resource Usage",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "sum(container_memory_usage_bytes) / sum(container_spec_memory_limit_bytes)",
+                "legendFormat": "Memory Usage"
+              },
+              {
+                "expr": "sum(rate(container_cpu_usage_seconds_total[5m]))",
+                "legendFormat": "CPU Usage"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 24, "x": 0, "y": 0}
+          },
+          {
+            "id": 2,
+            "title": "Pod Status",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "sum by (phase) (kube_pod_status_phase)",
+                "legendFormat": "{{phase}}"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+          },
+          {
+            "id": 3,
+            "title": "Network Traffic",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "sum(rate(container_network_receive_bytes_total[5m]))",
+                "legendFormat": "Received"
+              },
+              {
+                "expr": "sum(rate(container_network_transmit_bytes_total[5m]))",
+                "legendFormat": "Transmitted"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+          }
+        ],
+        "time": {
+          "from": "now-1h",
+          "to": "now"
+        },
+        "refresh": "30s"
+      }
+    }
+
+---
+# Service Monitor for Prometheus Operator
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: google-ai-services-monitor
+  namespace: amrikyy-monitoring
+  labels:
+    app: prometheus-operator
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      monitoring: prometheus
+  namespaceSelector:
+    matchNames:
+      - amrikyy-production
+      - amrikyy-staging
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics

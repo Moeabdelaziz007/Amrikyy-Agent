@@ -1,0 +1,264 @@
+name: Deploy Google AI Services
+
+on:
+  push:
+    paths:
+      - 'src/services/google-ai/**'
+      - 'infrastructure/google-ai/**'
+      - 'package.json'
+  pull_request:
+    paths:
+      - 'src/services/google-ai/**'
+      - 'infrastructure/google-ai/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  REGISTRY: gcr.io
+  PROJECT_ID_STAGING: amrikyy-staging
+  PROJECT_ID_PROD: amrikyy-production
+  REGION: us-central1
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{ steps.changes.outputs.should_deploy }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Run Google AI integration tests
+        run: npm run test:google-ai
+        env:
+          NODE_ENV: test
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_AI_CREDENTIALS_TEST }}
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref }}" == "refs/heads/main" ] || [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_deploy=false" >> $GITHUB_OUTPUT
+          fi
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run security audit
+        run: npm audit --audit-level moderate
+
+      - name: Run Snyk security scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+  build-and-push-staging:
+    runs-on: ubuntu-latest
+    needs: [test, security-scan]
+    if: needs.test.outputs.should_deploy == 'true' && (github.ref == 'refs/heads/develop' || github.event.inputs.environment == 'staging')
+    environment: staging
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_STAGING }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID_STAGING }}
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker ${{ env.REGISTRY }}
+
+      - name: Build Docker images
+        run: |
+          docker build -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID_STAGING }}/nlp-service:${{ github.sha }} -f infrastructure/docker/nlp-service.Dockerfile .
+          docker build -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID_STAGING }}/translation-service:${{ github.sha }} -f infrastructure/docker/translation-service.Dockerfile .
+          docker build -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID_STAGING }}/vision-service:${{ github.sha }} -f infrastructure/docker/vision-service.Dockerfile .
+
+      - name: Push Docker images
+        run: |
+          docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID_STAGING }}/nlp-service:${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID_STAGING }}/translation-service:${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID_STAGING }}/vision-service:${{ github.sha }}
+
+      - name: Deploy to Cloud Run (Staging)
+        run: |
+          # Deploy NLP Service
+          gcloud run deploy nlp-service-staging \
+            --image ${{ env.REGISTRY }}/${{ env.PROJECT_ID_STAGING }}/nlp-service:${{ github.sha }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated \
+            --memory 512Mi \
+            --cpu 1 \
+            --max-instances 10 \
+            --set-env-vars NODE_ENV=staging,GCP_PROJECT_ID=${{ env.PROJECT_ID_STAGING }}
+
+          # Deploy Translation Service
+          gcloud run deploy translation-service-staging \
+            --image ${{ env.REGISTRY }}/${{ env.PROJECT_ID_STAGING }}/translation-service:${{ github.sha }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated \
+            --memory 256Mi \
+            --cpu 1 \
+            --max-instances 5 \
+            --set-env-vars NODE_ENV=staging,GCP_PROJECT_ID=${{ env.PROJECT_ID_STAGING }}
+
+          # Deploy Vision Service
+          gcloud run deploy vision-service-staging \
+            --image ${{ env.REGISTRY }}/${{ env.PROJECT_ID_STAGING }}/vision-service:${{ github.sha }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated \
+            --memory 1Gi \
+            --cpu 1 \
+            --max-instances 5 \
+            --set-env-vars NODE_ENV=staging,GCP_PROJECT_ID=${{ env.PROJECT_ID_STAGING }}
+
+      - name: Run smoke tests
+        run: |
+          npm run test:smoke:staging
+        env:
+          STAGING_URL_NLP: ${{ steps.deploy-nlp.outputs.url }}
+          STAGING_URL_TRANSLATION: ${{ steps.deploy-translation.outputs.url }}
+          STAGING_URL_VISION: ${{ steps.deploy-vision.outputs.url }}
+
+  build-and-push-production:
+    runs-on: ubuntu-latest
+    needs: [test, security-scan]
+    if: needs.test.outputs.should_deploy == 'true' && (github.ref == 'refs/heads/main' || github.event.inputs.environment == 'production')
+    environment: production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_PROD }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID_PROD }}
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker ${{ env.REGISTRY }}
+
+      - name: Build Docker images
+        run: |
+          docker build -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID_PROD }}/nlp-service:${{ github.sha }} -f infrastructure/docker/nlp-service.Dockerfile .
+          docker build -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID_PROD }}/translation-service:${{ github.sha }} -f infrastructure/docker/translation-service.Dockerfile .
+          docker build -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID_PROD }}/vision-service:${{ github.sha }} -f infrastructure/docker/vision-service.Dockerfile .
+
+      - name: Push Docker images
+        run: |
+          docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID_PROD }}/nlp-service:${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID_PROD }}/translation-service:${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID_PROD }}/vision-service:${{ github.sha }}
+
+      - name: Blue-Green Deployment to GKE
+        run: |
+          # Get cluster credentials
+          gcloud container clusters get-credentials amrikyy-ai-cluster --region ${{ env.REGION }}
+
+          # Deploy blue-green configuration
+          envsubst < infrastructure/k8s/blue-green-deployment.yaml | kubectl apply -f -
+
+          # Wait for rollout
+          kubectl rollout status deployment/nlp-service-green -n amrikyy-production --timeout=300s
+          kubectl rollout status deployment/translation-service-green -n amrikyy-production --timeout=300s
+          kubectl rollout status deployment/vision-service-green -n amrikyy-production --timeout=300s
+
+          # Health check
+          ./scripts/health-check.sh production green
+
+          # Switch traffic to green
+          kubectl patch service nlp-service -n amrikyy-production -p '{"spec":{"selector":{"version":"green"}}}'
+          kubectl patch service translation-service -n amrikyy-production -p '{"spec":{"selector":{"version":"green"}}}'
+          kubectl patch service vision-service -n amrikyy-production -p '{"spec":{"selector":{"version":"green"}}}'
+
+      - name: Run production smoke tests
+        run: |
+          npm run test:smoke:production
+        env:
+          PRODUCTION_URL_NLP: ${{ steps.get-urls.outputs.nlp_url }}
+          PRODUCTION_URL_TRANSLATION: ${{ steps.get-urls.outputs.translation_url }}
+          PRODUCTION_URL_VISION: ${{ steps.get-urls.outputs.vision_url }}
+
+      - name: Cleanup blue environment
+        run: |
+          # Wait for confirmation period
+          sleep 300
+          
+          # Scale down blue environment
+          kubectl scale deployment nlp-service-blue --replicas=0 -n amrikyy-production
+          kubectl scale deployment translation-service-blue --replicas=0 -n amrikyy-production
+          kubectl scale deployment vision-service-blue --replicas=0 -n amrikyy-production
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [build-and-push-staging, build-and-push-production]
+    if: always()
+    
+    steps:
+      - name: Notify Slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          channel: '#deployments'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "chat_id": "${{ secrets.TELEGRAM_CHAT_ID }}",
+              "text": "🚨 Deployment failed for Google AI services\n\nBranch: ${{ github.ref }}\nCommit: ${{ github.sha }}\nWorkflow: ${{ github.workflow }}"
+            }'

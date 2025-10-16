@@ -5,10 +5,10 @@
 
 const express = require('express');
 const router = express.Router();
-const logger = require('../../utils/logger');
 
-// Create child logger for Aladdin routes
-const log = logger.child('AladdinRoutes');
+module.exports = function(app, logger) {
+  // Use the injected logger and create a child logger for this module
+  const log = logger.child ? logger.child({ service: 'AladdinRoutes' }) : logger;
 
 /**
  * @route   GET /api/aladdin/health
@@ -249,4 +249,6 @@ router.get('/stats', (req, res) => {
   }
 });
 
-module.exports = router;
+  // Mount the router
+  app.use('/api/aladdin', router);
+};

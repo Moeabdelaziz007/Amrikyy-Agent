@@ -105,8 +105,19 @@ router.post('/webhook', async (req, res) => {
       confidence: result.analysis?.confidence
     });
 
-    // Send response back to Telegram
-    await sendTelegramMessage(chatId, result.output || 'Task completed successfully');
+    // Send intelligent response back to Telegram
+    let responseText = 'I apologize, I encountered an issue processing your request.';
+    
+    if (result.output) {
+      responseText = result.output;
+    } else if (result.result && result.result.output) {
+      responseText = result.result.output;
+    } else if (result.results && result.results.length > 0) {
+      // Combine results from multiple agents
+      responseText = result.results.map(r => r.result || r.output).join('\n\n');
+    }
+    
+    await sendTelegramMessage(chatId, responseText);
 
     res.json({
       success: true,

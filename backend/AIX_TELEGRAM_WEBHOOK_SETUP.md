@@ -2,7 +2,15 @@
 
 ## 🚀 Overview
 
-This guide explains how to set up and deploy the AIX Enhanced Telegram Bot with webhook integration for production use.
+This guide explains how to set up and deploy the AIX Enhanced Telegram Bot with webhook integration for production use. The system features intelligent agent orchestration, instant feedback indicators, and comprehensive monitoring capabilities.
+
+## ✨ Key Features
+
+- **Intelligent Agent Orchestration**: Automatically selects the best AIX agent based on message content
+- **Instant Feedback Indicators**: Real-time typing indicators and processing feedback
+- **Quantum Thinking**: Advanced decision-making using quantum topological analysis
+- **Comprehensive Testing**: Full test suite for validation
+- **Production Ready**: Built-in monitoring, logging, and error handling
 
 ## 📋 Prerequisites
 

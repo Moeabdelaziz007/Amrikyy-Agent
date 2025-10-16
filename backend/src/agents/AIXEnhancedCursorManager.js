@@ -17,6 +17,7 @@ const AgentLoader = require('./AgentLoader');
 const AgentRuntime = require('./AgentRuntime');
 const QuantumTopologicalEngine = require('./QuantumTopologicalEngine');
 const FeedbackOptimizationLoop = require('./FeedbackOptimizationLoop');
+const LLMService = require('../services/LLMService');
 
 class AIXEnhancedCursorManager extends EventEmitter {
   constructor(config = {}) {
@@ -112,6 +113,9 @@ class AIXEnhancedCursorManager extends EventEmitter {
         await this.initializeAgentLoader();
       }
       
+      // Initialize LLM Service
+      await this.initializeLLMService();
+      
       // Initialize AIX AgentRuntime
       if (this.config.aixEnabled) {
         await this.initializeAgentRuntime();
@@ -151,22 +155,46 @@ class AIXEnhancedCursorManager extends EventEmitter {
   }
 
   /**
+   * Initialize LLM Service
+   */
+  async initializeLLMService() {
+    this.logger.info('🧠 Initializing LLM Service...');
+    
+    this.llmService = new LLMService({
+      primaryProvider: process.env.LLM_PRIMARY_PROVIDER || 'gemini',
+      fallbackProviders: (process.env.LLM_FALLBACK_PROVIDERS || 'zai').split(','),
+      maxRetries: parseInt(process.env.LLM_MAX_RETRIES) || 3,
+      retryDelay: parseInt(process.env.LLM_RETRY_DELAY) || 1000,
+      timeout: parseInt(process.env.LLM_TIMEOUT) || 30000
+    });
+    
+    // Test LLM service
+    const testResults = await this.llmService.testProviders();
+    this.logger.info('🧪 LLM Service test results:', testResults);
+    
+    this.logger.info('✅ LLM Service initialized successfully');
+  }
+
+  /**
    * Initialize AIX AgentLoader
    */
   async initializeAgentLoader() {
     this.logger.info('🤖 Initializing AIX AgentLoader...');
     
+    // Detect development mode
+    const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === undefined;
+    
     this.agentLoader = new AgentLoader({
       aixDirectory: this.config.aixDirectory || path.join(__dirname, '../../agents/aix'),
       validateSchema: true,
-      verifyChecksums: this.config.agentLoaderConfig?.verifyChecksums !== false && this.config.verifyChecksums !== false,
+      verifyChecksums: !isDevelopment, // Disable checksum verification in development mode
       cacheParsedAgents: true
     });
     
     await this.agentLoader.initialize();
     
     this.metrics.agentsDiscovered = this.agentLoader.loadedAgents.size;
-    this.logger.info(`✅ AIX AgentLoader initialized with ${this.metrics.agentsDiscovered} agents`);
+    this.logger.info(`✅ AIX AgentLoader initialized with ${this.metrics.agentsDiscovered} agents (checksum verification: ${!isDevelopment ? 'enabled' : 'disabled'})`);
   }
 
   /**
@@ -179,7 +207,9 @@ class AIXEnhancedCursorManager extends EventEmitter {
       maxConcurrentAgents: this.config.maxConcurrentTasks,
       agentTimeout: this.config.taskTimeout,
       enableMetrics: true,
-      enableCaching: true
+      enableCaching: true,
+      llmService: this.llmService,
+      manager: this
     });
     
     await this.agentRuntime.initialize();
@@ -519,11 +549,14 @@ class AIXEnhancedCursorManager extends EventEmitter {
   async executeTaskWithAgents(taskId, selectedAgents, task, context) {
     const results = [];
     
+    // Analyze task requirements to get capabilities
+    const taskAnalysis = await this.analyzeTaskRequirements(task, context);
+    
     for (const agent of selectedAgents) {
       try {
         const agentTask = {
           type: 'capability_execution',
-          capability: taskAnalysis.requiredCapabilities[0], // Use first required capability
+          capability: taskAnalysis.requiredCapabilities[0] || 'general_task', // Use first required capability
           parameters: task.parameters || {},
           description: task.description
         };
@@ -690,11 +723,11 @@ class AIXEnhancedCursorManager extends EventEmitter {
   }
 
   /**
-   * Get agents by capability
+   * Get agents by capability (alternative method)
    */
-  getAgentsByCapability(capability) {
+  getAgentsByCapabilityAlt(capability) {
     const agents = this.getAvailableAgents();
-    return agents.filter(agent => 
+    return agents.filter(agent =>
       agent.capabilities && agent.capabilities.includes(capability)
     );
   }

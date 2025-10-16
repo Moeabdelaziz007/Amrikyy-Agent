@@ -537,6 +537,9 @@ class AIXAgentInstance extends EventEmitter {
     this.agentId = agentDefinition.meta.id;
     this.status = 'initializing';
     
+    // Initialize logger from runtime
+    this.logger = runtime.logger;
+    
     // Agent state
     this.tools = new Map();
     this.memoryConnection = null;
@@ -673,15 +676,120 @@ class AIXAgentInstance extends EventEmitter {
   }
 
   /**
-   * Execute a general task
+   * Execute a general task using LLM
    */
   async executeGeneralTask(task, context) {
-    // This would handle general task execution
-    return {
-      success: true,
-      task: task.description,
-      result: 'Task executed successfully'
-    };
+    const startTime = Date.now();
+    
+    try {
+      this.logger.info(`🧠 Executing general task with LLM: ${task.description}`);
+      
+      // Load agent persona from AIX definition
+      const persona = this.agentDefinition.persona;
+      
+      // Prepare prompt with agent context
+      const prompt = this.buildPrompt(task, persona, context);
+      
+      // Get LLM service from manager
+      const llmService = this.manager?.llmService;
+      if (!llmService) {
+        throw new Error('LLM Service not available');
+      }
+      
+      // Call LLM service
+      const llmResult = await llmService.generateResponse(
+        prompt,
+        persona,
+        this.tools,
+        {
+          temperature: 0.7,
+          maxTokens: 2000
+        }
+      );
+      
+      if (!llmResult.success) {
+        throw new Error(`LLM generation failed: ${llmResult.error}`);
+      }
+      
+      const executionTime = Date.now() - startTime;
+      
+      this.logger.info(`✅ General task completed with LLM`, {
+        task: task.description,
+        executionTime,
+        provider: llmResult.provider,
+        responseLength: llmResult.response.length
+      });
+      
+      return {
+        success: true,
+        output: llmResult.response,
+        agentUsed: this.agentDefinition.meta.name,
+        provider: llmResult.provider,
+        executionTime,
+        task: task.description
+      };
+      
+    } catch (error) {
+      const executionTime = Date.now() - startTime;
+      
+      this.logger.error(`❌ General task failed:`, {
+        task: task.description,
+        error: error.message,
+        executionTime
+      });
+      
+      return {
+        success: false,
+        error: error.message,
+        task: task.description,
+        executionTime
+      };
+    }
+  }
+
+  /**
+   * Build prompt with agent persona and context
+   */
+  buildPrompt(task, persona, context) {
+    let prompt = '';
+    
+    // Add agent persona
+    if (persona) {
+      prompt += `You are ${persona.name}, ${persona.role}.\n`;
+      prompt += `Personality: ${persona.personality}\n`;
+      prompt += `Communication Style: ${persona.communication_style}\n`;
+      prompt += `Background: ${persona.background}\n`;
+      prompt += `Expertise: ${persona.expertise}\n`;
+      prompt += `Motivation: ${persona.motivation}\n\n`;
+    }
+    
+    // Add context information
+    if (context.platform) {
+      prompt += `Platform: ${context.platform}\n`;
+    }
+    if (context.userId) {
+      prompt += `User ID: ${context.userId}\n`;
+    }
+    if (context.sessionId) {
+      prompt += `Session ID: ${context.sessionId}\n`;
+    }
+    
+    // Add available tools
+    if (this.tools && this.tools.length > 0) {
+      prompt += `\nAvailable Tools: ${this.tools.map(t => t.name).join(', ')}\n`;
+    }
+    
+    // Add the actual task
+    prompt += `\nTask: ${task.description}\n`;
+    
+    // Add parameters if available
+    if (task.parameters && Object.keys(task.parameters).length > 0) {
+      prompt += `Parameters: ${JSON.stringify(task.parameters, null, 2)}\n`;
+    }
+    
+    prompt += `\nPlease provide a helpful, detailed response based on your expertise and personality.`;
+    
+    return prompt;
   }
 
   /**

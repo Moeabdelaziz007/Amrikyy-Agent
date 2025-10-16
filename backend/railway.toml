@@ -1,0 +1,188 @@
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[[services]]
+name = "amrikyy-backend"
+
+[services.variables]
+NODE_ENV = "production"
+PORT = "5000"
+
+[services.environment]
+NODE_ENV = "production"
+
+[[services.ports]]
+port = 5000
+handler = "http"
+
+[[services.tcp_checks]]
+grace_period = "1s"
+interval = "15s"
+restart_limit = 0
+timeout = "2s"
+
+[[services.http_checks]]
+grace_period = "5s"
+interval = "30s"
+method = "GET"
+path = "/health"
+protocol = "http"
+restart_limit = 0
+timeout = "5s"
+headers = { }
+
+[deploy]
+startCommand = "npm start"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[deploy.healthcheck]
+path = "/health"
+timeout = 100
+
+[deploy.studio]
+type = "container"
+
+[[services]]
+name = "amrikyy-backend"
+
+[services.source]
+type = "git"
+url = "https://github.com/your-username/maya-travel-agent"
+
+[services.build]
+type = "nixpacks"
+
+[services.build.config]
+buildCommand = "npm run build"
+startCommand = "npm start"
+
+[services.variables]
+NODE_ENV = "production"
+PORT = "5000"
+SUPABASE_URL = "${SUPABASE_URL}"
+SUPABASE_ANON_KEY = "${SUPABASE_ANON_KEY}"
+SUPABASE_SERVICE_ROLE_KEY = "${SUPABASE_SERVICE_ROLE_KEY}"
+TELEGRAM_BOT_TOKEN = "${TELEGRAM_BOT_TOKEN}"
+TELEGRAM_WEBHOOK_URL = "${TELEGRAM_WEBHOOK_URL}"
+WEB_APP_URL = "${WEB_APP_URL}"
+TELEGRAM_MINI_APP_URL = "${TELEGRAM_MINI_APP_URL}"
+ZAI_API_KEY = "${ZAI_API_KEY}"
+ZAI_API_BASE_URL = "${ZAI_API_BASE_URL}"
+ZAI_MODEL = "${ZAI_MODEL}"
+ZAI_MAX_TOKENS = "${ZAI_MAX_TOKENS}"
+ZAI_TEMPERATURE = "${ZAI_TEMPERATURE}"
+GEMINI_API_KEY = "${GEMINI_API_KEY}"
+GEMINI_MODEL = "${GEMINI_MODEL}"
+GEMINI_MAX_TOKENS = "${GEMINI_MAX_TOKENS}"
+GEMINI_TEMPERATURE = "${GEMINI_TEMPERATURE}"
+STRIPE_SECRET_KEY = "${STRIPE_SECRET_KEY}"
+STRIPE_PUBLISHABLE_KEY = "${STRIPE_PUBLISHABLE_KEY}"
+STRIPE_WEBHOOK_SECRET = "${STRIPE_WEBHOOK_SECRET}"
+PAYPAL_CLIENT_ID = "${PAYPAL_CLIENT_ID}"
+PAYPAL_CLIENT_SECRET = "${PAYPAL_CLIENT_SECRET}"
+PAYPAL_MODE = "${PAYPAL_MODE}"
+JWT_SECRET = "${JWT_SECRET}"
+ENCRYPTION_KEY = "${ENCRYPTION_KEY}"
+CORS_ORIGIN = "${CORS_ORIGIN}"
+RATE_LIMIT_WINDOW_MS = "${RATE_LIMIT_WINDOW_MS}"
+RATE_LIMIT_MAX_REQUESTS = "${RATE_LIMIT_MAX_REQUESTS}"
+WHATSAPP_ACCESS_TOKEN = "${WHATSAPP_ACCESS_TOKEN}"
+WHATSAPP_PHONE_NUMBER_ID = "${WHATSAPP_PHONE_NUMBER_ID}"
+WHATSAPP_BUSINESS_ACCOUNT_ID = "${WHATSAPP_BUSINESS_ACCOUNT_ID}"
+WHATSAPP_TEST_NUMBER = "${WHATSAPP_TEST_NUMBER}"
+WHATSAPP_WEBHOOK_VERIFY_TOKEN = "${WHATSAPP_WEBHOOK_VERIFY_TOKEN}"
+WHATSAPP_API_VERSION = "${WHATSAPP_API_VERSION}"
+AIX_FEEDBACK_ENABLED = "${AIX_FEEDBACK_ENABLED}"
+AIX_QUANTUM_ENABLED = "${AIX_QUANTUM_ENABLED}"
+AIX_MEMORY_ENABLED = "${AIX_MEMORY_ENABLED}"
+AIX_MAX_CONCURRENT_TASKS = "${AIX_MAX_CONCURRENT_TASKS}"
+AIX_TASK_TIMEOUT = "${AIX_TASK_TIMEOUT}"
+AIX_VERBOSE = "${AIX_VERBOSE}"
+
+[services.ports]
+port = 5000
+
+[services.health_checks]
+[[services.health_checks.http]]
+path = "/health"
+port = 5000
+method = "GET"
+interval = "30s"
+timeout = "5s"
+grace_period = "5s"
+
+[services.logging]
+type = "structured"
+
+[metrics]
+port = 9091
+path = "/metrics"
+
+[scaling]
+min_instances = 1
+max_instances = 10
+threshold_cpu = 80
+threshold_memory = 80
+
+[[services]]
+name = "amrikyy-worker"
+
+[services.variables]
+NODE_ENV = "production"
+WORKER_TYPE = "background"
+
+[services.build]
+type = "nixpacks"
+
+[services.build.config]
+buildCommand = "npm run build"
+startCommand = "npm run worker"
+
+[services.processes]
+"worker" = "npm run worker"
+
+[services.scaling]
+min_instances = 1
+max_instances = 3
+threshold_cpu = 70
+threshold_memory = 70
+
+[env]
+NODE_ENV = "production"
+PORT = "5000"
+
+[[mounts]]
+source = "data"
+destination = "/app/data"
+
+[storage]
+type = "temp"
+mountPath = "/tmp"
+size = "1GB"
+
+[nixpacks]
+include = [
+  "package.json",
+  "package-lock.json",
+  "src",
+  "public"
+]
+
+[nixpacks.plan]
+phases.build.nixPkgs = ["nodejs_20", "npm"]
+phases.build.cmds = ["npm ci", "npm run build"]
+phases.start.nixPkgs = ["nodejs_20"]
+phases.start.cmds = ["npm start"]
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
