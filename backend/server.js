@@ -198,6 +198,22 @@ app.use('/api/whatsapp', webhookLimiter, whatsappRoutes);
 const agentRoutes = require('./routes/agents');
 app.use('/api/agents', agentRoutes);
 
+// Flights routes (Kiwi Tequila integration)
+const flightRoutes = require('./routes/flights');
+app.use('/api/flights', flightRoutes);
+
+// Hotels routes (Booking.com integration)
+const hotelRoutes = require('./routes/hotels');
+app.use('/api/hotels', hotelRoutes);
+
+// MCP (Model Context Protocol) routes
+const mcpRoutes = require('./routes/mcp');
+app.use('/api/mcp', mcpRoutes);
+
+// Travel Agents (Coordinated AI agents) routes
+const travelAgentsRoutes = require('./routes/travel-agents');
+app.use('/api/travel-agents', travelAgentsRoutes);
+
 // Telegram Integration routes
 const telegramIntegrationRoutes = require('./routes/telegram-integration');
 app.use('/api/telegram', telegramIntegrationRoutes);
