@@ -125,6 +125,90 @@ Define your project-specific namespaces below. The AI will use these description
 
 ## Components
 
+### AI Agents (NEW - October 16, 2025)
+
+**Luna Trip Architect** (`/backend/src/agents/LunaWithMCP.js`):
+- Trip planning with real-time flight search
+- Budget analysis integration
+- Itinerary generation (day-by-day planning)
+- MCP tools integration (search_flights, compare_prices, analyze_budget)
+- Methods: planTrip, searchFlights, comparePrices, analyzeBudget, generateItinerary, getCapabilities
+
+**Karim Budget Optimizer** (`/backend/src/agents/KarimWithMCP.js`):
+- Budget optimization and cost-saving strategies
+- Price comparison across flexible dates
+- Savings recommendations generation
+- Methods: optimizeBudget, comparePrices, analyzeBudget, generateSavingsRecommendations, getCapabilities
+
+**Scout Deal Finder** (`/backend/src/agents/ScoutWithMCP.js`):
+- Proactive deal discovery
+- Price monitoring and alerts
+- Destination suggestions based on budget
+- Deal scoring algorithm
+- Methods: discoverDeals, monitorPrice, suggestDestinations, comparePrices, getCapabilities
+
+**Agent Coordinator** (`/backend/src/agents/AgentCoordinator.js`):
+- Multi-agent orchestration
+- Request types: plan_trip, optimize_budget, find_deals, full_service
+- Methods: handleTravelRequest, coordinateTripPlanning, coordinateBudgetOptimization, coordinateDealDiscovery, coordinateFullService
+
+### MCP (Model Context Protocol) System (NEW)
+
+**Travel MCP Server** (`/backend/src/mcp/TravelMCPServer.js`):
+- 5 specialized tools for travel operations
+- Tools: search_flights, search_locations, get_flight_details, compare_prices, analyze_budget
+- Standardized tool calling interface
+- Parameter validation and error handling
+- Methods: initializeTools, registerTool, listTools, callTool, validateParams
+
+### External Services Integration (NEW)
+
+**Kiwi Tequila Service** (`/backend/src/services/KiwiTequilaService.js`):
+- Flight search across 800+ airlines
+- Airport/city location search
+- Flight details and booking (sandbox mode)
+- Methods: searchFlights, getFlightDetails, createBooking, searchLocations, healthCheck
+
+**Booking.com Service** (`/backend/src/services/BookingComService.js`):
+- Hotel search worldwide
+- City search and hotel details
+- Room availability checking
+- Booking URL generation with affiliate tracking
+- Methods: searchHotels, getHotelDetails, searchCities, getRoomAvailability, generateBookingURL
+
+**Mapbox Service** (`/backend/src/services/MapboxService.js`):
+- Geocoding and reverse geocoding
+- Place search (POIs, landmarks)
+- Directions and routing
+- Static map generation
+- Distance calculation
+- Methods: geocode, reverseGeocode, searchPlaces, getDirections, getStaticMapURL, calculateDistance
+
+### Security Components (NEW)
+
+**Token Manager** (`/backend/src/security/TokenManager.js`):
+- Ephemeral token generation and management
+- Token validation with scope checking
+- Token revocation (single and bulk)
+- Automatic cleanup of expired tokens
+- Usage tracking and statistics
+- Methods: generateToken, validateToken, revokeToken, revokeUserTokens, getTokenInfo, calculateExpiration, cleanup, getStats
+
+**External API Limiter** (`/backend/middleware/externalAPILimiter.js`):
+- Per-user rate limiting for external APIs
+- Kiwi: 5 requests/minute, 50/hour
+- Booking.com: 5 requests/minute, 50/hour
+- Mapbox: 10 requests/minute, 100/hour
+- Automatic cleanup and statistics
+- Methods: checkLimit, middleware, getUserStats, resetUserLimits
+
+**MCP Authentication** (`/backend/middleware/mcpAuth.js`):
+- Token-based authentication for MCP endpoints
+- Scope-based access control (7 scopes)
+- Optional authentication support
+- Token generation/revocation handlers
+- Available scopes: flights:read, flights:write, hotels:read, hotels:write, maps:read, mcp:call, agents:execute
+
 ### Frontend Components
 
 **Core UI Components** (`/frontend/src/components/`):
@@ -199,9 +283,77 @@ Define your project-specific namespaces below. The AI will use these description
 
 ---
 
+## API Routes (NEW - October 16, 2025)
+
+**Flights Routes** (`/backend/routes/flights.js`):
+- POST /api/flights/search - Search flights
+- GET /api/flights/locations - Search airports/cities
+- POST /api/flights/details - Get flight details
+- POST /api/flights/book - Create booking (sandbox)
+- GET /api/flights/health - Health check
+
+**Hotels Routes** (`/backend/routes/hotels.js`):
+- POST /api/hotels/search - Search hotels
+- GET /api/hotels/cities - Search cities
+- GET /api/hotels/:hotelId - Get hotel details
+- POST /api/hotels/availability - Check room availability
+- POST /api/hotels/booking-url - Generate booking URL
+- GET /api/hotels/health - Health check
+
+**MCP Routes** (`/backend/routes/mcp.js`):
+- GET /api/mcp/tools - List all MCP tools
+- POST /api/mcp/call - Call MCP tool
+- POST /api/mcp/batch - Batch tool execution
+- POST /api/mcp/search-flights - Convenience flight search
+- POST /api/mcp/compare-prices - Convenience price comparison
+- POST /api/mcp/analyze-budget - Convenience budget analysis
+- GET /api/mcp/health - Health check
+
+**Security Routes** (`/backend/routes/security.js`):
+- POST /api/security/tokens/generate - Generate ephemeral token
+- POST /api/security/tokens/revoke - Revoke token
+- GET /api/security/tokens/info - Get token information
+- GET /api/security/tokens/stats - Token statistics
+- GET /api/security/rate-limits/:userId - Get user rate limits
+- POST /api/security/rate-limits/:userId/reset - Reset rate limits
+- GET /api/security/scopes - List available scopes
+
+**Travel Agents Routes** (`/backend/routes/travel-agents.js`):
+- POST /api/travel-agents/request - Submit travel request to AI agents
+- GET /api/travel-agents/capabilities - Get all agent capabilities
+- GET /api/travel-agents/active-requests - Get active requests
+
 ## Implementation Patterns
 
-### Pattern 1: Layered Architecture
+### Pattern 1: MCP Tool Integration (NEW)
+- **Standardized Interface**: All agents use MCP server for tool calling
+- **Tool Registration**: Tools registered with JSON schema validation
+- **Context Passing**: User context passed to all tool calls
+- **Error Handling**: Consistent error format across all tools
+- **Audit Logging**: All tool calls logged with user/agent info
+
+### Pattern 2: AI Agent Coordination (NEW)
+- **Multi-Agent Orchestration**: Coordinator manages multiple agents
+- **Request Types**: plan_trip, optimize_budget, find_deals, full_service
+- **Sequential Execution**: Agents execute in logical order
+- **Result Aggregation**: Results combined into comprehensive response
+- **Usage Tracking**: Track which agents were used for each request
+
+### Pattern 3: Security & Rate Limiting (NEW)
+- **Ephemeral Tokens**: Short-lived tokens with scope-based permissions
+- **Per-User Limits**: Different limits for each external API
+- **Automatic Cleanup**: Expired tokens and old rate limit entries cleaned up
+- **Token Validation**: Middleware validates tokens before endpoint access
+- **Audit Trail**: All security events logged
+
+### Pattern 4: External API Integration (NEW)
+- **Service Layer**: Separate service classes for each external API
+- **Error Handling**: Graceful degradation when APIs fail
+- **Response Formatting**: Consistent format across all services
+- **Health Checks**: Each service has health check method
+- **Rate Limit Awareness**: Services respect external API limits
+
+### Pattern 5: Layered Architecture
 - **Separation of concerns**: Routes → Services → Data Access
 - **Middleware chain**: Security → Rate Limiting → Routes → Error Handling
 - **Service layer abstraction**: Business logic separated from route handlers
@@ -256,7 +408,64 @@ Define your project-specific namespaces below. The AI will use these description
 
 ---
 
+## Testing Infrastructure (NEW - October 16, 2025)
+
+### Test Suites
+
+**Structure Tests** (`/backend/test-agents-simple.js`):
+- 7 test categories validating file structure and code organization
+- Tests: filesExist, lunaStructure, karimStructure, scoutStructure, coordinatorStructure, mcpServerStructure, servicesStructure
+- No dependencies required - runs standalone
+- Result: 7/7 tests passing
+
+**Unit Tests** (`/backend/tests/unit/`):
+- security.test.js: 45+ tests for TokenManager and ExternalAPILimiter
+- Token generation, validation, revocation tests
+- Rate limiting tests
+- Statistics and cleanup tests
+
+**Integration Tests** (`/backend/tests/integration/`):
+- agents.test.js: 35+ tests for Luna, Karim, Scout, and Coordinator
+- mcp-tools.test.js: 20+ tests for MCP tool registration and execution
+- Budget analysis, price comparison, location search tests
+
+**API Tests** (`/backend/tests/api/`):
+- endpoints.test.js: 25+ tests for all API routes
+- MCP routes, Security routes, Travel Agents routes
+- Error handling and validation tests
+
+**Test Runner** (`/backend/run-tests.sh`):
+- Automated test execution with colored output
+- Dependency checking
+- Summary reporting
+- Exit codes for CI/CD integration
+
+**Coverage Targets**:
+- Agents: 80%
+- MCP Server: 85%
+- Security: 90%
+- Services: 70%
+- Routes: 75%
+
 ## Debugging History
+
+### Session 4: Travel APIs Integration (2025-10-16)
+- Issue: Need real-time flight and hotel search capabilities
+- Resolution: Integrated Kiwi Tequila API, Booking.com Affiliate API, and Mapbox API
+- Files: 18 new files created (services, routes, agents, MCP server)
+- Result: Complete travel booking ecosystem with AI agents
+
+### Session 5: Security Implementation (2025-10-16)
+- Issue: Need secure access control for MCP tools and external APIs
+- Resolution: Implemented ephemeral token system with scope-based permissions and per-user rate limiting
+- Files: TokenManager.js, externalAPILimiter.js, mcpAuth.js, security routes
+- Result: Enterprise-grade security with 7 permission scopes
+
+### Session 6: Testing Suite (2025-10-16)
+- Issue: Need comprehensive testing for new integrations
+- Resolution: Created 100+ test cases covering unit, integration, and API testing
+- Files: 6 test files, test runner script, testing documentation
+- Result: 100+ tests passing with coverage reporting
 
 ### Session 1: Initial Setup and Configuration (2025-10-10)
 - Issue: MongoDB dependency in server.js but project uses Supabase
@@ -284,6 +493,42 @@ Define your project-specific namespaces below. The AI will use these description
 - Files: jest.config.js, vitest.config.ts, playwright.config.ts
 
 ---
+
+## Documentation (NEW - October 16, 2025)
+
+### Comprehensive Guides
+
+**API_ENDPOINTS_DOCUMENTATION.md** (500+ lines):
+- Complete API reference for all 27+ endpoints
+- Request/response examples with curl commands
+- Error handling guide
+- Rate limits documentation
+- Authentication guide
+- Security scopes reference
+
+**TRAVEL_APIS_SETUP_GUIDE.md** (400+ lines):
+- Step-by-step setup for Kiwi Tequila API
+- Booking.com Affiliate program registration
+- Mapbox API configuration
+- Rate limits and best practices
+- Security considerations
+- Testing examples
+
+**TESTING_GUIDE.md** (500+ lines):
+- Test structure overview
+- Running tests guide
+- Writing tests best practices
+- Coverage reports
+- CI/CD integration
+- Troubleshooting guide
+
+**README.md** (Updated):
+- Quick start guide
+- AI Agent Squadron section
+- MCP Protocol section
+- API usage examples
+- Testing instructions
+- Project statistics
 
 ## User Preferences
 
@@ -313,6 +558,13 @@ Define your project-specific namespaces below. The AI will use these description
 
 ## Recent Changes
 
+- [2025-10-16 20:47]: Complete travel APIs integration with MCP and AI agents - MAJOR UPDATE
+- [2025-10-16 20:47]: Added comprehensive API documentation (500+ lines)
+- [2025-10-16 20:42]: Implemented comprehensive testing suite (100+ tests)
+- [2025-10-16 20:37]: Added enterprise security layer (ephemeral tokens, rate limiting)
+- [2025-10-16 20:27]: Integrated Kiwi Tequila, Booking.com, and Mapbox APIs
+- [2025-10-16 20:24]: Created Luna, Karim, Scout AI agents with MCP tools
+- [2025-10-16 20:20]: Built MCP Travel Server with 5 specialized tools
 - [2025-10-15 11:30]: Frontend auth integration complete - connected to backend API
 - [2025-10-15 11:30]: Created frontend/src/api/authService.ts (JWT token management)
 - [2025-10-15 11:30]: Created frontend/src/api/axiosConfig.ts (automatic token refresh)
