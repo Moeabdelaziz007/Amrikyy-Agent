@@ -1,5 +1,5 @@
 /**
- * Redis Cache Service
+ * Redis Cache Service with Memory Cache Fallback
  * Provides caching functionality for API responses and data
  * 
  * Features:
@@ -11,14 +11,17 @@
  * - Automatic expiration
  * - Cache invalidation
  * - Statistics tracking
+ * - Automatic fallback to MemoryCache if Redis unavailable
  */
 
 const logger = require('../../utils/logger');
+const MemoryCache = require('./MemoryCache');
 
 class RedisCache {
   constructor() {
     this.enabled = false;
     this.client = null;
+    this.useMemoryCache = false;
     this.stats = {
       hits: 0,
       misses: 0,
@@ -41,14 +44,16 @@ class RedisCache {
   }
 
   /**
-   * Initialize Redis connection
+   * Initialize Redis connection with Memory Cache fallback
    */
   async initialize() {
     try {
       // Check if Redis is configured
       if (!process.env.REDIS_URL && !process.env.REDIS_HOST) {
-        logger.warn('⚠️ Redis not configured - caching disabled');
-        logger.info('💡 To enable caching, set REDIS_URL or REDIS_HOST in .env');
+        logger.warn('⚠️ Redis not configured - using Memory Cache instead');
+        logger.info('💡 Memory Cache is active (data will be lost on restart)');
+        this.useMemoryCache = true;
+        this.enabled = true;
         return;
       }
 
@@ -57,8 +62,10 @@ class RedisCache {
       try {
         Redis = require('ioredis');
       } catch (error) {
-        logger.warn('⚠️ ioredis not installed - caching disabled');
-        logger.info('💡 Install with: npm install ioredis');
+        logger.warn('⚠️ ioredis not installed - using Memory Cache instead');
+        logger.info('💡 Install Redis with: npm install ioredis');
+        this.useMemoryCache = true;
+        this.enabled = true;
         return;
       }
 
@@ -112,7 +119,7 @@ class RedisCache {
    * Check if cache is enabled
    */
   isEnabled() {
-    return this.enabled && this.client !== null;
+    return this.enabled && (this.client !== null || this.useMemoryCache);
   }
 
   /**
@@ -128,6 +135,11 @@ class RedisCache {
    */
   async get(key) {
     if (!this.isEnabled()) return null;
+
+    // Use Memory Cache if Redis not available
+    if (this.useMemoryCache) {
+      return await MemoryCache.get(key);
+    }
 
     try {
       const value = await this.client.get(key);
@@ -154,6 +166,11 @@ class RedisCache {
   async set(key, value, ttl = this.ttl.default) {
     if (!this.isEnabled()) return false;
 
+    // Use Memory Cache if Redis not available
+    if (this.useMemoryCache) {
+      return await MemoryCache.set(key, value, ttl);
+    }
+
     try {
       const valueStr = JSON.stringify(value);
       await this.client.setex(key, ttl, valueStr);
@@ -173,6 +190,11 @@ class RedisCache {
   async del(key) {
     if (!this.isEnabled()) return false;
 
+    // Use Memory Cache if Redis not available
+    if (this.useMemoryCache) {
+      return await MemoryCache.del(key);
+    }
+
     try {
       await this.client.del(key);
       this.stats.deletes++;
@@ -190,6 +212,11 @@ class RedisCache {
    */
   async delPattern(pattern) {
     if (!this.isEnabled()) return 0;
+
+    // Use Memory Cache if Redis not available
+    if (this.useMemoryCache) {
+      return await MemoryCache.delPattern(pattern);
+    }
 
     try {
       const keys = await this.client.keys(pattern);
@@ -351,6 +378,11 @@ class RedisCache {
   async clearAll() {
     if (!this.isEnabled()) return false;
 
+    // Use Memory Cache if Redis not available
+    if (this.useMemoryCache) {
+      return await MemoryCache.flushAll();
+    }
+
     try {
       await this.client.flushdb();
       logger.info('🗑️ All cache cleared');
@@ -360,16 +392,34 @@ class RedisCache {
       return false;
     }
   }
+  
+  /**
+   * Alias for clearAll
+   */
+  async flushAll() {
+    return await this.clearAll();
+  }
 
   /**
    * Get cache statistics
    */
   getStats() {
+    // Use Memory Cache stats if Redis not available
+    if (this.useMemoryCache) {
+      const memStats = MemoryCache.getStats();
+      return {
+        ...memStats,
+        type: 'memory',
+        message: 'Using in-memory cache (Redis not configured)'
+      };
+    }
+
     const total = this.stats.hits + this.stats.misses;
     const hitRate = total > 0 ? ((this.stats.hits / total) * 100).toFixed(2) : 0;
 
     return {
       enabled: this.enabled,
+      type: 'redis',
       hits: this.stats.hits,
       misses: this.stats.misses,
       sets: this.stats.sets,
@@ -392,6 +442,39 @@ class RedisCache {
       errors: 0
     };
     logger.info('📊 Cache statistics reset');
+  }
+
+  /**
+   * Get all keys matching pattern
+   */
+  async keys(pattern = '*') {
+    if (!this.isEnabled()) return [];
+
+    // Use Memory Cache if Redis not available
+    if (this.useMemoryCache) {
+      return await MemoryCache.keys(pattern);
+    }
+
+    try {
+      return await this.client.keys(pattern);
+    } catch (error) {
+      logger.error(`Cache KEYS error for ${pattern}:`, error.message);
+      return [];
+    }
+  }
+
+  /**
+   * Get TTL for key (alias for ttlRemaining)
+   */
+  async ttl(key) {
+    if (!this.isEnabled()) return -1;
+
+    // Use Memory Cache if Redis not available
+    if (this.useMemoryCache) {
+      return await MemoryCache.ttl(key);
+    }
+
+    return await this.ttlRemaining(key);
   }
 
   /**

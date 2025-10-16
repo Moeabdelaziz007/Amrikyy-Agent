@@ -84,10 +84,17 @@ This document describes the integration of Voice Control and Redis Cache feature
 
 ## Configuration
 
-### Redis Configuration
-Add to `backend/.env`:
+### Cache Configuration
+
+**Option 1: Memory Cache (No Redis Required)**
+The system automatically uses in-memory caching if Redis is not configured. This is perfect for development and testing.
+
+**No configuration needed!** Just start the server and caching will work automatically.
+
+**Option 2: Redis Cache (Production)**
+For production environments, add to `backend/.env`:
 ```env
-# Redis Cache
+# Redis Cache (Optional - uses Memory Cache if not configured)
 REDIS_URL=redis://localhost:6379
 REDIS_TTL_FLIGHT=300
 REDIS_TTL_HOTEL=3600
@@ -96,14 +103,21 @@ REDIS_TTL_AI=1800
 REDIS_TTL_USER=3600
 ```
 
-### Starting Redis
+### Starting Redis (Optional)
 ```bash
-# Using Docker
-docker run -d -p 6379:6379 redis:alpine
+# Install Redis on Ubuntu
+sudo apt-get update
+sudo apt-get install redis-server
 
-# Or using Redis locally
+# Start Redis
+redis-server
+
+# Or install via npm
+npm install -g redis-server
 redis-server
 ```
+
+**Note**: If Redis is not available, the system automatically falls back to Memory Cache.
 
 ## Usage
 
@@ -212,15 +226,29 @@ Response:
 
 ## Troubleshooting
 
-### Redis Connection Issues
+### Cache Not Working
+**Check cache status**:
+```bash
+curl http://localhost:5000/api/cache/stats
+```
+
+If you see `"type": "memory"`, the system is using Memory Cache (Redis not configured).
+If you see `"type": "redis"`, the system is using Redis.
+
+### Redis Connection Issues (Optional)
+If you want to use Redis but it's not connecting:
+
 ```bash
 # Check Redis is running
 redis-cli ping
 # Should return: PONG
 
-# Check Redis connection from Node.js
-node -e "const redis = require('redis'); const client = redis.createClient(); client.connect().then(() => console.log('Connected')).catch(console.error);"
+# If Redis is not installed
+sudo apt-get install redis-server
+redis-server
 ```
+
+**Note**: Redis is completely optional. The system works perfectly with Memory Cache.
 
 ### Voice Not Working
 1. Check browser permissions for microphone
