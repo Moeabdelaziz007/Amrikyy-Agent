@@ -14,6 +14,15 @@ const findHotels = require('./find_hotels');
 const getDestinationInfo = require('./get_destination_info');
 const webSearch = require('./web_search');
 
+// Import new critical production tools
+const calculateBudgetBreakdown = require('./calculate_budget_breakdown');
+const currencyConverter = require('./currency_converter');
+const weatherForecast = require('./weather_forecast');
+const sendTelegramNotification = require('./send_telegram_notification');
+
+// Import Kody's notebook execution tool
+const executeNotebookCode = require('./execute_notebook_code');
+
 // Create tool registry instance
 const toolRegistry = new ToolRegistry();
 
@@ -29,12 +38,30 @@ module.exports = {
     getDestinationInfo,
     webSearch,
     
+    // New Critical Production Tools
+    calculateBudgetBreakdown,
+    currencyConverter,
+    weatherForecast,
+    sendTelegramNotification,
+    
+    // Kody's Data Analysis Tools
+    executeNotebookCode,
+    
     // Tool Metadata
     getToolMetadata: () => ({
         searchFlights: searchFlights.getMetadata(),
         findHotels: findHotels.getMetadata(),
         getDestinationInfo: getDestinationInfo.getMetadata(),
-        webSearch: webSearch.getMetadata()
+        webSearch: webSearch.getMetadata(),
+        
+        // New Critical Production Tools Metadata
+        calculateBudgetBreakdown: calculateBudgetBreakdown.getMetadata(),
+        currencyConverter: currencyConverter.getMetadata(),
+        weatherForecast: weatherForecast.getMetadata(),
+        sendTelegramNotification: sendTelegramNotification.getMetadata(),
+        
+        // Kody's Data Analysis Tools Metadata
+        executeNotebookCode: executeNotebookCode.getMetadata()
     }),
     
     // Initialize all tools

@@ -7,6 +7,7 @@
 const winston = require('winston');
 const GeminiProvider = require('./providers/GeminiProvider');
 const ZaiProvider = require('./providers/ZaiProvider');
+const AnthropicProvider = require('./providers/AnthropicProvider');
 
 class LLMService {
   constructor(config = {}) {
@@ -89,6 +90,16 @@ class LLMService {
           timeout: this.config.timeout
         }));
         this.logger.info('✅ Z.ai provider initialized');
+      }
+
+      // Initialize Anthropic Provider
+      if (process.env.ANTHROPIC_API_KEY) {
+        this.providers.set('anthropic', new AnthropicProvider({
+          apiKey: process.env.ANTHROPIC_API_KEY,
+          model: process.env.ANTHROPIC_MODEL || 'claude-3-haiku-20240307',
+          timeout: this.config.timeout
+        }));
+        this.logger.info('✅ Anthropic provider initialized');
       }
 
       // Check if at least one provider is available
