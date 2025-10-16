@@ -229,6 +229,25 @@ const analyticsRoutes = require('./routes/analytics');
 app.use('/api/analytics', analyticsRoutes);
 console.log('📊 Analytics API endpoints registered');
 
+// Quantum Reward Engine initialization and routes
+const { QuantumRewardEngine, createRewardRoutes } = require('./services/quantumRewardEngine');
+const { createClient } = require('@supabase/supabase-js');
+
+// Initialize Supabase client for reward engine (optional)
+let supabaseClient = null;
+if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  supabaseClient = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+  console.log('✅ Supabase client initialized for Quantum Reward Engine');
+}
+
+// Initialize Quantum Reward Engine
+const rewardEngine = new QuantumRewardEngine(supabaseClient);
+createRewardRoutes(app, rewardEngine);
+console.log('🌌 Quantum Reward Engine initialized and routes registered');
+
 // Telegram Integration routes
 const telegramIntegrationRoutes = require('./routes/telegram-integration');
 app.use('/api/telegram', telegramIntegrationRoutes);
