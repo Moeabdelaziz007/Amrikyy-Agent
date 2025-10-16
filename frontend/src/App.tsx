@@ -13,7 +13,8 @@ import {
   Home,
   Users,
   BarChart3,
-  Network
+  Network,
+  Mic
 } from 'lucide-react';
 import { AuthProvider, useAuth } from './components/Auth/AuthProvider';
 import LoginForm from './components/Auth/LoginForm';
@@ -33,6 +34,9 @@ import AmrikyyMainPage from './pages/AmrikyyMainPage';
 import AgentGallery from './pages/AgentGallery';
 import HologramDemo from './pages/HologramDemo';
 import Analytics from './pages/Analytics';
+import VoiceChat from './pages/VoiceChat';
+import ProfileSettingsPage from './pages/ProfileSettingsPage';
+import NotificationsPage from './pages/NotificationsPage';
 import { initTelegramWebApp, isTelegramWebApp } from './telegram-webapp';
 
 interface Trip {
@@ -47,7 +51,7 @@ interface Trip {
 
 const AppContent: React.FC = () => {
   const { user, loading } = useAuth();
-  const [currentPage, setCurrentPage] = useState<'landing' | 'dashboard' | 'agents' | 'hologram' | 'analytics' | 'chat' | 'network' | 'trip-details' | 'profile' | 'notifications'>('landing');
+  const [currentPage, setCurrentPage] = useState<'landing' | 'dashboard' | 'agents' | 'hologram' | 'analytics' | 'chat' | 'network' | 'trip-details' | 'profile' | 'notifications' | 'voice'>('landing');
   const [activeTab, setActiveTab] = useState('planner');
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
 
@@ -234,6 +238,17 @@ const AppContent: React.FC = () => {
               <BarChart3 className="w-4 h-4 inline mr-1" />
               Analytics
             </button>
+            <button
+              onClick={() => setCurrentPage('voice')}
+              className={`px-3 py-2 rounded-lg transition-all text-sm ${
+                currentPage === 'voice' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'text-gray-300 hover:bg-white/10'
+              }`}
+            >
+              <Mic className="w-4 h-4 inline mr-1" />
+              Voice
+            </button>
           </div>
 
           <div className="flex items-center space-x-4">
@@ -272,6 +287,11 @@ const AppContent: React.FC = () => {
         {currentPage === 'agents' && <AgentGallery />}
         {currentPage === 'hologram' && <HologramDemo />}
         {currentPage === 'analytics' && <Analytics />}
+        {currentPage === 'voice' && (
+          <div className="max-w-6xl mx-auto p-6 h-[calc(100vh-120px)]">
+            <VoiceChat className="h-full" />
+          </div>
+        )}
         {currentPage === 'profile' && <ProfileSettingsPage />}
         {currentPage === 'notifications' && <NotificationsPage />}
         

@@ -8,13 +8,15 @@ const router = express.Router();
 const KiwiTequilaService = require('../src/services/KiwiTequilaService');
 const { aiLimiter } = require('../middleware/rateLimiter');
 const ExternalAPILimiter = require('../middleware/externalAPILimiter');
+const { cache } = require('../middleware/cacheMiddleware');
 const logger = require('../utils/logger');
 
 /**
  * POST /api/flights/search
  * Search for flights
+ * Cached for 1 hour (3600 seconds)
  */
-router.post('/search', aiLimiter, async (req, res) => {
+router.post('/search', cache(3600), aiLimiter, async (req, res) => {
   try {
     const {
       from,
@@ -91,8 +93,9 @@ router.post('/search', aiLimiter, async (req, res) => {
 /**
  * GET /api/flights/locations
  * Search for airports and cities
+ * Cached for 24 hours (86400 seconds) - location data rarely changes
  */
-router.get('/locations', async (req, res) => {
+router.get('/locations', cache(86400), async (req, res) => {
   try {
     const { query } = req.query;
 
@@ -133,8 +136,9 @@ router.get('/locations', async (req, res) => {
 /**
  * POST /api/flights/details
  * Get flight details by booking token
+ * Cached for 30 minutes (1800 seconds)
  */
-router.post('/details', async (req, res) => {
+router.post('/details', cache(1800), async (req, res) => {
   try {
     const { bookingToken } = req.body;
 
