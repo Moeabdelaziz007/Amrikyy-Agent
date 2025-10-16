@@ -11,7 +11,10 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:ci": "jest --coverage --watchAll=false",
-    "validate-apis": "node scripts/validate-apis.js"
+    "validate-apis": "node scripts/validate-apis.js",
+    "validate-travel-apis": "node scripts/validate-travel-apis.js",
+    "prestart": "npm run validate-travel-apis || echo 'Warning: API validation failed'",
+    "health-check": "node scripts/validate-travel-apis.js && echo 'All systems operational'"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.74.0",

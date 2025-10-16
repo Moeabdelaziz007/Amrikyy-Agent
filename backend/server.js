@@ -18,6 +18,12 @@ const {
   analyticsLimiter
 } = require('./middleware/rateLimiter');
 
+// Import analytics middleware
+const { 
+  analyticsMiddleware, 
+  errorTrackingMiddleware 
+} = require('./middleware/analyticsMiddleware');
+
 // Security middleware
 app.use(helmet());
 app.use(compression());
@@ -65,6 +71,10 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Serve AIX Dashboard and static files
 app.use(express.static('backend/public'));
 console.log('✅ AIX Dashboard available at /aix-dashboard.html');
+
+// Apply analytics middleware to track all requests
+app.use(analyticsMiddleware);
+console.log('📊 Analytics tracking enabled');
 
 // Apply general rate limiter to all API routes
 app.use('/api/', generalLimiter);
@@ -214,6 +224,11 @@ app.use('/api/mcp', mcpRoutes);
 const travelAgentsRoutes = require('./routes/travel-agents');
 app.use('/api/travel-agents', travelAgentsRoutes);
 
+// Analytics routes
+const analyticsRoutes = require('./routes/analytics');
+app.use('/api/analytics', analyticsRoutes);
+console.log('📊 Analytics API endpoints registered');
+
 // Telegram Integration routes
 const telegramIntegrationRoutes = require('./routes/telegram-integration');
 app.use('/api/telegram', telegramIntegrationRoutes);
@@ -232,6 +247,9 @@ if (process.env.TELEGRAM_BOT_TOKEN) {
 // ============================================================================
 // SECURITY: Error Handling Middleware - Sanitized Error Responses
 // ============================================================================
+// Track errors in analytics
+app.use(errorTrackingMiddleware);
+
 app.use((err, req, res, next) => {
     // Always log full error server-side for debugging
     console.error('❌ Error occurred:', {
