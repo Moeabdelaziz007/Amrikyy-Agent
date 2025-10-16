@@ -1,0 +1,138 @@
+{
+  "sessionId": "voice_web_user_1760605041235_1760605041318",
+  "userId": "web_user_1760605041235",
+  "startTime": 1760605041318,
+  "endTime": 1760605090260,
+  "duration": 48942,
+  "interactions": [
+    {
+      "timestamp": 1760605058052,
+      "type": "voice_input",
+      "transcript": "hello",
+      "confidence": 0.9,
+      "isFinal": true
+    },
+    {
+      "timestamp": 1760605058074,
+      "type": "voice_response",
+      "text": "this.patternEngine.getRelevantPatterns is not a function",
+      "cursorResponse": {
+        "success": false,
+        "requestId": "req_1760605058053_cac4ddsr8",
+        "error": "this.patternEngine.getRelevantPatterns is not a function",
+        "metadata": {
+          "cursor_version": "1.0.0",
+          "timestamp": "2025-10-16T08:57:38.073Z"
+        }
+      }
+    },
+    {
+      "timestamp": 1760605068936,
+      "type": "voice_input",
+      "transcript": " this pattern engine get relevant patterns is not a function",
+      "confidence": 0.9,
+      "isFinal": true
+    },
+    {
+      "timestamp": 1760605068938,
+      "type": "voice_response",
+      "text": "this.patternEngine.getRelevantPatterns is not a function",
+      "cursorResponse": {
+        "success": false,
+        "requestId": "req_1760605068936_yf6vi2syv",
+        "error": "this.patternEngine.getRelevantPatterns is not a function",
+        "metadata": {
+          "cursor_version": "1.0.0",
+          "timestamp": "2025-10-16T08:57:48.937Z"
+        }
+      }
+    },
+    {
+      "timestamp": 1760605073623,
+      "type": "voice_input",
+      "transcript": " this pattern engine get relevant patterns is not a function",
+      "confidence": 0.9,
+      "isFinal": true
+    },
+    {
+      "timestamp": 1760605073626,
+      "type": "voice_response",
+      "text": "this.patternEngine.getRelevantPatterns is not a function",
+      "cursorResponse": {
+        "success": false,
+        "requestId": "req_1760605073623_dwf68byck",
+        "error": "this.patternEngine.getRelevantPatterns is not a function",
+        "metadata": {
+          "cursor_version": "1.0.0",
+          "timestamp": "2025-10-16T08:57:53.626Z"
+        }
+      }
+    },
+    {
+      "timestamp": 1760605080205,
+      "type": "voice_input",
+      "transcript": " this pattern engine get relevant patterns is not a function can you speak a little bit",
+      "confidence": 0.9,
+      "isFinal": true
+    },
+    {
+      "timestamp": 1760605080209,
+      "type": "voice_response",
+      "text": "this.patternEngine.getRelevantPatterns is not a function",
+      "cursorResponse": {
+        "success": false,
+        "requestId": "req_1760605080205_gtamjx5ze",
+        "error": "this.patternEngine.getRelevantPatterns is not a function",
+        "metadata": {
+          "cursor_version": "1.0.0",
+          "timestamp": "2025-10-16T08:58:00.208Z"
+        }
+      }
+    },
+    {
+      "timestamp": 1760605085011,
+      "type": "voice_input",
+      "transcript": " this pattern engine get relevant patterns is not a function below",
+      "confidence": 0.9,
+      "isFinal": true
+    },
+    {
+      "timestamp": 1760605085026,
+      "type": "voice_response",
+      "text": "this.patternEngine.getRelevantPatterns is not a function",
+      "cursorResponse": {
+        "success": false,
+        "requestId": "req_1760605085011_20m45w15i",
+        "error": "this.patternEngine.getRelevantPatterns is not a function",
+        "metadata": {
+          "cursor_version": "1.0.0",
+          "timestamp": "2025-10-16T08:58:05.025Z"
+        }
+      }
+    },
+    {
+      "timestamp": 1760605086206,
+      "type": "voice_input",
+      "transcript": " this pattern",
+      "confidence": 0.9,
+      "isFinal": true
+    },
+    {
+      "timestamp": 1760605086209,
+      "type": "voice_response",
+      "text": "this.patternEngine.getRelevantPatterns is not a function",
+      "cursorResponse": {
+        "success": false,
+        "requestId": "req_1760605086206_f2ypharh2",
+        "error": "this.patternEngine.getRelevantPatterns is not a function",
+        "metadata": {
+          "cursor_version": "1.0.0",
+          "timestamp": "2025-10-16T08:58:06.208Z"
+        }
+      }
+    }
+  ],
+  "language": "en-US",
+  "quality": "high",
+  "connectionId": "voice_conn_1760605036466_367rggjse"
+}

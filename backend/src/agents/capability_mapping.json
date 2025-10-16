@@ -1,0 +1,20 @@
+{
+  "planning": ["itinerary_design", "route_planning", "planning", "trip_planning", "scheduling"],
+  "budget_optimization": ["budget_optimization", "cost_analysis", "price_tracking", "financial_planning", "expense_management"],
+  "code_generation": ["code_generation", "architecture_design", "implementation", "software_development", "programming"],
+  "test_generation": ["test_generation", "testing", "coverage_analysis", "qa", "quality_assurance"],
+  "research": ["research", "fact_checking", "information_gathering", "data_analysis", "investigation"],
+  "documentation": ["documentation", "technical_writing", "user_guides", "api_docs", "content_creation"],
+  "debugging": ["debugging", "error_analysis", "troubleshooting", "problem_solving", "issue_resolution"],
+  "refactoring": ["refactoring", "code_optimization", "performance_tuning", "code_improvement"],
+  "authentication": ["authentication", "authorization", "security", "user_management", "access_control"],
+  "api_development": ["api_development", "rest_api", "graphql", "microservices", "backend_development"],
+  "frontend_development": ["frontend_development", "ui_development", "react", "vue", "angular", "javascript"],
+  "database_management": ["database_management", "sql", "nosql", "data_modeling", "migrations"],
+  "deployment": ["deployment", "devops", "ci_cd", "containerization", "cloud_deployment"],
+  "monitoring": ["monitoring", "logging", "metrics", "observability", "health_checks"],
+  "travel_planning": ["travel_planning", "itinerary_design", "destination_research", "booking_assistance"],
+  "cultural_guidance": ["cultural_guidance", "local_insights", "cultural_advice", "travel_tips"],
+  "problem_solving": ["problem_solving", "troubleshooting", "issue_resolution", "critical_thinking"],
+  "communication": ["communication", "user_interaction", "explanation", "presentation", "reporting"]
+}

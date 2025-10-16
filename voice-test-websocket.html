@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursor Voice Integration Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        .connected { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .disconnected { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .listening { background: #cce7ff; color: #004085; border: 1px solid #bee5eb; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: background 0.2s;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        .transcript {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #007bff;
+            min-height: 40px;
+            font-style: italic;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        .settings {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        .settings.hidden { display: none; }
+        select, input[type="range"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎤 Cursor Voice Integration Test</h1>
+        <p>Test real-time voice communication with Cursor Manager via WebSocket</p>
+
+        <div id="connectionStatus" class="status disconnected">
+            🔴 Disconnected from voice server
+        </div>
+
+        <div id="sessionStatus" class="status" style="display: none;">
+            Voice session active
+        </div>
+
+        <div class="controls">
+            <button id="startSessionBtn" onclick="startVoiceSession()">
+                🎤 Start Voice Session
+            </button>
+            <button id="startListeningBtn" onclick="startListening()" disabled>
+                🎙️ Start Listening
+            </button>
+            <button id="stopListeningBtn" onclick="stopListening()" disabled>
+                🛑 Stop Listening
+            </button>
+            <button id="endSessionBtn" onclick="endVoiceSession()" disabled>
+                🔚 End Session
+            </button>
+            <button onclick="toggleSettings()">
+                ⚙️ Settings
+            </button>
+        </div>
+
+        <div id="settings" class="settings hidden">
+            <h3>Voice Settings</h3>
+            <div>
+                <label>Language:</label>
+                <select id="languageSelect" onchange="changeLanguage()">
+                    <option value="en-US">English (US)</option>
+                    <option value="en-GB">English (UK)</option>
+                    <option value="es-ES">Spanish</option>
+                    <option value="fr-FR">French</option>
+                    <option value="ar-SA">Arabic</option>
+                </select>
+            </div>
+            <div>
+                <label>Volume: <span id="volumeValue">1.0</span></label>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1.0" onchange="changeVolume()">
+            </div>
+            <div>
+                <label>Speech Rate: <span id="rateValue">1.0</span></label>
+                <input type="range" id="rateSlider" min="0.5" max="2.0" step="0.1" value="1.0" onchange="changeRate()">
+            </div>
+        </div>
+
+        <div id="transcript" class="transcript">
+            Your speech will appear here...
+        </div>
+
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+            <h3>Instructions:</h3>
+            <ol>
+                <li>Click "Start Voice Session" to connect to the server</li>
+                <li>Click "Start Listening" and speak into your microphone</li>
+                <li>Your speech will be transcribed and sent to Cursor Manager</li>
+                <li>Cursor will respond and speak back to you</li>
+                <li>Use "Stop Listening" when you're done speaking</li>
+            </ol>
+            <p><strong>Note:</strong> Make sure your browser supports Web Speech API (Chrome, Edge, Safari)</p>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+        let recognition = null;
+        let synthesis = null;
+        let sessionId = null;
+        let isListening = false;
+        let currentLanguage = 'en-US';
+
+        // Initialize Web Speech API
+        function initializeSpeechAPI() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = currentLanguage;
+
+                recognition.onstart = () => {
+                    isListening = true;
+                    updateButtons();
+                    document.getElementById('transcript').textContent = '🎤 Listening... Speak now!';
+                };
+
+                recognition.onresult = (event) => {
+                    let finalTranscript = '';
+                    let interimTranscript = '';
+
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript;
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+
+                    const displayTranscript = finalTranscript || interimTranscript;
+                    document.getElementById('transcript').textContent = displayTranscript || 'Listening...';
+
+                    // Send final results to server
+                    if (finalTranscript && ws) {
+                        ws.send(JSON.stringify({
+                            type: 'voice_input',
+                            payload: {
+                                transcript: finalTranscript,
+                                confidence: 0.9,
+                                isFinal: true
+                            }
+                        }));
+                    }
+                };
+
+                recognition.onerror = (event) => {
+                    console.error('Speech recognition error:', event.error);
+                    document.getElementById('transcript').textContent = '❌ Error: ' + event.error;
+                    isListening = false;
+                    updateButtons();
+                };
+
+                recognition.onend = () => {
+                    isListening = false;
+                    updateButtons();
+                    if (document.getElementById('transcript').textContent === '🎤 Listening... Speak now!') {
+                        document.getElementById('transcript').textContent = 'Stopped listening';
+                    }
+                };
+            } else {
+                document.getElementById('transcript').textContent = '❌ Web Speech API not supported in this browser';
+                return false;
+            }
+
+            if ('speechSynthesis' in window) {
+                synthesis = window.speechSynthesis;
+            } else {
+                document.getElementById('transcript').textContent = '❌ Speech synthesis not supported';
+                return false;
+            }
+
+            return true;
+        }
+
+        // Connect to WebSocket server
+        function connectWebSocket() {
+            ws = new WebSocket('ws://localhost:8080');
+
+            ws.onopen = () => {
+                document.getElementById('connectionStatus').textContent = '🟢 Connected to voice server';
+                document.getElementById('connectionStatus').className = 'status connected';
+                document.getElementById('startSessionBtn').disabled = false;
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                handleWebSocketMessage(data);
+            };
+
+            ws.onclose = () => {
+                document.getElementById('connectionStatus').textContent = '🔴 Disconnected from voice server';
+                document.getElementById('connectionStatus').className = 'status disconnected';
+                document.getElementById('startSessionBtn').disabled = false;
+                document.getElementById('startListeningBtn').disabled = true;
+                document.getElementById('stopListeningBtn').disabled = true;
+                document.getElementById('endSessionBtn').disabled = true;
+                sessionId = null;
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                document.getElementById('connectionStatus').textContent = '❌ Connection error';
+                document.getElementById('connectionStatus').className = 'status disconnected';
+            };
+        }
+
+        function handleWebSocketMessage(data) {
+            switch (data.type) {
+                case 'welcome':
+                    console.log('Connected to voice server:', data.message);
+                    break;
+
+                case 'session_started':
+                    sessionId = data.sessionId;
+                    document.getElementById('sessionStatus').textContent = `🎤 Session active: ${data.sessionId}`;
+                    document.getElementById('sessionStatus').style.display = 'block';
+                    updateButtons();
+                    break;
+
+                case 'voice_response':
+                    document.getElementById('transcript').textContent = `You: ${data.transcript}`;
+                    if (data.cursorResponse && synthesis) {
+                        speakText(extractSpeakableText(data.cursorResponse));
+                    }
+                    break;
+
+                case 'session_ended':
+                    sessionId = null;
+                    document.getElementById('sessionStatus').style.display = 'none';
+                    updateButtons();
+                    break;
+
+                case 'error':
+                    document.getElementById('transcript').textContent = '❌ Error: ' + data.error;
+                    break;
+            }
+        }
+
+        function extractSpeakableText(cursorResponse) {
+            if (cursorResponse.success && cursorResponse.result) {
+                if (typeof cursorResponse.result === 'string') {
+                    return cursorResponse.result;
+                } else if (cursorResponse.result.summary) {
+                    return cursorResponse.result.summary;
+                } else if (cursorResponse.result.message) {
+                    return cursorResponse.result.message;
+                }
+            }
+            return cursorResponse.error || 'Sorry, I encountered an error processing your request.';
+        }
+
+        function speakText(text) {
+            if (!synthesis) return;
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.volume = parseFloat(document.getElementById('volumeSlider').value);
+            utterance.rate = parseFloat(document.getElementById('rateSlider').value);
+            utterance.lang = currentLanguage;
+
+            synthesis.speak(utterance);
+        }
+
+        function startVoiceSession() {
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                alert('Not connected to voice server. Please refresh the page.');
+                return;
+            }
+
+            ws.send(JSON.stringify({
+                type: 'start_session',
+                payload: {
+                    userId: 'web_user_' + Date.now(),
+                    language: currentLanguage,
+                    quality: 'high'
+                }
+            }));
+
+            document.getElementById('startSessionBtn').disabled = true;
+        }
+
+        function startListening() {
+            if (recognition && !isListening) {
+                recognition.start();
+            }
+        }
+
+        function stopListening() {
+            if (recognition && isListening) {
+                recognition.stop();
+            }
+        }
+
+        function endVoiceSession() {
+            if (ws && sessionId) {
+                ws.send(JSON.stringify({
+                    type: 'end_session',
+                    payload: { reason: 'user_request' }
+                }));
+            }
+        }
+
+        function toggleSettings() {
+            const settings = document.getElementById('settings');
+            settings.classList.toggle('hidden');
+        }
+
+        function changeLanguage() {
+            const select = document.getElementById('languageSelect');
+            currentLanguage = select.value;
+
+            if (recognition) {
+                recognition.lang = currentLanguage;
+            }
+
+            if (ws && sessionId) {
+                ws.send(JSON.stringify({
+                    type: 'voice_command',
+                    payload: {
+                        command: 'change_language',
+                        parameters: { language: currentLanguage }
+                    }
+                }));
+            }
+        }
+
+        function changeVolume() {
+            const slider = document.getElementById('volumeSlider');
+            document.getElementById('volumeValue').textContent = slider.value;
+        }
+
+        function changeRate() {
+            const slider = document.getElementById('rateSlider');
+            document.getElementById('rateValue').textContent = slider.value;
+        }
+
+        function updateButtons() {
+            document.getElementById('startListeningBtn').disabled = !sessionId || isListening;
+            document.getElementById('stopListeningBtn').disabled = !isListening;
+            document.getElementById('endSessionBtn').disabled = !sessionId;
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            if (!initializeSpeechAPI()) {
+                return;
+            }
+            connectWebSocket();
+        };
+    </script>
+</body>
+</html>

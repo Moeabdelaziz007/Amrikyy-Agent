@@ -1,188 +1,182 @@
 /**
- * Logger Utility
+ * Winston-based Logger Utility
  * Centralized logging system with multiple levels and formatting
+ * Used across AIX components for consistent logging
  */
 
-const chalk = require('chalk');
-const fs = require('fs');
+const winston = require('winston');
 const path = require('path');
 
-class Logger {
-  constructor(options = {}) {
-    this.logLevel = options.logLevel || process.env.LOG_LEVEL || 'info';
-    this.logToFile = options.logToFile !== undefined ? options.logToFile : true;
-    this.logDir = options.logDir || path.join(__dirname, '../../logs');
-    this.logFile = options.logFile || 'app.log';
-    
-    // Log levels with priority
-    this.levels = {
-      error: 0,
-      warn: 1,
-      info: 2,
-      debug: 3,
-      trace: 4
-    };
+// Define log levels and colors
+const logLevels = {
+  error: 0,
+  warn: 1,
+  info: 2,
+  debug: 3,
+  trace: 4
+};
 
-    // Ensure log directory exists
-    if (this.logToFile) {
-      this.ensureLogDirectory();
-    }
-  }
+const logColors = {
+  error: 'red',
+  warn: 'yellow',
+  info: 'blue',
+  debug: 'gray',
+  trace: 'dim'
+};
 
-  /**
-   * Ensure log directory exists
-   */
-  ensureLogDirectory() {
-    if (!fs.existsSync(this.logDir)) {
-      fs.mkdirSync(this.logDir, { recursive: true });
-    }
-  }
+// Add colors to winston
+winston.addColors(logColors);
 
-  /**
-   * Check if message should be logged based on level
-   */
-  shouldLog(level) {
-    return this.levels[level] <= this.levels[this.logLevel];
-  }
-
-  /**
-   * Format timestamp
-   */
-  getTimestamp() {
-    return new Date().toISOString();
-  }
-
-  /**
-   * Format log message
-   */
-  formatMessage(level, message, meta = {}) {
-    const timestamp = this.getTimestamp();
+// Create custom format for better readability
+const customFormat = winston.format.combine(
+  winston.format.timestamp({
+    format: 'YYYY-MM-DD HH:mm:ss'
+  }),
+  winston.format.errors({ stack: true }),
+  winston.format.json(),
+  winston.format.printf(({ timestamp, level, message, service, ...meta }) => {
     const metaStr = Object.keys(meta).length > 0 ? ` ${JSON.stringify(meta)}` : '';
-    return `[${timestamp}] [${level.toUpperCase()}] ${message}${metaStr}`;
-  }
+    const serviceStr = service ? `[${service}]` : '';
+    return `${timestamp} [${level.toUpperCase()}]${serviceStr} ${message}${metaStr}`;
+  })
+);
 
-  /**
-   * Write to log file
-   */
-  writeToFile(message) {
-    if (!this.logToFile) return;
+// Console format with colors
+const consoleFormat = winston.format.combine(
+  winston.format.timestamp({
+    format: 'HH:mm:ss'
+  }),
+  winston.format.errors({ stack: true }),
+  winston.format.colorize({ all: true }),
+  winston.format.printf(({ timestamp, level, message, service, ...meta }) => {
+    const metaStr = Object.keys(meta).length > 0 ? ` ${JSON.stringify(meta)}` : '';
+    const serviceStr = service ? `[${service}]` : '';
+    return `${timestamp} ${level}${serviceStr} ${message}${metaStr}`;
+  })
+);
 
-    const logPath = path.join(this.logDir, this.logFile);
-    fs.appendFileSync(logPath, message + '\n', 'utf8');
-  }
+/**
+ * Create Winston logger instance
+ */
+function createLogger(options = {}) {
+  const {
+    service = 'app',
+    logLevel = process.env.LOG_LEVEL || 'info',
+    logToFile = true,
+    logDir = path.join(__dirname, '../../logs'),
+    logFile = `${service}.log`
+  } = options;
 
-  /**
-   * Log error message
-   */
-  error(message, meta = {}) {
-    if (!this.shouldLog('error')) return;
+  const transports = [];
 
-    const formatted = this.formatMessage('error', message, meta);
-    console.error(chalk.red(formatted));
-    this.writeToFile(formatted);
-  }
+  // Console transport
+  transports.push(
+    new winston.transports.Console({
+      format: consoleFormat,
+      level: logLevel
+    })
+  );
 
-  /**
-   * Log warning message
-   */
-  warn(message, meta = {}) {
-    if (!this.shouldLog('warn')) return;
-
-    const formatted = this.formatMessage('warn', message, meta);
-    console.warn(chalk.yellow(formatted));
-    this.writeToFile(formatted);
-  }
-
-  /**
-   * Log info message
-   */
-  info(message, meta = {}) {
-    if (!this.shouldLog('info')) return;
-
-    const formatted = this.formatMessage('info', message, meta);
-    console.log(chalk.blue(formatted));
-    this.writeToFile(formatted);
-  }
-
-  /**
-   * Log debug message
-   */
-  debug(message, meta = {}) {
-    if (!this.shouldLog('debug')) return;
-
-    const formatted = this.formatMessage('debug', message, meta);
-    console.log(chalk.gray(formatted));
-    this.writeToFile(formatted);
-  }
-
-  /**
-   * Log trace message
-   */
-  trace(message, meta = {}) {
-    if (!this.shouldLog('trace')) return;
-
-    const formatted = this.formatMessage('trace', message, meta);
-    console.log(chalk.dim(formatted));
-    this.writeToFile(formatted);
-  }
-
-  /**
-   * Log success message (info level with green color)
-   */
-  success(message, meta = {}) {
-    if (!this.shouldLog('info')) return;
-
-    const formatted = this.formatMessage('info', message, meta);
-    console.log(chalk.green(formatted));
-    this.writeToFile(formatted);
-  }
-
-  /**
-   * Create child logger with prefix
-   */
-  child(prefix) {
-    const childLogger = new Logger({
-      logLevel: this.logLevel,
-      logToFile: this.logToFile,
-      logDir: this.logDir,
-      logFile: this.logFile
-    });
-
-    // Override methods to add prefix
-    ['error', 'warn', 'info', 'debug', 'trace', 'success'].forEach(method => {
-      const originalMethod = childLogger[method].bind(childLogger);
-      childLogger[method] = (message, meta) => {
-        originalMethod(`[${prefix}] ${message}`, meta);
-      };
-    });
-
-    return childLogger;
-  }
-
-  /**
-   * Clear log file
-   */
-  clearLogs() {
-    if (!this.logToFile) return;
-
-    const logPath = path.join(this.logDir, this.logFile);
-    if (fs.existsSync(logPath)) {
-      fs.unlinkSync(logPath);
+  // File transport (if enabled)
+  if (logToFile) {
+    // Ensure log directory exists
+    const fs = require('fs');
+    if (!fs.existsSync(logDir)) {
+      fs.mkdirSync(logDir, { recursive: true });
     }
+
+    transports.push(
+      new winston.transports.File({
+        filename: path.join(logDir, logFile),
+        format: customFormat,
+        level: logLevel,
+        maxsize: 5242880, // 5MB
+        maxFiles: 5
+      })
+    );
+
+    // Separate error file
+    transports.push(
+      new winston.transports.File({
+        filename: path.join(logDir, `${service}-error.log`),
+        level: 'error',
+        format: customFormat,
+        maxsize: 5242880, // 5MB
+        maxFiles: 5
+      })
+    );
   }
 
-  /**
-   * Get log file path
-   */
-  getLogPath() {
-    return path.join(this.logDir, this.logFile);
-  }
+  return winston.createLogger({
+    level: logLevel,
+    levels: logLevels,
+    defaultMeta: { service },
+    transports,
+    exitOnError: false
+  });
 }
 
 // Create default logger instance
-const defaultLogger = new Logger();
+const defaultLogger = createLogger();
 
-// Export both class and default instance
+/**
+ * Logger class wrapper for backward compatibility
+ */
+class Logger {
+  constructor(options = {}) {
+    this.winston = createLogger(options);
+  }
+
+  error(message, meta = {}) {
+    this.winston.error(message, meta);
+  }
+
+  warn(message, meta = {}) {
+    this.winston.warn(message, meta);
+  }
+
+  info(message, meta = {}) {
+    this.winston.info(message, meta);
+  }
+
+  debug(message, meta = {}) {
+    this.winston.debug(message, meta);
+  }
+
+  trace(message, meta = {}) {
+    this.winston.log('trace', message, meta);
+  }
+
+  success(message, meta = {}) {
+    this.winston.info(`✅ ${message}`, meta);
+  }
+
+  child(service) {
+    return new Logger({ service: `${this.winston.defaultMeta?.service || 'app'}:${service}` });
+  }
+
+  clearLogs() {
+    // Clear all log files
+    const fs = require('fs');
+    const logDir = path.join(__dirname, '../../logs');
+    
+    if (fs.existsSync(logDir)) {
+      const files = fs.readdirSync(logDir);
+      files.forEach(file => {
+        if (file.endsWith('.log')) {
+          fs.unlinkSync(path.join(logDir, file));
+        }
+      });
+    }
+  }
+
+  getLogPath() {
+    return path.join(__dirname, '../../logs', `${this.winston.defaultMeta?.service || 'app'}.log`);
+  }
+}
+
+// Export both class, default instance, and factory function
 module.exports = Logger;
 module.exports.logger = defaultLogger;
 module.exports.default = defaultLogger;
+module.exports.createLogger = createLogger;

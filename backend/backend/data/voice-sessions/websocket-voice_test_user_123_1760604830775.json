@@ -1,0 +1,33 @@
+{
+  "sessionId": "voice_test_user_123_1760604830775",
+  "userId": "test_user_123",
+  "startTime": 1760604830775,
+  "endTime": 1760604832388,
+  "duration": 1614,
+  "interactions": [
+    {
+      "timestamp": 1760604831779,
+      "type": "voice_input",
+      "transcript": "Hello, can you help me plan a trip to Tokyo?",
+      "confidence": 0.95,
+      "isFinal": true
+    },
+    {
+      "timestamp": 1760604831879,
+      "type": "voice_response",
+      "text": "this.patternEngine.getRelevantPatterns is not a function",
+      "cursorResponse": {
+        "success": false,
+        "requestId": "req_1760604831780_63r104z1x",
+        "error": "this.patternEngine.getRelevantPatterns is not a function",
+        "metadata": {
+          "cursor_version": "1.0.0",
+          "timestamp": "2025-10-16T08:53:51.877Z"
+        }
+      }
+    }
+  ],
+  "language": "en-US",
+  "quality": "high",
+  "connectionId": "voice_conn_1760604830772_zjk25mgh2"
+}

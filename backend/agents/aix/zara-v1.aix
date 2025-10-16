@@ -1,0 +1,252 @@
+# AIX Agent Definition: Zara - Research Specialist
+# Version: 1.0.0
+# Created: 2025-01-16
+# Agent ID: 550e8400-e29b-41d4-a716-446655440003
+
+meta:
+  id: "550e8400-e29b-41d4-a716-446655440003"
+  name: "Zara - Research Specialist"
+  version: "1.0.0"
+  description: "Expert researcher and fact-checker for travel information and destination insights"
+  author: "AMRIKYY AI Solutions"
+  created: "2025-01-16T12:00:00Z"
+  updated: "2025-01-16T12:00:00Z"
+  tags: ["research", "fact-checking", "verification", "travel", "information"]
+
+persona:
+  name: "Zara"
+  role: "Research & Verification Specialist"
+  personality: "Curious, thorough, detail-oriented, and committed to accuracy"
+  communication_style: "Informative, well-researched, with credible sources and citations"
+  background: "Former investigative journalist turned travel research expert"
+  expertise: "Fact-checking, deep research, data verification, source validation"
+  motivation: "To provide travelers with accurate, reliable, and up-to-date information"
+
+capabilities:
+  - fact_checking
+  - deep_research
+  - data_verification
+  - source_validation
+  - information_synthesis
+  - trend_analysis
+  - content_curation
+  - knowledge_management
+
+tools:
+  - name: "web_search"
+    description: "Perform comprehensive web searches for travel information"
+    parameters:
+      - name: "query"
+        type: "string"
+        required: true
+        description: "Search query for travel information"
+      - name: "destination"
+        type: "string"
+        required: false
+        description: "Specific destination to focus search"
+      - name: "search_type"
+        type: "string"
+        required: false
+        description: "Type of search (general, news, reviews, official)"
+        default: "general"
+      - name: "language"
+        type: "string"
+        required: false
+        description: "Search language"
+        default: "en"
+      - name: "max_results"
+        type: "integer"
+        required: false
+        description: "Maximum number of results"
+        default: 10
+    returns: "Search results with sources, relevance scores, and summaries"
+
+  - name: "scrape_website"
+    description: "Extract structured data from travel websites"
+    parameters:
+      - name: "url"
+        type: "string"
+        required: true
+        description: "Website URL to scrape"
+      - name: "data_type"
+        type: "string"
+        required: true
+        description: "Type of data to extract (reviews, prices, info, etc.)"
+      - name: "selectors"
+        type: "object"
+        required: false
+        description: "CSS selectors for data extraction"
+      - name: "respect_robots"
+        type: "boolean"
+        required: false
+        description: "Respect robots.txt"
+        default: true
+    returns: "Structured data extracted from the website"
+
+  - name: "verify_information"
+    description: "Cross-reference and verify travel information from multiple sources"
+    parameters:
+      - name: "claim"
+        type: "string"
+        required: true
+        description: "Information claim to verify"
+      - name: "sources"
+        type: "array"
+        required: false
+        description: "Initial sources to check"
+      - name: "verification_level"
+        type: "string"
+        required: false
+        description: "Level of verification (basic, thorough, exhaustive)"
+        default: "thorough"
+    returns: "Verification results with confidence score and source citations"
+
+  - name: "get_destination_info"
+    description: "Gather comprehensive information about a destination"
+    parameters:
+      - name: "destination"
+        type: "string"
+        required: true
+        description: "Destination name or location"
+      - name: "info_types"
+        type: "array"
+        required: false
+        description: "Types of information needed (culture, history, attractions, etc.)"
+      - name: "depth"
+        type: "string"
+        required: false
+        description: "Research depth (overview, detailed, comprehensive)"
+        default: "detailed"
+    returns: "Comprehensive destination information with sources"
+
+  - name: "check_travel_advisories"
+    description: "Check official travel advisories and safety information"
+    parameters:
+      - name: "destination"
+        type: "string"
+        required: true
+        description: "Destination to check"
+      - name: "country"
+        type: "string"
+        required: false
+        description: "Country name for official advisories"
+      - name: "advisory_sources"
+        type: "array"
+        required: false
+        description: "Sources to check (government, WHO, etc.)"
+    returns: "Travel advisory information and safety recommendations"
+
+  - name: "analyze_reviews"
+    description: "Analyze and synthesize reviews from multiple sources"
+    parameters:
+      - name: "entity"
+        type: "string"
+        required: true
+        description: "Entity to analyze (hotel, restaurant, attraction)"
+      - name: "sources"
+        type: "array"
+        required: false
+        description: "Review sources to analyze"
+      - name: "analysis_type"
+        type: "string"
+        required: false
+        description: "Type of analysis (sentiment, themes, ratings)"
+        default: "comprehensive"
+    returns: "Synthesized review analysis with key insights"
+
+  - name: "memory_query"
+    description: "Query verified information from knowledge base"
+    parameters:
+      - name: "query"
+        type: "string"
+        required: true
+        description: "Search query for verified information"
+      - name: "topic"
+        type: "string"
+        required: false
+        description: "Topic category to focus search"
+      - name: "reliability_threshold"
+        type: "number"
+        required: false
+        description: "Minimum reliability score"
+        default: 0.8
+    returns: "Verified information from memory with reliability scores"
+
+  - name: "memory_store"
+    description: "Store verified information in knowledge base"
+    parameters:
+      - name: "information"
+        type: "object"
+        required: true
+        description: "Information to store"
+      - name: "sources"
+        type: "array"
+        required: true
+        description: "Source citations"
+      - name: "reliability_score"
+        type: "number"
+        required: true
+        description: "Reliability score (0-1)"
+      - name: "metadata"
+        type: "object"
+        required: true
+        description: "Additional metadata"
+    returns: "Confirmation of information storage"
+
+memory:
+  system: "amrikyy_knowledge_base"
+  collections:
+    - "verified_facts"
+    - "destination_info"
+    - "travel_advisories"
+    - "review_analysis"
+    - "source_reliability"
+  retention_policy: "permanent"
+  indexing_strategy: "semantic_search_with_sources"
+
+security:
+  access_level: "standard"
+  data_sensitivity: "public"
+  encryption_required: false
+  audit_logging: true
+  rate_limits:
+    api_calls: 200
+    memory_operations: 100
+  restrictions:
+    - "no_personal_data_scraping"
+    - "respect_robots_txt"
+    - "no_private_information"
+
+performance:
+  max_concurrent_requests: 10
+  timeout: 45000
+  cache_duration: 7200
+  optimization_level: "medium"
+
+integration:
+  dependencies:
+    - "search_api"
+    - "scraping_service"
+    - "memory_system"
+    - "verification_service"
+  webhooks:
+    - "new_information"
+    - "verification_updates"
+  notifications:
+    - "telegram"
+    - "email"
+
+monitoring:
+  metrics:
+    - "verification_accuracy"
+    - "source_reliability"
+    - "research_completeness"
+    - "response_time"
+  alerts:
+    - "low_verification_accuracy"
+    - "source_unavailable"
+    - "slow_research"
+  health_checks:
+    - "search_api_status"
+    - "memory_access"
+    - "verification_service"

@@ -1,0 +1,33 @@
+{
+  "sessionId": "voice_test-user_1760598131519",
+  "userId": "test-user",
+  "startTime": 1760598131519,
+  "isActive": false,
+  "isListening": false,
+  "interactions": 1,
+  "language": "en-US",
+  "quality": "high",
+  "voiceHistory": [
+    {
+      "timestamp": 1760598131521,
+      "type": "speech_to_text",
+      "transcript": "Plan a trip to Tokyo",
+      "confidence": 0.9306953038471374,
+      "sessionId": "voice_test-user_1760598131519",
+      "provider": "mock"
+    },
+    {
+      "timestamp": 1760598131527,
+      "type": "text_to_speech",
+      "text": "Hello from Google Cloud!",
+      "audioFile": "backend/data/voice_sessions/voice_test-user_1760598131519/mock_response_1760598131525.txt",
+      "sessionId": "voice_test-user_1760598131519",
+      "provider": "mock"
+    }
+  ],
+  "audioFiles": [
+    "backend/data/voice_sessions/voice_test-user_1760598131519/mock_response_1760598131525.txt"
+  ],
+  "endTime": 1760598131529,
+  "endReason": "test_complete"
+}

@@ -1,0 +1,408 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursor Voice Agent - Web Speech API Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .status {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        button {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .listening {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .transcript {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            min-height: 50px;
+            font-family: monospace;
+        }
+        .response {
+            background: rgba(76, 175, 80, 0.2);
+            border: 2px solid #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            min-height: 50px;
+        }
+        .settings {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .setting-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 2px solid #f44336;
+            color: #ffcdd2;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 2px solid #4CAF50;
+            color: #c8e6c9;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎤 Cursor Voice Agent</h1>
+        <p style="text-align: center; font-size: 1.2em; margin-bottom: 30px;">
+            Real Voice Interface using Web Speech API<br>
+            <small>100% FREE - No API keys required!</small>
+        </p>
+
+        <div id="status" class="status">
+            <strong>Status:</strong> <span id="statusText">Initializing...</span>
+        </div>
+
+        <div class="controls">
+            <button id="startBtn" onclick="startListening()">🎤 Start Listening</button>
+            <button id="stopBtn" onclick="stopListening()" disabled>🛑 Stop Listening</button>
+            <button id="speakBtn" onclick="speakText()">🔊 Test Speech</button>
+            <button id="clearBtn" onclick="clearTranscript()">🗑️ Clear</button>
+        </div>
+
+        <div class="settings">
+            <h3>⚙️ Settings</h3>
+            <div class="setting-group">
+                <label for="language">Language:</label>
+                <select id="language">
+                    <option value="en-US">English (US)</option>
+                    <option value="en-GB">English (UK)</option>
+                    <option value="es-ES">Spanish</option>
+                    <option value="fr-FR">French</option>
+                    <option value="de-DE">German</option>
+                    <option value="ar-SA">Arabic</option>
+                    <option value="zh-CN">Chinese</option>
+                    <option value="ja-JP">Japanese</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label for="volume">Volume: <span id="volumeValue">1.0</span></label>
+                <input type="range" id="volume" min="0" max="1" step="0.1" value="1.0" oninput="updateVolume(this.value)">
+            </div>
+            <div class="setting-group">
+                <label for="rate">Speech Rate: <span id="rateValue">1.0</span></label>
+                <input type="range" id="rate" min="0.1" max="3" step="0.1" value="1.0" oninput="updateRate(this.value)">
+            </div>
+        </div>
+
+        <div class="transcript">
+            <strong>📝 Your Speech:</strong><br>
+            <span id="transcriptText">Say something...</span>
+        </div>
+
+        <div class="response">
+            <strong>🤖 Cursor Response:</strong><br>
+            <span id="responseText">Responses will appear here...</span>
+        </div>
+
+        <div id="messages"></div>
+    </div>
+
+    <script>
+        // Global variables
+        let recognition = null;
+        let synthesis = window.speechSynthesis;
+        let isListening = false;
+        let isSupported = false;
+
+        // Initialize Web Speech API
+        function initializeSpeechAPI() {
+            try {
+                // Check if Web Speech API is supported
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    isSupported = true;
+                    
+                    // Initialize speech recognition
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    recognition = new SpeechRecognition();
+                    
+                    // Configure recognition
+                    recognition.continuous = true;
+                    recognition.interimResults = true;
+                    recognition.lang = document.getElementById('language').value;
+                    recognition.maxAlternatives = 1;
+
+                    // Set up event handlers
+                    recognition.onstart = function() {
+                        updateStatus('Listening...', 'listening');
+                        document.getElementById('startBtn').disabled = true;
+                        document.getElementById('stopBtn').disabled = false;
+                        isListening = true;
+                    };
+
+                    recognition.onresult = function(event) {
+                        let transcript = '';
+                        let confidence = 0;
+                        
+                        for (let i = event.resultIndex; i < event.results.length; i++) {
+                            transcript += event.results[i][0].transcript;
+                            confidence = event.results[i][0].confidence;
+                        }
+                        
+                        document.getElementById('transcriptText').textContent = transcript;
+                        
+                        // If it's a final result, process it
+                        if (event.results[event.results.length - 1].isFinal) {
+                            processVoiceInput(transcript, confidence);
+                        }
+                    };
+
+                    recognition.onerror = function(event) {
+                        updateStatus('Error: ' + event.error, 'error');
+                        document.getElementById('startBtn').disabled = false;
+                        document.getElementById('stopBtn').disabled = true;
+                        isListening = false;
+                        showMessage('Error: ' + event.error, 'error');
+                    };
+
+                    recognition.onend = function() {
+                        updateStatus('Ready', 'ready');
+                        document.getElementById('startBtn').disabled = false;
+                        document.getElementById('stopBtn').disabled = true;
+                        isListening = false;
+                    };
+
+                    updateStatus('Web Speech API Ready!', 'success');
+                    showMessage('✅ Web Speech API initialized successfully!', 'success');
+                    
+                } else {
+                    isSupported = false;
+                    updateStatus('Web Speech API not supported', 'error');
+                    showMessage('❌ Web Speech API is not supported in this browser. Please use Chrome, Safari, or Edge.', 'error');
+                }
+            } catch (error) {
+                updateStatus('Initialization failed: ' + error.message, 'error');
+                showMessage('❌ Failed to initialize Web Speech API: ' + error.message, 'error');
+            }
+        }
+
+        // Start listening
+        function startListening() {
+            if (!isSupported) {
+                showMessage('❌ Web Speech API not supported', 'error');
+                return;
+            }
+            
+            try {
+                recognition.lang = document.getElementById('language').value;
+                recognition.start();
+            } catch (error) {
+                showMessage('❌ Failed to start listening: ' + error.message, 'error');
+            }
+        }
+
+        // Stop listening
+        function stopListening() {
+            if (recognition && isListening) {
+                recognition.stop();
+            }
+        }
+
+        // Process voice input
+        function processVoiceInput(transcript, confidence) {
+            console.log('Processing:', transcript, 'Confidence:', confidence);
+            
+            // Simulate Cursor Manager response
+            const responses = [
+                "I heard you say: '" + transcript + "'. How can I help you with that?",
+                "Great! You said: '" + transcript + "'. Let me assist you with that request.",
+                "I understand: '" + transcript + "'. I'll help you with that right away.",
+                "Perfect! I heard: '" + transcript + "'. Let me process that for you.",
+                "Excellent! You mentioned: '" + transcript + "'. I'm here to help!"
+            ];
+            
+            const response = responses[Math.floor(Math.random() * responses.length)];
+            
+            document.getElementById('responseText').textContent = response;
+            
+            // Speak the response
+            speakText(response);
+            
+            showMessage('✅ Processed: "' + transcript + '"', 'success');
+        }
+
+        // Speak text
+        function speakText(text = null) {
+            if (!text) {
+                text = document.getElementById('responseText').textContent || 'Hello! I am Cursor, your AI assistant.';
+            }
+            
+            // Cancel any ongoing speech
+            synthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = parseFloat(document.getElementById('rate').value);
+            utterance.volume = parseFloat(document.getElementById('volume').value);
+            utterance.lang = document.getElementById('language').value;
+            
+            utterance.onstart = function() {
+                showMessage('🔊 Speaking: "' + text + '"', 'success');
+            };
+            
+            utterance.onend = function() {
+                showMessage('✅ Speech completed', 'success');
+            };
+            
+            utterance.onerror = function(event) {
+                showMessage('❌ Speech error: ' + event.error, 'error');
+            };
+            
+            synthesis.speak(utterance);
+        }
+
+        // Update status
+        function updateStatus(text, type) {
+            const statusElement = document.getElementById('statusText');
+            statusElement.textContent = text;
+            
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status';
+            
+            if (type === 'listening') {
+                statusDiv.style.borderLeftColor = '#f44336';
+                statusDiv.style.background = 'rgba(244, 67, 54, 0.2)';
+            } else if (type === 'success') {
+                statusDiv.style.borderLeftColor = '#4CAF50';
+                statusDiv.style.background = 'rgba(76, 175, 80, 0.2)';
+            } else if (type === 'error') {
+                statusDiv.style.borderLeftColor = '#f44336';
+                statusDiv.style.background = 'rgba(244, 67, 54, 0.2)';
+            }
+        }
+
+        // Show message
+        function showMessage(message, type) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type;
+            messageDiv.textContent = new Date().toLocaleTimeString() + ' - ' + message;
+            messagesDiv.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+            
+            // Remove old messages (keep last 10)
+            const messages = messagesDiv.children;
+            if (messages.length > 10) {
+                messagesDiv.removeChild(messages[0]);
+            }
+        }
+
+        // Clear transcript
+        function clearTranscript() {
+            document.getElementById('transcriptText').textContent = 'Say something...';
+            document.getElementById('responseText').textContent = 'Responses will appear here...';
+            document.getElementById('messages').innerHTML = '';
+        }
+
+        // Update volume
+        function updateVolume(value) {
+            document.getElementById('volumeValue').textContent = value;
+        }
+
+        // Update rate
+        function updateRate(value) {
+            document.getElementById('rateValue').textContent = value;
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', function() {
+            initializeSpeechAPI();
+        });
+
+        // Handle language change
+        document.getElementById('language').addEventListener('change', function() {
+            if (recognition) {
+                recognition.lang = this.value;
+                showMessage('Language changed to: ' + this.value, 'success');
+            }
+        });
+    </script>
+</body>
+</html>

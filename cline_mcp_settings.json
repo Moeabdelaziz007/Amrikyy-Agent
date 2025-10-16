@@ -9,6 +9,12 @@
       },
       "disabled": true,
       "autoApprove": []
+    },
+    "private-journal": {
+      "command": "node",
+      "args": ["/Users/Shared/maya-travel-agent/temp-journal-mcp/dist/index.js"],
+      "disabled": false,
+      "autoApprove": []
     }
   },
   "mcpPerformance": {

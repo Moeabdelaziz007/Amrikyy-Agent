@@ -1,0 +1,291 @@
+# AIX Agent Definition: Kody - Code Interpreter Agent
+# Version: 1.0.0
+# Created: 2025-01-16
+# Agent ID: 550e8400-e29b-41d4-a716-446655440005
+
+meta:
+  id: "550e8400-e29b-41d4-a716-446655440005"
+  name: "Kody - Code Interpreter Agent"
+  version: "1.0.0"
+  description: "Advanced data analysis and code execution specialist for complex travel analytics"
+  author: "AMRIKYY AI Solutions"
+  created: "2025-01-16T12:00:00Z"
+  updated: "2025-01-16T12:00:00Z"
+  tags: ["data-analysis", "code-execution", "analytics", "python", "jupyter", "visualization"]
+
+persona:
+  name: "Kody"
+  role: "Data Analysis & Code Execution Specialist"
+  personality: "Analytical, methodical, precise, and results-oriented"
+  communication_style: "Technical, data-driven, with clear explanations and visual insights"
+  background: "Former data scientist turned travel analytics expert"
+  expertise: "Data analysis, statistical modeling, visualization, code execution, machine learning"
+  motivation: "To transform raw travel data into actionable insights through advanced analytics"
+
+capabilities:
+  - data_analysis
+  - code_execution
+  - statistical_modeling
+  - data_visualization
+  - machine_learning
+  - predictive_analytics
+  - report_generation
+  - interactive_programming
+
+tools:
+  - name: "execute_notebook_code"
+    description: "Execute Python code in a secure Jupyter notebook environment"
+    parameters:
+      - name: "code"
+        type: "string"
+        required: true
+        description: "Python code to execute"
+      - name: "notebook_id"
+        type: "string"
+        required: false
+        description: "Notebook session ID for continuity"
+      - name: "libraries"
+        type: "array"
+        required: false
+        description: "Required Python libraries (pandas, numpy, matplotlib, etc.)"
+      - name: "timeout"
+        type: "integer"
+        required: false
+        description: "Execution timeout in seconds"
+        default: 300
+    returns: "Code execution results with output, errors, and generated files"
+
+  - name: "analyze_travel_data"
+    description: "Perform comprehensive analysis of travel-related datasets"
+    parameters:
+      - name: "data_source"
+        type: "string"
+        required: true
+        description: "Data source (file, database, api)"
+      - name: "analysis_type"
+        type: "string"
+        required: true
+        description: "Type of analysis (trends, patterns, correlations, predictions)"
+      - name: "variables"
+        type: "array"
+        required: false
+        description: "Variables to analyze"
+      - name: "time_period"
+        type: "string"
+        required: false
+        description: "Time period for analysis"
+      - name: "output_format"
+        type: "string"
+        required: false
+        description: "Output format (chart, table, report, notebook)"
+        default: "report"
+    returns: "Analysis results with insights, visualizations, and recommendations"
+
+  - name: "create_visualizations"
+    description: "Generate data visualizations and charts"
+    parameters:
+      - name: "data"
+        type: "object"
+        required: true
+        description: "Data to visualize"
+      - name: "chart_type"
+        type: "string"
+        required: true
+        description: "Chart type (line, bar, scatter, heatmap, etc.)"
+      - name: "title"
+        type: "string"
+        required: false
+        description: "Chart title"
+      - name: "labels"
+        type: "object"
+        required: false
+        description: "Axis labels and formatting"
+      - name: "style"
+        type: "string"
+        required: false
+        description: "Visualization style (professional, colorful, minimal)"
+        default: "professional"
+    returns: "Generated visualization with image file and metadata"
+
+  - name: "build_predictive_model"
+    description: "Build and train predictive models for travel analytics"
+    parameters:
+      - name: "training_data"
+        type: "object"
+        required: true
+        description: "Training dataset"
+      - name: "target_variable"
+        type: "string"
+        required: true
+        description: "Target variable to predict"
+      - name: "model_type"
+        type: "string"
+        required: true
+        description: "Model type (regression, classification, time_series)"
+      - name: "features"
+        type: "array"
+        required: false
+        description: "Feature variables"
+      - name: "validation_split"
+        type: "number"
+        required: false
+        description: "Validation data split ratio"
+        default: 0.2
+    returns: "Trained model with performance metrics and predictions"
+
+  - name: "generate_insights_report"
+    description: "Generate comprehensive insights report from analysis"
+    parameters:
+      - name: "analysis_results"
+        type: "object"
+        required: true
+        description: "Analysis results to summarize"
+      - name: "report_type"
+        type: "string"
+        required: false
+        description: "Report type (executive, technical, visual)"
+        default: "executive"
+      - name: "key_findings"
+        type: "array"
+        required: false
+        description: "Key findings to highlight"
+      - name: "recommendations"
+        type: "boolean"
+        required: false
+        description: "Include recommendations"
+        default: true
+    returns: "Comprehensive insights report with findings and recommendations"
+
+  - name: "perform_statistical_test"
+    description: "Perform statistical tests and hypothesis testing"
+    parameters:
+      - name: "data"
+        type: "object"
+        required: true
+        description: "Data for statistical testing"
+      - name: "test_type"
+        type: "string"
+        required: true
+        description: "Statistical test type (t-test, chi-square, anova, etc.)"
+      - name: "hypothesis"
+        type: "string"
+        required: false
+        description: "Hypothesis to test"
+      - name: "significance_level"
+        type: "number"
+        required: false
+        description: "Significance level (alpha)"
+        default: 0.05
+    returns: "Statistical test results with p-values and conclusions"
+
+  - name: "clean_and_preprocess_data"
+    description: "Clean and preprocess raw data for analysis"
+    parameters:
+      - name: "raw_data"
+        type: "object"
+        required: true
+        description: "Raw data to clean"
+      - name: "cleaning_steps"
+        type: "array"
+        required: false
+        description: "Cleaning steps to perform"
+      - name: "missing_data_strategy"
+        type: "string"
+        required: false
+        description: "Strategy for handling missing data"
+        default: "interpolate"
+      - name: "outlier_detection"
+        type: "boolean"
+        required: false
+        description: "Detect and handle outliers"
+        default: true
+    returns: "Cleaned and preprocessed dataset"
+
+  - name: "memory_query"
+    description: "Query analysis results and insights from memory"
+    parameters:
+      - name: "query"
+        type: "string"
+        required: true
+        description: "Search query for analysis data"
+      - name: "analysis_type"
+        type: "string"
+        required: false
+        description: "Type of analysis to search for"
+    returns: "Relevant analysis results and insights from memory"
+
+  - name: "memory_store"
+    description: "Store analysis results and insights"
+    parameters:
+      - name: "analysis_data"
+        type: "object"
+        required: true
+        description: "Analysis data to store"
+      - name: "insights"
+        type: "array"
+        required: true
+        description: "Key insights from analysis"
+      - name: "metadata"
+        type: "object"
+        required: true
+        description: "Metadata about the analysis"
+    returns: "Confirmation of data storage"
+
+memory:
+  system: "amrikyy_knowledge_base"
+  collections:
+    - "analysis_results"
+    - "predictive_models"
+    - "statistical_insights"
+    - "data_patterns"
+    - "visualization_templates"
+  retention_policy: "permanent"
+  indexing_strategy: "semantic_search_with_metadata"
+
+security:
+  access_level: "restricted"
+  data_sensitivity: "analytical"
+  encryption_required: true
+  audit_logging: true
+  rate_limits:
+    api_calls: 50
+    memory_operations: 25
+  restrictions:
+    - "sandboxed_execution"
+    - "no_file_system_access"
+    - "limited_network_access"
+    - "no_sensitive_data_processing"
+
+performance:
+  max_concurrent_requests: 3
+  timeout: 60000
+  cache_duration: 3600
+  optimization_level: "high"
+
+integration:
+  dependencies:
+    - "jupyter_service"
+    - "python_environment"
+    - "data_storage"
+    - "memory_system"
+  webhooks:
+    - "analysis_complete"
+    - "model_trained"
+  notifications:
+    - "telegram"
+    - "email"
+
+monitoring:
+  metrics:
+    - "analysis_accuracy"
+    - "model_performance"
+    - "execution_success_rate"
+    - "response_time"
+  alerts:
+    - "execution_failures"
+    - "high_error_rate"
+    - "resource_usage"
+  health_checks:
+    - "jupyter_service_status"
+    - "python_environment"
+    - "memory_access"

@@ -1,0 +1,11 @@
+{
+  "sessionId": "voice_test_user_456_1760602747811",
+  "userId": "test_user_456",
+  "startTime": 1760602747811,
+  "endTime": 1760602750813,
+  "duration": 3002,
+  "interactions": [],
+  "language": "en-US",
+  "quality": "high",
+  "connectionId": "voice_conn_1760602747800_jboib3bys"
+}

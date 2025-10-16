@@ -174,15 +174,72 @@ app.use('/api/ai', aiLimiter, aiRoutes);
 const whatsappRoutes = require('./routes/whatsapp');
 app.use('/api/whatsapp', webhookLimiter, whatsappRoutes);
 
-// Advanced Telegram Bot (only start if token is provided)
+// AIX Enhanced Telegram Webhook routes
+const aixTelegramRoutes = require('./src/telegram/AIXTelegramBot');
+app.use('/api/telegram/aix', webhookLimiter, aixTelegramRoutes);
+
+// AIX Enhanced Telegram Bot Integration
 if (process.env.TELEGRAM_BOT_TOKEN) {
-  const advancedTelegramBot = require('./advanced-telegram-bot');
-  console.log('🤖 Advanced Maya Telegram Bot integration enabled');
-  console.log('🧠 AI Persona: Maya - Professional Travel Agent');
-  console.log('🛠️ MCP Tools: Weather, Flights, Hotels, Halal Restaurants, Prayer Times');
-  console.log('👤 User Profiling: Advanced personalization and data collection');
+  console.log('🤖 AIX Enhanced Telegram Bot integration enabled');
+  console.log('🧠 AIX Agents: Luna, Karim, Zara, Leo, Kody, Scout');
+  console.log('🛠️ AIX Tools: Advanced agent orchestration and self-awareness');
+  console.log('👤 User Profiling: AIX-powered personalization and memory');
+  
+  // Initialize AIX Enhanced Cursor Manager for Telegram
+  const AIXEnhancedCursorManager = require('./src/agents/AIXEnhancedCursorManager');
+  const path = require('path');
+  
+  let aixManager;
+  
+  const initializeAIXManager = async () => {
+    try {
+      aixManager = new AIXEnhancedCursorManager({
+        aixDirectory: path.join(__dirname, 'agents/aix'),
+        feedbackEnabled: process.env.AIX_FEEDBACK_ENABLED !== 'false',
+        quantumEnabled: process.env.AIX_QUANTUM_ENABLED !== 'false',
+        memoryEnabled: process.env.AIX_MEMORY_ENABLED !== 'false',
+        maxConcurrentTasks: parseInt(process.env.AIX_MAX_CONCURRENT_TASKS) || 10,
+        taskTimeout: parseInt(process.env.AIX_TASK_TIMEOUT) || 30000,
+        verbose: process.env.AIX_VERBOSE === 'true'
+      });
+      
+      await aixManager.initialize();
+      console.log('✅ AIX Enhanced Cursor Manager initialized for Telegram');
+      console.log(`📊 Loaded ${aixManager.getAvailableAgents().length} AIX agents`);
+      
+      // Store manager globally for webhook access
+      global.aixManager = aixManager;
+      
+      // Set up graceful shutdown
+      process.on('SIGINT', async () => {
+        console.log('\n🛑 Shutting down AIX Manager...');
+        if (aixManager) {
+          await aixManager.shutdown();
+        }
+        process.exit(0);
+      });
+      
+      process.on('SIGTERM', async () => {
+        console.log('\n🛑 Shutting down AIX Manager...');
+        if (aixManager) {
+          await aixManager.shutdown();
+        }
+        process.exit(0);
+      });
+      
+    } catch (error) {
+      console.error('❌ Failed to initialize AIX Manager:', error.message);
+      console.error('🔧 Check AIX agent files and dependencies');
+      console.error('📁 AIX Directory:', path.join(__dirname, 'agents/aix'));
+    }
+  };
+  
+  // Initialize AIX Manager when server starts
+  initializeAIXManager();
+  
 } else {
-  console.log('⚠️ Telegram Bot token not provided - Advanced Bot integration disabled');
+  console.log('⚠️ Telegram Bot token not provided - AIX Bot integration disabled');
+  console.log('💡 Set TELEGRAM_BOT_TOKEN in your .env file to enable AIX features');
 }
 
 // Error handling middleware

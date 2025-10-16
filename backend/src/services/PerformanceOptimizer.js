@@ -15,7 +15,7 @@
 const NodeCache = require('node-cache');
 const compression = require('compression');
 const responseTime = require('response-time');
-const { logger } = require('../utils/logger');
+const logger = require('../../utils/logger');
 
 class PerformanceOptimizer {
   constructor() {

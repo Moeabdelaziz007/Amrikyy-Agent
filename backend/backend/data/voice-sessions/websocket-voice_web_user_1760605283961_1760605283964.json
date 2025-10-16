@@ -1,0 +1,138 @@
+{
+  "sessionId": "voice_web_user_1760605283961_1760605283964",
+  "userId": "web_user_1760605283961",
+  "startTime": 1760605283964,
+  "endTime": 1760605326229,
+  "duration": 42265,
+  "interactions": [
+    {
+      "timestamp": 1760605296060,
+      "type": "voice_input",
+      "transcript": "hello",
+      "confidence": 0.9,
+      "isFinal": true
+    },
+    {
+      "timestamp": 1760605296079,
+      "type": "voice_response",
+      "text": "this.patternEngine.getRelevantPatterns is not a function",
+      "cursorResponse": {
+        "success": false,
+        "requestId": "req_1760605296060_71lc45ig3",
+        "error": "this.patternEngine.getRelevantPatterns is not a function",
+        "metadata": {
+          "cursor_version": "1.0.0",
+          "timestamp": "2025-10-16T09:01:36.079Z"
+        }
+      }
+    },
+    {
+      "timestamp": 1760605301518,
+      "type": "voice_input",
+      "transcript": " this pattern engine get relevant patterns is not a function no",
+      "confidence": 0.9,
+      "isFinal": true
+    },
+    {
+      "timestamp": 1760605301522,
+      "type": "voice_response",
+      "text": "this.patternEngine.getRelevantPatterns is not a function",
+      "cursorResponse": {
+        "success": false,
+        "requestId": "req_1760605301518_q0bp8yrma",
+        "error": "this.patternEngine.getRelevantPatterns is not a function",
+        "metadata": {
+          "cursor_version": "1.0.0",
+          "timestamp": "2025-10-16T09:01:41.520Z"
+        }
+      }
+    },
+    {
+      "timestamp": 1760605306025,
+      "type": "voice_input",
+      "transcript": " this pattern engine get relevant patterns is not a function",
+      "confidence": 0.9,
+      "isFinal": true
+    },
+    {
+      "timestamp": 1760605306034,
+      "type": "voice_response",
+      "text": "this.patternEngine.getRelevantPatterns is not a function",
+      "cursorResponse": {
+        "success": false,
+        "requestId": "req_1760605306025_yoktza3ec",
+        "error": "this.patternEngine.getRelevantPatterns is not a function",
+        "metadata": {
+          "cursor_version": "1.0.0",
+          "timestamp": "2025-10-16T09:01:46.034Z"
+        }
+      }
+    },
+    {
+      "timestamp": 1760605313992,
+      "type": "voice_input",
+      "transcript": " this new octane",
+      "confidence": 0.9,
+      "isFinal": true
+    },
+    {
+      "timestamp": 1760605314000,
+      "type": "voice_response",
+      "text": "this.patternEngine.getRelevantPatterns is not a function",
+      "cursorResponse": {
+        "success": false,
+        "requestId": "req_1760605313992_1a3a10plf",
+        "error": "this.patternEngine.getRelevantPatterns is not a function",
+        "metadata": {
+          "cursor_version": "1.0.0",
+          "timestamp": "2025-10-16T09:01:53.998Z"
+        }
+      }
+    },
+    {
+      "timestamp": 1760605319867,
+      "type": "voice_input",
+      "transcript": " this paternal that relevantes is no obtain fence and",
+      "confidence": 0.9,
+      "isFinal": true
+    },
+    {
+      "timestamp": 1760605319872,
+      "type": "voice_response",
+      "text": "this.patternEngine.getRelevantPatterns is not a function",
+      "cursorResponse": {
+        "success": false,
+        "requestId": "req_1760605319867_t80s0a09m",
+        "error": "this.patternEngine.getRelevantPatterns is not a function",
+        "metadata": {
+          "cursor_version": "1.0.0",
+          "timestamp": "2025-10-16T09:01:59.871Z"
+        }
+      }
+    },
+    {
+      "timestamp": 1760605323337,
+      "type": "voice_input",
+      "transcript": " this relevant is",
+      "confidence": 0.9,
+      "isFinal": true
+    },
+    {
+      "timestamp": 1760605323384,
+      "type": "voice_response",
+      "text": "this.patternEngine.getRelevantPatterns is not a function",
+      "cursorResponse": {
+        "success": false,
+        "requestId": "req_1760605323337_4nlh5tnrl",
+        "error": "this.patternEngine.getRelevantPatterns is not a function",
+        "metadata": {
+          "cursor_version": "1.0.0",
+          "timestamp": "2025-10-16T09:02:03.383Z"
+        }
+      }
+    }
+  ],
+  "language": "ar-SA",
+  "quality": "high",
+  "connectionId": "voice_conn_1760605283053_g0yms0e05"
+}

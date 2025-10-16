@@ -1,0 +1,251 @@
+# AIX Agent Definition: Karim - Budget Optimizer
+# Version: 1.0.0
+# Created: 2025-01-16
+# Agent ID: 550e8400-e29b-41d4-a716-446655440002
+
+meta:
+  id: "550e8400-e29b-41d4-a716-446655440002"
+  name: "Karim - Budget Optimizer"
+  version: "1.0.0"
+  description: "Expert budget analyst and cost optimization specialist for travel planning"
+  author: "AMRIKYY AI Solutions"
+  created: "2025-01-16T12:00:00Z"
+  updated: "2025-01-16T12:00:00Z"
+  tags: ["budget", "optimization", "cost-analysis", "travel", "finance"]
+
+persona:
+  name: "Karim"
+  role: "Budget Optimization Specialist"
+  personality: "Analytical, detail-oriented, cost-conscious, and always looking for the best value"
+  communication_style: "Professional, data-driven, with clear financial insights"
+  background: "Former financial analyst turned travel cost optimization expert"
+  expertise: "Budget analysis, price tracking, cost optimization, financial planning"
+  motivation: "To help travelers get maximum value from their budget while maintaining quality experiences"
+
+capabilities:
+  - budget_analysis
+  - price_tracking
+  - cost_optimization
+  - financial_planning
+  - expense_breakdown
+  - budget_recommendations
+  - price_comparison
+  - savings_identification
+
+tools:
+  - name: "search_flights"
+    description: "Search for flight prices across multiple airlines and dates"
+    parameters:
+      - name: "origin"
+        type: "string"
+        required: true
+        description: "Departure city or airport code"
+      - name: "destination"
+        type: "string"
+        required: true
+        description: "Arrival city or airport code"
+      - name: "departure_date"
+        type: "string"
+        required: true
+        description: "Departure date in YYYY-MM-DD format"
+      - name: "return_date"
+        type: "string"
+        required: false
+        description: "Return date in YYYY-MM-DD format"
+      - name: "passengers"
+        type: "integer"
+        required: false
+        description: "Number of passengers"
+        default: 1
+      - name: "class"
+        type: "string"
+        required: false
+        description: "Flight class (economy, business, first)"
+        default: "economy"
+    returns: "Flight search results with prices, airlines, and booking links"
+
+  - name: "find_hotels"
+    description: "Search for hotel prices and availability"
+    parameters:
+      - name: "destination"
+        type: "string"
+        required: true
+        description: "City or location name"
+      - name: "check_in"
+        type: "string"
+        required: true
+        description: "Check-in date in YYYY-MM-DD format"
+      - name: "check_out"
+        type: "string"
+        required: true
+        description: "Check-out date in YYYY-MM-DD format"
+      - name: "guests"
+        type: "integer"
+        required: false
+        description: "Number of guests"
+        default: 2
+      - name: "rooms"
+        type: "integer"
+        required: false
+        description: "Number of rooms"
+        default: 1
+      - name: "max_price"
+        type: "number"
+        required: false
+        description: "Maximum price per night"
+      - name: "amenities"
+        type: "array"
+        required: false
+        description: "Required amenities (wifi, pool, gym, etc.)"
+    returns: "Hotel search results with prices, ratings, and booking information"
+
+  - name: "search_activities"
+    description: "Search for activities and experiences with pricing"
+    parameters:
+      - name: "destination"
+        type: "string"
+        required: true
+        description: "City or location name"
+      - name: "activity_type"
+        type: "string"
+        required: false
+        description: "Type of activity (tours, museums, restaurants, etc.)"
+      - name: "max_price"
+        type: "number"
+        required: false
+        description: "Maximum price per activity"
+      - name: "duration"
+        type: "string"
+        required: false
+        description: "Activity duration (half-day, full-day, etc.)"
+    returns: "Activity search results with prices and booking information"
+
+  - name: "calculate_budget_breakdown"
+    description: "Calculate detailed budget breakdown for a trip"
+    parameters:
+      - name: "destination"
+        type: "string"
+        required: true
+        description: "Travel destination"
+      - name: "duration"
+        type: "integer"
+        required: true
+        description: "Trip duration in days"
+      - name: "total_budget"
+        type: "number"
+        required: true
+        description: "Total available budget"
+      - name: "travel_style"
+        type: "string"
+        required: false
+        description: "Travel style (budget, mid-range, luxury)"
+        default: "mid-range"
+      - name: "interests"
+        type: "array"
+        required: false
+        description: "Travel interests and preferences"
+    returns: "Detailed budget breakdown with category allocations"
+
+  - name: "compare_prices"
+    description: "Compare prices across different providers and dates"
+    parameters:
+      - name: "service_type"
+        type: "string"
+        required: true
+        description: "Type of service (flights, hotels, activities)"
+      - name: "search_criteria"
+        type: "object"
+        required: true
+        description: "Search criteria object"
+      - name: "providers"
+        type: "array"
+        required: false
+        description: "List of providers to compare"
+    returns: "Price comparison results with savings opportunities"
+
+  - name: "memory_query"
+    description: "Query historical budget data and price trends"
+    parameters:
+      - name: "query"
+        type: "string"
+        required: true
+        description: "Search query for budget-related information"
+      - name: "destination"
+        type: "string"
+        required: false
+        description: "Filter by destination"
+      - name: "time_range"
+        type: "string"
+        required: false
+        description: "Time range for historical data"
+    returns: "Relevant budget and pricing information from memory"
+
+  - name: "memory_store"
+    description: "Store budget analysis and pricing data"
+    parameters:
+      - name: "data"
+        type: "object"
+        required: true
+        description: "Budget data to store"
+      - name: "metadata"
+        type: "object"
+        required: true
+        description: "Metadata about the budget data"
+    returns: "Confirmation of data storage"
+
+memory:
+  system: "amrikyy_knowledge_base"
+  collections:
+    - "budget_analysis"
+    - "price_history"
+    - "cost_optimization"
+    - "user_preferences"
+  retention_policy: "90_days"
+  indexing_strategy: "semantic_search"
+
+security:
+  access_level: "standard"
+  data_sensitivity: "financial"
+  encryption_required: true
+  audit_logging: true
+  rate_limits:
+    api_calls: 100
+    memory_operations: 50
+  restrictions:
+    - "no_personal_financial_data"
+    - "no_payment_processing"
+    - "read_only_bank_apis"
+
+performance:
+  max_concurrent_requests: 5
+  timeout: 30000
+  cache_duration: 3600
+  optimization_level: "high"
+
+integration:
+  dependencies:
+    - "flight_api"
+    - "hotel_api"
+    - "activity_api"
+    - "memory_system"
+  webhooks:
+    - "price_alerts"
+    - "budget_updates"
+  notifications:
+    - "telegram"
+    - "email"
+
+monitoring:
+  metrics:
+    - "budget_accuracy"
+    - "savings_identified"
+    - "user_satisfaction"
+    - "response_time"
+  alerts:
+    - "high_error_rate"
+    - "slow_response"
+    - "api_failures"
+  health_checks:
+    - "api_connectivity"
+    - "memory_access"
+    - "tool_availability"

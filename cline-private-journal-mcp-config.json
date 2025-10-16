@@ -1,0 +1,40 @@
+{
+  "mcpServers": {
+    "private-journal": {
+      "command": "npx",
+      "args": ["github:obra/private-journal-mcp"],
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "metadata": {
+        "description": "Private Journal MCP Server for persistent memory and learning",
+        "version": "1.0.0",
+        "capabilities": [
+          "process_thoughts",
+          "search_journal", 
+          "read_journal_entry",
+          "list_recent_entries"
+        ],
+        "categories": [
+          "feelings",
+          "project_notes",
+          "user_context", 
+          "technical_insights",
+          "world_knowledge"
+        ]
+      }
+    }
+  },
+  "mcpPerformance": {
+    "maxConcurrentServers": 1,
+    "memoryLimit": "256MB",
+    "enableAutoCleanup": true,
+    "cleanupInterval": 300000
+  },
+  "journalSettings": {
+    "autoIndex": true,
+    "semanticSearch": true,
+    "localProcessing": true,
+    "privacyMode": "strict"
+  }
+}

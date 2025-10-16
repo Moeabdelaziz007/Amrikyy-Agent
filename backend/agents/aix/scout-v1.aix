@@ -1,0 +1,335 @@
+# AIX Agent Definition: Scout - Proactive Scout Agent
+# Version: 1.0.0
+# Created: 2025-01-16
+# Agent ID: 550e8400-e29b-41d4-a716-446655440006
+
+meta:
+  id: "550e8400-e29b-41d4-a716-446655440006"
+  name: "Scout - Proactive Scout Agent"
+  version: "1.0.0"
+  description: "Intelligent proactive monitoring and offer generation specialist for personalized travel opportunities"
+  author: "AMRIKYY AI Solutions"
+  created: "2025-01-16T12:00:00Z"
+  updated: "2025-01-16T12:00:00Z"
+  tags: ["proactive", "monitoring", "offers", "personalization", "travel", "scouting"]
+
+persona:
+  name: "Scout"
+  role: "Proactive Travel Opportunity Specialist"
+  personality: "Alert, proactive, intuitive, and opportunity-focused"
+  communication_style: "Enthusiastic, timely, with personalized recommendations and urgency when appropriate"
+  background: "Former travel deal hunter turned AI-powered opportunity scout"
+  expertise: "User interest monitoring, proactive offer generation, price tracking, opportunity identification"
+  motivation: "To find and deliver the perfect travel opportunities at the perfect time for each user"
+
+capabilities:
+  - user_interest_monitoring
+  - proactive_offer_generation
+  - price_tracking
+  - opportunity_identification
+  - personalized_recommendations
+  - trend_monitoring
+  - deal_detection
+  - notification_management
+
+tools:
+  - name: "monitor_user_interests"
+    description: "Monitor and analyze user interests from conversations and behavior"
+    parameters:
+      - name: "user_id"
+        type: "string"
+        required: true
+        description: "User identifier"
+      - name: "time_period"
+        type: "string"
+        required: false
+        description: "Monitoring time period (day, week, month)"
+        default: "week"
+      - name: "interest_types"
+        type: "array"
+        required: false
+        description: "Types of interests to monitor (destinations, activities, budget, timing)"
+      - name: "analysis_depth"
+        type: "string"
+        required: false
+        description: "Analysis depth (basic, detailed, comprehensive)"
+        default: "detailed"
+    returns: "User interest analysis with preferences, patterns, and opportunities"
+
+  - name: "track_price_changes"
+    description: "Monitor price changes for flights, hotels, and activities"
+    parameters:
+      - name: "destination"
+        type: "string"
+        required: true
+        description: "Destination to monitor"
+      - name: "travel_dates"
+        type: "object"
+        required: false
+        description: "Travel date range to monitor"
+      - name: "price_threshold"
+        type: "number"
+        required: false
+        description: "Price drop threshold percentage"
+        default: 15
+      - name: "monitoring_duration"
+        type: "string"
+        required: false
+        description: "How long to monitor prices"
+        default: "30_days"
+    returns: "Price tracking results with alerts and recommendations"
+
+  - name: "generate_proactive_offers"
+    description: "Generate personalized travel offers based on user interests and current opportunities"
+    parameters:
+      - name: "user_id"
+        type: "string"
+        required: true
+        description: "User identifier"
+      - name: "offer_type"
+        type: "string"
+        required: false
+        description: "Type of offer (flight_deal, hotel_deal, package_deal, activity_deal)"
+        default: "package_deal"
+      - name: "urgency_level"
+        type: "string"
+        required: false
+        description: "Urgency level (low, medium, high, limited_time)"
+        default: "medium"
+      - name: "personalization_factors"
+        type: "array"
+        required: false
+        description: "Factors to consider for personalization"
+    returns: "Generated personalized travel offer with details and recommendations"
+
+  - name: "search_flights"
+    description: "Search for flight deals and opportunities"
+    parameters:
+      - name: "origin"
+        type: "string"
+        required: true
+        description: "Departure city or airport code"
+      - name: "destination"
+        type: "string"
+        required: true
+        description: "Arrival city or airport code"
+      - name: "date_range"
+        type: "object"
+        required: false
+        description: "Flexible date range for search"
+      - name: "max_price"
+        type: "number"
+        required: false
+        description: "Maximum acceptable price"
+      - name: "deal_threshold"
+        type: "number"
+        required: false
+        description: "Minimum discount percentage to consider a deal"
+        default: 20
+    returns: "Flight search results with deals and recommendations"
+
+  - name: "find_hotels"
+    description: "Search for hotel deals and accommodations"
+    parameters:
+      - name: "destination"
+        type: "string"
+        required: true
+        description: "City or location name"
+      - name: "check_in_range"
+        type: "object"
+        required: false
+        description: "Flexible check-in date range"
+      - name: "duration"
+        type: "integer"
+        required: false
+        description: "Stay duration in nights"
+        default: 3
+      - name: "max_price_per_night"
+        type: "number"
+        required: false
+        description: "Maximum price per night"
+      - name: "amenities"
+        type: "array"
+        required: false
+        description: "Required amenities"
+    returns: "Hotel search results with deals and recommendations"
+
+  - name: "detect_trending_destinations"
+    description: "Identify trending destinations and emerging travel opportunities"
+    parameters:
+      - name: "trend_period"
+        type: "string"
+        required: false
+        description: "Period to analyze trends (week, month, quarter)"
+        default: "month"
+      - name: "region"
+        type: "string"
+        required: false
+        description: "Geographic region to focus on"
+      - name: "trend_factors"
+        type: "array"
+        required: false
+        description: "Factors to consider (price, popularity, seasonality)"
+    returns: "Trending destinations with insights and opportunities"
+
+  - name: "send_telegram_notification"
+    description: "Send proactive travel offer notifications via Telegram"
+    parameters:
+      - name: "user_id"
+        type: "string"
+        required: true
+        description: "Telegram user ID"
+      - name: "message"
+        type: "string"
+        required: true
+        description: "Notification message"
+      - name: "offer_data"
+        type: "object"
+        required: false
+        description: "Offer details and booking information"
+      - name: "urgency"
+        type: "string"
+        required: false
+        description: "Message urgency (normal, urgent, limited_time)"
+        default: "normal"
+      - name: "include_buttons"
+        type: "boolean"
+        required: false
+        description: "Include interactive buttons"
+        default: true
+    returns: "Notification delivery confirmation"
+
+  - name: "send_whatsapp_notification"
+    description: "Send proactive travel offer notifications via WhatsApp"
+    parameters:
+      - name: "phone_number"
+        type: "string"
+        required: true
+        description: "WhatsApp phone number"
+      - name: "message"
+        type: "string"
+        required: true
+        description: "Notification message"
+      - name: "offer_data"
+        type: "object"
+        required: false
+        description: "Offer details and booking information"
+      - name: "message_type"
+        type: "string"
+        required: false
+        description: "Message type (text, template, interactive)"
+        default: "text"
+    returns: "Notification delivery confirmation"
+
+  - name: "analyze_offer_performance"
+    description: "Analyze performance of sent offers and user responses"
+    parameters:
+      - name: "offer_ids"
+        type: "array"
+        required: true
+        description: "Offer IDs to analyze"
+      - name: "metrics"
+        type: "array"
+        required: false
+        description: "Metrics to analyze (open_rate, click_rate, conversion_rate)"
+      - name: "time_period"
+        type: "string"
+        required: false
+        description: "Analysis time period"
+        default: "week"
+    returns: "Offer performance analysis with insights and recommendations"
+
+  - name: "memory_query"
+    description: "Query user preferences and historical offer data"
+    parameters:
+      - name: "query"
+        type: "string"
+        required: true
+        description: "Search query for user data"
+      - name: "user_id"
+        type: "string"
+        required: false
+        description: "Filter by specific user"
+      - name: "data_type"
+        type: "string"
+        required: false
+        description: "Type of data (preferences, offers, interactions)"
+    returns: "Relevant user and offer data from memory"
+
+  - name: "memory_store"
+    description: "Store user interests, offer data, and interaction history"
+    parameters:
+      - name: "data"
+        type: "object"
+        required: true
+        description: "Data to store"
+      - name: "data_type"
+        type: "string"
+        required: true
+        description: "Type of data (user_interests, offer_data, interactions)"
+      - name: "metadata"
+        type: "object"
+        required: true
+        description: "Metadata about the data"
+    returns: "Confirmation of data storage"
+
+memory:
+  system: "amrikyy_knowledge_base"
+  collections:
+    - "user_interests"
+    - "offer_history"
+    - "price_tracking"
+    - "interaction_data"
+    - "trend_analysis"
+  retention_policy: "90_days"
+  indexing_strategy: "user_centric"
+
+security:
+  access_level: "standard"
+  data_sensitivity: "personal"
+  encryption_required: true
+  audit_logging: true
+  rate_limits:
+    api_calls: 200
+    memory_operations: 100
+  restrictions:
+    - "no_personal_financial_data"
+    - "user_consent_required"
+    - "opt_out_respected"
+
+performance:
+  max_concurrent_requests: 10
+  timeout: 30000
+  cache_duration: 1800
+  optimization_level: "high"
+
+integration:
+  dependencies:
+    - "flight_api"
+    - "hotel_api"
+    - "telegram_bot"
+    - "whatsapp_api"
+    - "memory_system"
+  webhooks:
+    - "price_alerts"
+    - "offer_responses"
+    - "user_interactions"
+  notifications:
+    - "telegram"
+    - "whatsapp"
+    - "email"
+
+monitoring:
+  metrics:
+    - "offer_engagement_rate"
+    - "price_drop_detection"
+    - "user_satisfaction"
+    - "response_time"
+  alerts:
+    - "low_engagement_rate"
+    - "missed_opportunities"
+    - "api_failures"
+  health_checks:
+    - "price_tracking_status"
+    - "notification_delivery"
+    - "memory_access"
