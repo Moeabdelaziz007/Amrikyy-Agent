@@ -14,6 +14,7 @@ const { AIXManager, AIXAgent } = require('./AIXManager');
 const QuantumTopologyLayer = require('./QuantumTopologyLayer');
 const PatternLearningEngine = require('./PatternLearningEngine');
 const ProjectContextDatabase = require('./ProjectContextDatabase');
+const { AIXRewardIntegration } = require('./AIXRewardIntegration');
 const { logger } = require('../utils/logger');
 const log = logger.child('EnhancedAIXManager');
 
@@ -30,6 +31,11 @@ class EnhancedAIXManager extends AIXManager {
       rootPath: options.projectRoot || process.cwd()
     });
 
+    // Initialize Reward Engine integration
+    this.rewardIntegration = options.rewardIntegration || null;
+    this.aixRewardIntegration = this.rewardIntegration ? 
+      new AIXRewardIntegration(this.rewardIntegration) : null;
+
     // Workflow orchestration
     this.workflows = new Map();
     this.activeWorkflows = new Map();
@@ -40,7 +46,8 @@ class EnhancedAIXManager extends AIXManager {
       successfulExecutions: 0,
       averageLatency: 0,
       patternsLearned: 0,
-      agentsEvolved: 0
+      agentsEvolved: 0,
+      totalRewards: 0
     };
 
     // Enable auto-learning
@@ -55,7 +62,8 @@ class EnhancedAIXManager extends AIXManager {
       autoLearn: this.autoLearn,
       quantumEnabled: true,
       patternLearningEnabled: true,
-      projectContextEnabled: true
+      projectContextEnabled: true,
+      rewardEngineEnabled: !!this.aixRewardIntegration
     });
   }
 
@@ -142,6 +150,22 @@ class EnhancedAIXManager extends AIXManager {
         latency,
         taskCompleted: true
       });
+
+      // Process reward if Reward Engine is available
+      if (this.aixRewardIntegration) {
+        try {
+          const rewardResult = await this.aixRewardIntegration.processAgentTaskCompletion(
+            agentId, task, { ...result, executionTime: latency }
+          );
+          
+          if (rewardResult && rewardResult.reward) {
+            this.metrics.totalRewards += rewardResult.reward;
+            log.info(`🎯 Agent ${agentId} earned ${rewardResult.reward} reward points`);
+          }
+        } catch (rewardError) {
+          log.error('Reward processing failed', { agentId, error: rewardError.message });
+        }
+      }
 
       // Restore superposition (agent is ready again)
       this.quantumLayer.restoreSuperposition(agentId, ['idle', 'listening']);
@@ -335,6 +359,29 @@ class EnhancedAIXManager extends AIXManager {
 
       // Synthesize results
       const synthesized = this.synthesizeResults(results);
+
+      // Process collaboration reward if Reward Engine is available
+      if (this.aixRewardIntegration) {
+        try {
+          const primaryAgent = taskDistribution[0].agentId;
+          const collaboratingAgents = taskDistribution.slice(1).map(dist => dist.agentId);
+          
+          const rewardResult = await this.aixRewardIntegration.processAgentCollaboration(
+            primaryAgent, collaboratingAgents, { type: 'workflow', complexity: 'high' }, {
+              success: synthesized.success,
+              coordinationSuccess: true,
+              conflictsResolved: 0,
+              knowledgeShared: true
+            }
+          );
+          
+          if (rewardResult) {
+            log.info(`🤝 Collaboration reward processed for workflow ${workflowId}`);
+          }
+        } catch (rewardError) {
+          log.error('Collaboration reward processing failed', { workflowId, error: rewardError.message });
+        }
+      }
 
       // Track workflow
       const duration = Date.now() - startTime;

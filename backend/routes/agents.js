@@ -149,13 +149,22 @@ router.post('/:id/activate', async (req, res) => {
     const { id } = req.params;
     log.info(`Activating agent: ${id}`);
     
-    // TODO: Implement agent activation
-    // This would load the agent into the runtime AIX system
+    // Initialize agent runtime if not already initialized
+    if (!global.agentRuntime) {
+      const { AgentRuntime } = require('../src/aix/AgentRuntime');
+      global.agentRuntime = new AgentRuntime({
+        agentsDirectory: path.join(__dirname, '../agents')
+      });
+      await global.agentRuntime.start();
+    }
+    
+    // Activate the agent
+    const result = await global.agentRuntime.activateAgent(id, req.body);
     
     res.json({
       success: true,
-      message: `Agent ${id} activated`,
-      agent: { id, status: 'active' }
+      message: `Agent ${id} activated successfully`,
+      agent: result
     });
     
   } catch (error) {
@@ -177,12 +186,22 @@ router.post('/:id/deactivate', async (req, res) => {
     const { id } = req.params;
     log.info(`Deactivating agent: ${id}`);
     
-    // TODO: Implement agent deactivation
+    // Check if agent runtime is available
+    if (!global.agentRuntime) {
+      return res.status(400).json({
+        success: false,
+        error: 'Agent runtime not initialized',
+        message: 'Agent runtime must be started before deactivating agents'
+      });
+    }
+    
+    // Deactivate the agent
+    const result = await global.agentRuntime.deactivateAgent(id);
     
     res.json({
       success: true,
-      message: `Agent ${id} deactivated`,
-      agent: { id, status: 'idle' }
+      message: `Agent ${id} deactivated successfully`,
+      agent: result
     });
     
   } catch (error) {
@@ -203,16 +222,25 @@ router.get('/:id/status', async (req, res) => {
   try {
     const { id } = req.params;
     
-    // TODO: Get real status from runtime
-    // For now, return mock status
-    const status = {
-      id,
-      status: 'active',
-      current_task: null,
-      memory_usage: 0,
-      uptime: 0,
-      last_activity: new Date().toISOString()
-    };
+    // Check if agent runtime is available
+    if (!global.agentRuntime) {
+      return res.status(400).json({
+        success: false,
+        error: 'Agent runtime not initialized',
+        message: 'Agent runtime must be started to get agent status'
+      });
+    }
+    
+    // Get real status from runtime
+    const status = global.agentRuntime.getAgentStatus(id);
+    
+    if (status.error) {
+      return res.status(404).json({
+        success: false,
+        error: status.error,
+        message: `Agent ${id} not found`
+      });
+    }
     
     res.json({
       success: true,
@@ -237,25 +265,34 @@ router.get('/topology/network', async (req, res) => {
   try {
     log.info('Fetching agent topology network');
     
-    // TODO: Get real topology from runtime
-    // For now, return example topology
+    // Check if agent runtime is available
+    if (!global.agentRuntime) {
+      return res.status(400).json({
+        success: false,
+        error: 'Agent runtime not initialized',
+        message: 'Agent runtime must be started to get topology'
+      });
+    }
+    
+    // Get real topology from runtime
+    const systemStatus = global.agentRuntime.getSystemStatus();
+    const allAgentsStatus = global.agentRuntime.getAllAgentsStatus();
+    
     const topology = {
-      nodes: [
-        { id: 'amrikyy-001', type: 'orchestrator', connections: ['safar-001', 'thrifty-001', 'thaqafa-001'] },
-        { id: 'safar-001', type: 'specialist', connections: ['amrikyy-001'] },
-        { id: 'thrifty-001', type: 'specialist', connections: ['amrikyy-001'] },
-        { id: 'thaqafa-001', type: 'specialist', connections: ['amrikyy-001'] }
-      ],
-      edges: [
-        { from: 'amrikyy-001', to: 'safar-001', type: 'coordinates' },
-        { from: 'amrikyy-001', to: 'thrifty-001', type: 'coordinates' },
-        { from: 'amrikyy-001', to: 'thaqafa-001', type: 'coordinates' }
-      ],
-      quantum_state: {
-        entangled_pairs: [
-          ['safar-001', 'thrifty-001']
-        ],
-        superposition_active: true
+      nodes: Object.keys(allAgentsStatus).map(agentId => ({
+        id: agentId,
+        name: allAgentsStatus[agentId].name || agentId,
+        type: 'agent',
+        status: allAgentsStatus[agentId].status,
+        capabilities: allAgentsStatus[agentId].capabilities || [],
+        uptime: allAgentsStatus[agentId].uptime || 0
+      })),
+      edges: [], // Will be populated based on agent connections
+      runtime_status: {
+        isRunning: systemStatus.isRunning,
+        totalAgents: systemStatus.totalAgents,
+        activeAgents: systemStatus.activeAgents,
+        uptime: systemStatus.uptime
       }
     };
     
@@ -269,6 +306,164 @@ router.get('/topology/network', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to fetch topology',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/agents/:id/execute
+ * Execute a task on an agent
+ */
+router.post('/:id/execute', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { task, context } = req.body;
+    
+    log.info(`Executing task on agent: ${id}`, { taskType: task?.type });
+    
+    // Check if agent runtime is available
+    if (!global.agentRuntime) {
+      return res.status(400).json({
+        success: false,
+        error: 'Agent runtime not initialized',
+        message: 'Agent runtime must be started to execute tasks'
+      });
+    }
+    
+    // Validate task
+    if (!task || !task.type) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid task',
+        message: 'Task must have a type property'
+      });
+    }
+    
+    // Execute the task
+    const result = await global.agentRuntime.executeAgent(id, task, context || {});
+    
+    res.json({
+      success: true,
+      message: `Task executed successfully on agent ${id}`,
+      result
+    });
+    
+  } catch (error) {
+    log.error(`Failed to execute task on agent ${req.params.id}: ${error.message}`);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to execute task',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/agents/runtime/status
+ * Get runtime status
+ */
+router.get('/runtime/status', async (req, res) => {
+  try {
+    log.info('Fetching runtime status');
+    
+    // Check if agent runtime is available
+    if (!global.agentRuntime) {
+      return res.status(400).json({
+        success: false,
+        error: 'Agent runtime not initialized',
+        message: 'Agent runtime is not started'
+      });
+    }
+    
+    // Get runtime stats
+    const stats = global.agentRuntime.getRuntimeStats();
+    const allAgentsStatus = global.agentRuntime.getAllAgentsStatus();
+    
+    res.json({
+      success: true,
+      runtime: {
+        stats,
+        agents: allAgentsStatus,
+        systemStatus: global.agentRuntime.getSystemStatus()
+      }
+    });
+    
+  } catch (error) {
+    log.error(`Failed to get runtime status: ${error.message}`);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get runtime status',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/agents/runtime/start
+ * Start the agent runtime
+ */
+router.post('/runtime/start', async (req, res) => {
+  try {
+    log.info('Starting agent runtime');
+    
+    // Initialize agent runtime if not already initialized
+    if (!global.agentRuntime) {
+      const { AgentRuntime } = require('../src/aix/AgentRuntime');
+      global.agentRuntime = new AgentRuntime({
+        agentsDirectory: path.join(__dirname, '../agents')
+      });
+    }
+    
+    // Start the runtime
+    await global.agentRuntime.start();
+    
+    res.json({
+      success: true,
+      message: 'Agent runtime started successfully',
+      runtime: global.agentRuntime.getRuntimeStats()
+    });
+    
+  } catch (error) {
+    log.error(`Failed to start runtime: ${error.message}`);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to start runtime',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/agents/runtime/stop
+ * Stop the agent runtime
+ */
+router.post('/runtime/stop', async (req, res) => {
+  try {
+    log.info('Stopping agent runtime');
+    
+    // Check if agent runtime is available
+    if (!global.agentRuntime) {
+      return res.status(400).json({
+        success: false,
+        error: 'Agent runtime not initialized',
+        message: 'Agent runtime is not running'
+      });
+    }
+    
+    // Stop the runtime
+    await global.agentRuntime.stop();
+    
+    res.json({
+      success: true,
+      message: 'Agent runtime stopped successfully'
+    });
+    
+  } catch (error) {
+    log.error(`Failed to stop runtime: ${error.message}`);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to stop runtime',
       message: error.message
     });
   }
