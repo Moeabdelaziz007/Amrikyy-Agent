@@ -7,6 +7,7 @@ const express = require('express');
 const router = express.Router();
 const KiwiTequilaService = require('../src/services/KiwiTequilaService');
 const { aiLimiter } = require('../middleware/rateLimiter');
+const ExternalAPILimiter = require('../middleware/externalAPILimiter');
 const logger = require('../utils/logger');
 
 /**
