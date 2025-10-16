@@ -7,13 +7,15 @@ const express = require('express');
 const router = express.Router();
 const BookingComService = require('../src/services/BookingComService');
 const { aiLimiter } = require('../middleware/rateLimiter');
+const { cache } = require('../middleware/cacheMiddleware');
 const logger = require('../utils/logger');
 
 /**
  * POST /api/hotels/search
  * Search for hotels
+ * Cached for 1 hour (3600 seconds)
  */
-router.post('/search', aiLimiter, async (req, res) => {
+router.post('/search', cache(3600), aiLimiter, async (req, res) => {
   try {
     const {
       city,
@@ -95,8 +97,9 @@ router.post('/search', aiLimiter, async (req, res) => {
 /**
  * GET /api/hotels/cities
  * Search for cities
+ * Cached for 24 hours (86400 seconds) - city data rarely changes
  */
-router.get('/cities', async (req, res) => {
+router.get('/cities', cache(86400), async (req, res) => {
   try {
     const { query } = req.query;
 
@@ -137,8 +140,9 @@ router.get('/cities', async (req, res) => {
 /**
  * GET /api/hotels/:hotelId
  * Get hotel details
+ * Cached for 6 hours (21600 seconds)
  */
-router.get('/:hotelId', async (req, res) => {
+router.get('/:hotelId', cache(21600), async (req, res) => {
   try {
     const { hotelId } = req.params;
 
@@ -172,8 +176,9 @@ router.get('/:hotelId', async (req, res) => {
 /**
  * POST /api/hotels/availability
  * Check room availability
+ * Cached for 30 minutes (1800 seconds)
  */
-router.post('/availability', aiLimiter, async (req, res) => {
+router.post('/availability', cache(1800), aiLimiter, async (req, res) => {
   try {
     const {
       hotelId,

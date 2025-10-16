@@ -229,6 +229,11 @@ const analyticsRoutes = require('./routes/analytics');
 app.use('/api/analytics', analyticsRoutes);
 console.log('📊 Analytics API endpoints registered');
 
+// Cache management routes
+const cacheRoutes = require('./routes/cache');
+app.use('/api/cache', cacheRoutes);
+console.log('💾 Cache management endpoints registered');
+
 // Quantum Reward Engine initialization and routes
 const { QuantumRewardEngine, createRewardRoutes } = require('./services/quantumRewardEngine');
 const { createClient } = require('@supabase/supabase-js');
