@@ -1,0 +1,38 @@
+# Kody Agent Data Directory - .gitignore
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Temporary files
+temp/*
+!temp/.gitkeep
+
+# Output files (charts, reports, etc.)
+outputs/*
+!outputs/.gitkeep
+
+# Dataset files (may contain sensitive data)
+datasets/*
+!datasets/.gitkeep
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Jupyter notebook outputs (may contain sensitive data)
+*.ipynb
+
+# Log files
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
