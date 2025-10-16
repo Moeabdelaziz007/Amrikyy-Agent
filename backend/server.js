@@ -235,7 +235,8 @@ app.use('/api/cache', cacheRoutes);
 console.log('💾 Cache management endpoints registered');
 
 // Quantum Reward Engine initialization and routes
-const { QuantumRewardEngine, createRewardRoutes } = require('./services/quantumRewardEngine');
+const { RewardIntegration } = require('./src/reward/RewardIntegration');
+const { createRewardRoutes } = require('./src/routes/reward');
 const { createClient } = require('@supabase/supabase-js');
 
 // Initialize Supabase client for reward engine (optional)
@@ -249,9 +250,17 @@ if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
 }
 
 // Initialize Quantum Reward Engine
-const rewardEngine = new QuantumRewardEngine(supabaseClient);
-createRewardRoutes(app, rewardEngine);
-console.log('🌌 Quantum Reward Engine initialized and routes registered');
+const rewardIntegration = new RewardIntegration(supabaseClient);
+rewardIntegration.initialize().then(() => {
+  console.log('🌌 Quantum Reward Engine initialized successfully');
+}).catch(err => {
+  console.error('❌ Failed to initialize Quantum Reward Engine:', err);
+});
+
+// Register reward routes
+const rewardRouter = createRewardRoutes(rewardIntegration);
+app.use('/api/rewards', rewardRouter);
+console.log('🎯 Reward Engine API routes registered at /api/rewards');
 
 // Telegram Integration routes
 const telegramIntegrationRoutes = require('./routes/telegram-integration');
