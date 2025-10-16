@@ -18,10 +18,12 @@ import {
   Database,
   Network as NetworkIcon,
   Cpu,
-  BookmarkPlus
+  BookmarkPlus,
+  Mic
 } from 'lucide-react';
 import AgentIDCard from '../components/identity/AgentIDCard';
 import HologramWorkflow from '../components/hologram/HologramWorkflow';
+import VoiceControl from '../components/VoiceControl';
 
 interface Agent {
   id: string;
@@ -57,6 +59,7 @@ interface Kit {
 const AmrikyyMainPage: React.FC = () => {
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [showHologramDemo, setShowHologramDemo] = useState(false);
+  const [showVoiceControl, setShowVoiceControl] = useState(false);
 
   // Agents data
   const agents: Agent[] = [
@@ -283,9 +286,12 @@ const AmrikyyMainPage: React.FC = () => {
                   Get Started Free
                 </button>
 
-                <button className="px-8 py-4 glass-effect rounded-xl font-semibold text-white hover:bg-white/20 transition-all flex items-center justify-center gap-2">
-                  Watch Demo
-                  <ArrowRight className="w-5 h-5" />
+                <button 
+                  onClick={() => setShowVoiceControl(true)}
+                  className="px-8 py-4 glass-effect rounded-xl font-semibold text-white hover:bg-white/20 transition-all flex items-center justify-center gap-2"
+                >
+                  <Mic className="w-5 h-5" />
+                  Voice Assistant
                 </button>
               </div>
 
@@ -593,6 +599,39 @@ const AmrikyyMainPage: React.FC = () => {
                 isActive={true}
                 onComplete={() => console.log('Demo complete!')}
               />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Voice Control Modal */}
+      <AnimatePresence>
+        {showVoiceControl && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowVoiceControl(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-2xl"
+            >
+              <div className="mb-4 flex justify-end">
+                <button
+                  onClick={() => setShowVoiceControl(false)}
+                  className="px-4 py-2 glass-effect rounded-lg text-white hover:bg-white/20 transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+              <div className="glass-effect rounded-2xl p-6">
+                <VoiceControl />
+              </div>
             </motion.div>
           </motion.div>
         )}

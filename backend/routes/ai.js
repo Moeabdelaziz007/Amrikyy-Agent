@@ -9,6 +9,7 @@ const ZaiClient = require('../src/ai/zaiClient');
 const { Tools, getToolSchemas } = require('../src/ai/tools');
 const { buildCulturalSystemPrompt } = require('../src/ai/culture');
 const { multimodalLimiter } = require('../middleware/rateLimiter');
+const { cache } = require('../middleware/cacheMiddleware');
 
 // ============================================================================
 // SECURITY: Input Sanitization for Prompt Injection Protection
@@ -180,8 +181,9 @@ router.post('/chat', async (req, res) => {
 /**
  * POST /api/ai/travel-recommendations
  * Generate travel recommendations
+ * Cached for 2 hours (7200 seconds) - recommendations are relatively stable
  */
-router.post('/travel-recommendations', async (req, res) => {
+router.post('/travel-recommendations', cache(7200), async (req, res) => {
   try {
     const { destination, budget, duration, preferences = [] } = req.body;
 
@@ -231,8 +233,9 @@ router.post('/travel-recommendations', async (req, res) => {
 /**
  * POST /api/ai/budget-analysis
  * Generate budget analysis
+ * Cached for 1 hour (3600 seconds)
  */
-router.post('/budget-analysis', async (req, res) => {
+router.post('/budget-analysis', cache(3600), async (req, res) => {
   try {
     const { tripData, totalBudget } = req.body;
 
@@ -276,8 +279,9 @@ router.post('/budget-analysis', async (req, res) => {
 /**
  * POST /api/ai/destination-insights
  * Generate destination insights
+ * Cached for 24 hours (86400 seconds) - destination info is relatively static
  */
-router.post('/destination-insights', async (req, res) => {
+router.post('/destination-insights', cache(86400), async (req, res) => {
   try {
     const { destination, travelType = 'leisure' } = req.body;
 
@@ -321,8 +325,9 @@ router.post('/destination-insights', async (req, res) => {
 /**
  * POST /api/ai/payment-recommendations
  * Generate payment recommendations
+ * Cached for 12 hours (43200 seconds)
  */
-router.post('/payment-recommendations', async (req, res) => {
+router.post('/payment-recommendations', cache(43200), async (req, res) => {
   try {
     const { tripDetails, paymentMethod = 'credit_card' } = req.body;
 
