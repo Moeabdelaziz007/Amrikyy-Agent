@@ -32,7 +32,8 @@
     "node-fetch": "^2.6.7",
     "node-telegram-bot-api": "^0.64.0",
     "paypal-rest-sdk": "^1.8.1",
-    "stripe": "^13.6.0"
+    "stripe": "^13.6.0",
+    "ws": "^8.14.0"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
@@ -51,5 +52,9 @@
     "trips"
   ],
   "author": "Maya Trips Team",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
 }

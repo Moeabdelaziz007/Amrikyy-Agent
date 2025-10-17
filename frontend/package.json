@@ -19,7 +19,17 @@
     "e2e": "playwright test",
     "e2e:ci": "playwright test --headed=false",
     "e2e:ui": "playwright test --ui",
-    "a11y-check": "playwright test --grep @a11y"
+    "a11y-check": "playwright test --grep @a11y",
+    "prepare": "cd .. && husky install frontend/.husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.74.0",
