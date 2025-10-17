@@ -6,6 +6,83 @@
         "-y",
         "@modelcontextprotocol/server-memory"
       ]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem"
+      ]
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ]
+    },
+    "postgresql": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres"
+      ]
+    },
+    "docker": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-docker"
+      ]
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ]
+    },
+    "wikipedia": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-wikipedia"
+      ]
+    },
+    "currency-converter": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-currency"
+      ]
+    },
+    "maps": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-maps"
+      ]
+    },
+    "weather": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-weather"
+      ]
     }
   }
 }
