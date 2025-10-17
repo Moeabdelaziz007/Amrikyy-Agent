@@ -1,6 +1,27 @@
 node_modules
+
+# Environment files - CRITICAL SECURITY
+.env
+.env.*
+!.env.example
+!.env.template
 backend/.env
-backend/.env.temp
+backend/.env.*
+frontend/.env
+frontend/.env.*
+*.env
+*.env.local
+*.env.production
+*.env.staging
+*.env.development
+*.env.test
+
+# API Keys and Secrets - NEVER COMMIT
+**/api-keys.json
+**/secrets.json
+**/credentials.json
+**/tokens.json
+**/.credentials/
 
 # Test reports and coverage
 coverage/
@@ -13,3 +34,11 @@ test-results/
 .continue/
 .trunk/
 .vscode/
+
+# OpenMemory - IDE/Assistant specific rules
+.cursor/rules/openmemory.mdc
+CLAUDE.md
+
+# Security audit files
+security-audit.md
+SECURITY_REPORT.md
