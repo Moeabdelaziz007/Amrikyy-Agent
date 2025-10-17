@@ -348,21 +348,47 @@ OUTPUT: Wisdom gained
 # PROJECT-SPECIFIC PATTERNS
 # ============================================
 
-## Maya Travel Agent - Architecture Patterns
+## Amrikyy Travel Agent - Architecture Patterns
 
 ### Backend (Node.js + Express)
-Pattern: **Layered Architecture**
+Pattern: **Layered Architecture with Multi-Agent System**
 ```
-routes/ → controllers/ → services/ → database/
+routes/ → controllers/ → agents/ → services/ → database/
+                ↓
+            MCP Tools → External APIs
 ```
 
 Rules:
 - Routes handle HTTP only
 - Controllers orchestrate flow
+- **Agents contain AI logic (Luna, Karim, Scout)**
+- **MCP Tools provide standardized tool calling**
 - Services contain business logic
-- Database layer handles data access
+- Database layer handles data access (Supabase)
 - NO business logic in routes
 - Middleware for cross-cutting concerns
+- **LangSmith tracing for all agent operations**
+
+### Multi-Agent Coordination Pattern
+```javascript
+// Agent Coordinator orchestrates multiple agents
+AgentCoordinator.handleTravelRequest({
+  type: 'plan_trip',  // or 'optimize_budget', 'find_deals', 'full_service'
+  destination: 'Istanbul',
+  budget: 5000
+}) → Luna (Trip Planning) + Karim (Budget) + Scout (Deals)
+   → Coordinated Response
+```
+
+### MCP (Model Context Protocol) Pattern
+```javascript
+// Standardized tool calling
+TravelMCPServer.callTool('search_flights', {
+  origin: 'NYC',
+  destination: 'LON',
+  departureDate: '2025-11-01'
+}) → Kiwi Tequila API → Structured Response
+```
 
 Example:
 ```javascript
