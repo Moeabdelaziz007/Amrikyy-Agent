@@ -546,8 +546,12 @@ class MCPTools {
       (msg) => msg.includes('رخيص') || msg.includes('اقتصادي') || msg.includes('توفير')
     ).length;
 
-    if (luxury > budget) return 'luxury';
-    if (budget > luxury) return 'budget';
+    if (luxury > budget) {
+      return 'luxury';
+    }
+    if (budget > luxury) {
+      return 'budget';
+    }
     return 'balanced';
   }
 
@@ -670,9 +674,9 @@ class MCPTools {
       data: {
         restaurants: [
           { name: 'مطعم 1', cuisine: 'عربي', rating: 4.5, priceRange: '$$' },
-          { name: 'مطعم 2', cuisine: 'أوروبي', rating: 4.8, priceRange: '$$$' }
-        ]
-      }
+          { name: 'مطعم 2', cuisine: 'أوروبي', rating: 4.8, priceRange: '$$$' },
+        ],
+      },
     };
   }
 
@@ -683,9 +687,9 @@ class MCPTools {
       data: {
         routes: [
           { type: 'metro', duration: '15 min', cost: '2.50 EUR' },
-          { type: 'bus', duration: '25 min', cost: '1.90 EUR' }
-        ]
-      }
+          { type: 'bus', duration: '25 min', cost: '1.90 EUR' },
+        ],
+      },
     };
   }
 
@@ -696,8 +700,8 @@ class MCPTools {
       data: {
         alerts: [],
         safety_score: 8.5,
-        recommendations: ['Stay in tourist areas', 'Keep valuables secure']
-      }
+        recommendations: ['Stay in tourist areas', 'Keep valuables secure'],
+      },
     };
   }
 
@@ -708,9 +712,9 @@ class MCPTools {
       data: {
         events: [
           { name: 'Cultural Festival', date: '2025-10-15', type: 'festival' },
-          { name: 'Art Exhibition', date: '2025-10-20', type: 'art' }
-        ]
-      }
+          { name: 'Art Exhibition', date: '2025-10-20', type: 'art' },
+        ],
+      },
     };
   }
 
@@ -721,9 +725,9 @@ class MCPTools {
       data: {
         customs: [
           { title: 'Greeting', description: 'Shake hands when meeting' },
-          { title: 'Dining', description: 'Wait for host to start eating' }
-        ]
-      }
+          { title: 'Dining', description: 'Wait for host to start eating' },
+        ],
+      },
     };
   }
 
@@ -734,9 +738,9 @@ class MCPTools {
       data: {
         restaurants: [
           { name: 'مطعم محلي 1', cuisine: 'عربي', price_range: '$$', rating: 4.5 },
-          { name: 'مطعم محلي 2', cuisine: 'إيطالي', price_range: '$$$', rating: 4.8 }
-        ]
-      }
+          { name: 'مطعم محلي 2', cuisine: 'إيطالي', price_range: '$$$', rating: 4.8 },
+        ],
+      },
     };
   }
 
@@ -747,9 +751,9 @@ class MCPTools {
       data: {
         alerts: [
           { type: 'weather', level: 'low', message: 'طقس معتدل متوقع' },
-          { type: 'health', level: 'low', message: 'لا توجد تحذيرات صحية' }
-        ]
-      }
+          { type: 'health', level: 'low', message: 'لا توجد تحذيرات صحية' },
+        ],
+      },
     };
   }
 
@@ -760,9 +764,9 @@ class MCPTools {
       data: {
         events: [
           { name: 'مهرجان ثقافي', date: '2024-12-01', type: 'festival' },
-          { name: 'معرض فني', date: '2024-12-15', type: 'exhibition' }
-        ]
-      }
+          { name: 'معرض فني', date: '2024-12-15', type: 'exhibition' },
+        ],
+      },
     };
   }
 
@@ -773,9 +777,9 @@ class MCPTools {
       data: {
         customs: [
           { name: 'تحية الترحيب', description: 'السلام عليكم' },
-          { name: 'الضيافة', description: 'الترحيب بالضيوف' }
-        ]
-      }
+          { name: 'الضيافة', description: 'الترحيب بالضيوف' },
+        ],
+      },
     };
   }
 
