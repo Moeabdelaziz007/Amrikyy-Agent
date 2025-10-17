@@ -1,0 +1,157 @@
+🔍 تقرير أداء Cursor
+===================
+التاريخ: Fri Oct 17 11:29:31 EEST 2025
+المشروع: Maya Travel Agent
+
+🧠 استهلاك الذاكرة:
+🧠 استهلاك الذاكرة:
+------------------
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 59.32 MB
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 599.68 MB
+  /Applications/Cursor.app/Contents/MacOS/Cursor: 144.62 MB
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 119.31 MB
+  Cursor: 236.91 MB
+  /bin/bash: 1.09 MB
+  Cursor: 31.20 MB
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 15.91 MB
+  Cursor: 41.80 MB
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 37.26 MB
+  /Users/cryptojoker710/.nvm/versions/node/v20.19.5/bin/node: 30.81 MB
+  /System/Library/PrivateFrameworks/TextInputUIMacHelper.framework/Versions/A/XPCServices/CursorUIViewService.xpc/Contents/MacOS/CursorUIViewService: 11.92 MB
+  /bin/bash: .71 MB
+  /bin/bash: .66 MB
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 23.17 MB
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 11.61 MB
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 20.45 MB
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 28.28 MB
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 66.74 MB
+  /Users/cryptojoker710/Library/Application: 11.61 MB
+  /Users/cryptojoker710/Library/Application: 5.88 MB
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 22.71 MB
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 26.91 MB
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 28.52 MB
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 23.32 MB
+  Cursor: 32.96 MB
+  /bin/bash: .46 MB
+  إجمالي الذاكرة: 0 MB
+
+⚡ استهلاك المعالج:
+⚡ استهلاك المعالج:
+------------------
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 73.5%
+  /Applications/Cursor.app/Contents/MacOS/Cursor: 50.8%
+  Cursor: 40.5%
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 31.0%
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 11.9%
+  /bin/bash: 1.6%
+  Cursor: 0.9%
+  /bin/bash: 0.4%
+  /bin/bash: 0.0%
+  /System/Library/PrivateFrameworks/TextInputUIMacHelper.framework/Versions/A/XPCServices/CursorUIViewService.xpc/Contents/MacOS/CursorUIViewService: 0.0%
+  /bin/bash: 0.0%
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 0.0%
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 0.0%
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 0.0%
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 0.0%
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 0.0%
+  /Users/cryptojoker710/Library/Application: 0.0%
+  /Users/cryptojoker710/Library/Application: 0.0%
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 0.0%
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 0.0%
+  /Users/cryptojoker710/.nvm/versions/node/v20.19.5/bin/node: 0.0%
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 0.0%
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 0.0%
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 0.0%
+  Cursor: 0.0%
+  Cursor: 0.0%
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 0.0%
+  إجمالي المعالج: 0%
+
+📁 مقابض الملفات:
+📁 مقابض الملفات:
+----------------
+  /Applications/Cursor.app/Contents/Frameworks/Cursor (PID: 1004):       36 مقبض ملف
+  /Applications/Cursor.app/Contents/Frameworks/Cursor (PID: 1029):       40 مقبض ملف
+  Cursor (PID: 1049):      397 مقبض ملف
+  /Applications/Cursor.app/Contents/MacOS/Cursor (PID: 91806):      223 مقبض ملف
+  /Applications/Cursor.app/Contents/Frameworks/Cursor (PID: 6905):       34 مقبض ملف
+  /bin/bash (PID: 11606):        0 مقبض ملف
+  /bin/bash (PID: 10842):        9 مقبض ملف
+  Cursor (PID: 92341):      101 مقبض ملف
+  /Applications/Cursor.app/Contents/Frameworks/Cursor (PID: 8104):       32 مقبض ملف
+  /bin/bash (PID: 8435):        8 مقبض ملف
+  /System/Library/PrivateFrameworks/TextInputUIMacHelper.framework/Versions/A/XPCServices/CursorUIViewService.xpc/Contents/MacOS/CursorUIViewService (PID: 1073):       25 مقبض ملف
+  /bin/bash (PID: 10171):        8 مقبض ملف
+  /Applications/Cursor.app/Contents/Frameworks/Cursor (PID: 8866):       35 مقبض ملف
+  /Applications/Cursor.app/Contents/Frameworks/Cursor (PID: 8345):       30 مقبض ملف
+  /Applications/Cursor.app/Contents/Frameworks/Cursor (PID: 8289):       35 مقبض ملف
+  /Applications/Cursor.app/Contents/Frameworks/Cursor (PID: 8223):       39 مقبض ملف
+  /Users/cryptojoker710/Library/Application (PID: 6951):       16 مقبض ملف
+  /Users/cryptojoker710/Library/Application (PID: 6943):       10 مقبض ملف
+  /Applications/Cursor.app/Contents/Frameworks/Cursor (PID: 3440):       36 مقبض ملف
+  /Applications/Cursor.app/Contents/Frameworks/Cursor (PID: 3436):       36 مقبض ملف
+  /Users/cryptojoker710/.nvm/versions/node/v20.19.5/bin/node (PID: 3434):       28 مقبض ملف
+  /Applications/Cursor.app/Contents/Frameworks/Cursor (PID: 3420):       36 مقبض ملف
+  /Applications/Cursor.app/Contents/Frameworks/Cursor (PID: 3409):       38 مقبض ملف
+  /Applications/Cursor.app/Contents/Frameworks/Cursor (PID: 3408):       36 مقبض ملف
+  Cursor (PID: 1327):       50 مقبض ملف
+  Cursor (PID: 1050):       51 مقبض ملف
+  /Applications/Cursor.app/Contents/Frameworks/Cursor (PID: 1003):       46 مقبض ملف
+
+👀 مراقبة node_modules:
+👀 مراقبة node_modules:
+----------------------
+⚠️ node_modules مراقب من        3 عملية
+   العمليات المراقبة:
+COMMAND  PID           USER   FD   TYPE DEVICE SIZE/OFF     NODE NAME
+node    3434 cryptojoker710  txt    REG    1,8   163626 44682990 /Users/Shared/maya-travel-agent/node_modules/fsevents/fsevents.node
+node    3434 cryptojoker710  txt    REG    1,8  2004368 44681854 /Users/Shared/maya-travel-agent/node_modules/@rollup/rollup-darwin-x64/rollup.darwin-x64.node
+
+🔌 الإضافات النشطة:
+🔌 الإضافات النشطة:
+------------------
+  Cursor: 423.75 MB, 31.1% CPU
+  /Applications/Google: 55.02 MB, 1.3% CPU
+  /Applications/Google: 62.20 MB, 0.4% CPU
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 28.06 MB, 0.3% CPU
+  Cursor: 39.16 MB, 0.3% CPU
+  /System/Library/DriverExtensions/com.apple.AppleUserHIDDrivers.dext/com.apple.AppleUserHIDDrivers: .68 MB, 0.2% CPU
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 22.80 MB, 0.2% CPU
+  /Applications/Google: 37.98 MB, 0.1% CPU
+  /Applications/Google: 46.30 MB, 0.0% CPU
+  /System/Library/Frameworks/MediaExtension.framework/Versions/A/Helpers/MENotificationAgent: 2.37 MB, 0.0% CPU
+  /System/Library/PrivateFrameworks/AssetCacheServicesExtensions.framework/XPCServices/AssetCacheTetheratorService.xpc/Contents/MacOS/AssetCacheTetheratorService: 1.93 MB, 0.0% CPU
+  /System/Library/Frameworks/ExtensionFoundation.framework/Versions/A/XPCServices/extensionkitservice.xpc/Contents/MacOS/extensionkitservice: 4.42 MB, 0.0% CPU
+  /System/Library/Frameworks/ExtensionFoundation.framework/Versions/A/XPCServices/extensionkitservice.xpc/Contents/MacOS/extensionkitservice: 6.18 MB, 0.0% CPU
+  /Applications/Google: 33.79 MB, 0.0% CPU
+  /Applications/ExpressVPN.app/Contents/MacOS/expressvpn-browser-helper: 6.29 MB, 0.0% CPU
+  /System/Library/ExtensionKit/Extensions/WallpaperImageExtension.appex/Contents/MacOS/WallpaperImageExtension: 4.64 MB, 0.0% CPU
+  /System/Applications/Tips.app/Contents/PlugIns/TipsWidgetExtension.appex/Contents/MacOS/TipsWidgetExtension: 4.12 MB, 0.0% CPU
+  /System/Applications/Notes.app/Contents/PlugIns/com.apple.Notes.WidgetExtension.appex/Contents/MacOS/com.apple.Notes.WidgetExtension: 4.71 MB, 0.0% CPU
+  /System/Library/CoreServices/Screen: 6.64 MB, 0.0% CPU
+  /System/Applications/Reminders.app/Contents/PlugIns/RemindersWidgetExtension.appex/Contents/MacOS/RemindersWidgetExtension: 5.08 MB, 0.0% CPU
+  /System/Library/CoreServices/PeopleViewService.app/Contents/PlugIns/PeopleWidget_macOSExtension.appex/Contents/MacOS/PeopleWidget_macOSExtension: 5.06 MB, 0.0% CPU
+  /System/Library/Input: 8.50 MB, 0.0% CPU
+  /System/Library/Input: 8.12 MB, 0.0% CPU
+  /System/Library/DriverExtensions/IOUserBluetoothSerialDriver.dext/IOUserBluetoothSerialDriver: .03 MB, 0.0% CPU
+  /System/Library/DriverExtensions/IOUserBluetoothSerialDriver.dext/IOUserBluetoothSerialDriver: .03 MB, 0.0% CPU
+  /System/Applications/Shortcuts.app/Contents/PlugIns/ShortcutsWidgetExtension.appex/Contents/MacOS/ShortcutsWidgetExtension: 7.85 MB, 0.0% CPU
+  /System/Applications/Home.app/Contents/PlugIns/HomeEnergyWidgetsExtension.appex/Contents/MacOS/HomeEnergyWidgetsExtension: 6.19 MB, 0.0% CPU
+  /System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/Contents/Extensions/SafariWidgetExtension.appex/Contents/MacOS/SafariWidgetExtension: 4.49 MB, 0.0% CPU
+  /System/Applications/Calendar.app/Contents/PlugIns/CalendarWidgetExtension.appex/Contents/MacOS/CalendarWidgetExtension: 8.20 MB, 0.0% CPU
+  /System/Library/CoreServices/Batteries.app/Contents/PlugIns/BatteriesAvocadoWidgetExtension.appex/Contents/MacOS/BatteriesAvocadoWidgetExtension: 12.44 MB, 0.0% CPU
+  /System/Library/DriverExtensions/com.apple.DriverKit-IOUserDockChannelSerial.dext/com.apple.DriverKit-IOUserDockChannelSerial: .03 MB, 0.0% CPU
+  /System/Library/Frameworks/CoreMediaIO.framework/Versions/A/Resources/UVCAssistant.systemextension/Contents/MacOS/UVCAssistant: 3.95 MB, 0.0% CPU
+  /Applications/Google: 55.13 MB, 0.0% CPU
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 20.64 MB, 0.0% CPU
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 27.97 MB, 0.0% CPU
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 26.20 MB, 0.0% CPU
+  /Users/cryptojoker710/.nvm/versions/node/v20.19.5/bin/node: 32.25 MB, 0.0% CPU
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 23.33 MB, 0.0% CPU
+  /Applications/Cursor.app/Contents/Frameworks/Cursor: 23.10 MB, 0.0% CPU
+
+📋 التوصيات:
+1. راقب استهلاك الذاكرة والمعالج
+2. تحقق من الإضافات الثقيلة
+3. تأكد من عدم مراقبة node_modules
+4. استخدم Extension Bisect إذا لزم الأمر
