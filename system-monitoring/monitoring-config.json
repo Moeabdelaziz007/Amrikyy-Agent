@@ -1,0 +1,66 @@
+{
+  "monitoring": {
+    "intervals": {
+      "system": 30000,
+      "database": 60000,
+      "api": 15000,
+      "agents": 45000,
+      "performance": 300000
+    },
+    "thresholds": {
+      "cpu": 80,
+      "memory": 85,
+      "disk": 90,
+      "responseTime": 2000,
+      "errorRate": 5,
+      "downtime": 60
+    },
+    "alerts": {
+      "slack": {
+        "enabled": true,
+        "webhook": "${SLACK_WEBHOOK_URL}"
+      },
+      "telegram": {
+        "enabled": true,
+        "botToken": "${TELEGRAM_BOT_TOKEN}",
+        "chatId": "${TELEGRAM_CHAT_ID}"
+      },
+      "email": {
+        "enabled": true,
+        "smtp": {
+          "host": "${SMTP_HOST}",
+          "port": 587,
+          "user": "${SMTP_USER}",
+          "password": "${SMTP_PASSWORD}"
+        }
+      }
+    }
+  },
+  "services": {
+    "frontend": {
+      "port": 5173,
+      "healthCheck": "/",
+      "restartCommand": "cd frontend && npm run dev"
+    },
+    "backend": {
+      "port": 5000,
+      "healthCheck": "/api/health",
+      "restartCommand": "cd backend && npm start"
+    },
+    "kody": {
+      "port": 3000,
+      "healthCheck": "/health",
+      "restartCommand": "cd zero-cost-agent && node kody-marketing-agent.js"
+    }
+  },
+  "databases": {
+    "supabase": {
+      "type": "postgresql",
+      "healthCheck": "SELECT 1"
+    },
+    "mongodb": {
+      "type": "mongodb",
+      "healthCheck": "ping"
+    }
+  }
+}

@@ -1,0 +1,126 @@
+# Dependencies - أهم مجلد يجب تجاهله
+node_modules/
+
+# Build output folders
+dist/
+build/
+.next/
+coverage/
+
+# Log files
+logs/
+*.log
+
+# Local environment files (sensitive)
+.env
+*.env.local
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Cache directories
+.cache/
+.npm-cache/
+
+# Python environments
+venv/
+kody_env/
+__pycache__/
+*.pyc
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.backup
+
+# Large binary files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Media files (unless specifically needed)
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+
+# Documentation build outputs
+docs/_build/
+site/
+
+# Test coverage reports
+coverage/
+.nyc_output/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache (https://parceljs.org/)
+.parcel-cache
+
+# next.js build output
+.next
+
+# nuxt.js build output
+.nuxt
+
+# vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
