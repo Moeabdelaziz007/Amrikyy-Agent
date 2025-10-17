@@ -7,7 +7,7 @@ class QdrantService {
     this.apiKey = process.env.QDRANT_API_KEY;
     this.headers = {
       'Content-Type': 'application/json',
-      'api-key': this.apiKey
+      'api-key': this.apiKey,
     };
   }
 
@@ -18,14 +18,14 @@ class QdrantService {
     try {
       // Get embedding for the query
       const embedding = await this.getEmbedding(query);
-      
+
       const response = await axios.post(
         `${this.baseUrl}/collections/travel_destinations/points/search`,
         {
           vector: embedding,
           limit: limit,
           with_payload: true,
-          score_threshold: config.qdrant.search.score_threshold
+          score_threshold: config.qdrant.search.score_threshold,
         },
         { headers: this.headers }
       );
@@ -45,14 +45,14 @@ class QdrantService {
       // Get user preferences embedding
       const userPreferences = await this.getUserPreferences(userId);
       const embedding = await this.getEmbedding(userPreferences);
-      
+
       const response = await axios.post(
         `${this.baseUrl}/collections/user_preferences/points/search`,
         {
           vector: embedding,
           limit: limit,
           with_payload: true,
-          score_threshold: 0.8
+          score_threshold: 0.8,
         },
         { headers: this.headers }
       );
@@ -70,14 +70,14 @@ class QdrantService {
   async analyzeReviews(destination, limit = 20) {
     try {
       const embedding = await this.getEmbedding(`reviews for ${destination}`);
-      
+
       const response = await axios.post(
         `${this.baseUrl}/collections/travel_reviews/points/search`,
         {
           vector: embedding,
           limit: limit,
           with_payload: true,
-          score_threshold: 0.6
+          score_threshold: 0.6,
         },
         { headers: this.headers }
       );
@@ -95,14 +95,14 @@ class QdrantService {
   async searchMarketingContent(query, limit = 10) {
     try {
       const embedding = await this.getEmbedding(query);
-      
+
       const response = await axios.post(
         `${this.baseUrl}/collections/marketing_content/points/search`,
         {
           vector: embedding,
           limit: limit,
           with_payload: true,
-          score_threshold: 0.7
+          score_threshold: 0.7,
         },
         { headers: this.headers }
       );
@@ -120,23 +120,25 @@ class QdrantService {
   async addDestination(destination) {
     try {
       const embedding = await this.getEmbedding(destination.description);
-      
+
       const response = await axios.put(
         `${this.baseUrl}/collections/travel_destinations/points`,
         {
-          points: [{
-            id: destination.id,
-            vector: embedding,
-            payload: {
-              name: destination.name,
-              description: destination.description,
-              activities: destination.activities,
-              culture: destination.culture,
-              climate: destination.climate,
-              country: destination.country,
-              created_at: new Date().toISOString()
-            }
-          }]
+          points: [
+            {
+              id: destination.id,
+              vector: embedding,
+              payload: {
+                name: destination.name,
+                description: destination.description,
+                activities: destination.activities,
+                culture: destination.culture,
+                climate: destination.climate,
+                country: destination.country,
+                created_at: new Date().toISOString(),
+              },
+            },
+          ],
         },
         { headers: this.headers }
       );
@@ -154,21 +156,23 @@ class QdrantService {
   async addMarketingContent(content) {
     try {
       const embedding = await this.getEmbedding(content.content);
-      
+
       const response = await axios.put(
         `${this.baseUrl}/collections/marketing_content/points`,
         {
-          points: [{
-            id: content.id,
-            vector: embedding,
-            payload: {
-              content: content.content,
-              campaign_type: content.campaign_type,
-              target_audience: content.target_audience,
-              performance: content.performance,
-              created_at: new Date().toISOString()
-            }
-          }]
+          points: [
+            {
+              id: content.id,
+              vector: embedding,
+              payload: {
+                content: content.content,
+                campaign_type: content.campaign_type,
+                target_audience: content.target_audience,
+                performance: content.performance,
+                created_at: new Date().toISOString(),
+              },
+            },
+          ],
         },
         { headers: this.headers }
       );
@@ -190,13 +194,13 @@ class QdrantService {
         {
           input: text,
           model: config.embeddings.model,
-          dimensions: config.embeddings.dimensions
+          dimensions: config.embeddings.dimensions,
         },
         {
           headers: {
-            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-            'Content-Type': 'application/json'
-          }
+            Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
         }
       );
 
@@ -214,12 +218,12 @@ class QdrantService {
     try {
       // This would typically come from your database
       const user = await this.getUserFromDatabase(userId);
-      
+
       const preferences = [
         `Budget: ${user.budget_range}`,
         `Interests: ${user.interests.join(', ')}`,
         `Travel style: ${user.travel_style}`,
-        `Previous destinations: ${user.previous_destinations.join(', ')}`
+        `Previous destinations: ${user.previous_destinations.join(', ')}`,
       ].join(' ');
 
       return preferences;
@@ -241,8 +245,8 @@ class QdrantService {
             {
               vectors: {
                 size: collection.vector_size,
-                distance: collection.distance
-              }
+                distance: collection.distance,
+              },
             },
             { headers: this.headers }
           );
@@ -266,21 +270,18 @@ class QdrantService {
    */
   async healthCheck() {
     try {
-      const response = await axios.get(
-        `${this.baseUrl}/collections`,
-        { headers: this.headers }
-      );
-      
+      const response = await axios.get(`${this.baseUrl}/collections`, { headers: this.headers });
+
       return {
         status: 'healthy',
         collections: response.data.result.collections.length,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     } catch (error) {
       return {
         status: 'unhealthy',
         error: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
