@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Plane, 
-  MapPin, 
-  Calendar, 
-  DollarSign, 
-  Compass, 
+import {
+  Plane,
+  MapPin,
+  Calendar,
+  DollarSign,
+  Compass,
   Bot,
   Settings,
   User,
@@ -14,7 +14,7 @@ import {
   Users,
   BarChart3,
   Network,
-  Mic
+  Mic,
 } from 'lucide-react';
 import { AuthProvider, useAuth } from './components/Auth/AuthProvider';
 import LoginForm from './components/Auth/LoginForm';
@@ -51,7 +51,19 @@ interface Trip {
 
 const AppContent: React.FC = () => {
   const { user, loading } = useAuth();
-  const [currentPage, setCurrentPage] = useState<'landing' | 'dashboard' | 'agents' | 'hologram' | 'analytics' | 'chat' | 'network' | 'trip-details' | 'profile' | 'notifications' | 'voice'>('landing');
+  const [currentPage, setCurrentPage] = useState<
+    | 'landing'
+    | 'dashboard'
+    | 'agents'
+    | 'hologram'
+    | 'analytics'
+    | 'chat'
+    | 'network'
+    | 'trip-details'
+    | 'profile'
+    | 'notifications'
+    | 'voice'
+  >('landing');
   const [activeTab, setActiveTab] = useState('planner');
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
 
@@ -59,9 +71,13 @@ const AppContent: React.FC = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    
-    if (urlParams.get('access_token') || urlParams.get('error') || 
-        hashParams.get('access_token') || hashParams.get('error')) {
+
+    if (
+      urlParams.get('access_token') ||
+      urlParams.get('error') ||
+      hashParams.get('access_token') ||
+      hashParams.get('error')
+    ) {
       return;
     }
   }, []);
@@ -81,7 +97,8 @@ const AppContent: React.FC = () => {
       endDate: '2024-03-22',
       budget: 2500,
       status: 'planned',
-      image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400'
+      image:
+        'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400',
     },
     {
       id: '2',
@@ -90,8 +107,9 @@ const AppContent: React.FC = () => {
       endDate: '2024-04-17',
       budget: 1800,
       status: 'planned',
-      image: 'https://images.unsplash.com/photo-1502602898536-47ad22581b52?w=400'
-    }
+      image:
+        'https://images.unsplash.com/photo-1502602898536-47ad22581b52?w=400',
+    },
   ]);
 
   const dashboardTabs = [
@@ -99,7 +117,7 @@ const AppContent: React.FC = () => {
     { id: 'destinations', label: 'Destinations', icon: MapPin },
     { id: 'budget', label: 'Budget', icon: DollarSign },
     { id: 'history', label: 'History', icon: Calendar },
-    { id: 'ai', label: 'Amrikyy AI', icon: Bot }
+    { id: 'ai', label: 'Amrikyy AI', icon: Bot },
   ];
 
   const renderDashboardContent = () => {
@@ -122,9 +140,13 @@ const AppContent: React.FC = () => {
   // Check auth callback
   const urlParams = new URLSearchParams(window.location.search);
   const hashParams = new URLSearchParams(window.location.hash.substring(1));
-  
-  if (urlParams.get('access_token') || urlParams.get('error') || 
-      hashParams.get('access_token') || hashParams.get('error')) {
+
+  if (
+    urlParams.get('access_token') ||
+    urlParams.get('error') ||
+    hashParams.get('access_token') ||
+    hashParams.get('error')
+  ) {
     return <AuthCallback />;
   }
 
@@ -135,7 +157,9 @@ const AppContent: React.FC = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
           <h1 className="text-2xl font-bold amrikyy-text">Amrikyy</h1>
-          <p className="text-gray-400 mt-2">Loading your AI travel companion...</p>
+          <p className="text-gray-400 mt-2">
+            Loading your AI travel companion...
+          </p>
         </div>
       </div>
     );
@@ -150,13 +174,13 @@ const AppContent: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       {/* Header */}
-      <motion.header 
+      <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="glass-effect p-6 shadow-lg sticky top-0 z-40"
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <motion.div 
+          <motion.div
             className="flex items-center space-x-3 cursor-pointer"
             whileHover={{ scale: 1.05 }}
             onClick={() => setCurrentPage('landing')}
@@ -169,14 +193,14 @@ const AppContent: React.FC = () => {
               <p className="text-gray-400 text-sm">AI Travel Platform</p>
             </div>
           </motion.div>
-          
+
           {/* Top Navigation */}
           <div className="hidden md:flex items-center gap-2">
             <button
               onClick={() => setCurrentPage('landing')}
               className={`px-3 py-2 rounded-lg transition-all text-sm ${
-                currentPage === 'landing' 
-                  ? 'bg-blue-500 text-white' 
+                currentPage === 'landing'
+                  ? 'bg-blue-500 text-white'
                   : 'text-gray-300 hover:bg-white/10'
               }`}
             >
@@ -186,8 +210,8 @@ const AppContent: React.FC = () => {
             <button
               onClick={() => setCurrentPage('chat')}
               className={`px-3 py-2 rounded-lg transition-all text-sm ${
-                currentPage === 'chat' 
-                  ? 'bg-blue-500 text-white' 
+                currentPage === 'chat'
+                  ? 'bg-blue-500 text-white'
                   : 'text-gray-300 hover:bg-white/10'
               }`}
             >
@@ -197,8 +221,8 @@ const AppContent: React.FC = () => {
             <button
               onClick={() => setCurrentPage('dashboard')}
               className={`px-3 py-2 rounded-lg transition-all text-sm ${
-                currentPage === 'dashboard' 
-                  ? 'bg-blue-500 text-white' 
+                currentPage === 'dashboard'
+                  ? 'bg-blue-500 text-white'
                   : 'text-gray-300 hover:bg-white/10'
               }`}
             >
@@ -208,8 +232,8 @@ const AppContent: React.FC = () => {
             <button
               onClick={() => setCurrentPage('network')}
               className={`px-3 py-2 rounded-lg transition-all text-sm ${
-                currentPage === 'network' 
-                  ? 'bg-blue-500 text-white' 
+                currentPage === 'network'
+                  ? 'bg-blue-500 text-white'
                   : 'text-gray-300 hover:bg-white/10'
               }`}
             >
@@ -219,8 +243,8 @@ const AppContent: React.FC = () => {
             <button
               onClick={() => setCurrentPage('agents')}
               className={`px-3 py-2 rounded-lg transition-all text-sm ${
-                currentPage === 'agents' 
-                  ? 'bg-blue-500 text-white' 
+                currentPage === 'agents'
+                  ? 'bg-blue-500 text-white'
                   : 'text-gray-300 hover:bg-white/10'
               }`}
             >
@@ -230,8 +254,8 @@ const AppContent: React.FC = () => {
             <button
               onClick={() => setCurrentPage('analytics')}
               className={`px-3 py-2 rounded-lg transition-all text-sm ${
-                currentPage === 'analytics' 
-                  ? 'bg-blue-500 text-white' 
+                currentPage === 'analytics'
+                  ? 'bg-blue-500 text-white'
                   : 'text-gray-300 hover:bg-white/10'
               }`}
             >
@@ -241,8 +265,8 @@ const AppContent: React.FC = () => {
             <button
               onClick={() => setCurrentPage('voice')}
               className={`px-3 py-2 rounded-lg transition-all text-sm ${
-                currentPage === 'voice' 
-                  ? 'bg-blue-500 text-white' 
+                currentPage === 'voice'
+                  ? 'bg-blue-500 text-white'
                   : 'text-gray-300 hover:bg-white/10'
               }`}
             >
@@ -294,18 +318,18 @@ const AppContent: React.FC = () => {
         )}
         {currentPage === 'profile' && <ProfileSettingsPage />}
         {currentPage === 'notifications' && <NotificationsPage />}
-        
-        {currentPage === 'planner' && (
+
+        {currentPage === 'trip-details' && (
           <>
             {/* Dashboard Navigation Tabs */}
-            <motion.nav 
+            <motion.nav
               initial={{ y: 50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
               className="max-w-7xl mx-auto px-6 py-4"
             >
               <div className="flex space-x-1 glass-effect rounded-2xl p-2">
-                {dashboardTabs.map((tab) => {
+                {dashboardTabs.map(tab => {
                   const Icon = tab.icon;
                   return (
                     <motion.button

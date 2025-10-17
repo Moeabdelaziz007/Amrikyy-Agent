@@ -435,7 +435,7 @@ const AIAgentKit = () => {
               </div>
               <div className="bg-purple-50 p-3 rounded">
                 <strong className="block mb-1">Semantic Matching</strong>
-                <code className="text-xs">cosine_similarity(v1, v2) > 0.85</code>
+                <code className="text-xs">cosine_similarity(v1, v2) &gt; 0.85</code>
               </div>
               <div className="bg-purple-50 p-3 rounded">
                 <strong className="block mb-1">Context Fusion</strong>
@@ -1014,7 +1014,7 @@ if __name__ == "__main__":
               </div>
               <div className="p-2 bg-yellow-50 rounded border-l-4 border-yellow-500">
                 <div className="font-bold text-yellow-800">MEDIUM</div>
-                <div className="text-xs">Response time > 2s threshold</div>
+                <div className="text-xs">Response time &gt; 2s threshold</div>
               </div>
               <div className="p-2 bg-blue-50 rounded border-l-4 border-blue-500">
                 <div className="font-bold text-blue-800">INFO</div>

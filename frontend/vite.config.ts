@@ -23,7 +23,25 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: false,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          ui: ['framer-motion', 'lucide-react'],
+          routing: ['react-router-dom'],
+          state: ['zustand'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
   },
   define: {
     'import.meta.env': {

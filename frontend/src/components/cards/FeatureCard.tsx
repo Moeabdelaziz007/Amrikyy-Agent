@@ -16,7 +16,7 @@ interface FeatureCardProps {
 
 /**
  * FeatureCard - Reusable card for agents, kits, features
- * 
+ *
  * Features:
  * - Glassmorphism design
  * - Hover effects (lift + glow)
@@ -33,7 +33,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
   features,
   price,
   onClick,
-  gradient = 'from-blue-500 to-purple-500'
+  gradient = 'from-blue-500 to-purple-500',
 }) => {
   const IconComponent = typeof icon === 'function' ? icon : null;
 
@@ -44,10 +44,12 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
       viewport={{ once: true }}
       whileHover={{ y: -8, scale: 1.02 }}
       onClick={onClick}
-      className={`glass-card p-6 rounded-2xl group relative ${onClick ? 'cursor-pointer' : ''}`}
+      className={`glass-card p-6 rounded-2xl group relative ${
+        onClick ? 'cursor-pointer' : ''
+      }`}
       role={onClick ? 'button' : 'article'}
       tabIndex={onClick ? 0 : undefined}
-      onKeyDown={(e) => {
+      onKeyDown={e => {
         if (onClick && (e.key === 'Enter' || e.key === ' ')) {
           e.preventDefault();
           onClick();
@@ -73,11 +75,13 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
       )}
 
       {/* Icon */}
-      <div className={`mb-4 w-16 h-16 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white shadow-lg`}>
+      <div
+        className={`mb-4 w-16 h-16 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white shadow-lg`}
+      >
         {IconComponent ? (
           <IconComponent className="w-8 h-8" />
         ) : (
-          <span className="text-3xl">{icon}</span>
+          <span className="text-3xl">{icon as any}</span>
         )}
       </div>
 
@@ -89,8 +93,14 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
       {features && features.length > 0 && (
         <ul className="space-y-2 mb-6">
           {features.map((feature, idx) => (
-            <li key={idx} className="text-xs text-gray-500 flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }} />
+            <li
+              key={idx}
+              className="text-xs text-gray-500 flex items-center gap-2"
+            >
+              <div
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ backgroundColor: color }}
+              />
               {feature}
             </li>
           ))}
@@ -103,7 +113,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
           <span className="text-2xl font-bold text-white">{price}</span>
           <button
             className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-medium text-white transition-colors"
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
               // Handle CTA click
             }}
@@ -117,4 +127,3 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
 };
 
 export default FeatureCard;
-
