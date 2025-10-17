@@ -9,12 +9,14 @@
 ## 📊 ملخص الـ API Keys
 
 ### Z.ai GLM-4.6 (Coding Plan)
+
 - **الحالة**: ✅ يعمل بنجاح!
 - **Endpoint**: https://api.z.ai/api/coding/paas/v4
 - **Model**: glm-4.6
 - **ملاحظة**: يستخدم reasoning باللغة الصينية (يمكن تحسينه)
 
 ### Google Gemini
+
 - **الحالة**: ✅ يعمل بنجاح!
 - **Model**: gemini-2.0-flash
 - **API Key**: مفعّل وجاهز
@@ -32,6 +34,7 @@ node telegram-bot-gemini.js
 ```
 
 ### الميزات:
+
 - ✅ AI-powered responses
 - ✅ Smart travel recommendations
 - ✅ Budget analysis
@@ -44,30 +47,39 @@ node telegram-bot-gemini.js
 ## 🤖 الخيارات المتاحة
 
 ### 1. البوت مع Gemini AI (موصى به) ✅
+
 ```bash
 node telegram-bot-gemini.js
 ```
+
 **الميزات:**
+
 - AI ذكي من Google
 - ردود طبيعية بالعربية
 - تحليل ذكي للميزانية
 - توصيات مخصصة
 
 ### 2. البوت مع Z.ai GLM-4.6 ✅
+
 ```bash
 node telegram-bot.js
 ```
+
 **الميزات:**
+
 - GLM-4.6 model
 - Coding Plan endpoint
 - ردود ذكية (قد تحتوي على صينية)
 - تحليل متقدم
 
 ### 3. البوت بدون AI (بسيط)
+
 ```bash
 node telegram-bot-no-ai.js
 ```
+
 **الميزات:**
+
 - ردود محددة مسبقاً
 - يعمل بدون API
 - سريع وموثوق
@@ -77,15 +89,18 @@ node telegram-bot-no-ai.js
 ## 🧪 اختبار البوت
 
 ### 1. ابدأ البوت
+
 ```bash
 cd backend
 node telegram-bot-gemini.js
 ```
 
 ### 2. افتح Telegram
+
 ابحث عن البوت الخاص بك
 
 ### 3. جرب الأوامر
+
 ```
 /start - بدء المحادثة
 /help - المساعدة
@@ -93,6 +108,7 @@ node telegram-bot-gemini.js
 ```
 
 ### 4. جرب المحادثة الطبيعية
+
 ```
 "أريد السفر إلى تركيا"
 "ما هي أفضل الأماكن في دبي؟"
@@ -121,16 +137,17 @@ Success Rate: 100%
 ## 🔧 الإعدادات
 
 ### ملف .env
+
 ```bash
 # Telegram (Required)
-TELEGRAM_BOT_TOKEN=8406534524:AAH_abP6ca9o7IMyU1lqL5ImtzEWtOzhNDM
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
 
 # Gemini AI (Working)
-GEMINI_API_KEY=AIzaSyCRePHm3rSnVctjzI2qnMEQbDfN1WVJGms
+GEMINI_API_KEY=your_gemini_api_key_here
 GEMINI_MODEL=gemini-2.0-flash
 
 # Z.ai (For Coding Tools only)
-ZAI_API_KEY=4e4ab4737d0b4f0ca810ae233d4cbad3.BY1p4wRAwHCezeMh
+ZAI_API_KEY=your_zai_api_key_here
 ```
 
 ---
@@ -138,6 +155,7 @@ ZAI_API_KEY=4e4ab4737d0b4f0ca810ae233d4cbad3.BY1p4wRAwHCezeMh
 ## 🚀 الإنتاج
 
 ### مع PM2 (موصى به)
+
 ```bash
 # تثبيت PM2
 npm install -g pm2
@@ -159,6 +177,7 @@ pm2 logs maya-bot
 ```
 
 ### مع Docker
+
 ```bash
 # Build
 docker build -t maya-bot .
@@ -176,20 +195,21 @@ docker run -d \
 
 ## 📊 مقارنة الخيارات
 
-| الميزة | Gemini AI | بدون AI | Z.ai |
-|--------|-----------|---------|------|
-| الحالة | ✅ يعمل | ✅ يعمل | ❌ يحتاج API |
-| AI Responses | ✅ | ❌ | ✅ |
-| Smart Analysis | ✅ | ❌ | ✅ |
-| Predefined Responses | ✅ | ✅ | ✅ |
-| Natural Conversation | ✅ | ❌ | ✅ |
-| Cost | مجاني | مجاني | يحتاج اشتراك |
+| الميزة               | Gemini AI | بدون AI | Z.ai         |
+| -------------------- | --------- | ------- | ------------ |
+| الحالة               | ✅ يعمل   | ✅ يعمل | ❌ يحتاج API |
+| AI Responses         | ✅        | ❌      | ✅           |
+| Smart Analysis       | ✅        | ❌      | ✅           |
+| Predefined Responses | ✅        | ✅      | ✅           |
+| Natural Conversation | ✅        | ❌      | ✅           |
+| Cost                 | مجاني     | مجاني   | يحتاج اشتراك |
 
 ---
 
 ## 🐛 استكشاف الأخطاء
 
 ### البوت لا يستجيب
+
 ```bash
 # تحقق من العملية
 ps aux | grep telegram-bot
@@ -203,6 +223,7 @@ node telegram-bot-gemini.js
 ```
 
 ### خطأ Gemini API
+
 ```bash
 # تحقق من API key
 echo $GEMINI_API_KEY
@@ -212,6 +233,7 @@ curl "https://generativelanguage.googleapis.com/v1/models?key=YOUR_KEY"
 ```
 
 ### خطأ Z.ai
+
 ```
 الحل: Z.ai Coding Plan للـ Coding Tools فقط
 استخدم Gemini بدلاً منه
@@ -222,10 +244,12 @@ curl "https://generativelanguage.googleapis.com/v1/models?key=YOUR_KEY"
 ## 📞 الدعم
 
 ### للمشاكل التقنية
+
 - Logs: `backend/logs/error.log`
 - GitHub Issues: [Repository](https://github.com/Moeabdelaziz007/amrikyy-travel-agent/issues)
 
 ### للوثائق
+
 - `README_BOT.md` - وثائق كاملة
 - `DEPLOYMENT.md` - دليل النشر
 - `PRODUCTION_READY.md` - تقرير الجاهزية
@@ -237,12 +261,14 @@ curl "https://generativelanguage.googleapis.com/v1/models?key=YOUR_KEY"
 **البوت جاهز للاستخدام الآن مع Gemini AI!** 🎉
 
 ### للبدء الفوري:
+
 ```bash
 cd backend
 node telegram-bot-gemini.js
 ```
 
 ### الميزات المتاحة:
+
 - ✅ AI-powered conversations
 - ✅ Smart travel planning
 - ✅ Budget analysis
@@ -259,11 +285,13 @@ node telegram-bot-gemini.js
 ## 📝 ملاحظات مهمة
 
 ### عن Z.ai GLM Coding Plan:
+
 - ✅ يعمل مع Coding Tools (Claude Code, Cline, etc.)
 - ❌ لا يعمل مع API المباشر
 - 💡 يحتاج اشتراك API منفصل للاستخدام البرمجي
 
 ### عن Gemini API:
+
 - ✅ يعمل بشكل ممتاز
 - ✅ مجاني للاستخدام المعقول
 - ✅ Model: gemini-2.0-flash
