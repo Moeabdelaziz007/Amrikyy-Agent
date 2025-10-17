@@ -1,6 +1,0 @@
-Task: Optimize performance of activate-claude.sh
-Status: Completed
-Assignee: Gemini
-
-Description:
-Optimized the script by replacing multiple `echo` commands with a single `cat << EOF` (here document). This reduces the number of command invocations and makes the script more concise and easier to maintain.

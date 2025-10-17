@@ -77,5 +77,32 @@
     "update_openmemory": true,
     "maintain_architecture_docs": true,
     "track_decisions": true
+  },
+
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/backend/kody_env/**": true,
+    "**/.git/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/coverage/**": true,
+    "**/.nyc_output/**": true,
+    "**/logs/**": true,
+    "**/tmp/**": true,
+    "**/temp/**": true
+  },
+  "files.exclude": {
+    "**/backend/kody_env/**": true,
+    "**/node_modules/**": true,
+    "**/.git/**": true,
+    "**/dist/**": true,
+    "**/build/**": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/backend/kody_env": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/coverage": true
   }
 }
