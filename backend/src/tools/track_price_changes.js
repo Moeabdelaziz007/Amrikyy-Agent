@@ -407,6 +407,15 @@ SupabaseDBPrototype.savePriceRecord = async function(priceRecord) {
     }
 };
 
-// Create and export tool instance
+// Create and export tool instance with tracing
 const trackPriceChangesTool = new TrackPriceChangesTool();
-module.exports = trackPriceChangesTool;
+const tracedTrackPriceChangesTool = trackPriceChangesTool.applyTracing({
+  name: 'track_price_changes',
+  tags: ['tool', 'price_tracking', 'monitoring'],
+  metadata: {
+    purpose: 'Monitor flight prices and detect significant changes',
+    database: 'Supabase'
+  }
+});
+
+module.exports = tracedTrackPriceChangesTool;

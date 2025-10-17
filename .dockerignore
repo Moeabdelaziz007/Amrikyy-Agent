@@ -1,0 +1,214 @@
+# 🐳 Maya Travel Agent - Docker Ignore File
+# Optimized for production builds
+
+# ============================================
+# 📁 Node.js Dependencies
+# ============================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# ============================================
+# 🏗️ Build Outputs
+# ============================================
+dist/
+build/
+.next/
+coverage/
+.nyc_output/
+
+# ============================================
+# 🔧 Development Files
+# ============================================
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.staging
+
+# ============================================
+# 📝 Documentation & Config
+# ============================================
+README.md
+CHANGELOG.md
+LICENSE
+.git/
+.gitignore
+.gitattributes
+
+# ============================================
+# 🧪 Testing
+# ============================================
+test/
+tests/
+__tests__/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+jest.config.js
+cypress/
+.cypress/
+
+# ============================================
+# 🛠️ Development Tools
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ============================================
+# 📊 Logs & Monitoring
+# ============================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# ============================================
+# 🗂️ Temporary Files
+# ============================================
+.tmp/
+temp/
+tmp/
+.cache/
+.parcel-cache/
+
+# ============================================
+# 🐳 Docker Files
+# ============================================
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# ============================================
+# 🚀 CI/CD
+# ============================================
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# ============================================
+# 📱 Mobile Development
+# ============================================
+ios/
+android/
+.expo/
+.expo-shared/
+
+# ============================================
+# 🐍 Python
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ============================================
+# ☕ Java
+# ============================================
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+
+# ============================================
+# 🔒 Security & Secrets
+# ============================================
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+.secrets/
+
+# ============================================
+# 📦 Package Managers
+# ============================================
+.yarn/
+.pnp.*
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.js
+
+# ============================================
+# 🗄️ Database
+# ============================================
+*.db
+*.sqlite
+*.sqlite3
+data/
+database/
+
+# ============================================
+# 📁 OS Generated Files
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ============================================
+# 🎨 Editor Files
+# ============================================
+*.sublime-project
+*.sublime-workspace
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ============================================
+# 📊 Analytics & Monitoring
+# ============================================
+.nyc_output/
+coverage/
+*.lcov
+
+# ============================================
+# 🔧 Linting & Formatting
+# ============================================
+.eslintcache
+.stylelintcache
+.prettierignore
+
+# ============================================
+# 📱 PWA
+# ============================================
+sw.js
+workbox-*.js
+precache-manifest.*.js
+
+# ============================================
+# 🎯 Specific to Maya Travel Agent
+# ============================================
+backend/logs/
+backend/uploads/
+backend/temp/
+frontend/.vite/
+frontend/dist/
+.vercel/
+.netlify/
