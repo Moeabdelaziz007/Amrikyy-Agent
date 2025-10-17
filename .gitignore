@@ -42,3 +42,14 @@ CLAUDE.md
 # Security audit files
 security-audit.md
 SECURITY_REPORT.md
+
+# Python virtual environments
+*/venv/
+*/env/
+*/kody_env/
+*/python_env/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
