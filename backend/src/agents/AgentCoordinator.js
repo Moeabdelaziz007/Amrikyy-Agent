@@ -1,12 +1,14 @@
 /**
  * Agent Coordinator
  * Orchestrates Luna, Karim, and Scout agents with MCP tools
+ * Enhanced with LangSmith tracing for complete visibility
  */
 
 const LunaWithMCP = require('./LunaWithMCP');
 const KarimWithMCP = require('./KarimWithMCP');
 const ScoutWithMCP = require('./ScoutWithMCP');
 const logger = require('../utils/logger');
+const { wrapOrchestrator, wrapAsyncOperation } = require('../utils/langsmith_helpers');
 
 class AgentCoordinator {
   constructor() {
@@ -26,7 +28,7 @@ class AgentCoordinator {
    * @param {Object} request - Travel request
    * @returns {Promise<Object>} Coordinated response
    */
-  async handleTravelRequest(request) {
+  handleTravelRequest = wrapOrchestrator(async function(request) {
     try {
       const {
         type,
@@ -110,12 +112,12 @@ class AgentCoordinator {
         error: error.message
       };
     }
-  }
+  }, 'agent_coordinator');
 
   /**
    * Coordinate trip planning (Luna primary)
    */
-  async coordinateTripPlanning(request, requestId) {
+  coordinateTripPlanning = wrapAsyncOperation(async function(request, requestId) {
     const response = {
       requestId,
       success: true,
@@ -155,12 +157,12 @@ class AgentCoordinator {
     }
 
     return response;
-  }
+  }, 'coordinate_trip_planning');
 
   /**
    * Coordinate budget optimization (Karim primary)
    */
-  async coordinateBudgetOptimization(request, requestId) {
+  coordinateBudgetOptimization = wrapAsyncOperation(async function(request, requestId) {
     const response = {
       requestId,
       success: true,
@@ -201,12 +203,12 @@ class AgentCoordinator {
     }
 
     return response;
-  }
+  }, 'coordinate_budget_optimization');
 
   /**
    * Coordinate deal discovery (Scout primary)
    */
-  async coordinateDealDiscovery(request, requestId) {
+  coordinateDealDiscovery = wrapAsyncOperation(async function(request, requestId) {
     const response = {
       requestId,
       success: true,
@@ -250,12 +252,12 @@ class AgentCoordinator {
     }
 
     return response;
-  }
+  }, 'coordinate_deal_discovery');
 
   /**
    * Coordinate full service (all agents)
    */
-  async coordinateFullService(request, requestId) {
+  coordinateFullService = wrapAsyncOperation(async function(request, requestId) {
     const response = {
       requestId,
       success: true,
@@ -323,7 +325,7 @@ class AgentCoordinator {
     }
 
     return response;
-  }
+  }, 'coordinate_full_service');
 
   /**
    * Track agent usage

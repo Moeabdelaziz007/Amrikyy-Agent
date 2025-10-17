@@ -4,6 +4,7 @@
 // ═══════════════════════════════════════════════════════════════
 
 const JupyterManagerFixed = require('./jupyter/JupyterManagerFixed');
+const { wrapTool } = require('../utils/langsmith_helpers');
 
 class ExecuteNotebookCodeTool {
   constructor() {
@@ -114,4 +115,8 @@ class ExecuteNotebookCodeTool {
   }
 }
 
-module.exports = ExecuteNotebookCodeTool;
+// Create and export tool instance with tracing
+const executeNotebookCodeTool = new ExecuteNotebookCodeTool();
+const tracedExecuteNotebookCodeTool = wrapTool(executeNotebookCodeTool, 'execute_notebook_code', ['tool', 'jupyter', 'python']);
+
+module.exports = tracedExecuteNotebookCodeTool;

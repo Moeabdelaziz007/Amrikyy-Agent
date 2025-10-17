@@ -468,6 +468,15 @@ SupabaseDBPrototype.saveGeneratedOffer = async function(telegramId, offer) {
     }
 };
 
-// Create and export tool instance
+// Create and export tool instance with tracing
 const generateProactiveOffersTool = new GenerateProactiveOffersTool();
-module.exports = generateProactiveOffersTool;
+const tracedGenerateProactiveOffersTool = generateProactiveOffersTool.applyTracing({
+  name: 'generate_proactive_offers',
+  tags: ['tool', 'offers', 'ai_generation'],
+  metadata: {
+    purpose: 'Generate proactive travel offers based on user behavior and preferences',
+    aiModel: 'Z.ai GLM-4.6'
+  }
+});
+
+module.exports = tracedGenerateProactiveOffersTool;

@@ -239,6 +239,15 @@ ${conversationText}
     }
 }
 
-// Create and export tool instance
+// Create and export tool instance with tracing
 const monitorUserInterestsTool = new MonitorUserInterestsTool();
-module.exports = monitorUserInterestsTool;
+const tracedMonitorUserInterestsTool = monitorUserInterestsTool.applyTracing({
+  name: 'monitor_user_interests',
+  tags: ['tool', 'monitoring', 'user_behavior'],
+  metadata: {
+    purpose: 'Monitor and analyze user interests and behavior patterns',
+    database: 'Supabase'
+  }
+});
+
+module.exports = tracedMonitorUserInterestsTool;
