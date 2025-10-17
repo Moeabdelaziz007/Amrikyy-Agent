@@ -7,7 +7,7 @@
  * INSTALLATION:
  * 1. Create file: backend/src/reward/QuantumRewardEngine.js
  * 2. Install dependencies: npm install
- * 3. Import in backend/server.js
+ * 3. Import in backend/index.js
  * 4. Initialize with Supabase client
  */
 
@@ -51,9 +51,9 @@ class QuantumRewardEngine {
         coherence: 88,
         entanglements: [],
       },
-      amira: {
-        id: 'amira',
-        name: 'Amira - Problem Solver',
+      amir: {
+        id: 'amir',
+        name: 'Amir - Safety Advisor',
         role: 'SAFETY_SECURITY',
         capabilities: ['safety_checks', 'travel_warnings', 'health_advice'],
         energy: 100,
@@ -61,44 +61,24 @@ class QuantumRewardEngine {
         coherence: 92,
         entanglements: [],
       },
-      tariq: {
-        id: 'tariq',
-        name: 'Tariq - Payment Manager',
-        role: 'PAYMENT_PROCESSING',
-        capabilities: ['payment_processing', 'currency_conversion', 'transaction_security'],
+      sara: {
+        id: 'sara',
+        name: 'Sara - Experience Curator',
+        role: 'EXPERIENCE_DESIGN',
+        capabilities: ['activity_recommendations', 'booking_assistance', 'personalization'],
         energy: 100,
         rewards: 0,
         coherence: 87,
         entanglements: [],
       },
-      zara: {
-        id: 'zara',
-        name: 'Zara - Research Specialist',
-        role: 'RESEARCH_ANALYSIS',
-        capabilities: ['data_research', 'fact_checking', 'market_analysis'],
+      kody: {
+        id: 'kody',
+        name: 'Kody - Marketing Automation',
+        role: 'MARKETING_ANALYSIS',
+        capabilities: ['market_research', 'content_analysis', 'trend_detection', 'automation'],
         energy: 100,
         rewards: 0,
         coherence: 89,
-        entanglements: [],
-      },
-      kody: {
-        id: 'kody',
-        name: 'Kody - Code Interpreter',
-        role: 'CODE_EXECUTION',
-        capabilities: ['code_execution', 'data_analysis', 'visualization'],
-        energy: 100,
-        rewards: 0,
-        coherence: 91,
-        entanglements: [],
-      },
-      scout: {
-        id: 'scout',
-        name: 'Scout - Price Monitor',
-        role: 'PRICE_MONITORING',
-        capabilities: ['price_tracking', 'deal_detection', 'alert_system'],
-        energy: 100,
-        rewards: 0,
-        coherence: 86,
         entanglements: [],
       },
     };
@@ -130,6 +110,12 @@ class QuantumRewardEngine {
       CONFLICT_RESOLUTION: 30,
       KNOWLEDGE_SHARING: 25,
       LEADERSHIP: 35,
+
+      // Marketing-specific rewards
+      MARKETING_INSIGHT: 20,
+      CAMPAIGN_SUCCESS: 45,
+      DATA_ANALYSIS: 15,
+      AUTOMATION_EFFICIENCY: 25,
     };
 
     // Learning parameters
@@ -156,7 +142,6 @@ class QuantumRewardEngine {
   calculateImmediateReward(agentId, action, result, context) {
     const agent = this.agents[agentId];
     if (!agent) return 0;
-
     let reward = 0;
 
     // Accuracy reward
@@ -179,6 +164,22 @@ class QuantumRewardEngine {
       reward += this.rewardConfig.RESOURCE_EFFICIENCY;
     }
 
+    // Marketing-specific rewards
+    if (agentId === 'kody') {
+      if (result.marketingInsights) {
+        reward += this.rewardConfig.MARKETING_INSIGHT;
+      }
+      if (result.campaignSuccess) {
+        reward += this.rewardConfig.CAMPAIGN_SUCCESS;
+      }
+      if (result.dataAnalysis) {
+        reward += this.rewardConfig.DATA_ANALYSIS;
+      }
+      if (result.automationEfficiency) {
+        reward += this.rewardConfig.AUTOMATION_EFFICIENCY;
+      }
+    }
+
     return reward;
   }
 
@@ -188,7 +189,6 @@ class QuantumRewardEngine {
   calculateLongTermReward(agentId, trajectory) {
     const agent = this.agents[agentId];
     if (!agent) return 0;
-
     let reward = 0;
 
     // Task completion reward
@@ -310,7 +310,6 @@ class QuantumRewardEngine {
     };
 
     const existingIndex = agent1.entanglements.findIndex((e) => e.targetAgent === agent2Id);
-
     if (existingIndex >= 0) {
       agent1.entanglements[existingIndex] = entanglement;
     } else {
@@ -325,7 +324,6 @@ class QuantumRewardEngine {
     };
 
     const reciprocalIndex = agent2.entanglements.findIndex((e) => e.targetAgent === agent1Id);
-
     if (reciprocalIndex >= 0) {
       agent2.entanglements[reciprocalIndex] = reciprocalEntanglement;
     } else {
@@ -340,6 +338,7 @@ class QuantumRewardEngine {
     // Calculate average coherence across all agents
     const agentList = Object.values(this.agents);
     const avgCoherence = agentList.reduce((sum, a) => sum + a.coherence, 0) / agentList.length;
+
     this.quantumState.globalCoherence = avgCoherence;
 
     // Calculate average entanglement strength
@@ -371,10 +370,12 @@ class QuantumRewardEngine {
   calculateEnergyVariance() {
     const agentList = Object.values(this.agents);
     const avgEnergy = agentList.reduce((sum, a) => sum + a.energy, 0) / agentList.length;
+
     const variance =
       agentList.reduce((sum, a) => {
         return sum + Math.pow(a.energy - avgEnergy, 2);
       }, 0) / agentList.length;
+
     return variance;
   }
 
@@ -387,12 +388,6 @@ class QuantumRewardEngine {
    */
   async storeAgentState(agentId, agentData) {
     try {
-      // If Supabase is not available, just log and return success
-      if (!this.supabase) {
-        console.log(`📊 Agent state updated (no DB): ${agentId}`);
-        return { success: true, mock: true };
-      }
-
       const { data, error } = await this.supabase.from('agent_states').upsert(
         {
           agent_id: agentId,
@@ -404,7 +399,9 @@ class QuantumRewardEngine {
           entanglements: agentData.entanglements,
           updated_at: new Date().toISOString(),
         },
-        { onConflict: 'agent_id' }
+        {
+          onConflict: 'agent_id',
+        }
       );
 
       if (error) throw error;
@@ -430,13 +427,8 @@ class QuantumRewardEngine {
       this.experienceBuffer.shift();
     }
 
-    // Store in database if Supabase is available
+    // Store in database
     try {
-      if (!this.supabase) {
-        console.log(`📝 Experience stored (no DB): ${experience.agentId}`);
-        return { success: true, mock: true };
-      }
-
       const { data, error } = await this.supabase.from('agent_experiences').insert({
         agent_id: experience.agentId,
         action: experience.action,
@@ -461,7 +453,6 @@ class QuantumRewardEngine {
   async loadAgentStates() {
     try {
       const { data, error } = await this.supabase.from('agent_states').select('*');
-
       if (error) throw error;
 
       // Update in-memory agents
@@ -533,6 +524,7 @@ class QuantumRewardEngine {
         sampled.push(this.experienceBuffer[idx]);
       }
     }
+
     return sampled;
   }
 
@@ -629,7 +621,6 @@ class QuantumRewardEngine {
    */
   getSystemMetrics() {
     const agentList = Object.values(this.agents);
-    const agentCount = agentList.length;
 
     return {
       agents: agentList.map((agent) => ({
@@ -638,7 +629,7 @@ class QuantumRewardEngine {
         energy: agent.energy,
         rewards: agent.rewards,
         coherence: agent.coherence,
-        entanglementCount: agent.entanglements ? agent.entanglements.length : 0,
+        entanglementCount: agent.entanglements.length,
       })),
       quantum: {
         globalCoherence: this.quantumState.globalCoherence,
@@ -651,13 +642,93 @@ class QuantumRewardEngine {
         explorationRate: this.learningConfig.explorationRate,
         experienceBufferSize: this.experienceBuffer.length,
       },
-      totalRewards: agentList.reduce((sum, a) => sum + (a.rewards || 0), 0),
-      avgEnergy:
-        agentCount > 0 ? agentList.reduce((sum, a) => sum + (a.energy || 0), 0) / agentCount : 0,
-      avgCoherence:
-        agentCount > 0 ? agentList.reduce((sum, a) => sum + (a.coherence || 0), 0) / agentCount : 0,
+      totalRewards: agentList.reduce((sum, a) => sum + a.rewards, 0),
+      avgEnergy: agentList.reduce((sum, a) => sum + a.energy, 0) / agentList.length,
+      avgCoherence: agentList.reduce((sum, a) => sum + a.coherence, 0) / agentList.length,
     };
   }
 }
 
-module.exports = { QuantumRewardEngine };
+// ═══════════════════════════════════════════════════════════════
+// 🚀 EXPRESS MIDDLEWARE & ROUTES
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Initialize reward engine middleware
+ * Add to backend/index.js:
+ *
+ * const QuantumRewardEngine = require('./src/reward/QuantumRewardEngine');
+ * const rewardEngine = new QuantumRewardEngine(supabase);
+ * app.use((req, res, next) => {
+ *   req.rewardEngine = rewardEngine;
+ *   next();
+ * });
+ */
+
+/**
+ * Example Express Routes
+ */
+const createRewardRoutes = (app, rewardEngine) => {
+  // Get system metrics
+  app.get('/api/rewards/metrics', async (req, res) => {
+    try {
+      const metrics = rewardEngine.getSystemMetrics();
+      res.json({ success: true, data: metrics });
+    } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // Process interaction and award rewards
+  app.post('/api/rewards/process', async (req, res) => {
+    try {
+      const { agentId, action, result, context, collaboratingAgents } = req.body;
+
+      const rewardResult = await rewardEngine.processInteraction({
+        agentId,
+        action,
+        result,
+        context,
+        collaboratingAgents,
+      });
+
+      res.json({ success: true, data: rewardResult });
+    } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // Get agent recommendations
+  app.post('/api/rewards/recommend', async (req, res) => {
+    try {
+      const { taskType, taskContext } = req.body;
+
+      const recommendations = rewardEngine.recommendAgentsForTask(taskType, taskContext);
+
+      res.json({ success: true, data: recommendations });
+    } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // Get specific agent state
+  app.get('/api/rewards/agent/:agentId', async (req, res) => {
+    try {
+      const { agentId } = req.params;
+      const agent = rewardEngine.agents[agentId];
+
+      if (!agent) {
+        return res.status(404).json({
+          success: false,
+          error: 'Agent not found',
+        });
+      }
+
+      res.json({ success: true, data: agent });
+    } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+};
+
+module.exports = { QuantumRewardEngine, createRewardRoutes };

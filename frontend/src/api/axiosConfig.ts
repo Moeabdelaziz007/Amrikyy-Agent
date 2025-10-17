@@ -6,7 +6,8 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import authAPI from './authService';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE_URL =
+  (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000';
 
 // Create axios instance
 export const apiClient = axios.create({
@@ -20,11 +21,11 @@ export const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = authAPI.getAccessToken();
-    
+
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    
+
     return config;
   },
   (error: AxiosError) => {
@@ -40,7 +41,7 @@ let failedQueue: Array<{
 }> = [];
 
 const processQueue = (error: any = null) => {
-  failedQueue.forEach((prom) => {
+  failedQueue.forEach(prom => {
     if (error) {
       prom.reject(error);
     } else {
@@ -52,7 +53,7 @@ const processQueue = (error: any = null) => {
 };
 
 apiClient.interceptors.response.use(
-  (response) => response,
+  response => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
@@ -68,7 +69,7 @@ apiClient.interceptors.response.use(
           .then(() => {
             return apiClient(originalRequest);
           })
-          .catch((err) => {
+          .catch(err => {
             return Promise.reject(err);
           });
       }
@@ -83,39 +84,39 @@ apiClient.interceptors.response.use(
         if (refreshed) {
           // Token refreshed successfully
           processQueue();
-          
+
           // Retry the original request with new token
           const token = authAPI.getAccessToken();
           if (originalRequest.headers && token) {
             originalRequest.headers.Authorization = `Bearer ${token}`;
           }
-          
+
           return apiClient(originalRequest);
         } else {
           // Refresh failed, redirect to login
           processQueue(new Error('Token refresh failed'));
-          
+
           // Clear auth state
           await authAPI.signOut();
-          
+
           // Redirect to login page
           if (window.location.pathname !== '/') {
             window.location.href = '/';
           }
-          
+
           return Promise.reject(error);
         }
       } catch (refreshError) {
         processQueue(refreshError);
-        
+
         // Clear auth state
         await authAPI.signOut();
-        
+
         // Redirect to login page
         if (window.location.pathname !== '/') {
           window.location.href = '/';
         }
-        
+
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
