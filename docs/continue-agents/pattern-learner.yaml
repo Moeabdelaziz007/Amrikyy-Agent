@@ -1,0 +1,92 @@
+# Pattern Learning Agent
+# Specialized in learning and applying coding patterns
+
+name: Pattern Learner
+version: 1.0.0
+schema: v1
+description: AI agent that learns coding patterns from the codebase and applies them intelligently
+
+models:
+  - name: Qwen3 Coder 30B
+    provider: ollama
+    model: qwen3-coder-30b
+    roles: [chat, pattern_analysis]
+
+  - name: Claude Sonnet 4
+    provider: anthropic
+    model: claude-sonnet-4-20250514
+    apiKey: ${{ secrets.ANTHROPIC_API_KEY }}
+    roles: [deep_learning, synthesis]
+
+mcpServers:
+  - name: private-journal
+    type: stdio
+    command: node
+    args: [/workspace/backend/mcp-servers/private-journal/dist/index.js]
+    autoApprove: [process_thoughts, search_journal]
+  
+  - name: pattern-learning
+    type: stdio
+    command: node
+    args: [/workspace/backend/mcp-servers/pattern-learning-journal/index.js]
+    autoApprove: [store_pattern, search_patterns, apply_pattern]
+
+customCommands:
+  - name: learn
+    description: Learn pattern from code
+    prompt: |
+      Analyze and learn the pattern from:
+      
+      {{{ input }}}
+      
+      Extract:
+      1. Pattern name and category
+      2. When to use (context)
+      3. How it works (implementation)
+      4. Benefits and trade-offs
+      5. Examples in this codebase
+      6. Anti-patterns to avoid
+      
+      Store in both journals for future reference.
+
+  - name: apply
+    description: Apply learned pattern
+    prompt: |
+      Apply relevant learned patterns to:
+      
+      {{{ input }}}
+      
+      Search journal for similar contexts.
+      Apply best matching patterns.
+      Explain why this pattern fits.
+
+  - name: discover
+    description: Discover patterns in codebase
+    prompt: |
+      Discover patterns in:
+      
+      {{{ input }}}
+      
+      Look for:
+      - Architectural patterns
+      - Design patterns
+      - Coding conventions
+      - Best practices
+      - Common solutions
+      
+      Store discoveries in journal.
+
+agentSettings:
+  learningMode: active
+  patternCategories:
+    - architectural
+    - design
+    - coding_style
+    - error_handling
+    - testing
+    - performance
+    - security
+  journalIntegration:
+    enabled: true
+    autoStore: [all_patterns]
+    autoSearch: [before_code_generation]
