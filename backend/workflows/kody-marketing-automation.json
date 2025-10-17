@@ -1,0 +1,330 @@
+{
+  "name": "Kody Marketing Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerOn": "webhook"
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "kody-marketing-automation"
+    },
+    {
+      "parameters": {
+        "url": "https://api.maya-travel-agent.com/kody/analyze",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.KODY_API_KEY}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{$json.query}}"
+            },
+            {
+              "name": "data_source",
+              "value": "web_search"
+            },
+            {
+              "name": "analysis_type",
+              "value": "marketing_insights"
+            }
+          ]
+        }
+      },
+      "id": "kody-analysis",
+      "name": "Kody Data Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.brave-search.com/v1/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip"
+            },
+            {
+              "name": "X-Subscription-Token",
+              "value": "={{$env.BRAVE_API_KEY}}"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{$json.query}}"
+            },
+            {
+              "name": "count",
+              "value": "10"
+            },
+            {
+              "name": "country",
+              "value": "US"
+            },
+            {
+              "name": "search_lang",
+              "value": "en"
+            },
+            {
+              "name": "ui_lang",
+              "value": "en-US"
+            },
+            {
+              "name": "safesearch",
+              "value": "moderate"
+            },
+            {
+              "name": "freshness",
+              "value": "all"
+            },
+            {
+              "name": "text_decorations",
+              "value": "true"
+            },
+            {
+              "name": "text_format",
+              "value": "Raw"
+            }
+          ]
+        }
+      },
+      "id": "brave-search",
+      "name": "Brave Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process search results for marketing insights\nconst searchResults = $input.all()[0].json.web.results || [];\nconst analysisResults = $input.all()[1].json;\n\n// Extract key marketing insights\nconst insights = {\n  trending_topics: [],\n  competitor_analysis: [],\n  market_opportunities: [],\n  sentiment_analysis: {},\n  key_metrics: {}\n};\n\n// Analyze search results\nsearchResults.forEach(result => {\n  const title = result.title || '';\n  const description = result.description || '';\n  const url = result.url || '';\n  \n  // Extract trending topics\n  if (title.toLowerCase().includes('trending') || \n      title.toLowerCase().includes('popular') ||\n      title.toLowerCase().includes('viral')) {\n    insights.trending_topics.push({\n      title: title,\n      url: url,\n      description: description\n    });\n  }\n  \n  // Competitor analysis\n  if (url.includes('competitor') || \n      title.toLowerCase().includes('competitor') ||\n      title.toLowerCase().includes('alternative')) {\n    insights.competitor_analysis.push({\n      title: title,\n      url: url,\n      description: description\n    });\n  }\n  \n  // Market opportunities\n  if (title.toLowerCase().includes('opportunity') ||\n      title.toLowerCase().includes('growth') ||\n      title.toLowerCase().includes('market')) {\n    insights.market_opportunities.push({\n      title: title,\n      url: url,\n      description: description\n    });\n  }\n});\n\n// Calculate key metrics\ninsights.key_metrics = {\n  total_results: searchResults.length,\n  trending_topics_count: insights.trending_topics.length,\n  competitor_mentions: insights.competitor_analysis.length,\n  market_opportunities_count: insights.market_opportunities.length,\n  analysis_timestamp: new Date().toISOString()\n};\n\n// Sentiment analysis (simplified)\nconst positiveKeywords = ['success', 'growth', 'opportunity', 'innovative', 'breakthrough'];\nconst negativeKeywords = ['decline', 'failure', 'problem', 'issue', 'crisis'];\n\nlet positiveCount = 0;\nlet negativeCount = 0;\n\nsearchResults.forEach(result => {\n  const text = (result.title + ' ' + result.description).toLowerCase();\n  \n  positiveKeywords.forEach(keyword => {\n    if (text.includes(keyword)) positiveCount++;\n  });\n  \n  negativeKeywords.forEach(keyword => {\n    if (text.includes(keyword)) negativeCount++;\n  });\n});\n\ninsights.sentiment_analysis = {\n  positive: positiveCount,\n  negative: negativeCount,\n  neutral: searchResults.length - positiveCount - negativeCount,\n  overall_sentiment: positiveCount > negativeCount ? 'positive' : \n                    negativeCount > positiveCount ? 'negative' : 'neutral'\n};\n\nreturn {\n  original_query: $input.all()[0].json.query,\n  insights: insights,\n  raw_results: searchResults,\n  kody_analysis: analysisResults\n};"
+      },
+      "id": "process-insights",
+      "name": "Process Marketing Insights",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.maya-travel-agent.com/kody/notebook/execute",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.KODY_API_KEY}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "code",
+              "value": "import pandas as pd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nfrom datetime import datetime\nimport json\n\n# Load insights data\ninsights_data = {{$json.insights}}\n\n# Create DataFrame for analysis\ndata = {\n    'Category': ['Trending Topics', 'Competitor Analysis', 'Market Opportunities'],\n    'Count': [\n        insights_data['key_metrics']['trending_topics_count'],\n        insights_data['key_metrics']['competitor_mentions'],\n        insights_data['key_metrics']['market_opportunities_count']\n    ]\n}\n\ndf = pd.DataFrame(data)\n\n# Create visualization\nplt.figure(figsize=(10, 6))\nsns.barplot(data=df, x='Category', y='Count', palette='viridis')\nplt.title('Marketing Insights Analysis')\nplt.xticks(rotation=45)\nplt.tight_layout()\nplt.savefig('/tmp/marketing_insights.png', dpi=300, bbox_inches='tight')\nplt.show()\n\n# Generate marketing recommendations\nrecommendations = []\n\nif insights_data['key_metrics']['trending_topics_count'] > 3:\n    recommendations.append('High trending activity detected - consider creating content around trending topics')\n\nif insights_data['key_metrics']['competitor_mentions'] > 2:\n    recommendations.append('Competitor activity noted - analyze competitor strategies')\n\nif insights_data['key_metrics']['market_opportunities_count'] > 1:\n    recommendations.append('Market opportunities identified - consider expansion or new product development')\n\nif insights_data['sentiment_analysis']['overall_sentiment'] == 'positive':\n    recommendations.append('Positive market sentiment - good time for marketing campaigns')\n\n# Output results\nresult = {\n    'analysis_summary': {\n        'total_insights': insights_data['key_metrics']['total_results'],\n        'sentiment': insights_data['sentiment_analysis']['overall_sentiment'],\n        'recommendations_count': len(recommendations)\n    },\n    'recommendations': recommendations,\n    'visualization_path': '/tmp/marketing_insights.png',\n    'timestamp': datetime.now().isoformat()\n}\n\nprint(json.dumps(result, indent=2))"
+            }
+          ]
+        }
+      },
+      "id": "notebook-analysis",
+      "name": "Notebook Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.maya-travel-agent.com/email/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.EMAIL_API_KEY}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "to",
+              "value": "marketing@maya-travel-agent.com"
+            },
+            {
+              "name": "subject",
+              "value": "Kody Marketing Analysis Report - {{$json.original_query}}"
+            },
+            {
+              "name": "html",
+              "value": "<h2>Marketing Analysis Report</h2>\n<h3>Query: {{$json.original_query}}</h3>\n<h3>Key Insights:</h3>\n<ul>\n  <li>Total Results: {{$json.insights.key_metrics.total_results}}</li>\n  <li>Trending Topics: {{$json.insights.key_metrics.trending_topics_count}}</li>\n  <li>Competitor Mentions: {{$json.insights.key_metrics.competitor_mentions}}</li>\n  <li>Market Opportunities: {{$json.insights.key_metrics.market_opportunities_count}}</li>\n  <li>Overall Sentiment: {{$json.insights.sentiment_analysis.overall_sentiment}}</li>\n</ul>\n<h3>Recommendations:</h3>\n<ul>\n{{#each $json.insights.recommendations}}\n  <li>{{this}}</li>\n{{/each}}\n</ul>\n<p>Generated by Kody Marketing Automation at {{$json.insights.key_metrics.analysis_timestamp}}</p>"
+            }
+          ]
+        }
+      },
+      "id": "send-report",
+      "name": "Send Marketing Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.maya-travel-agent.com/analytics/track",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.ANALYTICS_API_KEY}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "event",
+              "value": "kody_marketing_analysis_completed"
+            },
+            {
+              "name": "properties",
+              "value": "={{JSON.stringify($json)}}"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{$now}}"
+            }
+          ]
+        }
+      },
+      "id": "track-analytics",
+      "name": "Track Analytics",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1560, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Kody Data Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kody Data Analysis": {
+      "main": [
+        [
+          {
+            "node": "Brave Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Brave Search": {
+      "main": [
+        [
+          {
+            "node": "Process Marketing Insights",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Marketing Insights": {
+      "main": [
+        [
+          {
+            "node": "Notebook Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notebook Analysis": {
+      "main": [
+        [
+          {
+            "node": "Send Marketing Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Marketing Report": {
+      "main": [
+        [
+          {
+            "node": "Track Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-01-13T20:00:00.000Z",
+      "updatedAt": "2025-01-13T20:00:00.000Z",
+      "id": "kody-marketing",
+      "name": "Kody Marketing"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-13T20:00:00.000Z",
+  "versionId": "1"
+}

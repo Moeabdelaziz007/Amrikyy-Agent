@@ -2,87 +2,71 @@
   "mcpServers": {
     "memory": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-memory"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
     },
     "filesystem": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-filesystem"]
     },
     "github": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-github"]
     },
     "postgresql": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-postgres"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-postgres"]
     },
     "docker": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-docker"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-docker"]
     },
     "brave-search": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-brave-search"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"]
     },
     "sequential-thinking": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     },
     "brave-search": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-brave-search"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"]
     },
     "wikipedia": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-wikipedia"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-wikipedia"]
     },
     "currency-converter": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-currency"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-currency"]
     },
     "maps": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-maps"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-maps"]
     },
     "weather": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-weather"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-weather"]
+    },
+    "web-search": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-web-search"]
+    },
+    "social-media": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-social-media"]
+    },
+    "analytics": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-analytics"]
+    },
+    "email": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-email"]
+    },
+    "notebook": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-notebook"]
     }
   }
 }
