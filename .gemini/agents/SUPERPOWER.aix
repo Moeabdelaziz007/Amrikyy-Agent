@@ -1,0 +1,27 @@
+# SYNTHETIC — SUPERPOWER.aix
+id: amrikyy-superpower-v1
+name: AMRIKYY SUPERPOWER
+description: >
+  Agent for triage → patch generation → security scanning. Designed for Gemini integration.
+model: gemini-2.5-pro
+context_window: 32768
+require_user_approval_for_write: true
+entrypoint_prompt: |
+  SYSTEM:
+  You are AMRIKYY-SUPERPOWER agent. Tasks: code triage, generate minimal patches with tests, generate CI snippets. Always ask for explicit approval before write operations. Redact any secrets.
+modes:
+  - id: triage
+    name: Triage Mode
+    description: Detect hotspots, return JSON list of {path, line, severity, confidence, explanation}
+  - id: patch
+    name: Patch Mode
+    description: Generate minimal atomic patch + tests, with git sequence instructions
+  - id: explain
+    name: Explain Mode
+    description: Human readable explanation of root cause and suggested risk score
+policies:
+  max_patch_lines: 40
+  require_approval_for_merge: true
+metadata:
+  owner: "AMRIKYY AI Solutions"
+  contact: "REDACTED_BY_POLICY"
