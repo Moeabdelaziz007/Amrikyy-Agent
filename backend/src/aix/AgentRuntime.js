@@ -15,6 +15,7 @@ const path = require('path');
 const { logger } = require('../utils/logger');
 const { AIXManager } = require('./AIXManager');
 const AIXConnectionManager = require('./AIXConnectionManager');
+const { wrapAgentBrain, wrapAsyncOperation } = require('../utils/langsmith_helpers');
 
 const log = logger.child('AgentRuntime');
 
@@ -348,7 +349,7 @@ class AgentRuntime extends EventEmitter {
   /**
    * Execute a task on an agent
    */
-  async executeAgent(agentId, task, context = {}) {
+  executeAgent = wrapAgentBrain(async function(agentId, task, context = {}) {
     const startTime = Date.now();
     
     try {
@@ -595,7 +596,7 @@ class AgentInstance {
   /**
    * Execute a task on this agent
    */
-  async execute(task, context = {}) {
+  execute = wrapAgentBrain(async function(task, context = {}) {
     if (!this.isInitialized) {
       throw new Error('Agent instance not initialized');
     }
@@ -627,7 +628,7 @@ class AgentInstance {
   /**
    * Execute task based on agent capabilities
    */
-  async executeTask(task, context) {
+  executeTask = wrapAsyncOperation(async function(task, context) {
     // For now, return a mock execution result
     // In a real implementation, this would execute the agent's actual capabilities
     
