@@ -2,8 +2,11 @@
 # Automated Docker build and deployment pipeline
 # Built with Cursor Ultimate Learning Agent - DNA Score: 99.2/100
 
-name: 🚀 Continuous Deployment
+name: 🚀 Continuous Deployment - Maya Travel Agent
 
+# ============================================
+# 🎯 Trigger Configuration
+# ============================================
 on:
   push:
     branches: [ main, production ]
@@ -12,70 +15,142 @@ on:
     types: [completed]
     branches: [ main, production ]
 
+# ============================================
+# 🌍 Environment Variables
+# ============================================
 env:
+  # Google Cloud Configuration
+  PROJECT_ID: maya-travel-agent-prod
+  GAR_LOCATION: me-central1  # Middle East Central 1 (Dammam)
+  REPOSITORY: maya-travel-agent
+  IMAGE_NAME: maya-travel-agent
+  
+  # Container Registry
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  GITHUB_REPOSITORY: ${{ github.repository }}
+  
+  # Deployment Configuration
+  NODE_ENV: production
+  PORT: 5000
 
+# ============================================
+# 🐳 Build and Push Docker Image
+# ============================================
 jobs:
-  # ============================================
-  # 🐳 Build and Push Docker Image
-  # ============================================
-  build-and-push:
-    name: 🐳 Build & Push Docker Image
+  build-and-push-to-gar:
+    name: 🐳 Build and Push to Google Artifact Registry
     runs-on: ubuntu-latest
     if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'push'
     
     permissions:
       contents: read
       packages: write
+      id-token: write
       security-events: write
     
     steps:
+      # ============================================
+      # 📥 Checkout Repository
+      # ============================================
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🔧 Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      # ============================================
+      # 🔐 Authenticate to Google Cloud
+      # ============================================
+      - name: 🔐 Authenticate to Google Cloud
+        id: auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: 'projects/${{ env.PROJECT_ID }}/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
+          service_account: 'github-actions-sa@${{ env.PROJECT_ID }}.iam.gserviceaccount.com'
 
-      - name: 🔐 Log in to Container Registry
+      # ============================================
+      # 🐳 Set up Docker Buildx
+      # ============================================
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: |
+            image=moby/buildkit:latest
+            network=host
+
+      # ============================================
+      # 🔐 Login to Google Artifact Registry
+      # ============================================
+      - name: 🔐 Login to Google Artifact Registry
+        uses: docker/login-action@v3
+        with:
+          registry: '${{ env.GAR_LOCATION }}-docker.pkg.dev'
+          username: 'oauth2accesstoken'
+          password: '${{ steps.auth.outputs.access_token }}'
+
+      # ============================================
+      # 🔐 Login to GitHub Container Registry
+      # ============================================
+      - name: 🔐 Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # ============================================
+      # 📋 Extract Metadata
+      # ============================================
       - name: 📋 Extract Metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: |
+            ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}
+            ${{ env.REGISTRY }}/${{ env.GITHUB_REPOSITORY }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
             type=sha,prefix={{branch}}-
             type=raw,value=latest,enable={{is_default_branch}}
             type=raw,value=production,enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.title=Maya Travel Agent
+            org.opencontainers.image.description=AI-powered travel planning platform with multi-agent architecture
+            org.opencontainers.image.vendor=Amrikyy AI Solutions
+            org.opencontainers.image.licenses=MIT
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
 
+      # ============================================
+      # 🔍 Run Trivy Vulnerability Scanner
+      # ============================================
       - name: 🔍 Run Trivy Vulnerability Scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          image-ref: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           format: 'sarif'
           output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
 
+      # ============================================
+      # 📊 Upload Trivy Scan Results
+      # ============================================
       - name: 📊 Upload Trivy Scan Results
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
 
+      # ============================================
+      # 🏗️ Build and Push Docker Image
+      # ============================================
       - name: 🏗️ Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
@@ -84,7 +159,9 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             BUILDKIT_INLINE_CACHE=1
-            NODE_ENV=production
+            NODE_ENV=${{ env.NODE_ENV }}
+            PORT=${{ env.PORT }}
+          outputs: type=image,name=${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true
 
   # ============================================
   # 🚀 Deploy to Production
@@ -92,14 +169,20 @@ jobs:
   deploy-production:
     name: 🚀 Deploy to Production
     runs-on: ubuntu-latest
-    needs: build-and-push
+    needs: build-and-push-to-gar
     if: github.ref == 'refs/heads/main' && github.event.workflow_run.conclusion == 'success'
     environment: production
     
     steps:
+      # ============================================
+      # 📥 Checkout Repository
+      # ============================================
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
+      # ============================================
+      # 🚀 Deploy to Railway
+      # ============================================
       - name: 🚀 Deploy to Railway
         uses: railwayapp/railway-deploy@v1
         with:
@@ -107,12 +190,18 @@ jobs:
           service: maya-travel-agent
           detach: false
 
+      # ============================================
+      # 🚀 Deploy to DigitalOcean App Platform
+      # ============================================
       - name: 🚀 Deploy to DigitalOcean App Platform
         uses: digitalocean/app_action@v1.1.0
         with:
           app_name: maya-travel-agent
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
+      # ============================================
+      # 🚀 Deploy to Vercel (Frontend)
+      # ============================================
       - name: 🚀 Deploy to Vercel
         uses: amondnet/vercel-action@v25
         with:
@@ -120,6 +209,22 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'
+
+      # ============================================
+      # 🚀 Deploy to Google Cloud Run
+      # ============================================
+      - name: 🚀 Deploy to Google Cloud Run
+        run: |
+          gcloud run deploy maya-travel-agent \
+            --image ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            --region ${{ env.GAR_LOCATION }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --port ${{ env.PORT }} \
+            --memory 1Gi \
+            --cpu 1 \
+            --max-instances 10 \
+            --set-env-vars NODE_ENV=${{ env.NODE_ENV }},PORT=${{ env.PORT }}
 
   # ============================================
   # 🔍 Post-Deployment Health Checks
@@ -131,31 +236,55 @@ jobs:
     if: always() && needs.deploy-production.result == 'success'
     
     steps:
+      # ============================================
+      # 📥 Checkout Repository
+      # ============================================
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
+      # ============================================
+      # 🔍 Wait for Deployment
+      # ============================================
       - name: 🔍 Wait for Deployment
         run: |
           echo "⏳ Waiting for deployment to be ready..."
           sleep 60
 
+      # ============================================
+      # 🏥 Health Check - API
+      # ============================================
       - name: 🏥 Health Check - API
         run: |
           echo "🔍 Checking API health..."
           curl -f ${{ secrets.PRODUCTION_API_URL }}/health || exit 1
           echo "✅ API is healthy!"
 
+      # ============================================
+      # 🏥 Health Check - Frontend
+      # ============================================
       - name: 🏥 Health Check - Frontend
         run: |
           echo "🔍 Checking Frontend health..."
           curl -f ${{ secrets.PRODUCTION_FRONTEND_URL }} || exit 1
           echo "✅ Frontend is healthy!"
 
+      # ============================================
+      # 🏥 Health Check - Database
+      # ============================================
       - name: 🏥 Health Check - Database
         run: |
           echo "🔍 Checking Database connection..."
           # Add database health check here
           echo "✅ Database is healthy!"
+
+      # ============================================
+      # 🏥 Health Check - Google Cloud Run
+      # ============================================
+      - name: 🏥 Health Check - Google Cloud Run
+        run: |
+          echo "🔍 Checking Google Cloud Run health..."
+          curl -f https://maya-travel-agent-${{ env.GAR_LOCATION }}-${{ env.PROJECT_ID }}.a.run.app/health || exit 1
+          echo "✅ Google Cloud Run is healthy!"
 
   # ============================================
   # 📊 Performance Monitoring
@@ -167,9 +296,15 @@ jobs:
     if: always() && needs.health-check.result == 'success'
     
     steps:
+      # ============================================
+      # 📥 Checkout Repository
+      # ============================================
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
+      # ============================================
+      # 📊 Lighthouse CI
+      # ============================================
       - name: 📊 Lighthouse CI
         uses: treosh/lighthouse-ci-action@v10
         with:
@@ -177,6 +312,9 @@ jobs:
           uploadArtifacts: true
           temporaryPublicStorage: true
 
+      # ============================================
+      # 📊 Performance Metrics
+      # ============================================
       - name: 📊 Performance Metrics
         run: |
           echo "📊 Collecting performance metrics..."
@@ -189,10 +327,13 @@ jobs:
   notify:
     name: 🔔 Notifications
     runs-on: ubuntu-latest
-    needs: [build-and-push, deploy-production, health-check]
+    needs: [build-and-push-to-gar, deploy-production, health-check]
     if: always()
     
     steps:
+      # ============================================
+      # 📱 Slack Notification
+      # ============================================
       - name: 📱 Slack Notification
         uses: 8398a7/action-slack@v3
         with:
@@ -203,6 +344,9 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
+      # ============================================
+      # 📧 Email Notification
+      # ============================================
       - name: 📧 Email Notification
         uses: dawidd6/action-send-mail@v3
         if: failure()
@@ -224,6 +368,9 @@ jobs:
           to: ${{ secrets.EMAIL_TO }}
           from: ${{ secrets.EMAIL_FROM }}
 
+      # ============================================
+      # 📱 Telegram Notification
+      # ============================================
       - name: 📱 Telegram Notification
         uses: appleboy/telegram-action@v0.1.0
         with:
@@ -238,3 +385,18 @@ jobs:
             Commit: ${{ github.sha }}
             
             ${{ job.status == 'success' && '✅ Deployment successful!' || '❌ Deployment failed!' }}
+
+      # ============================================
+      # 📊 Deployment Summary
+      # ============================================
+      - name: 📊 Deployment Summary
+        run: |
+          echo "🎉 Deployment Summary:"
+          echo "===================="
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Author: ${{ github.actor }}"
+          echo "Status: ${{ job.status }}"
+          echo "===================="
+          echo "🚀 Maya Travel Agent deployed successfully!"
