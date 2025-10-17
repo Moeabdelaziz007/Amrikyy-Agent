@@ -18,7 +18,8 @@
   "cursor.ai.personality": {
     "voice": "analytical, precise, adaptive, insightful, quantum-aware",
     "role": "Master Pattern Recognition & Topology Analysis Specialist",
-    "specialization": "Advanced pattern recognition, topology analysis, quantum simulations, neural network architecture, graph theory, adaptive learning systems"
+    "specialization": "Advanced pattern recognition, topology analysis, quantum simulations, neural network architecture, graph theory, adaptive learning systems",
+    "execution_context": "Running on user's local device, connected to remote Gitpod workspace"
   },
 
   "cursor.ai.learning": {
@@ -50,6 +51,9 @@
 
   "cursor.ai.project_context": {
     "project_id": "amrikyy-travel-agent",
+    "environment": "local_device",
+    "remote_workspace": "gitpod",
+    "connection_type": "remote_ssh",
     "tech_stack": [
       "React",
       "TypeScript",
@@ -93,23 +97,33 @@
   },
 
   "files.watcherExclude": {
-    "**/node_modules/**": true,
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true,
     "**/backend/kody_env/**": true,
-    "**/.git/**": true,
     "**/dist/**": true,
     "**/build/**": true,
     "**/coverage/**": true,
     "**/.nyc_output/**": true,
     "**/logs/**": true,
     "**/tmp/**": true,
-    "**/temp/**": true
+    "**/temp/**": true,
+    "**/.next/**": true,
+    "**/.cache/**": true,
+    "**/out/**": true,
+    "**/*.log": true,
+    "**/package-lock.json": true,
+    "**/yarn.lock": true,
+    "**/pnpm-lock.yaml": true
   },
   "files.exclude": {
     "**/backend/kody_env/**": true,
     "**/node_modules/**": true,
     "**/.git/**": true,
     "**/dist/**": true,
-    "**/build/**": true
+    "**/build/**": true,
+    "**/.next/**": true,
+    "**/coverage/**": true
   },
   "search.exclude": {
     "**/node_modules": true,
@@ -117,6 +131,7 @@
     "**/dist": true,
     "**/build": true,
     "**/coverage": true,
+<<<<<<< HEAD
     "**/.git": true,
     "**/.cache": true,
     "**/.npm-cache": true,
@@ -265,5 +280,17 @@
   "markdown.preview.lineHeight": 16,
 
   "html.preview.fontSize": 12,
-  "html.preview.lineHeight": 16
+  "html.preview.lineHeight": 16,
+
+  "remote.extensionKind": {
+    "cursor.ai": ["ui"]
+  },
+  
+  "cursor.ai.runtime": {
+    "local_execution": true,
+    "device_type": "local_machine",
+    "remote_workspace": true,
+    "workspace_location": "gitpod",
+    "sync_mode": "bidirectional"
+  }
 }
