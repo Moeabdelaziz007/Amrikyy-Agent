@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Gemini Quantopo Codex 0.1 Agent Config",
+  "type": "object",
+  "required": ["id", "name", "model", "context_window", "entrypoint_prompt", "modes", "require_user_approval_for_write"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the agent"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name of the agent"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of agent capabilities"
+    },
+    "model": {
+      "type": "string",
+      "description": "AI model identifier (e.g., gemini-2.0-flash-exp)"
+    },
+    "context_window": {
+      "type": "integer",
+      "minimum": 1024,
+      "description": "Maximum context window size in tokens"
+    },
+    "require_user_approval_for_write": {
+      "type": "boolean",
+      "description": "Whether user approval is required for write operations"
+    },
+    "entrypoint_prompt": {
+      "type": "string",
+      "description": "Initial system prompt for the agent"
+    },
+    "modes": {
+      "type": "array",
+      "description": "Available operation modes for the agent",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "description"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique mode identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable mode name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Mode description and capabilities"
+          },
+          "schema": {
+            "type": "object",
+            "description": "JSON schema for mode-specific parameters"
+          }
+        }
+      }
+    },
+    "policies": {
+      "type": "object",
+      "description": "Security and operational policies",
+      "properties": {
+        "max_patch_lines": {
+          "type": "integer",
+          "description": "Maximum lines in a single patch"
+        },
+        "allowed_file_extensions": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "File extensions the agent can modify"
+        },
+        "forbidden_patterns": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Patterns the agent must avoid"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata about the agent",
+      "properties": {
+        "version": {"type": "string"},
+        "author": {"type": "string"},
+        "created_at": {"type": "string"},
+        "quantum_capabilities": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "List of quantum reasoning capabilities"
+        },
+        "superpowers": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "List of AI superpowers enabled"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

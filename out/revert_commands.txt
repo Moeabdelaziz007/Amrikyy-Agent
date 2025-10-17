@@ -1,0 +1,23 @@
+# Revert Recommendations for Automated Changes
+
+## Scenario 1: Reverting a merged Pull Request
+If an automated PR from the agent has been merged into the main branch, use `git revert`. This creates a new commit that undoes the changes.
+
+```bash
+# Find the merge commit SHA from the PR
+MERGE_COMMIT_SHA="<sha-of-merge-commit>"
+
+# Execute the revert command. --no-edit uses the default message.
+git revert --no-edit $MERGE_COMMIT_SHA
+```
+
+## Scenario 2: Deleting an unmerged branch from an agent PR
+If the PR has not been merged, you can simply close the PR and delete the remote branch.
+
+```bash
+# The branch name is typically in the format bot/auto-update-agent-<timestamp>
+BRANCH_NAME="<agent-generated-branch-name>"
+
+# Delete the remote branch
+git push origin --delete $BRANCH_NAME
+```

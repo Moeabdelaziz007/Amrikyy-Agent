@@ -4,6 +4,11 @@
  */
 
 const jwt = require('jsonwebtoken');
+
+// CRITICAL: Ensure JWT_SECRET is defined
+if (!process.env.JWT_SECRET) {
+  throw new Error('FATAL_ERROR: JWT_SECRET is not defined in the environment variables. This is a critical security risk.');
+}
 const SupabaseDB = require('../database/supabase');
 
 /**
