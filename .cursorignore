@@ -1,0 +1,186 @@
+# ============================================
+# Cursor Performance Optimization
+# ============================================
+# This file tells Cursor which files/folders to ignore
+# for indexing and AI analysis to improve performance
+
+# ============================================
+# MOST IMPORTANT: Node Modules (HUGE impact)
+# ============================================
+node_modules/
+**/node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# ============================================
+# Build Output & Distribution
+# ============================================
+dist/
+build/
+.next/
+out/
+coverage/
+.cache/
+*.tsbuildinfo
+
+# Frontend specific
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/coverage/
+
+# Backend specific
+backend/dist/
+backend/build/
+backend/coverage/
+
+# ============================================
+# Logs & Temporary Files
+# ============================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.npm
+.eslintcache
+.node_repl_history
+
+# ============================================
+# Environment & Secrets
+# ============================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*
+!.env.example
+!.env.template
+
+# ============================================
+# OS & Editor Files
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# ============================================
+# Git & Version Control
+# ============================================
+.git/
+.gitignore
+.gitattributes
+.gitmodules
+
+# ============================================
+# Package Manager Locks (large files)
+# ============================================
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ============================================
+# Test Coverage & Reports
+# ============================================
+coverage/
+.nyc_output/
+*.lcov
+test-results/
+playwright-report/
+
+# ============================================
+# Database & Cache
+# ============================================
+*.sqlite
+*.sqlite3
+*.db
+.cache/
+.parcel-cache/
+
+# ============================================
+# Dependencies & Vendor
+# ============================================
+vendor/
+bower_components/
+jspm_packages/
+
+# ============================================
+# IDE & Editor Specific
+# ============================================
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ============================================
+# Documentation (if too large)
+# ============================================
+# Uncomment if you have too many docs
+# docs/node_modules/
+# *.pdf
+
+# ============================================
+# Large Media Files (if any)
+# ============================================
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.zip
+*.tar.gz
+*.rar
+
+# ============================================
+# Backup Files
+# ============================================
+*.backup
+*.bak
+*.old
+*-backup/
+frontend-backup*/
+backend-backup*/
+
+# ============================================
+# Uploads & User Content
+# ============================================
+uploads/
+backend/uploads/
+public/uploads/
+
+# ============================================
+# AI & ML Models (if any large files)
+# ============================================
+*.h5
+*.pkl
+*.pth
+*.onnx
+models/
+
+# ============================================
+# Compiled Files
+# ============================================
+*.pyc
+*.pyo
+*.class
+*.o
+*.so
+*.dylib
+
+# ============================================
+# Package Artifacts
+# ============================================
+*.tgz
+*.tar
+*.gz
+*.zip
+*.rar
+*.7z
