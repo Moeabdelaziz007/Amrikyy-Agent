@@ -90,10 +90,10 @@ const HologramWorkflow: React.FC<HologramWorkflowProps> = ({
       ];
 
       for (let i = 0; i < thinkingSequence.length; i++) {
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise(resolve => setTimeout(resolve, 800));
 
         const step = thinkingSequence[i];
-        const stepId = `step-${Date.now()}-${i}`;
+        const stepId = `step-${Date.now()}-${i}-${Math.random().toString(36).substr(2, 9)}`;
 
         // Add new step
         setSteps(prev => [
@@ -164,7 +164,7 @@ const HologramWorkflow: React.FC<HologramWorkflowProps> = ({
       </div>
 
       {/* Floating Particles */}
-      {[...Array(20)].map((_, i) => (
+      {[...Array(8)].map((_, i) => (
         <motion.div
           key={i}
           className="absolute w-1 h-1 bg-blue-400 rounded-full"

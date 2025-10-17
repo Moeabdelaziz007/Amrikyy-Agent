@@ -1,0 +1,45 @@
+image: gitpod/workspace-full
+
+# Configure the environment
+tasks:
+  - name: Install Dependencies
+    init: |
+      cd backend && npm install
+      cd ../frontend && npm install
+    command: echo "Dependencies installed"
+
+  - name: Start Backend
+    command: |
+      cd backend
+      PORT=3000 node server.js
+    env:
+      NODE_ENV: development
+
+  - name: Start Frontend
+    command: |
+      cd frontend
+      npm run dev -- --host 0.0.0.0 --port 5173
+    env:
+      VITE_API_URL: http://localhost:3000
+
+# Configure ports
+ports:
+  - port: 3000
+    onOpen: open-preview
+    name: Backend API
+  - port: 5173
+    onOpen: open-preview
+    name: Frontend
+
+# Configure VS Code extensions
+vscode:
+  extensions:
+    - bradlc.vscode-tailwindcss
+    - esbenp.prettier-vscode
+    - ms-vscode.vscode-typescript-next
+    - ms-vscode.vscode-json
+
+# Configure environment variables
+env:
+  NODE_ENV: development
+  VITE_API_URL: http://localhost:3000
