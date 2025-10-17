@@ -24,6 +24,16 @@ const {
   errorTrackingMiddleware 
 } = require('./middleware/analyticsMiddleware');
 
+// Import monitoring tools
+const AutoDebugger = require('./monitoring/auto-debugger');
+const ErrorReporter = require('./monitoring/error-reporter');
+const LogAnalyzer = require('./monitoring/log-analyzer');
+
+// Initialize monitoring
+const autoDebugger = new AutoDebugger();
+const errorReporter = new ErrorReporter();
+const logAnalyzer = new LogAnalyzer();
+
 // Security middleware
 app.use(helmet());
 app.use(compression());
