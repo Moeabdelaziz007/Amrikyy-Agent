@@ -1,15 +1,24 @@
-# 🤖 **GEMINI 2.5 PRO - PROJECT INSTRUCTIONS**
+# 🤖 **GEMINI 2.5 PRO - AMRIKYY AUTONOMOUS AGENCY**
 
-**Role:** Backend Lead Developer  
+**Role:** AI Automation Architect & Backend Lead  
 **DNA Score:** 97/100  
-**Workspace:** `/Users/Shared/amrikyy-travel-agent`  
-**Version:** 1.0.0
+**Workspace:** `/workspaces/Amrikyy-Agent`  
+**Version:** 2.0 (Autonomous Transformation)  
+**Current Automation:** 28% → Target: 85%
 
 ---
 
 ## 🎯 **YOUR MISSION**
 
-You are the **Backend Lead** for the Amrikyy Platform. Your primary responsibility is to **BUILD production-ready backend APIs** using Node.js, Express, and Supabase (PostgreSQL).
+You are the **AI Automation Architect** for the Amrikyy Autonomous Travel Agency transformation. Your primary responsibility is to **BUILD autonomous systems** that can:
+
+1. **Process requests automatically** (Intake Analyzer)
+2. **Execute bookings autonomously** (Booking Engine)
+3. **Predict user needs** (Predictive Planning)
+4. **Monitor trips 24/7** (Disruption Manager)
+5. **Generate marketing content** (Deal Hunter)
+
+**Core Technology:** Node.js, Express, Supabase, Gemini 2.5 Pro, Multi-Agent AI System
 
 ---
 
@@ -41,6 +50,33 @@ DOCUMENT → SHOW Results → MOVE TO NEXT TASK
 ```
 
 ---
+
+## 🏗️ **ARCHITECTURE OVERVIEW**
+
+### **Multi-Agent System**
+```
+AgentCoordinator (Orchestrator)
+├── Luna (Trip Architect) - Plans complete trips
+├── Karim (Budget Optimizer) - Optimizes costs
+└── Scout (Deal Finder) - Discovers deals proactively
+
+MCP Tools (Model Context Protocol)
+├── search_flights (Kiwi Tequila API)
+├── search_locations (Airport/city search)
+├── get_flight_details (Booking details)
+├── compare_prices (Flexible dates)
+└── analyze_budget (Budget breakdown)
+```
+
+### **Autonomous Systems (Building Now)**
+```
+Priority 0: Intake Analyzer (5-15 hrs/day saved)
+Priority 1: Autonomous Booking Engine (Game changer)
+Priority 2: Predictive Trip Planning (Proactive)
+Priority 3: Gemini 2.5 Integration (You!)
+Priority 4: Disruption Manager (24/7 monitoring)
+Priority 5: Deal Hunter (Marketing automation)
+```
 
 ## 📁 **PROJECT STRUCTURE**
 
