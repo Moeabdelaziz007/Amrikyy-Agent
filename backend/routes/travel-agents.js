@@ -5,54 +5,85 @@
 
 const express = require('express');
 const router = express.Router();
-const AgentCoordinator = require('../src/agents/AgentCoordinator');
+const AgentManager = require('../src/services/agents/AgentManager').default;
 const { aiLimiter } = require('../middleware/rateLimiter');
 const logger = require('../utils/logger');
 
 /**
  * POST /api/travel-agents/request
- * Submit a travel request to be handled by coordinated agents
+ * Submit a request to be handled by a specialized agent.
  */
 router.post('/request', aiLimiter, async (req, res) => {
   try {
-    const request = req.body;
+    const { miniAppId, action, data } = req.body;
 
-    // Validate request type
-    const validTypes = ['plan_trip', 'optimize_budget', 'find_deals', 'full_service'];
-    if (!request.type || !validTypes.includes(request.type)) {
+    // Validate request body
+    if (!miniAppId || !action) {
       return res.status(400).json({
         success: false,
-        error: `Invalid request type. Must be one of: ${validTypes.join(', ')}`
+        error: `Invalid request body. Must include 'miniAppId' and 'action'.`
       });
     }
 
-    logger.info('🎯 Travel agent request received', {
-      type: request.type,
+    logger.info('🎯 Agent request received', {
+      miniAppId,
+      action,
       userId: req.user?.id
     });
 
-    const response = await AgentCoordinator.handleTravelRequest(request);
+    const { taskId } = await AgentManager.processMiniAppRequest(miniAppId, action, data);
 
-    res.json(response);
+    // Respond immediately with the task ID for tracking
+    res.status(202).json({ 
+      success: true, 
+      message: 'Request received and is being processed.',
+      taskId 
+    });
 
   } catch (error) {
-    logger.error('❌ Travel agent request failed', {
+    logger.error('❌ Agent request failed', {
       error: error.message,
       stack: error.stack
     });
 
     res.status(500).json({
       success: false,
-      error: 'Failed to process travel request',
+      error: 'Failed to process agent request',
       message: error.message
     });
   }
 });
 
 /**
- * GET /api/travel-agents/capabilities
- * Get capabilities of all agents
+ * GET /api/travel-agents/task/:taskId
+ * Get the status of a specific task.
  */
+router.get('/task/:taskId', async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const taskStatus = AgentManager.getTaskStatus(taskId);
+
+    if (taskStatus) {
+      res.json({ success: true, task: taskStatus });
+    } else {
+      res.status(404).json({ success: false, error: 'Task not found or already completed.' });
+    }
+  } catch (error) {
+    logger.error('❌ Failed to get task status', {
+      error: error.message
+    });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get task status',
+      message: error.message
+    });
+  }
+});
+
+/*
+// The /capabilities and /active-requests endpoints are deprecated in the new model.
+// This functionality can be rebuilt if needed by querying the AgentManager.
+
 router.get('/capabilities', async (req, res) => {
   try {
     const capabilities = AgentCoordinator.getAllCapabilities();
@@ -76,10 +107,6 @@ router.get('/capabilities', async (req, res) => {
   }
 });
 
-/**
- * GET /api/travel-agents/active-requests
- * Get list of active requests
- */
 router.get('/active-requests', async (req, res) => {
   try {
     const activeRequests = AgentCoordinator.getActiveRequests();
@@ -103,5 +130,6 @@ router.get('/active-requests', async (req, res) => {
     });
   }
 });
+*/
 
 module.exports = router;

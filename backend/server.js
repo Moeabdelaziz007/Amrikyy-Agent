@@ -106,6 +106,7 @@ app.use('/api/destinations', require('./routes/destinations'));
 // AI routes (with rate limiting)
 app.use('/api/ai', aiLimiter, require('./routes/ai'));
 app.use('/api/ai', aiLimiter, require('./routes/enhanced-ai')); // Multi-Model Architecture
+app.use('/api/voice-notes', aiLimiter, require('./routes/voice_note_taker')); // Voice Note Taker routes
 
 // Agent routes
 app.use('/api/agents', require('./routes/travel-agents'));
