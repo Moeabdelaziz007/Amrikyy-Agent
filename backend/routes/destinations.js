@@ -7,16 +7,64 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// GET /api/destinations - List all destinations
+// GET /api/destinations - List all destinations with advanced filtering, sorting, and pagination
 router.get('/', async (req, res) => {
   try {
-    const { data: destinations, error } = await supabase
-      .from('destinations')
-      .select('*');
+    const {
+      page = 1,
+      limit = 10,
+      sortBy = 'name',
+      order = 'asc',
+      search,
+      country,
+      min_rating,
+      max_budget,
+    } = req.query;
+
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const offset = (pageNum - 1) * limitNum;
+
+    let query = supabase.from('destinations').select('*', { count: 'exact' });
+
+    // Search
+    if (search) {
+      query = query.ilike('name', `%${search}%`);
+    }
+
+    // Filtering
+    if (country) {
+      query = query.eq('country', country);
+    }
+    if (min_rating) {
+      query = query.gte('average_rating', parseFloat(min_rating));
+    }
+    if (max_budget) {
+      query = query.lte('average_cost', parseFloat(max_budget));
+    }
+
+    // Sorting
+    query = query.order(sortBy, { ascending: order === 'asc' });
+
+    // Pagination
+    query = query.range(offset, offset + limitNum - 1);
+
+    const { data: destinations, error, count } = await query;
 
     if (error) throw error;
 
-    res.json({ success: true, destinations });
+    res.json({
+      success: true,
+      data: {
+        destinations,
+        pagination: {
+          total_items: count,
+          current_page: pageNum,
+          per_page: limitNum,
+          total_pages: Math.ceil(count / limitNum),
+        },
+      },
+    });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -25,21 +73,7 @@ router.get('/', async (req, res) => {
 // GET /api/destinations/search?q=xxx - Search destinations
 router.get('/search', async (req, res) => {
   try {
-    const { q } = req.query;
-    if (!q) {
-      return res.status(400).json({ success: false, error: 'Search query \'q\' is required' });
-    }
-
-    const { data: destinations, error } = await supabase
-      .from('destinations')
-      .select('*')
-      .ilike('name', `%${q}%`);
-
-    if (error) throw error;
-
-    res.json({ success: true, destinations });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(410).json({ success: false, message: "This endpoint is deprecated. Please use GET /api/destinations?search=... instead." });
   }
 });
 

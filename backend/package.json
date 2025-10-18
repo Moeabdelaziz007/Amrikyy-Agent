@@ -17,6 +17,8 @@
     "health-check": "node scripts/validate-travel-apis.js && echo 'All systems operational'"
   },
   "dependencies": {
+    "@google-cloud/speech": "^7.2.1",
+    "@google/generative-ai": "^0.24.1",
     "@supabase/supabase-js": "^2.74.0",
     "axios": "^1.12.2",
     "bcryptjs": "^2.4.3",
