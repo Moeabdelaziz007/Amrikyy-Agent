@@ -45,5 +45,8 @@
   "bugs": {
     "url": "https://github.com/Moeabdelaziz007/Amrikyy-Agent/issues"
   },
-  "homepage": "https://github.com/Moeabdelaziz007/Amrikyy-Agent#readme"
+  "homepage": "https://github.com/Moeabdelaziz007/Amrikyy-Agent#readme",
+  "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.4.2"
+  }
 }

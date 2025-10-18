@@ -5,6 +5,7 @@
 Amrikyy Travel Agent is an AI-powered travel assistant application that provides intelligent trip planning, budget analysis, and destination recommendations. The system integrates multiple platforms (Web, Telegram, WhatsApp) and offers comprehensive travel services powered by Z.ai GLM-4.6 AI model.
 
 ### Key Features
+
 - **AI-Powered Intelligence**: Smart recommendations, budget analysis, destination insights, multimodal analysis
 - **Payment Integration**: Stripe, PayPal, and Telegram payment methods with webhook handling
 - **Messaging Platforms**: Telegram Bot, Telegram Mini App, WhatsApp Business API integration
@@ -14,6 +15,7 @@ Amrikyy Travel Agent is an AI-powered travel assistant application that provides
 ### Tech Stack
 
 **Frontend (React 18 + TypeScript)**:
+
 - Vite build tool with hot module replacement
 - Tailwind CSS for styling
 - Zustand for state management
@@ -22,6 +24,7 @@ Amrikyy Travel Agent is an AI-powered travel assistant application that provides
 - Supabase client for database operations
 
 **Backend (Node.js + Express)**:
+
 - Express framework with middleware architecture
 - Supabase PostgreSQL database
 - Z.ai GLM-4.6 AI model integration
@@ -30,6 +33,7 @@ Amrikyy Travel Agent is an AI-powered travel assistant application that provides
 - JWT authentication with Telegram WebApp verification
 
 **Database (Supabase PostgreSQL)**:
+
 - users, trips, expenses tables
 - profiles (Telegram user data)
 - messages (conversation history)
@@ -38,6 +42,7 @@ Amrikyy Travel Agent is an AI-powered travel assistant application that provides
 - ai_conversations (AI chat history)
 
 ### Project Structure
+
 - **Monorepo**: Uses npm workspaces to manage frontend and backend together
 - **Frontend**: `/frontend` - React app on http://localhost:3000
 - **Backend**: `/backend` - Express API on http://localhost:5000
@@ -50,6 +55,7 @@ Amrikyy Travel Agent is an AI-powered travel assistant application that provides
 ### System Layers
 
 **Layer 1: Frontend**
+
 - React components with TypeScript
 - API client with rate limit handling
 - Telegram WebApp SDK integration
@@ -57,18 +63,21 @@ Amrikyy Travel Agent is an AI-powered travel assistant application that provides
 - Component hierarchy: App → AuthProvider → TripPlanner/Destinations/AIAssistant
 
 **Layer 2: API Gateway (Express)**
+
 - Security: Helmet.js, CORS, input validation
 - Rate limiting: 7 different limiters for various endpoints
 - Compression and optimization
 - Route handlers for AI, payment, Telegram, WhatsApp
 
 **Layer 3: Service Layer**
+
 - ZaiClient (src/ai/zaiClient.js): AI operations, chat completion, travel recommendations, budget analysis
 - PaymentService (routes/payment.js): Stripe, PayPal, Telegram payments
 - SupabaseDB (database/supabase.js): Database operations, user profiles, conversations
 - WhatsAppClient (src/whatsapp/whatsappClient.js): WhatsApp Business API integration
 
 **Layer 4: External Services**
+
 - Z.ai API (GLM-4.6 model)
 - Stripe API (payment processing)
 - Telegram Bot API
@@ -76,6 +85,7 @@ Amrikyy Travel Agent is an AI-powered travel assistant application that provides
 - Supabase (PostgreSQL database)
 
 **Layer 5: Data Layer**
+
 - Supabase PostgreSQL with Row Level Security
 - Tables: users, trips, expenses, profiles, messages, travel_offers, destinations, ai_conversations
 - Real-time subscriptions for live updates
@@ -83,6 +93,7 @@ Amrikyy Travel Agent is an AI-powered travel assistant application that provides
 ### Request Flow Patterns
 
 **AI Chat Flow**:
+
 1. User input → AIAssistant component (frontend)
 2. POST /api/ai/chat → Rate limiter (10 req/min)
 3. AI route handler (routes/ai.js) → ZaiClient.chatCompletion()
@@ -90,6 +101,7 @@ Amrikyy Travel Agent is an AI-powered travel assistant application that provides
 5. Optional save to Supabase → Return JSON → Display in UI
 
 **Payment Flow**:
+
 1. User clicks "Pay" → PaymentModal component
 2. POST /api/payment/create-payment-link → Rate limiter (20 req/hour)
 3. Payment route handler → Stripe API
@@ -98,6 +110,7 @@ Amrikyy Travel Agent is an AI-powered travel assistant application that provides
 6. Verify signature → Update database → Send confirmation
 
 **Telegram Bot Flow**:
+
 1. User message → Telegram servers → Webhook to backend
 2. telegram-bot.js message handler → Parse message
 3. Check if command (/start, /help) or text message
@@ -128,6 +141,7 @@ Define your project-specific namespaces below. The AI will use these description
 ### AI Agents (NEW - October 16, 2025)
 
 **Luna Trip Architect** (`/backend/src/agents/LunaWithMCP.js`):
+
 - Trip planning with real-time flight search
 - Budget analysis integration
 - Itinerary generation (day-by-day planning)
@@ -135,12 +149,14 @@ Define your project-specific namespaces below. The AI will use these description
 - Methods: planTrip, searchFlights, comparePrices, analyzeBudget, generateItinerary, getCapabilities
 
 **Karim Budget Optimizer** (`/backend/src/agents/KarimWithMCP.js`):
+
 - Budget optimization and cost-saving strategies
 - Price comparison across flexible dates
 - Savings recommendations generation
 - Methods: optimizeBudget, comparePrices, analyzeBudget, generateSavingsRecommendations, getCapabilities
 
 **Scout Deal Finder** (`/backend/src/agents/ScoutWithMCP.js`):
+
 - Proactive deal discovery
 - Price monitoring and alerts
 - Destination suggestions based on budget
@@ -148,6 +164,7 @@ Define your project-specific namespaces below. The AI will use these description
 - Methods: discoverDeals, monitorPrice, suggestDestinations, comparePrices, getCapabilities
 
 **Agent Coordinator** (`/backend/src/agents/AgentCoordinator.js`):
+
 - Multi-agent orchestration
 - Request types: plan_trip, optimize_budget, find_deals, full_service
 - Methods: handleTravelRequest, coordinateTripPlanning, coordinateBudgetOptimization, coordinateDealDiscovery, coordinateFullService
@@ -155,6 +172,7 @@ Define your project-specific namespaces below. The AI will use these description
 ### MCP (Model Context Protocol) System (NEW)
 
 **Travel MCP Server** (`/backend/src/mcp/TravelMCPServer.js`):
+
 - 5 specialized tools for travel operations
 - Tools: search_flights, search_locations, get_flight_details, compare_prices, analyze_budget
 - Standardized tool calling interface
@@ -164,12 +182,14 @@ Define your project-specific namespaces below. The AI will use these description
 ### External Services Integration (NEW)
 
 **Kiwi Tequila Service** (`/backend/src/services/KiwiTequilaService.js`):
+
 - Flight search across 800+ airlines
 - Airport/city location search
 - Flight details and booking (sandbox mode)
 - Methods: searchFlights, getFlightDetails, createBooking, searchLocations, healthCheck
 
 **Booking.com Service** (`/backend/src/services/BookingComService.js`):
+
 - Hotel search worldwide
 - City search and hotel details
 - Room availability checking
@@ -177,6 +197,7 @@ Define your project-specific namespaces below. The AI will use these description
 - Methods: searchHotels, getHotelDetails, searchCities, getRoomAvailability, generateBookingURL
 
 **Mapbox Service** (`/backend/src/services/MapboxService.js`):
+
 - Geocoding and reverse geocoding
 - Place search (POIs, landmarks)
 - Directions and routing
@@ -187,6 +208,7 @@ Define your project-specific namespaces below. The AI will use these description
 ### Security Components (NEW)
 
 **Token Manager** (`/backend/src/security/TokenManager.js`):
+
 - Ephemeral token generation and management
 - Token validation with scope checking
 - Token revocation (single and bulk)
@@ -195,6 +217,7 @@ Define your project-specific namespaces below. The AI will use these description
 - Methods: generateToken, validateToken, revokeToken, revokeUserTokens, getTokenInfo, calculateExpiration, cleanup, getStats
 
 **External API Limiter** (`/backend/middleware/externalAPILimiter.js`):
+
 - Per-user rate limiting for external APIs
 - Kiwi: 5 requests/minute, 50/hour
 - Booking.com: 5 requests/minute, 50/hour
@@ -203,6 +226,7 @@ Define your project-specific namespaces below. The AI will use these description
 - Methods: checkLimit, middleware, getUserStats, resetUserLimits
 
 **MCP Authentication** (`/backend/middleware/mcpAuth.js`):
+
 - Token-based authentication for MCP endpoints
 - Scope-based access control (7 scopes)
 - Optional authentication support
@@ -212,6 +236,7 @@ Define your project-specific namespaces below. The AI will use these description
 ### Frontend Components
 
 **Core UI Components** (`/frontend/src/components/`):
+
 - **AIAssistant.tsx**: Chat interface for AI conversations, handles message sending and display, integrates with /api/ai/chat endpoint
 - **TripPlanner.tsx**: Main trip planning interface, form handling for destination/budget/dates, displays trip recommendations
 - **Destinations.tsx**: Destination browser with filtering and search, displays destination cards with images and ratings
@@ -221,11 +246,13 @@ Define your project-specific namespaces below. The AI will use these description
 - **ErrorBoundary.tsx**: React error boundary for graceful error handling, fallback UI display
 
 **Auth Components** (`/frontend/src/components/Auth/`):
+
 - **AuthProvider.tsx**: Authentication context provider, manages user state, Supabase auth integration
 - **LoginForm.tsx**: Login form with validation, email/password authentication, Telegram WebApp auth
 - **SignupForm.tsx**: Signup form with validation, user registration flow
 
 **API Layer** (`/frontend/src/api/`):
+
 - **client.ts**: Base API client with axios, rate limit handling, error handling, request/response interceptors
 - **services.ts**: API service methods for trips, destinations, AI chat
 - **paymentService.ts**: Payment-specific API methods, Stripe integration
@@ -234,6 +261,7 @@ Define your project-specific namespaces below. The AI will use these description
 ### Backend Components
 
 **AI Integration** (`/backend/src/ai/`):
+
 - **zaiClient.js**: Z.ai API client wrapper, methods: chatCompletion, generateTravelRecommendations, generateBudgetAnalysis, generateDestinationInsights, analyzeMedia, healthCheck
 - **geminiClient.js**: Google Gemini API client (alternative AI provider)
 - **tools.js**: AI tools for function calling - getWeather, searchFlights, findHotels, getHalalRestaurants, getPrayerTimes
@@ -243,6 +271,7 @@ Define your project-specific namespaces below. The AI will use these description
 - **userProfiling.js**: User preference tracking and personalization logic
 
 **API Routes** (`/backend/routes/`):
+
 - **ai.js**: AI endpoints - /chat, /travel-recommendations, /budget-analysis, /destination-insights, /multimodal/analyze
 - **payment.js**: Payment endpoints - /create-payment-link, /create-payment, /confirm-payment
 - **stripe-webhook.js**: Stripe webhook handler for payment confirmation
@@ -250,6 +279,7 @@ Define your project-specific namespaces below. The AI will use these description
 - **whatsapp.js**: WhatsApp webhook handler for incoming messages
 
 **Middleware** (`/backend/middleware/`):
+
 - **rateLimiter.js**: Rate limiting middleware with 7 different limiters:
   - generalLimiter: 100 req/15min (all API routes)
   - aiLimiter: 10 req/min (AI endpoints)
@@ -260,6 +290,7 @@ Define your project-specific namespaces below. The AI will use these description
   - authLimiter: 5 req/15min (authentication)
 
 **Database** (`/backend/database/`):
+
 - **supabase.js**: Supabase client wrapper with methods:
   - User management: getUserProfile, createUserProfile, updateUserProfile
   - Conversations: saveConversationMessage, getConversationHistory
@@ -267,18 +298,21 @@ Define your project-specific namespaces below. The AI will use these description
   - Analytics: trackOfferInteraction, getUserAnalytics
 
 **Utilities** (`/backend/utils/`):
+
 - **conversationManager.js**: Manages conversation state and context
 - **errorHandler.js**: Centralized error handling and logging
 - **healthMonitor.js**: System health monitoring and metrics
 - **logger.js**: Winston-based logging with file and console transports
 
 **Telegram Integration** (`/backend/`):
+
 - **telegram-bot.js**: Full-featured bot with AI (requires Z.ai API key)
 - **telegram-bot-no-ai.js**: Lightweight bot with predefined responses (no AI dependency)
 - **telegram-bot-gemini.js**: Bot using Google Gemini AI
 - **advanced-telegram-bot.js**: Advanced bot with MCP tools and user profiling
 
 **WhatsApp Integration** (`/backend/src/whatsapp/`):
+
 - **whatsappClient.js**: WhatsApp Business API client for sending messages
 
 ---
@@ -286,6 +320,7 @@ Define your project-specific namespaces below. The AI will use these description
 ## API Routes (NEW - October 16, 2025)
 
 **Flights Routes** (`/backend/routes/flights.js`):
+
 - POST /api/flights/search - Search flights
 - GET /api/flights/locations - Search airports/cities
 - POST /api/flights/details - Get flight details
@@ -293,6 +328,7 @@ Define your project-specific namespaces below. The AI will use these description
 - GET /api/flights/health - Health check
 
 **Hotels Routes** (`/backend/routes/hotels.js`):
+
 - POST /api/hotels/search - Search hotels
 - GET /api/hotels/cities - Search cities
 - GET /api/hotels/:hotelId - Get hotel details
@@ -301,6 +337,7 @@ Define your project-specific namespaces below. The AI will use these description
 - GET /api/hotels/health - Health check
 
 **MCP Routes** (`/backend/routes/mcp.js`):
+
 - GET /api/mcp/tools - List all MCP tools
 - POST /api/mcp/call - Call MCP tool
 - POST /api/mcp/batch - Batch tool execution
@@ -310,6 +347,7 @@ Define your project-specific namespaces below. The AI will use these description
 - GET /api/mcp/health - Health check
 
 **Security Routes** (`/backend/routes/security.js`):
+
 - POST /api/security/tokens/generate - Generate ephemeral token
 - POST /api/security/tokens/revoke - Revoke token
 - GET /api/security/tokens/info - Get token information
@@ -319,6 +357,7 @@ Define your project-specific namespaces below. The AI will use these description
 - GET /api/security/scopes - List available scopes
 
 **Travel Agents Routes** (`/backend/routes/travel-agents.js`):
+
 - POST /api/travel-agents/request - Submit travel request to AI agents
 - GET /api/travel-agents/capabilities - Get all agent capabilities
 - GET /api/travel-agents/active-requests - Get active requests
@@ -326,6 +365,7 @@ Define your project-specific namespaces below. The AI will use these description
 ## Implementation Patterns
 
 ### Pattern 1: MCP Tool Integration (NEW)
+
 - **Standardized Interface**: All agents use MCP server for tool calling
 - **Tool Registration**: Tools registered with JSON schema validation
 - **Context Passing**: User context passed to all tool calls
@@ -333,6 +373,7 @@ Define your project-specific namespaces below. The AI will use these description
 - **Audit Logging**: All tool calls logged with user/agent info
 
 ### Pattern 2: AI Agent Coordination (NEW)
+
 - **Multi-Agent Orchestration**: Coordinator manages multiple agents
 - **Request Types**: plan_trip, optimize_budget, find_deals, full_service
 - **Sequential Execution**: Agents execute in logical order
@@ -340,6 +381,7 @@ Define your project-specific namespaces below. The AI will use these description
 - **Usage Tracking**: Track which agents were used for each request
 
 ### Pattern 3: Security & Rate Limiting (NEW)
+
 - **Ephemeral Tokens**: Short-lived tokens with scope-based permissions
 - **Per-User Limits**: Different limits for each external API
 - **Automatic Cleanup**: Expired tokens and old rate limit entries cleaned up
@@ -347,6 +389,7 @@ Define your project-specific namespaces below. The AI will use these description
 - **Audit Trail**: All security events logged
 
 ### Pattern 4: External API Integration (NEW)
+
 - **Service Layer**: Separate service classes for each external API
 - **Error Handling**: Graceful degradation when APIs fail
 - **Response Formatting**: Consistent format across all services
@@ -354,53 +397,62 @@ Define your project-specific namespaces below. The AI will use these description
 - **Rate Limit Awareness**: Services respect external API limits
 
 ### Pattern 5: Layered Architecture
+
 - **Separation of concerns**: Routes → Services → Data Access
 - **Middleware chain**: Security → Rate Limiting → Routes → Error Handling
 - **Service layer abstraction**: Business logic separated from route handlers
 
 ### Pattern 2: Rate Limiting Strategy
+
 - **Multiple limiters**: Different limits for different endpoints based on resource intensity
 - **IP-based limiting**: Prevents abuse from single sources
 - **Configurable windows**: Flexible time windows (per minute, per hour, per 15 minutes)
 - **Graceful degradation**: Returns 429 with retry-after header
 
 ### Pattern 3: AI Integration
+
 - **Personality injection**: Amrikyy persona applied to all AI responses
 - **Cultural awareness**: buildCulturalSystemPrompt() for Arabic/English context
 - **Tool calling**: Function calling for weather, flights, hotels, prayer times
 - **Conversation context**: Maintains conversation history for continuity
 
 ### Pattern 4: Payment Processing
+
 - **Multiple providers**: Strategy pattern for Stripe, PayPal, Telegram
 - **Webhook verification**: Signature validation for payment confirmations
 - **Error handling**: Graceful failure with detailed error messages
 - **Rate limiting**: Prevents payment fraud and abuse
 
 ### Pattern 5: Error Handling
+
 - **Try-catch blocks**: Comprehensive error catching in all async operations
 - **Centralized logging**: Winston logger with file and console outputs
 - **User-friendly errors**: Error messages formatted for frontend display
 - **Error boundaries**: React error boundaries prevent full app crashes
 
 ### Pattern 6: Database Access
+
 - **Repository pattern**: SupabaseDB class abstracts database operations
 - **Single client instance**: Singleton pattern for Supabase client
 - **Error handling**: Database errors caught and logged appropriately
 - **Optional integration**: System works with in-memory fallback if Supabase not configured
 
 ### Pattern 7: API Client (Frontend)
+
 - **Axios interceptors**: Request/response transformation and error handling
 - **Rate limit handling**: Detects 429 responses and notifies user
 - **Type safety**: TypeScript interfaces for all API responses
 - **Retry logic**: Can retry failed requests with exponential backoff
 
 ### Pattern 8: Component Patterns (Frontend)
+
 - **Container/Presentational**: Separation of logic and UI
 - **Custom hooks**: useAuth, useAPI for reusable logic
 - **Error boundaries**: Catch and display component errors
 - **Context API**: Auth state management across components
 
 ### Pattern 9: Testing Strategy
+
 - **Unit tests**: Component and function testing with Vitest/Jest
 - **E2E tests**: User flow testing with Playwright
 - **Coverage reports**: Generated in /coverage directories
@@ -413,34 +465,40 @@ Define your project-specific namespaces below. The AI will use these description
 ### Test Suites
 
 **Structure Tests** (`/backend/test-agents-simple.js`):
+
 - 7 test categories validating file structure and code organization
 - Tests: filesExist, lunaStructure, karimStructure, scoutStructure, coordinatorStructure, mcpServerStructure, servicesStructure
 - No dependencies required - runs standalone
 - Result: 7/7 tests passing
 
 **Unit Tests** (`/backend/tests/unit/`):
+
 - security.test.js: 45+ tests for TokenManager and ExternalAPILimiter
 - Token generation, validation, revocation tests
 - Rate limiting tests
 - Statistics and cleanup tests
 
 **Integration Tests** (`/backend/tests/integration/`):
+
 - agents.test.js: 35+ tests for Luna, Karim, Scout, and Coordinator
 - mcp-tools.test.js: 20+ tests for MCP tool registration and execution
 - Budget analysis, price comparison, location search tests
 
 **API Tests** (`/backend/tests/api/`):
+
 - endpoints.test.js: 25+ tests for all API routes
 - MCP routes, Security routes, Travel Agents routes
 - Error handling and validation tests
 
 **Test Runner** (`/backend/run-tests.sh`):
+
 - Automated test execution with colored output
 - Dependency checking
 - Summary reporting
 - Exit codes for CI/CD integration
 
 **Coverage Targets**:
+
 - Agents: 80%
 - MCP Server: 85%
 - Security: 90%
@@ -450,35 +508,41 @@ Define your project-specific namespaces below. The AI will use these description
 ## Debugging History
 
 ### Session 4: Travel APIs Integration (2025-10-16)
+
 - Issue: Need real-time flight and hotel search capabilities
 - Resolution: Integrated Kiwi Tequila API, Booking.com Affiliate API, and Mapbox API
 - Files: 18 new files created (services, routes, agents, MCP server)
 - Result: Complete travel booking ecosystem with AI agents
 
 ### Session 5: Security Implementation (2025-10-16)
+
 - Issue: Need secure access control for MCP tools and external APIs
 - Resolution: Implemented ephemeral token system with scope-based permissions and per-user rate limiting
 - Files: TokenManager.js, externalAPILimiter.js, mcpAuth.js, security routes
 - Result: Enterprise-grade security with 7 permission scopes
 
 ### Session 6: Testing Suite (2025-10-16)
+
 - Issue: Need comprehensive testing for new integrations
 - Resolution: Created 100+ test cases covering unit, integration, and API testing
 - Files: 6 test files, test runner script, testing documentation
 - Result: 100+ tests passing with coverage reporting
 
 ### Session 1: Initial Setup and Configuration (2025-10-10)
+
 - Issue: MongoDB dependency in server.js but project uses Supabase
 - Resolution: Commented out MongoDB connection, added console message confirming Supabase usage
 - Files: backend/server.js (lines 39-49)
 
 ### Session 2: Rate Limiting Implementation (2025-10-09)
+
 - Issue: Need to prevent API abuse and manage resource usage
 - Resolution: Implemented 7 different rate limiters for various endpoint types
 - Files: backend/middleware/rateLimiter.js, backend/server.js
 - Configuration: Different limits based on resource intensity (AI: 10/min, Payment: 20/hour, etc.)
 
 ### Session 3: Telegram Bot Integration (2025-10-09)
+
 - Issue: Multiple bot implementations causing confusion
 - Resolution: Created separate bots for different use cases:
   - telegram-bot.js: Full AI integration (requires Z.ai API key)
@@ -487,9 +551,10 @@ Define your project-specific namespaces below. The AI will use these description
   - advanced-telegram-bot.js: MCP tools and advanced features
 
 ### Session 4: Test Coverage Implementation (2025-10-09)
+
 - Issue: Need comprehensive testing for reliability
 - Resolution: Added unit tests for AI services, database, rate limits, security
-- Coverage: Backend tests in /backend/tests/__tests__/, Frontend tests with Vitest and Playwright
+- Coverage: Backend tests in /backend/tests/**tests**/, Frontend tests with Vitest and Playwright
 - Files: jest.config.js, vitest.config.ts, playwright.config.ts
 
 ---
@@ -499,6 +564,7 @@ Define your project-specific namespaces below. The AI will use these description
 ### Comprehensive Guides
 
 **API_ENDPOINTS_DOCUMENTATION.md** (500+ lines):
+
 - Complete API reference for all 27+ endpoints
 - Request/response examples with curl commands
 - Error handling guide
@@ -507,6 +573,7 @@ Define your project-specific namespaces below. The AI will use these description
 - Security scopes reference
 
 **TRAVEL_APIS_SETUP_GUIDE.md** (400+ lines):
+
 - Step-by-step setup for Kiwi Tequila API
 - Booking.com Affiliate program registration
 - Mapbox API configuration
@@ -515,6 +582,7 @@ Define your project-specific namespaces below. The AI will use these description
 - Testing examples
 
 **TESTING_GUIDE.md** (500+ lines):
+
 - Test structure overview
 - Running tests guide
 - Writing tests best practices
@@ -523,6 +591,7 @@ Define your project-specific namespaces below. The AI will use these description
 - Troubleshooting guide
 
 **README.md** (Updated):
+
 - Quick start guide
 - AI Agent Squadron section
 - MCP Protocol section
@@ -533,31 +602,80 @@ Define your project-specific namespaces below. The AI will use these description
 ## User Preferences
 
 ### Development Workflow
+
 - **Package manager**: npm (monorepo with workspaces)
 - **Development servers**: Run both frontend and backend with `npm run dev` from root
 - **Port configuration**: Frontend on 3000, Backend on 5000
 
 ### Code Style
+
 - **Frontend**: TypeScript with strict mode, ESLint + Prettier configuration
 - **Backend**: JavaScript (ES6+), CommonJS modules
 - **Formatting**: Consistent indentation, descriptive variable names
 - **Documentation**: JSDoc comments for complex functions
 
 ### Testing Preferences
+
 - **Frontend**: Vitest for unit tests, Playwright for E2E tests
 - **Backend**: Jest for unit tests
 - **Coverage**: Aim for >80% coverage on critical components
 - **Commands**: `npm run test`, `npm run test:coverage`, `npm run e2e`
 
 ### Deployment
+
 - **CI/CD**: GitHub Actions (configuration in .github/workflows/)
 - **Environments**: Development (local), Production (cloud platforms)
 - **Monitoring**: Winston logging, health check endpoints
 
 ---
 
+## Unified Agent Collaboration System (NEW - January 19, 2025)
+
+### **Gemini 2.5 Primary Brain Architecture**
+
+- **Primary Brain**: Gemini 2.5 handles 90% of all requests
+- **Computer Control**: Safe system automation capabilities
+- **Evolutionary Learning**: Continuous improvement from user interactions
+- **Cultural Intelligence**: Deep understanding of local customs and etiquette
+- **Multi-Agent Coordination**: Orchestrates Luna, Karim, Layla, Scout, Amira, Tariq, Maya
+
+### **Unified Collaboration Protocol**
+
+- **Shared Rules**: Both Cursor and Gemini 2.5 use identical rules from `.cursor/rules/unified-agent-rules.mdc`
+- **Shared Memory**: Both access `openmemory.md` for project knowledge
+- **Shared Context**: Both understand `MAYA_TRAVEL_AGENT_CONTEXT_FOR_GEMINI.md`
+- **Note System**: Both use `AGENT_COLLABORATION_NOTES.md` for communication
+- **DNA Integration**: Both reference `*.AIX` files for agent specifications
+
+### **Collaboration Features**
+
+- **Real-time Updates**: Changes immediately visible to both agents
+- **Note Coordination**: Both can leave timestamped notes
+- **Context Synchronization**: Both understand same system context
+- **Rule Consistency**: Both follow identical rules and protocols
+- **Memory Sharing**: Both access same memory system
+
+### **Files Created**
+
+- `GEMINI_EVOLUTIONARY_DNA_v0.1.AIX`: Gemini 2.5 DNA specification
+- `AGENT_COLLABORATION_NOTES.md`: Unified communication system
+- `.cursor/rules/unified-agent-rules.mdc`: Shared rules for both agents
+- `MAYA_TRAVEL_AGENT_CONTEXT_FOR_GEMINI.md`: Complete system context
+
 ## Recent Changes
 
+- [2025-01-19 16:00]: Unified Agent Collaboration System implemented - MAJOR COLLABORATION UPDATE
+- [2025-01-19 16:00]: Created Gemini 2.5 Evolutionary DNA with computer control capabilities
+- [2025-01-19 16:00]: Established unified collaboration protocol between Cursor and Gemini 2.5
+- [2025-01-19 16:00]: Implemented shared rules, memory, and context system
+- [2025-01-19 16:00]: Created note-leaving system for agent coordination
+- [2025-01-19 16:00]: Gemini 2.5 activated as primary brain (90% request handling)
+- [2025-01-19 15:45]: Gemini Primary Brain Architecture implemented - MAJOR AI SYSTEM UPDATE
+- [2025-01-19 15:45]: Created EnhancedModelSwitcher with Gemini 2.5 as primary brain
+- [2025-01-19 15:45]: Implemented GeminiComputerControlService with safety restrictions
+- [2025-01-19 15:45]: Updated multi-model architecture to prioritize Gemini 2.5
+- [2025-01-19 15:45]: Added computer control keywords and safety protocols
+- [2025-01-19 15:45]: Created comprehensive implementation documentation
 - [2025-10-16 21:15]: Quantum Reward Engine implemented - MAJOR AI SYSTEM UPDATE
 - [2025-10-16 21:15]: Created backend/services/quantumRewardEngine.js (850+ lines, 8 AI agents)
 - [2025-10-16 21:15]: Created backend/database/quantum-reward-schema.sql (complete schema)
@@ -583,14 +701,14 @@ Define your project-specific namespaces below. The AI will use these description
 - [2025-10-15 11:30]: Automatic token refresh on 401 errors implemented
 - [2025-10-15 11:22]: Complete authentication system implemented with 8 endpoints
 - [2025-10-15 11:22]: Created backend/routes/auth.js with Supabase Auth integration
-- [2025-10-15 11:22]: Auth routes registered in server.js at /api/auth/*
+- [2025-10-15 11:22]: Auth routes registered in server.js at /api/auth/\*
 - [2025-10-15 11:22]: Created AUTH_ROUTES_DOCUMENTATION.md (comprehensive guide)
 - [2025-10-15 11:22]: Created test-auth-endpoints.sh for endpoint testing
 - [2025-10-15 11:22]: Frontend setShowAuth bug verified as already fixed
 - [2025-10-15 11:11]: Money Hunter (Mini-Aladdin Agent) successfully tested and operational
 - [2025-10-15 11:11]: Created run-money-hunter.js CLI tool for opportunity discovery
 - [2025-10-15 11:11]: Verified 6 opportunity types: investment, cost-saving, side-hustle
-- [2025-10-15 11:11]: Money Hunter API endpoints active at /api/aladdin/*
+- [2025-10-15 11:11]: Money Hunter API endpoints active at /api/aladdin/\*
 - [2025-10-15 11:11]: Created MONEY_HUNTER_GUIDE.md documentation
 - [2025-10-15 11:08]: Complete Maya → Amrikyy rebranding across entire project (201 files changed)
 - [2025-10-15 11:08]: Renamed mayaPersona.js → amrikyyPersona.js with all imports updated

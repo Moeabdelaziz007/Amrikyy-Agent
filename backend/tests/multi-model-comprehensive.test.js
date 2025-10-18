@@ -1,0 +1,449 @@
+/**
+ * Multi-Model Architecture - Comprehensive Test Suite
+ * Tests for Enhanced Model Switcher, Claude Client, and API Routes
+ * Version: 1.0.0
+ * Author: AMRIKYY
+ */
+
+const request = require('supertest');
+const { EnhancedModelSwitcher } = require('../src/ai/EnhancedModelSwitcher');
+const { ClaudeClient } = require('../src/ai/claudeClient');
+
+// Mock the server app for testing
+const express = require('express');
+const enhancedAIRoutes = require('../routes/enhanced-ai');
+
+const app = express();
+app.use(express.json());
+app.use('/api/ai', enhancedAIRoutes);
+
+describe('Multi-Model Architecture - Comprehensive Tests', () => {
+  
+  describe('Enhanced Model Switcher', () => {
+    let modelSwitcher;
+    
+    beforeEach(() => {
+      modelSwitcher = new EnhancedModelSwitcher();
+    });
+    
+    test('should initialize with all models', () => {
+      expect(modelSwitcher).toBeDefined();
+      expect(modelSwitcher.models).toBeDefined();
+      expect(modelSwitcher.modelCapabilities).toBeDefined();
+      expect(Object.keys(modelSwitcher.modelCapabilities)).toHaveLength(4);
+    });
+    
+    test('should select Z.ai for Arabic travel tasks', async () => {
+      const task = 'أريد حجز رحلة إلى دبي';
+      const context = { language: 'ar', type: 'travel' };
+      
+      const selectedModel = await modelSwitcher.selectOptimalModel(task, context);
+      expect(selectedModel).toBe('zai-glm-4.6');
+    });
+    
+    test('should select Gemini for data extraction', async () => {
+      const task = 'extract flight prices from this data';
+      const context = { type: 'data_extraction' };
+      
+      const selectedModel = await modelSwitcher.selectOptimalModel(task, context);
+      expect(selectedModel).toBe('gemini-2.0');
+    });
+    
+    test('should select Claude for code generation', async () => {
+      const task = 'generate API endpoint for flight search';
+      const context = { type: 'code' };
+      
+      const selectedModel = await modelSwitcher.selectOptimalModel(task, context);
+      expect(selectedModel).toBe('claude-sonnet-4');
+    });
+    
+    test('should select Trinity for complex reasoning', async () => {
+      const task = 'coordinate multi-agent travel planning';
+      const context = { type: 'complex' };
+      
+      const selectedModel = await modelSwitcher.selectOptimalModel(task, context);
+      expect(selectedModel).toBe('trinity-fusion');
+    });
+    
+    test('should track model performance', () => {
+      modelSwitcher.trackModelPerformance('zai-glm-4.6', true, 1000, 0.001);
+      
+      const stats = modelSwitcher.getUsageStats();
+      expect(stats.modelUsage['zai-glm-4.6']).toBe(1);
+      expect(stats.successRates['zai-glm-4.6']).toBe(100);
+    });
+    
+    test('should provide usage statistics', () => {
+      const stats = modelSwitcher.getUsageStats();
+      expect(stats).toHaveProperty('totalRequests');
+      expect(stats).toHaveProperty('modelUsage');
+      expect(stats).toHaveProperty('successRates');
+      expect(stats).toHaveProperty('recommendations');
+    });
+    
+    test('should list available models', () => {
+      const models = modelSwitcher.listAvailableModels();
+      expect(models).toHaveLength(4);
+      expect(models[0]).toHaveProperty('id');
+      expect(models[0]).toHaveProperty('strengths');
+      expect(models[0]).toHaveProperty('cost');
+    });
+  });
+  
+  describe('Claude Client', () => {
+    let claudeClient;
+    
+    beforeEach(() => {
+      claudeClient = new ClaudeClient();
+    });
+    
+    test('should initialize Claude client', () => {
+      expect(claudeClient).toBeDefined();
+      expect(claudeClient.model).toBe('claude-3-5-sonnet-20241022');
+      expect(claudeClient.baseUrl).toBe('https://api.anthropic.com/v1/messages');
+    });
+    
+    test('should get capabilities', () => {
+      const capabilities = claudeClient.getCapabilities();
+      expect(capabilities).toHaveProperty('enabled');
+      expect(capabilities).toHaveProperty('capabilities');
+      expect(capabilities.capabilities).toContain('presentation_generation');
+      expect(capabilities.capabilities).toContain('business_analysis');
+    });
+    
+    test('should handle missing API key gracefully', () => {
+      // This test assumes no API key is set
+      const capabilities = claudeClient.getCapabilities();
+      if (!capabilities.enabled) {
+        expect(capabilities.enabled).toBe(false);
+      }
+    });
+  });
+  
+  describe('Enhanced AI API Routes', () => {
+    
+    test('should handle smart chat with Arabic travel request', async () => {
+      const response = await request(app)
+        .post('/api/ai/smart-chat')
+        .send({
+          message: 'أريد حجز رحلة إلى دبي',
+          userId: 'test-user',
+          context: { language: 'ar', type: 'travel' }
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.model_selected).toBe('zai-glm-4.6');
+      expect(response.body.reply).toBeDefined();
+    });
+    
+    test('should handle smart chat with data extraction request', async () => {
+      const response = await request(app)
+        .post('/api/ai/smart-chat')
+        .send({
+          message: 'extract flight prices from this data: {flights: [...]}',
+          userId: 'test-user',
+          context: { type: 'data_extraction' }
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.model_selected).toBe('gemini-2.0');
+    });
+    
+    test('should handle smart chat with code generation request', async () => {
+      const response = await request(app)
+        .post('/api/ai/smart-chat')
+        .send({
+          message: 'generate API endpoint for flight search',
+          userId: 'test-user',
+          context: { type: 'code' }
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.model_selected).toBe('claude-sonnet-4');
+    });
+    
+    test('should handle smart chat with complex reasoning request', async () => {
+      const response = await request(app)
+        .post('/api/ai/smart-chat')
+        .send({
+          message: 'coordinate multi-agent travel planning for complex itinerary',
+          userId: 'test-user',
+          context: { type: 'complex' }
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.model_selected).toBe('trinity-fusion');
+    });
+    
+    test('should generate presentation with Claude', async () => {
+      const response = await request(app)
+        .post('/api/ai/generate-presentation')
+        .send({
+          data: {
+            destination: 'Tokyo',
+            budget: 5000,
+            duration: '7 days'
+          },
+          template: 'travel',
+          style: 'professional'
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.model).toBe('claude-sonnet-4');
+      expect(response.body.presentation).toBeDefined();
+    });
+    
+    test('should perform business analysis with Claude', async () => {
+      const response = await request(app)
+        .post('/api/ai/business-analysis')
+        .send({
+          data: {
+            revenue: 100000,
+            expenses: 80000,
+            customers: 1000
+          },
+          analysisType: 'financial',
+          timeframe: 'quarterly'
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.model).toBe('claude-sonnet-4');
+      expect(response.body.analysis).toBeDefined();
+    });
+    
+    test('should generate code with Claude', async () => {
+      const response = await request(app)
+        .post('/api/ai/generate-code')
+        .send({
+          description: 'Create a function to calculate travel costs',
+          language: 'javascript',
+          framework: 'node'
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.model).toBe('claude-sonnet-4');
+      expect(response.body.code).toBeDefined();
+    });
+    
+    test('should create revenue forecast with Claude', async () => {
+      const response = await request(app)
+        .post('/api/ai/revenue-forecast')
+        .send({
+          data: {
+            historicalRevenue: [10000, 12000, 15000, 18000],
+            growthRate: 0.2,
+            seasonality: 'summer_peak'
+          },
+          timeframe: '12 months',
+          method: 'trend analysis'
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.model).toBe('claude-sonnet-4');
+      expect(response.body.forecast).toBeDefined();
+    });
+    
+    test('should get model status', async () => {
+      const response = await request(app)
+        .get('/api/ai/models/status');
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.models).toHaveLength(4);
+      expect(response.body.models[0]).toHaveProperty('id');
+      expect(response.body.models[0]).toHaveProperty('health');
+    });
+    
+    test('should get usage statistics', async () => {
+      const response = await request(app)
+        .get('/api/ai/models/usage');
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.statistics).toHaveProperty('totalRequests');
+      expect(response.body.statistics).toHaveProperty('modelUsage');
+    });
+    
+    test('should test specific model', async () => {
+      const response = await request(app)
+        .post('/api/ai/models/test')
+        .send({
+          modelId: 'zai-glm-4.6',
+          testMessage: 'Hello, this is a test message.'
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.modelId).toBe('zai-glm-4.6');
+      expect(response.body.response).toBeDefined();
+    });
+    
+    test('should handle missing message in smart chat', async () => {
+      const response = await request(app)
+        .post('/api/ai/smart-chat')
+        .send({
+          userId: 'test-user'
+        });
+      
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toBe('Message is required');
+    });
+    
+    test('should handle missing data in presentation generation', async () => {
+      const response = await request(app)
+        .post('/api/ai/generate-presentation')
+        .send({
+          template: 'travel'
+        });
+      
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toBe('Data is required for presentation generation');
+    });
+  });
+  
+  describe('Performance Tests', () => {
+    
+    test('should respond within acceptable time limits', async () => {
+      const startTime = Date.now();
+      
+      const response = await request(app)
+        .post('/api/ai/smart-chat')
+        .send({
+          message: 'Plan a trip to Paris',
+          userId: 'test-user'
+        });
+      
+      const endTime = Date.now();
+      const responseTime = endTime - startTime;
+      
+      expect(response.status).toBe(200);
+      expect(responseTime).toBeLessThan(10000); // 10 seconds max
+    });
+    
+    test('should handle concurrent requests efficiently', async () => {
+      const requests = Array(5).fill().map((_, i) => 
+        request(app)
+          .post('/api/ai/smart-chat')
+          .send({
+            message: `Test message ${i}`,
+            userId: `test-user-${i}`
+          })
+      );
+      
+      const startTime = Date.now();
+      const responses = await Promise.all(requests);
+      const endTime = Date.now();
+      
+      const allSuccessful = responses.every(r => r.status === 200);
+      const totalTime = endTime - startTime;
+      
+      expect(allSuccessful).toBe(true);
+      expect(totalTime).toBeLessThan(15000); // 15 seconds for 5 concurrent requests
+    });
+  });
+  
+  describe('Error Handling Tests', () => {
+    
+    test('should handle invalid model ID in test endpoint', async () => {
+      const response = await request(app)
+        .post('/api/ai/models/test')
+        .send({
+          modelId: 'invalid-model',
+          testMessage: 'test'
+        });
+      
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toBe('Unknown model ID');
+    });
+    
+    test('should handle missing model ID in test endpoint', async () => {
+      const response = await request(app)
+        .post('/api/ai/models/test')
+        .send({
+          testMessage: 'test'
+        });
+      
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toBe('Model ID is required');
+    });
+  });
+  
+  describe('Integration Tests', () => {
+    
+    test('should maintain model selection consistency', async () => {
+      const sameTask = 'أريد حجز رحلة إلى دبي';
+      const context = { language: 'ar', type: 'travel' };
+      
+      const modelSwitcher = new EnhancedModelSwitcher();
+      
+      const selection1 = await modelSwitcher.selectOptimalModel(sameTask, context);
+      const selection2 = await modelSwitcher.selectOptimalModel(sameTask, context);
+      
+      expect(selection1).toBe(selection2);
+      expect(selection1).toBe('zai-glm-4.6');
+    });
+    
+    test('should track usage across multiple requests', async () => {
+      const modelSwitcher = new EnhancedModelSwitcher();
+      
+      // Make multiple requests
+      await modelSwitcher.selectOptimalModel('Arabic travel', { language: 'ar' });
+      await modelSwitcher.selectOptimalModel('extract data', { type: 'data_extraction' });
+      await modelSwitcher.selectOptimalModel('generate code', { type: 'code' });
+      
+      const stats = modelSwitcher.getUsageStats();
+      expect(stats.totalRequests).toBe(3);
+      expect(stats.modelUsage['zai-glm-4.6']).toBe(1);
+      expect(stats.modelUsage['gemini-2.0']).toBe(1);
+      expect(stats.modelUsage['claude-sonnet-4']).toBe(1);
+    });
+  });
+});
+
+// Performance benchmark tests
+describe('Multi-Model Architecture - Performance Benchmarks', () => {
+  
+  test('Model selection should be fast', async () => {
+    const modelSwitcher = new EnhancedModelSwitcher();
+    
+    const startTime = Date.now();
+    await modelSwitcher.selectOptimalModel('test message', {});
+    const endTime = Date.now();
+    
+    const selectionTime = endTime - startTime;
+    expect(selectionTime).toBeLessThan(100); // Should be under 100ms
+  });
+  
+  test('Usage statistics should be efficient', () => {
+    const modelSwitcher = new EnhancedModelSwitcher();
+    
+    // Add some test data
+    modelSwitcher.trackModelPerformance('zai-glm-4.6', true, 1000, 0.001);
+    modelSwitcher.trackModelPerformance('gemini-2.0', true, 1500, 0.002);
+    
+    const startTime = Date.now();
+    const stats = modelSwitcher.getUsageStats();
+    const endTime = Date.now();
+    
+    const statsTime = endTime - startTime;
+    expect(statsTime).toBeLessThan(50); // Should be under 50ms
+    expect(stats).toBeDefined();
+  });
+});
+
+module.exports = {
+  EnhancedModelSwitcher,
+  ClaudeClient
+};

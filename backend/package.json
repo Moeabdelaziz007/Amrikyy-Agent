@@ -33,11 +33,12 @@
     "node-fetch": "^2.6.7",
     "node-telegram-bot-api": "^0.66.0",
     "paypal-rest-sdk": "^1.8.1",
+    "redis": "^4.6.13",
+    "sqlite3": "^5.1.7",
     "stripe": "^13.6.0",
     "winston": "^3.18.3",
     "winston-daily-rotate-file": "^5.0.0",
-    "ws": "^8.14.0",
-    "redis": "^4.6.13"
+    "ws": "^8.14.0"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
