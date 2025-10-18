@@ -256,12 +256,12 @@ const VoiceTest: React.FC = () => {
 
           {/* English Tests */}
           <div className="test-section">
-            <h3>English Tests</h3>
+            <h3>الاختبارات الإنجليزية</h3>
             <button onClick={testEnglishRecognition} className="test-button">
-              🎤 Test English Recognition
+              🎤 اختبار التعرف على الإنجليزية
             </button>
             <button onClick={testEnglishSynthesis} className="test-button">
-              🔊 Test English Synthesis
+              🔊 اختبار تشغيل الصوت الإنجليزي
             </button>
           </div>
 
@@ -289,10 +289,13 @@ const VoiceTest: React.FC = () => {
           <div className="test-section">
             <h3>معلومات المتصفح</h3>
             <div className="browser-info">
-              <p><strong>المتصفح:</strong> {navigator.userAgent.includes('Chrome') ? 'Chrome' : 
-                                            navigator.userAgent.includes('Firefox') ? 'Firefox' :
-                                            navigator.userAgent.includes('Safari') ? 'Safari' :
-                                            navigator.userAgent.includes('Edge') ? 'Edge' : 'Unknown'}</p>
+              <p><strong>المتصفح:</strong> {
+                navigator.userAgent.includes('Chrome') && !navigator.userAgent.includes('Edge') ? 'كروم' : 
+                navigator.userAgent.includes('Firefox') ? 'فايرفوكس' :
+                navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome') ? 'سفاري' :
+                navigator.userAgent.includes('Edge') ? 'إيدج' : 
+                'غير معروف'
+              }</p>
               <p><strong>اللغة:</strong> {navigator.language}</p>
               <p><strong>المنصة:</strong> {navigator.platform}</p>
             </div>

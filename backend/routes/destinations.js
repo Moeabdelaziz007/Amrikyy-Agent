@@ -21,6 +21,23 @@ router.get('/', async (req, res) => {
       max_budget,
     } = req.query;
 
+    // Create cache key for this request
+    const cacheKey = `destinations:list:${JSON.stringify(req.query)}`;
+
+    // Check cache first
+    if (global.cache) {
+      const cachedResult = await global.cache.get(cacheKey);
+      if (cachedResult) {
+        console.log('✅ Cache hit for destinations list');
+        const { cacheMetrics } = require('../middleware/performance');
+        cacheMetrics.recordHit();
+        return res.json({ success: true, data: cachedResult, cached: true });
+      } else {
+        const { cacheMetrics } = require('../middleware/performance');
+        cacheMetrics.recordMiss();
+      }
+    }
+
     const pageNum = parseInt(page, 10);
     const limitNum = parseInt(limit, 10);
     const offset = (pageNum - 1) * limitNum;
@@ -53,6 +70,19 @@ router.get('/', async (req, res) => {
 
     if (error) throw error;
 
+    // Cache the result for 5 minutes
+    if (global.cache) {
+      await global.cache.set(cacheKey, {
+        destinations,
+        pagination: {
+          total_items: count,
+          current_page: pageNum,
+          per_page: limitNum,
+          total_pages: Math.ceil(count / limitNum),
+        },
+      }, 300);
+    }
+
     res.json({
       success: true,
       data: {
@@ -80,12 +110,34 @@ router.get('/search', async (req, res) => {
 // GET /api/destinations/featured - Get featured destinations
 router.get('/featured', async (req, res) => {
   try {
+    // Create cache key for featured destinations
+    const cacheKey = 'destinations:featured';
+
+    // Check cache first
+    if (global.cache) {
+      const cachedResult = await global.cache.get(cacheKey);
+      if (cachedResult) {
+        console.log('✅ Cache hit for featured destinations');
+        const { cacheMetrics } = require('../middleware/performance');
+        cacheMetrics.recordHit();
+        return res.json({ success: true, destinations: cachedResult, cached: true });
+      } else {
+        const { cacheMetrics } = require('../middleware/performance');
+        cacheMetrics.recordMiss();
+      }
+    }
+
     const { data: destinations, error } = await supabase
       .from('destinations')
       .select('*')
       .eq('featured', true);
 
     if (error) throw error;
+
+    // Cache the result for 10 minutes (featured destinations change less frequently)
+    if (global.cache) {
+      await global.cache.set(cacheKey, destinations, 600);
+    }
 
     res.json({ success: true, destinations });
   } catch (error) {

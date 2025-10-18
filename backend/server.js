@@ -22,34 +22,33 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const compression = require('compression');
+const Redis = require('ioredis');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Security middleware
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'"],
-        imgSrc: ["'self'", 'data:', 'https:'],
-      },
-    },
-  })
-);
+// Enhanced Security Middleware
+const {
+  securityHeaders,
+  secureCORS,
+  requestId,
+  validateEnvironment,
+  sanitizeErrors,
+  createSecureRateLimit,
+} = require('./middleware/securityEnhancements');
 
-// CORS configuration
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  })
-);
+// Environment validation
+app.use(validateEnvironment);
+
+// Request ID for tracking
+app.use(requestId);
+
+// Enhanced security headers
+app.use(securityHeaders);
+
+// Enhanced CORS configuration
+app.use(secureCORS);
 
 // Body parsing middleware
 app.use(bodyParser.json({ limit: '10mb' }));
@@ -58,23 +57,29 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 // Compression middleware
 app.use(compression());
 
-// Rate limiting
-const rateLimit = require('express-rate-limit');
-
-const generalLimiter = rateLimit({
+// Enhanced rate limiting
+const generalLimiter = createSecureRateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000, // limit each IP to 1000 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.',
-  standardHeaders: true,
-  legacyHeaders: false,
+  max: 100, // More conservative limit
+  skipSuccessfulRequests: false,
 });
 
-const aiLimiter = rateLimit({
+const aiLimiter = createSecureRateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 60, // limit each IP to 60 AI requests per minute
-  message: 'Too many AI requests from this IP, please try again later.',
-  standardHeaders: true,
-  legacyHeaders: false,
+  max: 10, // Stricter AI limit
+  skipSuccessfulRequests: false,
+});
+
+const authLimiter = createSecureRateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Very strict auth limit
+  skipSuccessfulRequests: true,
+});
+
+const paymentLimiter = createSecureRateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10, // Conservative payment limit
+  skipFailedRequests: true,
 });
 
 app.use(generalLimiter);
@@ -94,7 +99,88 @@ const connectDB = async () => {
 };
 
 // Initialize database connection
-connectDB();
+// Redis connection for caching
+let redisClient = null;
+
+const connectRedis = async () => {
+  try {
+    if (process.env.REDIS_URL) {
+      redisClient = new Redis(process.env.REDIS_URL);
+      redisClient.on('error', (err) => console.error('❌ Redis Client Error:', err));
+      redisClient.on('connect', () => console.log('✅ Redis connected'));
+
+      // Wait for connection
+      await new Promise((resolve, reject) => {
+        redisClient.once('ready', resolve);
+        redisClient.once('error', reject);
+      });
+
+      console.log('✅ Redis cache ready');
+    } else {
+      console.log('⚠️ Redis not configured - caching disabled');
+    }
+  } catch (error) {
+    console.error('❌ Redis connection failed:', error.message);
+    redisClient = null;
+  }
+};
+
+// Global cache helper functions
+global.cache = {
+  get: async (key) => {
+    if (!redisClient) return null;
+    try {
+      const value = await redisClient.get(key);
+      return value ? JSON.parse(value) : null;
+    } catch (error) {
+      console.error('Cache get error:', error);
+      return null;
+    }
+  },
+
+  set: async (key, value, ttl = 300) => {
+    // 5 minutes default
+    if (!redisClient) return;
+    try {
+      await redisClient.setex(key, ttl, JSON.stringify(value));
+    } catch (error) {
+      console.error('Cache set error:', error);
+    }
+  },
+
+  del: async (key) => {
+    if (!redisClient) return;
+    try {
+      await redisClient.del(key);
+    } catch (error) {
+      console.error('Cache del error:', error);
+    }
+  },
+
+  clear: async (pattern = '*') => {
+    if (!redisClient) return;
+    try {
+      const keys = await redisClient.keys(pattern);
+      if (keys.length > 0) {
+        await redisClient.del(keys);
+      }
+    } catch (error) {
+      console.error('Cache clear error:', error);
+    }
+  },
+};
+
+// Initialize Redis
+connectRedis();
+
+// Performance monitoring middleware
+const { performanceMonitor, errorMonitor, cacheMetrics } = require('./middleware/performance');
+
+// Add performance monitoring to all routes
+app.use(performanceMonitor);
+
+// Error monitoring middleware (should be last)
+app.use(errorMonitor);
 
 // Routes
 console.log('🔄 Loading routes...');
@@ -104,6 +190,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/trips', require('./routes/trips'));
 app.use('/api/bookings', require('./routes/bookings'));
+app.use('/api/profile', require('./routes/profile'));
 app.use('/api/payments', require('./routes/payment'));
 app.use('/api/destinations', require('./routes/destinations'));
 
@@ -124,8 +211,10 @@ app.use('/api/youtube', require('./routes/youtube'));
 // Quantum Explorer routes (with rate limiting)
 app.use('/api/explorer', aiLimiter, require('./routes/web-explorer'));
 
-// Quantum Explorer routes (with rate limiting)
-app.use('/api/explorer', aiLimiter, require('./routes/web-explorer'));
+// Smart Documentation routes (with rate limiting)
+app.use('/api/docs', aiLimiter, require('./routes/smart-documentation'));
+
+// Error handling middleware
 
 // WebSocket routes
 app.use('/api/websocket', require('./routes/websocket'));
@@ -197,26 +286,16 @@ app.use('*', (req, res) => {
   });
 });
 
-// Global error handler
-app.use((error, req, res, next) => {
-  console.error('Global Error Handler:', error);
-
-  res.status(error.status || 500).json({
-    success: false,
-    error: error.message || 'Internal server error',
-    timestamp: new Date().toISOString(),
-    path: req.path,
-    method: req.method,
-  });
-});
+// Global error handler with sanitization
+app.use(sanitizeErrors);
 
 // Start server with WebSocket support
 const server = app.listen(PORT, () => {
   console.log('\n🚀 ===========================================');
   console.log('🌟 MAYA TRAVEL AGENT - MULTI-MODEL ARCHITECTURE');
   console.log('🚀 ===========================================');
-    console.log(`📱 Frontend: http://localhost:3000`);
-    console.log(`🔧 Backend API: http://localhost:${PORT}`);
+  console.log(`📱 Frontend: http://localhost:3000`);
+  console.log(`🔧 Backend API: http://localhost:${PORT}`);
   console.log(`📚 API Docs: http://localhost:${PORT}/api`);
   console.log(`❤️  Health Check: http://localhost:${PORT}/health`);
   console.log('🚀 ===========================================');

@@ -1,109 +1,155 @@
+/**
+ * @fileoverview User Profile API routes for Amrikyy Travel Agent.
+ * @module routes/profile
+ * @author Gemini Code Assist
+ * @date 2025-10-19
+ */
+
 const express = require('express');
 const router = express.Router();
-const { supabase } = require('../utils/supabaseClient');
-const authMiddleware = require('../middleware/authMiddleware'); // Assuming auth middleware exists
+const { createClient } = require('@supabase/supabase-js');
+const authenticateToken = require('../middleware/auth'); // Assuming auth middleware exists
+const logger = require('../src/utils/logger'); // Assuming logger exists
+
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 /**
- * @route   GET /api/profile
- * @desc    Fetch user profile
- * @access  Private
+ * GET /api/profile
+ * Get the profile of the authenticated user.
  */
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
   try {
-    const { data: profile, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', req.user.id)
-      .single();
+    const userId = req.user.id;
+    logger.info(`Fetching profile for user ID: ${userId}`);
 
-    if (error && error.code !== 'PGRST116') {
-      // PGRST116: "single" row not found
-      throw error;
-    }
-
-    if (!profile) {
-      return res.status(404).json({ msg: 'Profile not found' });
-    }
-
-    res.json(profile);
-  } catch (err) {
-    console.error('Error fetching profile:', err.message);
-    res.status(500).send('Server Error');
-  }
-});
-
-/**
- * @route   PUT /api/profile
- * @desc    Update user profile
- * @access  Private
- */
-router.put('/', authMiddleware, async (req, res) => {
-  const { full_name, website, avatar_url } = req.body;
-
-  const profileData = {
-    id: req.user.id,
-    full_name,
-    website,
-    avatar_url,
-    updated_at: new Date(),
-  };
-
-  try {
     const { data, error } = await supabase
-      .from('profiles')
-      .upsert(profileData, { onConflict: 'id' })
-      .select()
+      .from('users')
+      .select('id, email, name, avatar_url, bio, created_at')
+      .eq('id', userId)
       .single();
 
-    if (error) {
-      throw error;
+    if (error) throw error;
+
+    if (!data) {
+      return res.status(404).json({ success: false, error: 'User profile not found.' });
     }
 
-    res.json(data);
-  } catch (err) {
-    console.error('Error updating profile:', err.message);
-    res.status(500).send('Server Error');
+    res.json({
+      success: true,
+      user: data,
+    });
+  } catch (error) {
+    logger.error(`Error fetching profile: ${error.message}`);
+    res.status(500).json({
+      success: false,
+      error: 'An unexpected error occurred while fetching the profile.',
+    });
   }
 });
 
 /**
- * @route   GET /api/profile/stats
- * @desc    Get user statistics (e.g., trips planned, money saved)
- * @access  Private
+ * PUT /api/profile
+ * Update the profile of the authenticated user.
  */
-router.get('/stats', authMiddleware, async (req, res) => {
+router.put('/', authenticateToken, async (req, res) => {
   try {
-    // Placeholder for more complex queries
-    const { data: trips, error: tripsError } = await supabase
-      .from('trips')
-      .select('id', { count: 'exact' })
-      .eq('user_id', req.user.id);
+    const userId = req.user.id;
+    const { name, bio } = req.body;
 
-    if (tripsError) throw tripsError;
+    // Basic validation
+    if (!name && !bio) {
+      return res.status(400).json({ success: false, error: 'No update data provided.' });
+    }
 
-    // Example static data
-    const stats = {
-      trips_planned: trips.length,
-      countries_visited: 5, // Placeholder
-      money_saved: 1250.75, // Placeholder
-    };
+    const updates = {};
+    if (name) updates.name = name;
+    if (bio) updates.bio = bio;
+    updates.updated_at = new Date().toISOString();
 
-    res.json(stats);
-  } catch (err) {
-    console.error('Error fetching user stats:', err.message);
-    res.status(500).send('Server Error');
+    logger.info(`Updating profile for user ID: ${userId}`);
+
+    const { data, error } = await supabase
+      .from('users')
+      .update(updates)
+      .eq('id', userId)
+      .select('id, email, name, avatar_url, bio')
+      .single();
+
+    if (error) throw error;
+
+    res.json({
+      success: true,
+      user: data,
+    });
+  } catch (error) {
+    logger.error(`Error updating profile: ${error.message}`);
+    res.status(500).json({
+      success: false,
+      error: 'An unexpected error occurred while updating the profile.',
+    });
   }
 });
 
 /**
- * @route   POST /api/profile/avatar
- * @desc    Upload user avatar (placeholder for storage logic)
- * @access  Private
+ * POST /api/profile/avatar
+ * Update the user's avatar URL.
+ * Note: This endpoint expects a URL, not a file upload, for simplicity.
+ * A separate service would handle file uploads and provide the URL.
  */
-router.post('/avatar', authMiddleware, (req, res) => {
-  // This would typically involve multer middleware and Supabase Storage
-  // For now, it's a placeholder acknowledging the endpoint.
-  res.status(501).json({ msg: 'Avatar upload not implemented yet.' });
+router.post('/avatar', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { avatar_url } = req.body;
+
+    if (!avatar_url || typeof avatar_url !== 'string') {
+      return res.status(400).json({ success: false, error: 'A valid avatar_url is required.' });
+    }
+
+    logger.info(`Updating avatar for user ID: ${userId}`);
+
+    const { data, error } = await supabase
+      .from('users')
+      .update({ avatar_url })
+      .eq('id', userId)
+      .select('id, avatar_url')
+      .single();
+
+    if (error) throw error;
+
+    res.json({
+      success: true,
+      avatar_url: data.avatar_url,
+    });
+  } catch (error) {
+    logger.error(`Error updating avatar: ${error.message}`);
+    res.status(500).json({
+      success: false,
+      error: 'An unexpected error occurred while updating the avatar.',
+    });
+  }
+});
+
+/**
+ * DELETE /api/profile
+ * Delete the authenticated user's account.
+ * This is a protected and sensitive operation.
+ */
+router.delete('/', authenticateToken, async (req, res) => {
+  // In a real application, this would require password confirmation
+  // and would trigger a series of cleanup jobs.
+  try {
+    const userId = req.user.id;
+    logger.warn(`Initiating account deletion for user ID: ${userId}`);
+
+    const { error } = await supabase.auth.admin.deleteUser(userId);
+
+    if (error) throw error;
+
+    res.status(200).json({ success: true, message: 'User account deleted successfully.' });
+  } catch (error) {
+    logger.error(`Error deleting account: ${error.message}`);
+    res.status(500).json({ success: false, error: 'Failed to delete user account.' });
+  }
 });
 
 module.exports = router;
