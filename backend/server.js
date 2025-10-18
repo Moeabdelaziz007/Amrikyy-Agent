@@ -28,24 +28,28 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Security middleware
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+      },
     },
-  },
-}));
+  })
+);
 
 // CORS configuration
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  })
+);
 
 // Body parsing middleware
 app.use(bodyParser.json({ limit: '10mb' }));
@@ -115,6 +119,13 @@ app.use('/api/mcp', require('./routes/mcp'));
 // Utility routes
 app.use('/api/security', require('./routes/security'));
 app.use('/api/health', require('./routes/health'));
+app.use('/api/youtube', require('./routes/youtube'));
+
+// Quantum Explorer routes (with rate limiting)
+app.use('/api/explorer', aiLimiter, require('./routes/web-explorer'));
+
+// Quantum Explorer routes (with rate limiting)
+app.use('/api/explorer', aiLimiter, require('./routes/web-explorer'));
 
 // WebSocket routes
 app.use('/api/websocket', require('./routes/websocket'));
@@ -135,8 +146,8 @@ app.get('/health', (req, res) => {
       'Claude Integration',
       'Trinity Fusion Engine',
       'Real-time WebSocket',
-      'Advanced Security'
-    ]
+      'Advanced Security',
+    ],
   });
 });
 
@@ -158,14 +169,14 @@ app.get('/api', (req, res) => {
       mcp: '/api/mcp',
       security: '/api/security',
       health: '/api/health',
-      websocket: '/api/websocket'
+      websocket: '/api/websocket',
     },
     features: {
       'Multi-Model AI': 'Intelligent model selection based on task analysis',
       'Enhanced Security': '7-tier security system with rate limiting',
       'Real-time Updates': 'WebSocket support for live updates',
-      'Advanced Analytics': 'Comprehensive usage tracking and optimization'
-    }
+      'Advanced Analytics': 'Comprehensive usage tracking and optimization',
+    },
   });
 });
 
@@ -181,21 +192,21 @@ app.use('*', (req, res) => {
       'POST /api/ai/smart-chat',
       'POST /api/ai/generate-presentation',
       'POST /api/ai/business-analysis',
-      'GET /api/ai/models/status'
-    ]
+      'GET /api/ai/models/status',
+    ],
   });
 });
 
 // Global error handler
 app.use((error, req, res, next) => {
   console.error('Global Error Handler:', error);
-  
+
   res.status(error.status || 500).json({
     success: false,
     error: error.message || 'Internal server error',
     timestamp: new Date().toISOString(),
     path: req.path,
-    method: req.method
+    method: req.method,
   });
 });
 
