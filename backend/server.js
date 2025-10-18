@@ -203,8 +203,8 @@ const server = app.listen(PORT, () => {
   console.log('\n🚀 ===========================================');
   console.log('🌟 MAYA TRAVEL AGENT - MULTI-MODEL ARCHITECTURE');
   console.log('🚀 ===========================================');
-  console.log(`📱 Frontend: http://localhost:3000`);
-  console.log(`🔧 Backend API: http://localhost:${PORT}`);
+    console.log(`📱 Frontend: http://localhost:3000`);
+    console.log(`🔧 Backend API: http://localhost:${PORT}`);
   console.log(`📚 API Docs: http://localhost:${PORT}/api`);
   console.log(`❤️  Health Check: http://localhost:${PORT}/health`);
   console.log('🚀 ===========================================');
