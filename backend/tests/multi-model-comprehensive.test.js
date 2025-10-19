@@ -7,7 +7,6 @@
 
 const request = require('supertest');
 const { EnhancedModelSwitcher } = require('../src/ai/EnhancedModelSwitcher');
-const { ClaudeClient } = require('../src/ai/claudeClient');
 
 // Mock the server app for testing
 const express = require('express');

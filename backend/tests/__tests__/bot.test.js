@@ -6,14 +6,12 @@
 const logger = require('../../utils/logger');
 const conversationManager = require('../../utils/conversationManager');
 const healthMonitor = require('../../utils/healthMonitor');
-const KeloClient = require('../../src/ai/keloClient');
 const SupabaseDB = require('../../database/supabase');
 
 // Mock external dependencies
 jest.mock('../../utils/logger');
 jest.mock('../../utils/conversationManager');
 jest.mock('../../utils/healthMonitor');
-jest.mock('../../src/ai/keloClient');
 jest.mock('../../database/supabase');
 
 describe('Bot Functionality Tests', () => {

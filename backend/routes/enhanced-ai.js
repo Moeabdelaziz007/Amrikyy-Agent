@@ -8,18 +8,13 @@
 const express = require('express');
 const router = express.Router();
 const { EnhancedModelSwitcher } = require('../ai/EnhancedModelSwitcher');
-const { ClaudeClient } = require('../ai/claudeClient');
 const ZaiClient = require('../ai/zaiClient');
 // const { GeminiCLI } = require('../services/automation/GeminiCLI'); // Will be initialized when available
 
 // Initialize multi-model system
 const modelSwitcher = new EnhancedModelSwitcher();
-const claudeClient = new ClaudeClient();
 const zaiClient = new ZaiClient();
 // const geminiClient = new GeminiCLI(); // Will be initialized when available
-
-// Set up model switcher with available models
-modelSwitcher.setClaudeClient(claudeClient);
 
 console.log('✅ Enhanced AI Routes initialized with Multi-Model Architecture');
 

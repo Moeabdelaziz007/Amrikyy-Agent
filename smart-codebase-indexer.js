@@ -335,12 +335,21 @@ class SmartCodebaseIndexer {
         const complexityKeywords = [
             'if', 'else', 'for', 'while', 'switch', 'case',
             'try', 'catch', 'finally', 'throw', 'return',
-            '&&', '||', '?', ':', 'break', 'continue'
+            'break', 'continue'
         ];
+        const operatorKeywords = ['&&', '||', '?', ':'];
         
         let complexity = 1;
         for (const keyword of complexityKeywords) {
             const matches = content.match(new RegExp(`\\b${keyword}\\b`, 'g'));
+            if (matches) {
+                complexity += matches.length;
+            }
+        }
+
+        for (const operator of operatorKeywords) {
+            const escapedOperator = operator.replace(/[.*+?^${}()|[\\]/g, '\\{new_string}');
+            const matches = content.match(new RegExp(escapedOperator, 'g'));
             if (matches) {
                 complexity += matches.length;
             }
@@ -1005,7 +1014,7 @@ class SmartCodebaseIndexer {
             }
         }
         
-        if (docFiles < totalFiles * 0.1) {
+        if (docFiles < this.stats.totalFiles * 0.1) {
             recommendations.push({
                 category: 'documentation',
                 priority: 'medium',

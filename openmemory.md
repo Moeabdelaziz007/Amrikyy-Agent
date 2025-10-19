@@ -4,6 +4,41 @@
 
 Maya Travel Agent is a comprehensive AI-powered travel planning platform with a sophisticated multi-agent architecture. The system features a modern TypeScript-based agent system with Redis queuing, comprehensive backend APIs, and a React frontend with advanced UI components.
 
+### Unified Agent Manager System
+
+The system is coordinated by a **Unified Agent Manager** that serves as the supreme coordinator for all AI agents with the following capabilities:
+
+- **Real-time Repository Monitoring**: Continuous monitoring and data collection from the codebase
+- **Intelligent Task Delegation**: Multi-agent coordination and workflow optimization
+- **Pattern Learning**: Advanced learning from codebase patterns and user interactions
+- **Quality Assurance**: Performance monitoring and predictive analytics
+- **Autonomous Decision Making**: Self-optimizing workflows and intelligent automation
+
+### Agent Squadron Registry
+
+The system manages a comprehensive **12-Agent Registry** with specialized roles:
+
+**Development Agents**:
+
+- **cursor-ultimate-unified**: Supreme coding intelligence and development coordination
+- **gemini-unified-superpowers**: Ultimate backend architect and system optimization
+- **cline**: Code execution and development automation
+
+**Travel Specialists**:
+
+- **maya-orchestrator**: Travel coordination and multi-agent management
+- **luna**: Trip architect and itinerary design
+- **karim**: Budget optimizer and cost analysis
+- **layla**: Cultural guide and local experiences
+- **amira**: Problem solver and crisis management
+- **tariq**: Payment manager and transaction security
+- **zara**: Research specialist and fact-checking
+
+**System Agents**:
+
+- **pattern-engine**: Pattern recognition and learning optimization
+- **monitoring-agent**: System health monitoring and performance tracking
+
 ### Key Features
 
 - **Multi-Agent Architecture**: Modern TypeScript agent system with event-driven task queuing
@@ -12,18 +47,24 @@ Maya Travel Agent is a comprehensive AI-powered travel planning platform with a 
 - **Testing System**: Comprehensive test suites with 100% coverage
 - **Security**: JWT authentication, rate limiting, and comprehensive security measures
 - **Performance**: Redis caching, performance monitoring, and optimization
-- **AI Integration**: Gemini 2.5 integration with intelligent recommendations
+- **AI Integration**: Gemini 2.5 + Z.ai GLM-4.6 models with intelligent recommendations
 - **Voice Features**: Speech-to-text, text-to-speech, and voice commands
 - **Real-time Updates**: WebSocket integration for live notifications
+- **Agent Cortex Memory System**: ChromaDB-based long-term memory for agent learning
+- **Multi-platform Integration**: Web, Telegram Mini App, WhatsApp Business API
+- **7-tier Rate Limiting**: Advanced rate limiting system for optimal performance
 
 ### Tech Stack
 
-**Backend**: Node.js + Express + TypeScript + Redis + Supabase
-**Frontend**: React 18 + TypeScript + Vite + Tailwind CSS + Firebase
-**AI**: Gemini 2.5 + Z.ai GLM-4.6 models
-**Database**: Supabase PostgreSQL
-**Caching**: Redis with performance monitoring
-**Testing**: Jest + React Testing Library + Supertest
+**Backend**: Node.js + Express + TypeScript + Redis + Supabase PostgreSQL
+**Frontend**: React 18 + TypeScript + Vite + Tailwind CSS + Zustand + Firebase
+**AI Integration**: Gemini 2.5 + Z.ai GLM-4.6 models
+**Payment Systems**: Stripe, PayPal, Telegram payments
+**Messaging**: Telegram Bot API, WhatsApp Business API
+**Memory System**: ChromaDB vector database for agent learning
+**Caching**: Redis with performance monitoring and TTL configuration
+**Testing**: Jest + React Testing Library + Supertest + Playwright
+**Security**: Helmet.js, CORS, JWT authentication, comprehensive rate limiting
 
 ### Project Structure
 
@@ -72,12 +113,14 @@ Maya Travel Agent is a comprehensive AI-powered travel planning platform with a 
 
 ## User Defined Namespaces
 
-- **backend**: API endpoints, server logic, agent system, database queries, authentication
-- **frontend**: React components, UI/UX, client state management, Firebase integration
-- **agents**: Agent architecture, task queuing, coordination, memory system
-- **testing**: Test suites, coverage, quality assurance, performance testing
-- **security**: Authentication, authorization, rate limiting, input validation
-- **performance**: Caching, optimization, monitoring, scalability
+- **backend**: API endpoints, server logic, agent system, database queries, authentication, Unified Agent Manager
+- **frontend**: React components, UI/UX, client state management, Firebase integration, Zustand state management
+- **agents**: Agent architecture, task queuing, coordination, memory system, 12-agent registry management
+- **testing**: Test suites, coverage, quality assurance, performance testing, comprehensive validation
+- **security**: Authentication, authorization, rate limiting, input validation, Helmet.js security
+- **performance**: Caching, optimization, monitoring, scalability, Redis performance tracking
+- **ai-integration**: Gemini 2.5, Z.ai GLM-4.6, ChromaDB memory system, intelligent recommendations
+- **multi-platform**: Telegram Bot API, WhatsApp Business API, voice interface, cross-platform integration
 
 ---
 
@@ -429,6 +472,22 @@ Maya Travel Agent is a comprehensive AI-powered travel planning platform with a 
 ---
 
 **Timestamp**: 2025-01-20 17:30:00
-**Topic**: Memory System Integration
-**Key Insight**: Successfully integrated comprehensive memory system with project documentation
-**Context**: Completed openmemory.md with current project state and architecture
+**Topic**: Memory System Integration & Unified Agent Manager Update
+**Key Insight**: Successfully integrated comprehensive memory system with project documentation and extracted high-quality data from deleted rules files
+**Context**: Updated openmemory.md with Unified Agent Manager capabilities, 12-agent registry, and enhanced tech stack information
+
+### Recent Updates (2025-01-20)
+
+**Unified Agent Manager Integration**:
+
+- Extracted and integrated Unified Agent Manager capabilities
+- Added comprehensive 12-agent registry with specialized roles
+- Enhanced tech stack with payment systems, messaging APIs, and memory systems
+- Updated namespaces to include AI integration and multi-platform capabilities
+
+**Data Preservation**:
+
+- Successfully extracted high-quality data from deleted rules files
+- Preserved agent capabilities and system architecture information
+- Maintained comprehensive documentation structure
+- Enhanced project overview with unified management system details

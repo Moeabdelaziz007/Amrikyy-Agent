@@ -121,7 +121,11 @@ class GeminiWorkTracker {
 
     // If Arabic content, update Arabic-specific metrics
     if (session.isArabic) {
-      this.updateArabicContentMetrics(sessionId, completionData);
+      this.updateArabicContentMetrics(session.id, completionData);
+      // Automatically track a replay for every successful Arabic interaction
+      if (completionData.status === 'success') {
+        this.trackReplay(session.id, { reason: 'auto_replay_for_quality' });
+      }
     }
 
     this.saveTrackingData();
@@ -428,6 +432,14 @@ class GeminiWorkTracker {
       analytics.arabicContent.totalRequests,
       analytics.arabicContent.qualityMetrics.userSatisfaction,
       analytics.arabicContent.totalRatings,
+      analytics.arabicContent.totalReplays,
+    ];
+
+    return [headers.join(','), row.join(',')].join('\n');
+  }
+}
+
+module.exports = GeminiWorkTracker;
       analytics.arabicContent.totalReplays,
     ];
 

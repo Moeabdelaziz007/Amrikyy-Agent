@@ -90,7 +90,7 @@ class IntelligentCache {
   generateKey(prefix, data, options = {}) {
     const { includeVersion = true, includeUser = false, customHash } = options;
 
-    let keyParts = [prefix];
+    const keyParts = [prefix];
 
     if (includeVersion) {
       keyParts.push('v1');
@@ -232,7 +232,9 @@ class IntelligentCache {
    * Get from Redis cache
    */
   async getFromRedis(key) {
-    if (!this.redis) return null;
+    if (!this.redis) {
+      return null;
+    }
 
     try {
       const value = await this.redis.get(key);
@@ -247,7 +249,9 @@ class IntelligentCache {
    * Set in Redis cache
    */
   async setInRedis(key, value, ttl) {
-    if (!this.redis) return false;
+    if (!this.redis) {
+      return false;
+    }
 
     try {
       const serialized = JSON.stringify(value);
@@ -306,7 +310,7 @@ class IntelligentCache {
 
       return invalidated;
     } catch (error) {
-      logger.error(`❌ Cache invalidation error:`, error);
+      logger.error('❌ Cache invalidation error:', error);
       return 0;
     }
   }
@@ -458,8 +462,12 @@ class IntelligentCache {
    * Format bytes to human readable
    */
   formatBytes(bytes) {
-    if (bytes < 1024) return bytes + 'B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + 'KB';
+    if (bytes < 1024) {
+      return bytes + 'B';
+    }
+    if (bytes < 1024 * 1024) {
+      return (bytes / 1024).toFixed(2) + 'KB';
+    }
     return (bytes / (1024 * 1024)).toFixed(2) + 'MB';
   }
 

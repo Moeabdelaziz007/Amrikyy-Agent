@@ -1,0 +1,246 @@
+global:
+  # Default SMTP configuration for email notifications
+  smtp_smarthost: '${SMTP_HOST}:${SMTP_PORT}'
+  smtp_from: '${SMTP_FROM}'
+  smtp_auth_username: '${SMTP_USERNAME}'
+  smtp_auth_password: '${SMTP_PASSWORD}'
+
+  # Slack webhook configuration
+  slack_api_url: '${SLACK_WEBHOOK_URL}'
+
+  # PagerDuty integration key
+  pagerduty_url: '${PAGERDUTY_INTEGRATION_URL}'
+
+  # Discord webhook
+  discord_api_url: '${DISCORD_WEBHOOK_URL}'
+
+  # Template files
+  templates:
+    - '/etc/alertmanager/template/*.tmpl'
+
+# Routing configuration - how alerts are routed to receivers
+route:
+  # Default route for all alerts
+  group_by: ['alertname', 'service']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 12h
+  # Initial receiver for unmatched alerts
+  receiver: 'default-email'
+
+  # Routes for specific alert types
+  routes:
+    # Critical alerts get immediate attention
+    - match:
+        severity: critical
+      receiver: 'critical-alerts'
+      group_wait: 10s
+      repeat_interval: 30m
+      routes:
+        - match:
+            service: maya-travel-agent
+          receiver: 'maya-travel-agent-team'
+
+    # Warning alerts are less urgent
+    - match:
+        severity: warning
+      receiver: 'warning-alerts'
+      repeat_interval: 6h
+
+    # Database alerts to DBA team
+    - match:
+        service: mongodb
+      receiver: 'database-team'
+
+    # Business hours vs after-hours routing
+    - match:
+        severity: critical
+      receiver: 'critical-alerts'
+      routes:
+        - match_re:
+            service: '.*'
+          receiver: 'business-hours'
+          # During business hours (9-17 UTC, Mon-Fri)
+          time_intervals:
+            - times:
+                - start_time: '09:00'
+                  end_time: '17:00'
+              weekdays: ['monday:friday']
+            - times:
+                - start_time: '09:00'
+                  end_time: '12:00'
+              weekdays: ['saturday']
+
+        # Outside business hours
+        - receiver: 'on-call-alerts'
+          # Outside business hours (17-09 UTC, Mon-Fri + all Sat-Sun)
+          time_intervals:
+            - times:
+                - start_time: '17:00'
+                  end_time: '09:00'
+              weekdays: ['monday:friday']
+            - times:
+                - start_time: '12:00'
+                  end_time: '09:00'
+              weekdays: ['saturday:sunday']
+
+# Inhibition rules - prevent spam when parent alerts fire
+inhibit_rules:
+  # Inhibit application warning alerts if the service is already critical
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['service']
+
+  # Inhibit disk alerts if the host is already down
+  - source_match:
+      alertname: 'InstanceDown'
+    target_match:
+      alertname: 'LowDiskSpace'
+    equal: ['instance']
+
+  # Inhibit MongoDB slave alerts if master is down
+  - source_match:
+      alertname: 'MongoDBDown'
+      role: 'master'
+    target_match:
+      alertname: 'MongoDBReplicationLag'
+    equal: ['mongodb_cluster']
+
+# Receivers - where and how to send notifications
+receivers:
+  # Default email receiver
+  - name: 'default-email'
+    email_configs:
+      - to: '${ADMIN_EMAIL}'
+        subject: 'Alert: {{ .GroupLabels.alertname }}'
+        body: |
+          {{ range .Alerts }}
+          Alert: {{ .Annotations.summary }}
+          Description: {{ .Annotations.description }}
+          Severity: {{ .Labels.severity }}
+          Service: {{ .Labels.service }}
+          Instance: {{ .Labels.instance }}
+          Runbook: {{ .Annotations.runbook }}
+          {{ end }}
+
+  # Critical alerts - immediate notification
+  - name: 'critical-alerts'
+    email_configs:
+      - to: '${CRITICAL_EMAIL}'
+        subject: '🔴 CRITICAL ALERT: {{ .GroupLabels.alertname }}'
+        body: |
+          🚨 CRITICAL ALERT REQUIRES IMMEDIATE ATTENTION 🚨
+
+          {{ range .Alerts }}
+          Alert: {{ .Annotations.summary }}
+          Description: {{ .Annotations.description }}
+          Severity: {{ .Labels.severity }}
+          Service: {{ .Labels.service }}
+          Instance: {{ .Labels.instance }}
+          Started: {{ .StartsAt }}
+          {{ end }}
+
+          Respond immediately or escalate to on-call engineer.
+
+    slack_configs:
+      - api_url: '${SLACK_CRITICAL_WEBHOOK}'
+        channel: '#critical-alerts'
+        title: '🔴 Critical Alert - {{ .GroupLabels.alertname }}'
+        text: |
+          {{ range .Alerts }}
+          *Alert:* {{ .Annotations.summary }}
+          *Description:* {{ .Annotations.description }}
+          *Severity:* {{ .Labels.severity }}
+          *Service:* {{ .Labels.service }}
+          *Instance:* {{ .Labels.instance }}
+          *Started:* {{ .StartsAt }}
+          {{ end }}
+
+  # Maya Travel Agent specific team notifications
+  - name: 'maya-travel-agent-team'
+    email_configs:
+      - to: '${MAYA_TEAM_EMAIL}'
+        subject: 'Maya Travel Agent Alert: {{ .GroupLabels.alertname }}'
+
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '#maya-travel-agent'
+        title: 'Maya Travel Agent Alert - {{ .GroupLabels.alertname }}'
+        color: danger
+        text: |
+          {{ range .Alerts }}
+          *Alert:* {{ .Annotations.summary }}
+          *Description:* {{ .Annotations.description }}
+          *Environment:* {{ .Labels.environment }}
+          *Started:* {{ .StartsAt }}
+          {{ end }}
+
+  # Warning alerts - less frequent
+  - name: 'warning-alerts'
+    email_configs:
+      - to: '${WARNING_EMAIL}'
+        subject: '⚠️  Warning: {{ .GroupLabels.alertname }}'
+
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '#monitoring'
+        title: '⚠️ Warning Alert'
+        color: warning
+
+  # Database team notifications
+  - name: 'database-team'
+    email_configs:
+      - to: '${DBA_EMAIL}'
+
+    pagerduty_configs:
+      - service_key: '${PAGERDUTY_DB_KEY}'
+
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '#database-alerts'
+
+  # Business hours receiver
+  - name: 'business-hours'
+    email_configs:
+      - to: '${BUSINESS_HOURS_EMAIL}'
+
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '#business-hours-alerts'
+
+  # On-call receiver for after hours
+  - name: 'on-call-alerts'
+    pagerduty_configs:
+      - service_key: '${PAGERDUTY_PRIMARY_KEY}'
+        description: 'Critical Alert - {{ .GroupLabels.alertname }}'
+        component: '{{ .Labels.service }}'
+        group: '{{ .Labels.service }}'
+        class: '{{ .Labels.severity }}'
+
+    email_configs:
+      - to: '${ONCALL_EMAIL}'
+        subject: '🚨 AFTER HOURS CRITICAL: {{ .GroupLabels.alertname }}'
+
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '#critical-alerts'
+        title: '🚨 AFTER HOURS CRITICAL ALERT'
+
+  # Ops team receiver
+  - name: 'ops-team'
+    email_configs:
+      - to: '${OPS_EMAIL}'
+
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_URL}'
+        channel: '#ops-alerts'
+
+  # Default webhook receiver for integration systems
+  - name: 'webhook-receiver'
+    webhook_configs:
+      - url: '${WEBHOOK_URL}'
+        send_resolved: true
+
+# Configuration reload
