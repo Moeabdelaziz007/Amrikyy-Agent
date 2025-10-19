@@ -1,180 +1,257 @@
 /**
- * Environment Variable Security Validator
- * CRITICAL: Validates all required environment variables on startup
+ * 🔒 Environment Validator - مدقق البيئة الآمن
+ * يتحقق من صحة متغيرات البيئة ويحمي من تسريب البيانات الحساسة
  */
 
-const requiredEnvVars = {
-  // Database Configuration
-  SUPABASE_URL: {
-    required: true,
-    pattern: /^https:\/\/[a-z0-9-]+\.supabase\.co$/,
-    description: 'Supabase project URL',
-  },
-  SUPABASE_ANON_KEY: {
-    required: true,
-    pattern: /^eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/,
-    description: 'Supabase anonymous key',
-  },
-  SUPABASE_SERVICE_ROLE_KEY: {
-    required: true,
-    pattern: /^eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/,
-    description: 'Supabase service role key',
-  },
-
-  // AI API Keys
-  GEMINI_API_KEY: {
-    required: true,
-    pattern: /^AIza[0-9A-Za-z_-]{35}$/,
-    description: 'Google Gemini API key',
-  },
-  ZAI_API_KEY: {
-    required: true,
-    pattern: /^[a-f0-9]{32}\.[A-Za-z0-9_-]+$/,
-    description: 'Z.ai GLM-4.6 API key',
-  },
-  OPENROUTER_API_KEY: {
-    required: true,
-    pattern: /^sk-or-v1-[a-f0-9]{64}$/,
-    description: 'OpenRouter API key',
-  },
-
-  // Telegram Configuration
-  TELEGRAM_BOT_TOKEN: {
-    required: true,
-    pattern: /^[0-9]+:[A-Za-z0-9_-]{35}$/,
-    description: 'Telegram bot token',
-  },
-
-  // Payment Processing
-  STRIPE_SECRET_KEY: {
-    required: true,
-    pattern: /^sk_(test_|live_)[a-zA-Z0-9]{24}$/,
-    description: 'Stripe secret key',
-  },
-
-  // Server Configuration
-  JWT_SECRET: {
-    required: true,
-    minLength: 32,
-    description: 'JWT signing secret',
-  },
-  NODE_ENV: {
-    required: true,
-    allowedValues: ['development', 'staging', 'production'],
-    description: 'Node environment',
-  },
-};
+const crypto = require('crypto');
+const { logger } = require('../utils/logger');
 
 class EnvironmentValidator {
   constructor() {
-    this.errors = [];
-    this.warnings = [];
+    this.requiredVars = new Set();
+    this.sensitiveVars = new Set();
+    this.validatedVars = new Map();
+    
+    this.initializeValidation();
   }
 
   /**
-   * Validate all environment variables
+   * تهيئة قواعد التحقق
+   */
+  initializeValidation() {
+    // المتغيرات المطلوبة
+    this.requiredVars = new Set([
+      'NODE_ENV',
+      'PORT',
+      'JWT_SECRET',
+      'ENCRYPTION_KEY'
+    ]);
+
+    // المتغيرات الحساسة
+    this.sensitiveVars = new Set([
+      'JWT_SECRET',
+      'ENCRYPTION_KEY',
+      'DATABASE_URL',
+      'REDIS_URL',
+      'API_KEYS',
+      'TELEGRAM_BOT_TOKEN',
+      'STRIPE_SECRET_KEY',
+      'PAYPAL_CLIENT_SECRET'
+    ]);
+
+    logger.info('🔒 Environment Validator initialized');
+  }
+
+  /**
+   * التحقق من جميع متغيرات البيئة
    */
   validate() {
-    console.log('🔍 Starting environment validation...');
+    const errors = [];
+    const warnings = [];
 
-    for (const [varName, config] of Object.entries(requiredEnvVars)) {
-      this.validateVariable(varName, config);
-    }
-
-    if (this.errors.length > 0) {
-      console.error('❌ Environment validation failed:');
-      this.errors.forEach((error) => console.error(`  - ${error}`));
-      throw new Error(`Environment validation failed: ${this.errors.length} errors`);
-    }
-
-    if (this.warnings.length > 0) {
-      console.warn('⚠️ Environment validation warnings:');
-      this.warnings.forEach((warning) => console.warn(`  - ${warning}`));
-    }
-
-    console.log('✅ Environment validation passed');
-    return true;
-  }
-
-  /**
-   * Validate individual environment variable
-   */
-  validateVariable(varName, config) {
-    const value = process.env[varName];
-
-    // Check if required variable exists
-    if (config.required && !value) {
-      this.errors.push(`Missing required environment variable: ${varName} (${config.description})`);
-      return;
-    }
-
-    if (!value) return; // Skip validation for optional variables
-
-    // Check pattern match
-    if (config.pattern && !config.pattern.test(value)) {
-      this.errors.push(`Invalid format for ${varName}: ${config.description}`);
-      return;
-    }
-
-    // Check allowed values
-    if (config.allowedValues && !config.allowedValues.includes(value)) {
-      this.errors.push(
-        `Invalid value for ${varName}: must be one of [${config.allowedValues.join(', ')}]`
-      );
-      return;
-    }
-
-    // Check minimum length
-    if (config.minLength && value.length < config.minLength) {
-      this.errors.push(
-        `Invalid length for ${varName}: must be at least ${config.minLength} characters`
-      );
-      return;
-    }
-
-    // Security checks
-    this.performSecurityChecks(varName, value);
-  }
-
-  /**
-   * Perform security-specific checks
-   */
-  performSecurityChecks(varName, value) {
-    // Check for placeholder values
-    if (value.includes('your_') || value.includes('placeholder')) {
-      this.warnings.push(`Potential placeholder value detected in ${varName}`);
-    }
-
-    // Check for development keys in production
-    if (process.env.NODE_ENV === 'production') {
-      if (varName.includes('API_KEY') && value.includes('test_')) {
-        this.warnings.push(`Test API key detected in production for ${varName}`);
+    // التحقق من المتغيرات المطلوبة
+    for (const varName of this.requiredVars) {
+      if (!process.env[varName]) {
+        errors.push(`Required environment variable missing: ${varName}`);
       }
     }
 
-    // Log key access for security monitoring
-    console.log(`🔑 Environment variable loaded: ${varName}`);
+    // التحقق من المتغيرات الحساسة
+    for (const varName of this.sensitiveVars) {
+      if (process.env[varName]) {
+        const validation = this.validateSensitiveVar(varName, process.env[varName]);
+        if (validation.error) {
+          errors.push(validation.error);
+        } else if (validation.warning) {
+          warnings.push(validation.warning);
+        }
+      }
+    }
+
+    // التحقق من أمان المتغيرات
+    this.checkForExposedSecrets();
+
+    // تسجيل النتائج
+    if (errors.length > 0) {
+      logger.error('❌ Environment validation failed:', errors);
+      throw new Error(`Environment validation failed: ${errors.join(', ')}`);
+    }
+
+    if (warnings.length > 0) {
+      logger.warn('⚠️ Environment validation warnings:', warnings);
+    }
+
+    logger.info('✅ Environment validation passed');
+    return { valid: true, warnings };
   }
 
   /**
-   * Get validation summary
+   * التحقق من متغير حساس
    */
-  getSummary() {
-    return {
-      valid: this.errors.length === 0,
-      errors: this.errors,
-      warnings: this.warnings,
-      totalVariables: Object.keys(requiredEnvVars).length,
+  validateSensitiveVar(varName, value) {
+    const validation = {
+      error: null,
+      warning: null
     };
+
+    // التحقق من طول المفتاح
+    if (varName.includes('SECRET') || varName.includes('KEY')) {
+      if (value.length < 32) {
+        validation.error = `${varName} is too short (minimum 32 characters)`;
+      } else if (value.length < 64) {
+        validation.warning = `${varName} should be longer for better security (recommended 64+ characters)`;
+      }
+    }
+
+    // التحقق من قوة كلمة المرور
+    if (varName.includes('PASSWORD')) {
+      if (!this.isStrongPassword(value)) {
+        validation.error = `${varName} is not strong enough`;
+      }
+    }
+
+    // التحقق من صحة URL
+    if (varName.includes('URL')) {
+      if (!this.isValidURL(value)) {
+        validation.error = `${varName} is not a valid URL`;
+      }
+    }
+
+    // التحقق من صحة البريد الإلكتروني
+    if (varName.includes('EMAIL')) {
+      if (!this.isValidEmail(value)) {
+        validation.error = `${varName} is not a valid email`;
+      }
+    }
+
+    return validation;
+  }
+
+  /**
+   * فحص تسريب الأسرار
+   */
+  checkForExposedSecrets() {
+    const dangerousPatterns = [
+      /password\s*=\s*['"]\w+['"]/gi,
+      /secret\s*=\s*['"]\w+['"]/gi,
+      /key\s*=\s*['"]\w+['"]/gi,
+      /token\s*=\s*['"]\w+['"]/gi,
+      /api[_-]?key\s*=\s*['"]\w+['"]/gi
+    ];
+
+    // فحص متغيرات البيئة
+    for (const [key, value] of Object.entries(process.env)) {
+      if (typeof value === 'string') {
+        for (const pattern of dangerousPatterns) {
+          if (pattern.test(value)) {
+            logger.error(`🚨 Potential secret exposure in ${key}`);
+            throw new Error(`Secret exposure detected in environment variable: ${key}`);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * التحقق من قوة كلمة المرور
+   */
+  isStrongPassword(password) {
+    if (!password || password.length < 8) return false;
+    
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    
+    return hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar;
+  }
+
+  /**
+   * التحقق من صحة URL
+   */
+  isValidURL(url) {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * التحقق من صحة البريد الإلكتروني
+   */
+  isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  /**
+   * تشفير متغير حساس
+   */
+  encryptSensitiveValue(value) {
+    const algorithm = 'aes-256-cbc';
+    const key = crypto.randomBytes(32);
+    const iv = crypto.randomBytes(16);
+    
+    const cipher = crypto.createCipher(algorithm, key);
+    let encrypted = cipher.update(value, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    
+    return {
+      encrypted,
+      key: key.toString('hex'),
+      iv: iv.toString('hex')
+    };
+  }
+
+  /**
+   * إنشاء متغيرات بيئة آمنة
+   */
+  generateSecureEnvVars() {
+    return {
+      JWT_SECRET: crypto.randomBytes(64).toString('hex'),
+      ENCRYPTION_KEY: crypto.randomBytes(32).toString('hex'),
+      SESSION_SECRET: crypto.randomBytes(32).toString('hex'),
+      API_KEY: crypto.randomBytes(32).toString('hex')
+    };
+  }
+
+  /**
+   * الحصول على تقرير الأمان
+   */
+  getSecurityReport() {
+    const report = {
+      totalVars: Object.keys(process.env).length,
+      requiredVars: this.requiredVars.size,
+      sensitiveVars: this.sensitiveVars.size,
+      missingRequired: [],
+      exposedSecrets: [],
+      weakSecrets: []
+    };
+
+    // فحص المتغيرات المفقودة
+    for (const varName of this.requiredVars) {
+      if (!process.env[varName]) {
+        report.missingRequired.push(varName);
+      }
+    }
+
+    // فحص الأسرار المكشوفة
+    for (const varName of this.sensitiveVars) {
+      if (process.env[varName]) {
+        const validation = this.validateSensitiveVar(varName, process.env[varName]);
+        if (validation.error) {
+          report.exposedSecrets.push({ var: varName, issue: validation.error });
+        }
+        if (validation.warning) {
+          report.weakSecrets.push({ var: varName, issue: validation.warning });
+        }
+      }
+    }
+
+    return report;
   }
 }
 
-// Export singleton instance
-const envValidator = new EnvironmentValidator();
-
-module.exports = {
-  EnvironmentValidator,
-  envValidator,
-  validateEnvironment: () => envValidator.validate(),
-  getValidationSummary: () => envValidator.getSummary(),
-};
+module.exports = { EnvironmentValidator };

@@ -63,6 +63,11 @@ const {
   validateEnvironment,
   sanitizeErrors,
   createSecureRateLimit,
+  advancedInputValidation,
+  sqlInjectionProtection,
+  xssProtection,
+  securityManager,
+  envValidator,
 } = require('./middleware/securityEnhancements');
 
 // Environment validation
@@ -79,6 +84,11 @@ app.use(securityHeaders);
 
 // Enhanced CORS configuration
 app.use(secureCORS);
+
+// Advanced Security Middleware
+app.use(advancedInputValidation);
+app.use(sqlInjectionProtection);
+app.use(xssProtection);
 
 // Body parsing middleware
 app.use(bodyParser.json({ limit: '10mb' }));
@@ -231,6 +241,7 @@ app.use('/api/users', require('./routes/users'));
 app.use('/api/trips', require('./routes/trips'));
 app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/profile', require('./routes/profile'));
+app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/payments', require('./routes/payment'));
 app.use('/api/destinations', require('./routes/destinations'));
 
@@ -298,6 +309,29 @@ app.use('/api/websocket', require('./routes/websocket'));
 // Static files
 app.use('/uploads', express.static('uploads'));
 app.use('/public', express.static('public'));
+
+// Security endpoint
+app.get('/api/security/stats', (req, res) => {
+  try {
+    const stats = securityManager.getSecurityStats();
+    const envReport = envValidator.getSecurityReport();
+
+    res.json({
+      success: true,
+      data: {
+        securityStats: stats,
+        environmentReport: envReport,
+        timestamp: new Date().toISOString(),
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get security stats',
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
 
 // Health check endpoint
 app.get('/health', (req, res) => {
