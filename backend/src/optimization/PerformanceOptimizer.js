@@ -12,9 +12,11 @@
  */
 
 const { logger } = require('../utils/logger');
+const EventEmitter = require('events');
 
-class PerformanceOptimizer {
+class PerformanceOptimizer extends EventEmitter {
   constructor() {
+    super();
     this.optimizations = {
       workflowHandler: {
         status: 'completed',

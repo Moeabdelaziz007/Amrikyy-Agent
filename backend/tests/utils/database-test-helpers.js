@@ -5,6 +5,36 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
+/**
+ * Create mock Supabase client for testing
+ */
+const createMockClient = () => {
+  return {
+    auth: {
+      signUp: jest.fn().mockResolvedValue({ data: { user: { id: 'test-user-id' } }, error: null }),
+      signInWithPassword: jest.fn().mockResolvedValue({ data: { user: { id: 'test-user-id' } }, error: null }),
+      signOut: jest.fn().mockResolvedValue({ error: null }),
+      getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'test-user-id' } }, error: null }),
+      refreshSession: jest.fn().mockResolvedValue({ data: { session: {} }, error: null })
+    },
+    from: jest.fn().mockReturnValue({
+      select: jest.fn().mockReturnThis(),
+      insert: jest.fn().mockReturnThis(),
+      update: jest.fn().mockReturnThis(),
+      delete: jest.fn().mockReturnThis(),
+      eq: jest.fn().mockReturnThis(),
+      single: jest.fn().mockResolvedValue({ data: {}, error: null }),
+      order: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      range: jest.fn().mockReturnThis()
+    }),
+    rpc: jest.fn().mockResolvedValue({ data: {}, error: null }),
+    storage: {
+      listBuckets: jest.fn().mockResolvedValue({ data: [], error: null })
+    }
+  };
+};
+
 // Test database configuration
 const TEST_SUPABASE_CONFIG = {
   url: process.env.TEST_SUPABASE_URL || 'http://localhost:54321',
@@ -26,12 +56,12 @@ const setupTestDatabase = async () => {
     if (
       !process.env.SUPABASE_URL ||
       !process.env.SUPABASE_SERVICE_ROLE_KEY ||
-      process.env.SUPABASE_URL.includes('your_supabase') ||
-      process.env.SUPABASE_SERVICE_ROLE_KEY.includes('your_supabase')
+      process.env.SUPABASE_URL.includes('your-project') ||
+      process.env.SUPABASE_SERVICE_ROLE_KEY.includes('your-service-role-key')
     ) {
       console.log('⚠️ Skipping real database connection - using mock mode');
-      testSupabaseClient = null;
-      return null;
+      testSupabaseClient = createMockClient();
+      return testSupabaseClient;
     }
 
     // Create test client with service role for full access

@@ -1,25 +1,18 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { createClient } = require("@supabase/supabase-js");
-const authenticateToken = require("../middleware/auth");
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-);
+const { supabase } = require('../src/utils/supabaseClient');
+const authenticateToken = require('../middleware/auth');
 
 // GET /api/profile
-router.get("/", authenticateToken, async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const { data, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", userId)
-      .single();
+    const { data, error } = await supabase.from('users').select('*').eq('id', userId).single();
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
     res.json({
       success: true,
@@ -34,19 +27,21 @@ router.get("/", authenticateToken, async (req, res) => {
 });
 
 // PUT /api/profile
-router.put("/", authenticateToken, async (req, res) => {
+router.put('/', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
     const updates = req.body;
 
     const { data, error } = await supabase
-      .from("users")
+      .from('users')
       .update(updates)
-      .eq("id", userId)
+      .eq('id', userId)
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
     res.json({
       success: true,
@@ -61,19 +56,21 @@ router.put("/", authenticateToken, async (req, res) => {
 });
 
 // POST /api/profile/avatar
-router.post("/avatar", authenticateToken, async (req, res) => {
+router.post('/avatar', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
     const { avatar_url } = req.body;
 
     const { data, error } = await supabase
-      .from("users")
+      .from('users')
       .update({ avatar_url })
-      .eq("id", userId)
+      .eq('id', userId)
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
     res.json({
       success: true,

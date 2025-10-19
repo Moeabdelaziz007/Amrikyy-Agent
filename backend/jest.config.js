@@ -5,6 +5,12 @@ module.exports = {
     '**/__tests__/**/*.js',
     '**/?(*.)+(spec|test).js'
   ],
+  transformIgnorePatterns: [
+    'node_modules/(?!(isomorphic-dompurify|parse5|jsdom)/)'
+  ],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1'
+  },
   collectCoverageFrom: [
     'src/**/*.js',
     'routes/**/*.js',
