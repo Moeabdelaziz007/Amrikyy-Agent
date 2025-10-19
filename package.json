@@ -17,10 +17,11 @@
     "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "start:frontend": "cd frontend && npm run start",
     "start:backend": "cd backend && npm run start",
-    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "install:all": "npm install && npm --prefix frontend install && npm --prefix backend install",
+    "test": "npm --prefix backend run test",
+    "test:watch": "npm --prefix backend run test:watch",
+    "test:coverage": "npm run test:ci",
+    "test:ci": "npm --prefix frontend run test:coverage && npm --prefix backend run test:ci"
   },
   "devDependencies": {
     "concurrently": "^8.2.0",
