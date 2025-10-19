@@ -29,14 +29,11 @@ router.get('/', async (req, res) => {
       throw error;
     }
 
-    res.json({
-      success: true,
-      trips,
-    });
+    res.json(trips);
   } catch (error) {
     res.status(500).json({
-      success: false,
-      error: error.message,
+      error: 'Failed to fetch trips',
+      details: error.message,
     });
   }
 });
@@ -56,14 +53,11 @@ router.post('/', async (req, res) => {
       throw error;
     }
 
-    res.status(201).json({
-      success: true,
-      trip,
-    });
+    res.status(201).json(trip);
   } catch (error) {
     res.status(500).json({
-      success: false,
-      error: error.message,
+      error: 'Failed to create trip',
+      details: error.message,
     });
   }
 });
@@ -79,17 +73,14 @@ router.get('/:id', async (req, res) => {
     }
 
     if (!trip) {
-      return res.status(404).json({ success: false, error: 'Trip not found' });
+      return res.status(404).json({ error: 'Trip not found' });
     }
 
-    res.json({
-      success: true,
-      trip,
-    });
+    res.json(trip);
   } catch (error) {
     res.status(500).json({
-      success: false,
-      error: error.message,
+      error: 'Failed to fetch trip details',
+      details: error.message,
     });
   }
 });
@@ -111,14 +102,11 @@ router.put('/:id', async (req, res) => {
       throw error;
     }
 
-    res.json({
-      success: true,
-      trip,
-    });
+    res.json(trip);
   } catch (error) {
     res.status(500).json({
-      success: false,
-      error: error.message,
+      error: 'Failed to update trip',
+      details: error.message,
     });
   }
 });
@@ -134,14 +122,11 @@ router.delete('/:id', async (req, res) => {
       throw error;
     }
 
-    res.json({
-      success: true,
-      message: 'Trip deleted successfully',
-    });
+    res.status(204).send(); // No Content on successful deletion
   } catch (error) {
     res.status(500).json({
-      success: false,
-      error: error.message,
+      error: 'Failed to delete trip',
+      details: error.message,
     });
   }
 });
