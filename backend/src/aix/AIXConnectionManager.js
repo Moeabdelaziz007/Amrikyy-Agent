@@ -40,14 +40,14 @@ class AIXConnectionManager {
 
   /**
    * Register an outbound transport for a specific protocol type.
-   * @param {string} transportType - e.g., 'whatsapp', 'telegram'
-   * @param {Function} sendFunction - An async function that takes (to, message) and sends it.
+   * @param {string} transportType - e.g., 'whatsapp', 'discord', 'email'.
+   * @param {object} transport - An object with a `send` method, e.g., { send: async (to, message) => {} }.
    */
-  registerTransport(transportType, sendFunction) {
-    if (typeof sendFunction !== 'function') {
-      throw new Error('sendFunction must be a function');
+  registerTransport(transportType, transport) {
+    if (!transport || typeof transport.send !== 'function') {
+      throw new Error('Transport must be an object with a `send` method.');
     }
-    this.transports.set(transportType, sendFunction);
+    this.transports.set(transportType, transport);
     log.info(`Outbound transport registered for '${transportType}'`);
   }
 
@@ -193,8 +193,14 @@ class AIXConnectionManager {
 
   /**
    * Send a reply from an agent back to an external user (e.g., WhatsApp).
+   * The message object can contain various fields for different transports.
    * @param {string} toAgentId - The ID of the recipient agent (e.g., the user's phone number).
    * @param {Object} message - The message object to send.
+   * @param {string} [message.text] - Plain text content for chat apps.
+   * @param {string} [message.html] - HTML content for emails.
+   * @param {string} [message.subject] - Subject for emails.
+   * @param {Object} [message.embed] - Embed object for Discord.
+   * @param {Array} [message.attachments] - Attachments for emails.
    */
   async sendReply(toAgentId, message) {
     const connectionInfo = this.agents.get(toAgentId);
@@ -210,7 +216,7 @@ class AIXConnectionManager {
       return;
     }
 
-    await transport(toAgentId, message);
+    await transport.send(toAgentId, message);
     log.info(`Reply sent to agent ${toAgentId} via ${connectionInfo.transportType} transport.`);
   }
   /**

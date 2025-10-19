@@ -241,17 +241,15 @@ const aixConnectionManager = new AIXConnectionManager();
 const whatsappClient = require('./src/whatsapp/whatsappClient'); // Assuming this exists
 
 // Register the transport for sending replies back to WhatsApp
-aixConnectionManager.registerTransport('whatsapp', async (to, message) => {
-  // `to` is the user's phone number, `message` is the text content
-  await whatsappClient.sendMessage(to, message.text);
+aixConnectionManager.registerTransport('whatsapp', {
+  send: async (to, message) => {
+    // The transport is responsible for picking the right content (text for WhatsApp)
+    await whatsappClient.sendMessage(to, message.text);
+  },
 });
 
 app.use('/api/whatsapp', require('./routes/whatsapp')(aixConnectionManager));
 console.log('✅ WhatsApp Business MCP routes registered at /api/whatsapp');
-
-// --- Crypto Payment Routes ---
-app.use('/api/crypto-payments', require('./routes/crypto-payments'));
-console.log('✅ Crypto Payment routes registered at /api/crypto-payments');
 
 // --- Communication Channel Expansion ---
 const discordRoute = require('./routes/discord')(aixConnectionManager);

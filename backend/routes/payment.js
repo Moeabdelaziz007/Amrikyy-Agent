@@ -4,7 +4,11 @@ const router = express.Router();
 // Payment service integration
 class PaymentService {
   // Stripe integration with payment links
-  static async createStripePayment(amount, currency = 'USD', description = 'Amrikyy Trips Payment') {
+  static async createStripePayment(
+    amount,
+    currency = 'USD',
+    description = 'Amrikyy Trips Payment'
+  ) {
     try {
       // Create Stripe payment link using MCP tool
       const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -55,7 +59,11 @@ class PaymentService {
   }
 
   // PayPal integration
-  static async createPayPalPayment(amount, currency = 'USD', description = 'Amrikyy Trips Payment') {
+  static async createPayPalPayment(
+    amount,
+    currency = 'USD',
+    description = 'Amrikyy Trips Payment'
+  ) {
     try {
       // This would integrate with PayPal API
       const payment = {
@@ -95,6 +103,31 @@ class PaymentService {
       };
 
       return { success: true, data: payment };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Crypto payment integration (e.g., Coinbase Commerce)
+  static async createCryptoPayment(
+    amount,
+    currency = 'USD',
+    description = 'Amrikyy Trips Crypto Payment'
+  ) {
+    try {
+      // This would integrate with a crypto payment gateway SDK
+      // const coinbaseClient = require('../services/coinbaseClient');
+      // const charge = await coinbaseClient.createCharge({ ... });
+      // return { success: true, data: charge };
+
+      // For now, returning a mock response
+      return {
+        success: true,
+        data: {
+          id: `crypto_${Date.now()}`,
+          url: 'https://commerce.coinbase.com/charges/mock_charge_id',
+        },
+      };
     } catch (error) {
       return { success: false, error: error.message };
     }
@@ -165,10 +198,13 @@ router.post('/create-payment', async (req, res) => {
           chatId
         );
         break;
+      case 'crypto':
+        paymentResult = await PaymentService.createCryptoPayment(amount, currency, description);
+        break;
       default:
         return res.status(400).json({
           success: false,
-          error: 'Invalid payment method. Supported: stripe, paypal, telegram',
+          error: 'Invalid payment method. Supported: stripe, paypal, telegram, crypto',
         });
     }
 
