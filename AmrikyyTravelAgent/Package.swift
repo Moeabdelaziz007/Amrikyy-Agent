@@ -12,13 +12,17 @@ let package = Package(
             targets: ["MayaTravelAgent"])
     ],
     dependencies: [
+        // Image caching
+        .package(url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git", .upToNextMajor(from: "2.0")),
         // Add your dependencies here
         // .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.0")),
     ],
     targets: [
         .target(
             name: "MayaTravelAgent",
-            dependencies: [],
+            dependencies: [
+                .product(name: "SDWebImageSwiftUI", package: "SDWebImageSwiftUI")
+            ],
             path: ".",
             exclude: [
                 "MayaTravelAgent.xcodeproj",
