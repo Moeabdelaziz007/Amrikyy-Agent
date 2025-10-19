@@ -87,6 +87,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       return () => subscription.unsubscribe();
+    } else {
+      // No subscription to unsubscribe from when using backend API
+      return () => {};
     }
   }, []);
 

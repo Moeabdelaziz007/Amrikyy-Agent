@@ -146,9 +146,9 @@ export const VoiceControl: React.FC<VoiceControlProps> = ({
 
       // Process all results
       for (let i = event.resultIndex; i < event.results.length; i++) {
-        const transcript = event.results[i][0].transcript;
+        const transcript = event.results[i]?.[0]?.transcript ?? '';
         
-        if (event.results[i].isFinal) {
+        if (event.results[i]?.isFinal) {
           finalTranscript += transcript;
         } else {
           interimTranscript += transcript;

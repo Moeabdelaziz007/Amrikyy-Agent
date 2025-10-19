@@ -93,7 +93,7 @@ router.post('/analyze', async (req, res) => {
   const { url } = req.body;
 
   if (!url) {
-    return res.status(400).json({ success: false, message: ''url' is required' });
+    return res.status(400).json({ success: false, message: "'url' is required" });
   }
 
   try {

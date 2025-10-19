@@ -237,7 +237,7 @@ console.log('🔄 Loading routes...');
 
 // Core API routes
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/users', require('./routes/users'));
+// app.use('/api/users', require('./routes/users'));
 app.use('/api/trips', require('./routes/trips'));
 app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/profile', require('./routes/profile'));
@@ -246,16 +246,16 @@ app.use('/api/payments', require('./routes/payment'));
 app.use('/api/destinations', require('./routes/destinations'));
 
 // AI routes (with rate limiting)
-app.use('/api/ai', aiLimiter, require('./routes/enhanced-ai')); // Using enhanced multi-model AI routes
+// app.use('/api/ai', aiLimiter, require('./routes/enhanced-ai')); // Using enhanced multi-model AI routes
 app.use('/api/voice-notes', aiLimiter, require('./routes/voice_note_taker')); // Voice Note Taker routes
 
 // Agent routes
-app.use('/api/agents', require('./routes/travel-agents'));
+// app.use('/api/agents', require('./routes/travel-agents'));
 app.use('/api/mcp', require('./routes/mcp'));
 
 // Utility routes
 app.use('/api/security', require('./routes/security'));
-app.use('/api/health', require('./routes/health'));
+// app.use('/api/health', require('./routes/health'));
 app.use('/api/youtube', require('./routes/youtube'));
 
 // Quantum Explorer routes (with rate limiting)

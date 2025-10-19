@@ -1,0 +1,224 @@
+/* Topology Hologram Styles */
+:root {
+  --neon-green: #39ff14;
+  --neon-green-glow: rgba(57, 255, 20, 0.3);
+  --dark-bg: #000000;
+  --card-bg: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #000000 100%);
+}
+
+.text-neonGreen {
+  color: var(--neon-green);
+}
+
+.bg-neonGreen {
+  background-color: var(--neon-green);
+}
+
+.border-neonGreen {
+  border-color: var(--neon-green);
+}
+
+.shadow-neonGreen {
+  box-shadow: 0 0 20px var(--neon-green-glow);
+}
+
+/* Neon glow effects */
+.neon-glow {
+  text-shadow: 0 0 5px var(--neon-green), 0 0 10px var(--neon-green),
+    0 0 15px var(--neon-green), 0 0 20px var(--neon-green);
+}
+
+.neon-border-glow {
+  box-shadow: 0 0 10px var(--neon-green-glow),
+    inset 0 0 10px var(--neon-green-glow);
+}
+
+/* Holographic card effects */
+.hologram-card {
+  background: var(--card-bg);
+  border: 1px solid var(--neon-green);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hologram-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(
+    45deg,
+    var(--neon-green),
+    transparent,
+    var(--neon-green),
+    transparent
+  );
+  border-radius: 16px;
+  z-index: -1;
+  animation: hologram-border 3s linear infinite;
+}
+
+@keyframes hologram-border {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Matrix-style background */
+.matrix-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(57, 255, 20, 0.1) 0%,
+    transparent 70%
+  );
+  z-index: -1;
+}
+
+/* Floating particles effect */
+.particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--neon-green);
+  border-radius: 50%;
+  animation: float 6s infinite linear;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .hologram-card {
+    margin: 0.5rem;
+    padding: 1rem;
+  }
+
+  .text-5xl {
+    font-size: 2.5rem;
+  }
+
+  .grid-cols-1 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neon-green);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2eff00;
+}
+
+/* Loading animation */
+.loading-dots {
+  display: inline-block;
+}
+
+.loading-dots::after {
+  content: '';
+  animation: loading-dots 1.5s infinite;
+}
+
+@keyframes loading-dots {
+  0%,
+  20% {
+    content: '';
+  }
+  40% {
+    content: '.';
+  }
+  60% {
+    content: '..';
+  }
+  80%,
+  100% {
+    content: '...';
+  }
+}
+
+/* Hover effects */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px var(--neon-green-glow);
+}
+
+/* Typography */
+.topology-title {
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.matrix-text {
+  font-family: 'Courier New', monospace;
+  color: var(--neon-green);
+  text-shadow: 0 0 10px var(--neon-green);
+}
+
+/* Animation delays for staggered effects */
+.delay-100 {
+  animation-delay: 0.1s;
+}
+.delay-200 {
+  animation-delay: 0.2s;
+}
+.delay-300 {
+  animation-delay: 0.3s;
+}
+.delay-400 {
+  animation-delay: 0.4s;
+}
+.delay-500 {
+  animation-delay: 0.5s;
+}

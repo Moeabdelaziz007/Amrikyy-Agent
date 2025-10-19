@@ -5,7 +5,12 @@
  */
 
 const KiwiTequilaService = require('../services/KiwiTequilaService');
-const logger = require('../utils/logger');
+const ChatHistoryIndexer = require('./ChatHistoryIndexer');
+const ChatIndexer = require('../tools/ChatIndexer');
+const CodeScanner = require('../tools/CodeScanner');
+const CodebaseIndexer = require('../tools/CodebaseIndexer');
+const ComprehensiveScanner = require('../tools/ComprehensiveScanner');
+const { logger } = require('../utils/logger');
 
 class TravelMCPServer {
   constructor() {
@@ -26,39 +31,39 @@ class TravelMCPServer {
         properties: {
           from: {
             type: 'string',
-            description: 'Departure city or airport code (e.g., "NYC", "JFK")'
+            description: 'Departure city or airport code (e.g., "NYC", "JFK")',
           },
           to: {
             type: 'string',
-            description: 'Arrival city or airport code (e.g., "LON", "LHR")'
+            description: 'Arrival city or airport code (e.g., "LON", "LHR")',
           },
           departureDate: {
             type: 'string',
-            description: 'Departure date in DD/MM/YYYY format'
+            description: 'Departure date in DD/MM/YYYY format',
           },
           returnDate: {
             type: 'string',
-            description: 'Return date in DD/MM/YYYY format (optional for one-way)'
+            description: 'Return date in DD/MM/YYYY format (optional for one-way)',
           },
           adults: {
             type: 'number',
             description: 'Number of adult passengers',
-            default: 1
+            default: 1,
           },
           children: {
             type: 'number',
             description: 'Number of children',
-            default: 0
+            default: 0,
           },
           currency: {
             type: 'string',
             description: 'Currency code (USD, EUR, etc.)',
-            default: 'USD'
-          }
+            default: 'USD',
+          },
         },
-        required: ['from', 'to', 'departureDate']
+        required: ['from', 'to', 'departureDate'],
       },
-      handler: this.handleFlightSearch.bind(this)
+      handler: this.handleFlightSearch.bind(this),
     });
 
     // Location search tool
@@ -70,12 +75,12 @@ class TravelMCPServer {
         properties: {
           query: {
             type: 'string',
-            description: 'City or airport name to search'
-          }
+            description: 'City or airport name to search',
+          },
         },
-        required: ['query']
+        required: ['query'],
       },
-      handler: this.handleLocationSearch.bind(this)
+      handler: this.handleLocationSearch.bind(this),
     });
 
     // Get flight details tool
@@ -87,12 +92,12 @@ class TravelMCPServer {
         properties: {
           bookingToken: {
             type: 'string',
-            description: 'Booking token from flight search results'
-          }
+            description: 'Booking token from flight search results',
+          },
         },
-        required: ['bookingToken']
+        required: ['bookingToken'],
       },
-      handler: this.handleGetFlightDetails.bind(this)
+      handler: this.handleGetFlightDetails.bind(this),
     });
 
     // Price comparison tool
@@ -104,24 +109,24 @@ class TravelMCPServer {
         properties: {
           from: {
             type: 'string',
-            description: 'Departure location'
+            description: 'Departure location',
           },
           to: {
             type: 'string',
-            description: 'Arrival location'
+            description: 'Arrival location',
           },
           startDate: {
             type: 'string',
-            description: 'Start of date range (DD/MM/YYYY)'
+            description: 'Start of date range (DD/MM/YYYY)',
           },
           endDate: {
             type: 'string',
-            description: 'End of date range (DD/MM/YYYY)'
-          }
+            description: 'End of date range (DD/MM/YYYY)',
+          },
         },
-        required: ['from', 'to', 'startDate', 'endDate']
+        required: ['from', 'to', 'startDate', 'endDate'],
       },
-      handler: this.handlePriceComparison.bind(this)
+      handler: this.handlePriceComparison.bind(this),
     });
 
     // Budget analysis tool
@@ -133,28 +138,91 @@ class TravelMCPServer {
         properties: {
           destination: {
             type: 'string',
-            description: 'Destination city'
+            description: 'Destination city',
           },
           budget: {
             type: 'number',
-            description: 'Total budget in USD'
+            description: 'Total budget in USD',
           },
           duration: {
             type: 'number',
-            description: 'Trip duration in days'
+            description: 'Trip duration in days',
           },
           travelers: {
             type: 'number',
-            description: 'Number of travelers'
-          }
+            description: 'Number of travelers',
+          },
         },
-        required: ['destination', 'budget', 'duration', 'travelers']
+        required: ['destination', 'budget', 'duration', 'travelers'],
       },
-      handler: this.handleBudgetAnalysis.bind(this)
+      handler: this.handleBudgetAnalysis.bind(this),
+    });
+
+    // Register Advanced Chat Indexer
+    this.registerTool({
+      name: 'advanced_chat_indexer',
+      description: 'فهرسة متقدمة للمحادثات مع تحليل المهارات وجودة الكود',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          message: { type: 'string', description: 'الرسالة' },
+          response: { type: 'string', description: 'الرد' },
+          context: { type: 'string', description: 'السياق' },
+          topic: { type: 'string', description: 'الموضوع' },
+          metadata: { type: 'object', description: 'بيانات إضافية' },
+        },
+        required: ['message', 'response'],
+      },
+      handler: ChatIndexer.indexChatMessage.bind(ChatIndexer),
+    });
+
+    // Register Code Scanner
+    this.registerTool({
+      name: 'code_scanner',
+      description: 'فحص شامل للكود للبحث عن الأخطاء والمشاكل الأمنية وجودة الكود',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          projectPath: { type: 'string', description: 'مسار المشروع' },
+          options: { type: 'object', description: 'خيارات الفحص' },
+        },
+        required: ['projectPath'],
+      },
+      handler: CodeScanner.scanProject.bind(CodeScanner),
+    });
+
+    // Register Codebase Indexer
+    this.registerTool({
+      name: 'codebase_indexer',
+      description: 'فهرسة شاملة للمستودع البرمجي مع تحليل معماري ونمط',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          projectPath: { type: 'string', description: 'مسار المشروع' },
+          options: { type: 'object', description: 'خيارات الفهرسة' },
+        },
+        required: ['projectPath'],
+      },
+      handler: CodebaseIndexer.indexProject.bind(CodebaseIndexer),
+    });
+
+    // Register Comprehensive Scanner
+    this.registerTool({
+      name: 'comprehensive_scanner',
+      description: 'فحص شامل يجمع بين فهرسة المحادثات وفحص الكود وفهرسة المستودع',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          projectPath: { type: 'string', description: 'مسار المشروع' },
+          options: { type: 'object', description: 'خيارات الفحص الشامل' },
+        },
+        required: ['projectPath'],
+      },
+      handler: ComprehensiveScanner.scanComprehensive.bind(ComprehensiveScanner),
     });
 
     logger.info('✅ MCP Travel Tools initialized', {
-      toolCount: this.tools.size
+      toolCount: this.tools.size,
     });
   }
 
@@ -176,10 +244,10 @@ class TravelMCPServer {
    * @returns {Array} List of tools
    */
   listTools() {
-    return Array.from(this.tools.values()).map(tool => ({
+    return Array.from(this.tools.values()).map((tool) => ({
       name: tool.name,
       description: tool.description,
-      inputSchema: tool.inputSchema
+      inputSchema: tool.inputSchema,
     }));
   }
 
@@ -197,7 +265,7 @@ class TravelMCPServer {
       logger.error('❌ Tool not found', { toolName });
       return {
         success: false,
-        error: `Tool '${toolName}' not found`
+        error: `Tool '${toolName}' not found`,
       };
     }
 
@@ -207,7 +275,7 @@ class TravelMCPServer {
       if (validationError) {
         return {
           success: false,
-          error: validationError
+          error: validationError,
         };
       }
 
@@ -215,7 +283,7 @@ class TravelMCPServer {
       logger.info('🔧 MCP tool called', {
         tool: toolName,
         userId: context.userId,
-        sessionId: context.sessionId
+        sessionId: context.sessionId,
       });
 
       // Execute tool handler
@@ -224,22 +292,21 @@ class TravelMCPServer {
       // Log result
       logger.info('✅ MCP tool completed', {
         tool: toolName,
-        success: result.success
+        success: result.success,
       });
 
       return result;
-
     } catch (error) {
       logger.error('❌ MCP tool execution failed', {
         tool: toolName,
         error: error.message,
-        stack: error.stack
+        stack: error.stack,
       });
 
       return {
         success: false,
         error: error.message,
-        toolName
+        toolName,
       };
     }
   }
@@ -275,18 +342,19 @@ class TravelMCPServer {
         flyFrom: params.from,
         flyTo: params.to,
         dateFrom: this.formatDate(params.departureDate),
-        dateTo: params.returnDate ? this.formatDate(params.returnDate) : this.formatDate(params.departureDate),
+        dateTo: params.returnDate
+          ? this.formatDate(params.returnDate)
+          : this.formatDate(params.departureDate),
         adults: params.adults || 1,
         children: params.children || 0,
-        curr: params.currency || 'USD'
+        curr: params.currency || 'USD',
       });
 
       return result;
-
     } catch (error) {
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -298,11 +366,10 @@ class TravelMCPServer {
     try {
       const result = await KiwiTequilaService.searchLocations(params.query);
       return result;
-
     } catch (error) {
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -314,11 +381,10 @@ class TravelMCPServer {
     try {
       const result = await KiwiTequilaService.getFlightDetails(params.bookingToken);
       return result;
-
     } catch (error) {
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -333,16 +399,16 @@ class TravelMCPServer {
       const endDate = new Date(this.parseDate(params.endDate));
       const results = [];
 
-      let currentDate = new Date(startDate);
+      const currentDate = new Date(startDate);
       while (currentDate <= endDate) {
         const dateStr = this.formatDate(currentDate.toLocaleDateString('en-GB'));
-        
+
         const searchResult = await KiwiTequilaService.searchFlights({
           flyFrom: params.from,
           flyTo: params.to,
           dateFrom: dateStr,
           dateTo: dateStr,
-          limit: 3
+          limit: 3,
         });
 
         if (searchResult.success && searchResult.data.length > 0) {
@@ -351,7 +417,7 @@ class TravelMCPServer {
             date: dateStr,
             price: cheapest.price.amount,
             currency: cheapest.price.currency,
-            bookingToken: cheapest.bookingToken
+            bookingToken: cheapest.bookingToken,
           });
         }
 
@@ -359,23 +425,23 @@ class TravelMCPServer {
       }
 
       // Find best price
-      const bestPrice = results.reduce((min, curr) => 
-        curr.price < min.price ? curr : min
-      , results[0]);
+      const bestPrice = results.reduce(
+        (min, curr) => (curr.price < min.price ? curr : min),
+        results[0]
+      );
 
       return {
         success: true,
         data: {
           pricesByDate: results,
           bestPrice,
-          averagePrice: results.reduce((sum, r) => sum + r.price, 0) / results.length
-        }
+          averagePrice: results.reduce((sum, r) => sum + r.price, 0) / results.length,
+        },
       };
-
     } catch (error) {
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -391,7 +457,7 @@ class TravelMCPServer {
       const estimatedFlightCost = budget * 0.4; // 40% for flights
       const estimatedHotelCost = budget * 0.35; // 35% for accommodation
       const estimatedFoodCost = budget * 0.15; // 15% for food
-      const estimatedActivitiesCost = budget * 0.10; // 10% for activities
+      const estimatedActivitiesCost = budget * 0.1; // 10% for activities
 
       const perPersonBudget = budget / travelers;
       const dailyBudget = budget / duration;
@@ -402,31 +468,30 @@ class TravelMCPServer {
           breakdown: {
             flights: {
               total: estimatedFlightCost,
-              perPerson: estimatedFlightCost / travelers
+              perPerson: estimatedFlightCost / travelers,
             },
             accommodation: {
               total: estimatedHotelCost,
-              perNight: estimatedHotelCost / duration
+              perNight: estimatedHotelCost / duration,
             },
             food: {
               total: estimatedFoodCost,
-              perDay: estimatedFoodCost / duration
+              perDay: estimatedFoodCost / duration,
             },
             activities: {
               total: estimatedActivitiesCost,
-              perDay: estimatedActivitiesCost / duration
-            }
+              perDay: estimatedActivitiesCost / duration,
+            },
           },
           perPerson: perPersonBudget,
           perDay: dailyBudget,
-          recommendations: this.generateBudgetRecommendations(budget, duration, travelers)
-        }
+          recommendations: this.generateBudgetRecommendations(budget, duration, travelers),
+        },
       };
-
     } catch (error) {
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -484,20 +549,19 @@ class TravelMCPServer {
   async healthCheck() {
     try {
       const kiwiHealth = await KiwiTequilaService.healthCheck();
-      
+
       return {
         success: true,
         services: {
           kiwi: kiwiHealth,
-          mcp: true
+          mcp: true,
         },
-        toolCount: this.tools.size
+        toolCount: this.tools.size,
       };
-
     } catch (error) {
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }

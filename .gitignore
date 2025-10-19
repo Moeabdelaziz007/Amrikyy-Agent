@@ -54,3 +54,16 @@ SECURITY_REPORT.md
 *.pyd
 .Python
 .vercel
+
+# Large index files
+codebase-index/comprehensive-index.json
+backend/storage/memories/*.json
+
+# Vercel
+.vercel
+
+# Environment files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

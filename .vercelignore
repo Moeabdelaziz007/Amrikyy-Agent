@@ -1,15 +1,56 @@
+# Vercel Ignore File
+
+# Standard ignores
+.git
+.github
+.husky
+node_modules
+.venv
+
+# Project specific large directories
+quanpology-hub
+codebase-index
+ecmw
+mcp-servers
+frontend-backup-20251012-150459
+zero-cost-agent
+system-monitoring
+.mypy_cache
+
+# Backend and other non-frontend code
 backend
 MayaTravelAgent
-.git
-node_modules
+AmrikyyTravelAgent
+ios
+
+# Logs and temp files
+*.log
+debug-logs
+logs
+vulnerability-analysis.json
+audit-root.json
+cursor-performance-*.txt
+
+# Scripts and docs
+*.sh
 *.md
-*.txt
-.env
-.env.*
-activate-*.sh
-setup-*.sh
 docs
+.devcontainer
+.eide
+
+# Test files
 tests
 *.test.js
 *.test.tsx
 *.spec.js
+
+# Config files that shouldn't be deployed
+.cursorignore
+.cursorrules
+.dockerignore
+.gitmodules
+.SuperPower.MDC
+.GeminiSuperPower.MDC
+ecosystem.config.js
+jest.config.js
+railway.json

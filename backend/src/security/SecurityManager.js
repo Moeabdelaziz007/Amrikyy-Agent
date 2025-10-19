@@ -12,7 +12,7 @@
  */
 
 const crypto = require('crypto');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { logger } = require('../utils/logger');
 const rateLimit = require('express-rate-limit');

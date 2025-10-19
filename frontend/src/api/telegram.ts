@@ -223,7 +223,7 @@ export class TelegramService {
     if (user.username) {
       info += ` (@${user.username})`;
     }
-    if (user.is_premium) {
+    if (user.is_premium ?? false) {
       info += ' ⭐';
     }
     
