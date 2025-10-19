@@ -25,6 +25,11 @@ const compression = require('compression');
 const Redis = require('ioredis');
 require('dotenv').config();
 
+// --- New Agent System Integration ---
+const { AgentManager } = require('./dist/agents/AgentManager');
+const { TravelAgent } = require('./dist/agents/TravelAgent');
+const { createAgentRoutes } = require('./dist/routes/agents');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -217,6 +222,14 @@ app.use('/api/docs', aiLimiter, require('./routes/smart-documentation'));
 // Error handling middleware
 
 // WebSocket routes
+
+// --- New Agent System Initialization ---
+console.log('🔄 Initializing new Agent System...');
+const agentManager = new AgentManager();
+agentManager.registerAgent(new TravelAgent());
+app.use('/api/v2/agents', createAgentRoutes(agentManager));
+console.log('✅ New Agent System routes registered at /api/v2/agents');
+
 app.use('/api/websocket', require('./routes/websocket'));
 
 // Static files
@@ -259,6 +272,7 @@ app.get('/api', (req, res) => {
       security: '/api/security',
       health: '/api/health',
       websocket: '/api/websocket',
+      v2_agents: '/api/v2/agents',
     },
     features: {
       'Multi-Model AI': 'Intelligent model selection based on task analysis',

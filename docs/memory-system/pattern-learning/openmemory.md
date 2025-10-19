@@ -186,28 +186,6 @@ Define your project-specific namespaces below. The AI will use these description
 
 ## Components
 
-### AI Agents (NEW - October 16, 2025)
-
-**Luna Trip Architect** (`/backend/src/agents/LunaWithMCP.js`):
-
-- Trip planning with real-time flight search
-- Budget analysis integration
-- Itinerary generation (day-by-day planning)
-- MCP tools integration (search_flights, compare_prices, analyze_budget)
-- Methods: planTrip, searchFlights, comparePrices, analyzeBudget, generateItinerary, getCapabilities
-
-**Karim Budget Optimizer** (`/backend/src/agents/KarimWithMCP.js`):
-
-- Budget optimization and cost-saving strategies
-- Price comparison across flexible dates
-- Savings recommendations generation
-- Methods: optimizeBudget, comparePrices, analyzeBudget, generateSavingsRecommendations, getCapabilities
-
-**Scout Deal Finder** (`/backend/src/agents/ScoutWithMCP.js`):
-
-- Proactive deal discovery
-- Price monitoring and alerts
-
 ### 🆕 Quantum Explorer Engine (NEW - January 19, 2025)
 
 **WebAnalysisService** (`/backend/src/services/WebAnalysisService.js`):
@@ -228,13 +206,6 @@ Define your project-specific namespaces below. The AI will use these description
 - Features: Cross-reference validation, AI-powered ranking, comprehensive analysis
 - Destination suggestions based on budget
 - Deal scoring algorithm
-- Methods: discoverDeals, monitorPrice, suggestDestinations, comparePrices, getCapabilities
-
-**Agent Coordinator** (`/backend/src/agents/AgentCoordinator.js`):
-
-- Multi-agent orchestration
-- Request types: plan_trip, optimize_budget, find_deals, full_service
-- Methods: handleTravelRequest, coordinateTripPlanning, coordinateBudgetOptimization, coordinateDealDiscovery, coordinateFullService
 
 ### MCP (Model Context Protocol) System (NEW)
 
@@ -335,12 +306,6 @@ Define your project-specific namespaces below. The AI will use these description
 - **mcpTools.js**: Model Context Protocol tools for advanced AI capabilities
 - **amrikyyPersona.js**: Amrikyy personality and conversation style definitions
 - **culture.js**: Cultural context system prompts, supports Arabic and English responses
-- **userProfiling.js**: User preference tracking and personalization logic
-
-**API Routes** (`/backend/routes/`):
-
-- **ai.js**: AI endpoints - /chat, /travel-recommendations, /budget-analysis, /destination-insights, /multimodal/analyze
-- **payment.js**: Payment endpoints - /create-payment-link, /create-payment, /confirm-payment
 - **stripe-webhook.js**: Stripe webhook handler for payment confirmation
 - **miniapp.js**: Telegram Mini App endpoints - /auth/telegram, /send-message, /payment-link, /share-trip
 - **whatsapp.js**: WhatsApp webhook handler for incoming messages
@@ -386,23 +351,6 @@ Define your project-specific namespaces below. The AI will use these description
 
 ## API Routes (NEW - October 16, 2025)
 
-**Flights Routes** (`/backend/routes/flights.js`):
-
-- POST /api/flights/search - Search flights
-- GET /api/flights/locations - Search airports/cities
-- POST /api/flights/details - Get flight details
-- POST /api/flights/book - Create booking (sandbox)
-- GET /api/flights/health - Health check
-
-**Hotels Routes** (`/backend/routes/hotels.js`):
-
-- POST /api/hotels/search - Search hotels
-- GET /api/hotels/cities - Search cities
-- GET /api/hotels/:hotelId - Get hotel details
-- POST /api/hotels/availability - Check room availability
-- POST /api/hotels/booking-url - Generate booking URL
-- GET /api/hotels/health - Health check
-
 **MCP Routes** (`/backend/routes/mcp.js`):
 
 - GET /api/mcp/tools - List all MCP tools
@@ -423,22 +371,6 @@ Define your project-specific namespaces below. The AI will use these description
 - POST /api/security/rate-limits/:userId/reset - Reset rate limits
 - GET /api/security/scopes - List available scopes
 
-**Travel Agents Routes** (`/backend/routes/travel-agents.js`):
-
-- POST /api/travel-agents/request - Submit travel request to AI agents
-- GET /api/travel-agents/capabilities - Get all agent capabilities
-- GET /api/travel-agents/active-requests - Get active requests
-
-## Implementation Patterns
-
-### Pattern 1: MCP Tool Integration (NEW)
-
-- **Standardized Interface**: All agents use MCP server for tool calling
-- **Tool Registration**: Tools registered with JSON schema validation
-- **Context Passing**: User context passed to all tool calls
-- **Error Handling**: Consistent error format across all tools
-- **Audit Logging**: All tool calls logged with user/agent info
-
 ### Pattern 2: AI Agent Coordination (NEW)
 
 - **Multi-Agent Orchestration**: Coordinator manages multiple agents
@@ -446,14 +378,6 @@ Define your project-specific namespaces below. The AI will use these description
 - **Sequential Execution**: Agents execute in logical order
 - **Result Aggregation**: Results combined into comprehensive response
 - **Usage Tracking**: Track which agents were used for each request
-
-### Pattern 3: Security & Rate Limiting (NEW)
-
-- **Ephemeral Tokens**: Short-lived tokens with scope-based permissions
-- **Per-User Limits**: Different limits for each external API
-- **Automatic Cleanup**: Expired tokens and old rate limit entries cleaned up
-- **Token Validation**: Middleware validates tokens before endpoint access
-- **Audit Trail**: All security events logged
 
 ### Pattern 4: External API Integration (NEW)
 
@@ -463,32 +387,12 @@ Define your project-specific namespaces below. The AI will use these description
 - **Health Checks**: Each service has health check method
 - **Rate Limit Awareness**: Services respect external API limits
 
-### Pattern 5: Layered Architecture
-
-- **Separation of concerns**: Routes → Services → Data Access
-- **Middleware chain**: Security → Rate Limiting → Routes → Error Handling
-- **Service layer abstraction**: Business logic separated from route handlers
-
-### Pattern 2: Rate Limiting Strategy
-
-- **Multiple limiters**: Different limits for different endpoints based on resource intensity
-- **IP-based limiting**: Prevents abuse from single sources
-- **Configurable windows**: Flexible time windows (per minute, per hour, per 15 minutes)
-- **Graceful degradation**: Returns 429 with retry-after header
-
 ### Pattern 3: AI Integration
 
 - **Personality injection**: Amrikyy persona applied to all AI responses
 - **Cultural awareness**: buildCulturalSystemPrompt() for Arabic/English context
 - **Tool calling**: Function calling for weather, flights, hotels, prayer times
 - **Conversation context**: Maintains conversation history for continuity
-
-### Pattern 4: Payment Processing
-
-- **Multiple providers**: Strategy pattern for Stripe, PayPal, Telegram
-- **Webhook verification**: Signature validation for payment confirmations
-- **Error handling**: Graceful failure with detailed error messages
-- **Rate limiting**: Prevents payment fraud and abuse
 
 ### Pattern 5: Error Handling
 
@@ -517,13 +421,6 @@ Define your project-specific namespaces below. The AI will use these description
 - **Custom hooks**: useAuth, useAPI for reusable logic
 - **Error boundaries**: Catch and display component errors
 - **Context API**: Auth state management across components
-
-### Pattern 9: Testing Strategy
-
-- **Unit tests**: Component and function testing with Vitest/Jest
-- **E2E tests**: User flow testing with Playwright
-- **Coverage reports**: Generated in /coverage directories
-- **Mock services**: Mock AI and database services for testing
 
 ---
 
@@ -573,27 +470,6 @@ Define your project-specific namespaces below. The AI will use these description
 - Routes: 75%
 
 ## Debugging History
-
-### Session 4: Travel APIs Integration (2025-10-16)
-
-- Issue: Need real-time flight and hotel search capabilities
-- Resolution: Integrated Kiwi Tequila API, Booking.com Affiliate API, and Mapbox API
-- Files: 18 new files created (services, routes, agents, MCP server)
-- Result: Complete travel booking ecosystem with AI agents
-
-### Session 5: Security Implementation (2025-10-16)
-
-- Issue: Need secure access control for MCP tools and external APIs
-- Resolution: Implemented ephemeral token system with scope-based permissions and per-user rate limiting
-- Files: TokenManager.js, externalAPILimiter.js, mcpAuth.js, security routes
-- Result: Enterprise-grade security with 7 permission scopes
-
-### Session 6: Testing Suite (2025-10-16)
-
-- Issue: Need comprehensive testing for new integrations
-- Resolution: Created 100+ test cases covering unit, integration, and API testing
-- Files: 6 test files, test runner script, testing documentation
-- Result: 100+ tests passing with coverage reporting
 
 ### Session 1: Initial Setup and Configuration (2025-10-10)
 
@@ -1002,17 +878,32 @@ Define your project-specific namespaces below. The AI will use these description
 ---
 
 ---
+
 **Timestamp**: 2025-10-18 19:30:12
 **Topic**: Agent Development
 **Key Insight**: Demonstrated the automated memory recording system by listing files.
 **Context**: Self-improvement task.
+
 ---
 
 ---
+
 **Timestamp**: 2025-10-18 19:40:36
 **Topic**: Task Execution
 **Importance**: Medium
 **Type**: Action
 **Key Insight**: Demonstrated the new smart memory system.
 **Context**: N/A
+
+---
+
+---
+
+**Timestamp**: 2025-10-18 19:45:00
+**Topic**: Self-Analysis
+**Importance**: Medium
+**Type**: Action
+**Key Insight**: Executed an analysis of `openmemory.md` itself. The file is a comprehensive, well-structured knowledge base covering project overview, architecture, components, APIs, patterns, and testing. Its size suggests a summary or table of contents could improve navigability. This action demonstrates the agent's self-reflection and memory-updating capabilities.
+**Context**: Responding to user command `/excte_and_remember **openmemory.md**`.
+
 ---
