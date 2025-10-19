@@ -19,7 +19,7 @@ function App() {
     return () => clearTimeout(timer);
   }, [setLoading]);
 
-  return (
+    return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A0A0F] via-[#1A1A2E] to-[#16213E]">
       {/* Navigation */}
       <Navigation />

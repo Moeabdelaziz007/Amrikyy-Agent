@@ -756,6 +756,13 @@ const quantumSecuritySystem = {
     quantumSecureCommunication: "Quantum secure communication protocols",
     postQuantumCryptography: "Post-quantum cryptography for future security",
   },
+
+  apiKeys: {
+    current: "53acf815-95ba-4ced-a258-dc04a6acd8da (Legacy HS256)",
+    standby: "5ff37b75-bc22-4ef8-a138-d9d1b44261f3 (ECC P-256)",
+    rotationPolicy:
+      "Monthly rotation, with standby key for zero-downtime transition",
+  },
 };
 ```
 
