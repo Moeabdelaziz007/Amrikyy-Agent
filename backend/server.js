@@ -104,6 +104,8 @@ const connectDB = async () => {
 };
 
 // Initialize database connection
+connectDB();
+
 // Redis connection for caching
 let redisClient = null;
 
