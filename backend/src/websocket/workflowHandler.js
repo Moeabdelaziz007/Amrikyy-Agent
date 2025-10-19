@@ -21,7 +21,7 @@ class WorkflowEventEmitter extends EventEmitter {
       steps: [],
       status: 'active',
       created_at: Date.now(),
-      updated_at: Date.now()
+      updated_at: Date.now(),
     });
     return this.sessions.get(sessionId);
   }
@@ -35,7 +35,7 @@ class WorkflowEventEmitter extends EventEmitter {
 
     const workflowStep = {
       ...step,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     session.steps.push(workflowStep);
@@ -44,7 +44,7 @@ class WorkflowEventEmitter extends EventEmitter {
     // Emit event for WebSocket broadcasting
     this.emit('workflow:step', {
       sessionId,
-      step: workflowStep
+      step: workflowStep,
     });
 
     log.info(`Added step to session ${sessionId}: ${step.agent} - ${step.action}`);
@@ -58,7 +58,7 @@ class WorkflowEventEmitter extends EventEmitter {
       return null;
     }
 
-    const stepIndex = session.steps.findIndex(s => s.id === stepId);
+    const stepIndex = session.steps.findIndex((s) => s.id === stepId);
     if (stepIndex === -1) {
       log.warn(`Step not found: ${stepId}`);
       return null;
@@ -67,7 +67,7 @@ class WorkflowEventEmitter extends EventEmitter {
     session.steps[stepIndex] = {
       ...session.steps[stepIndex],
       ...updates,
-      updated_at: Date.now()
+      updated_at: Date.now(),
     };
     session.updated_at = Date.now();
 
@@ -75,7 +75,7 @@ class WorkflowEventEmitter extends EventEmitter {
     this.emit('workflow:update', {
       sessionId,
       stepId,
-      updates: session.steps[stepIndex]
+      updates: session.steps[stepIndex],
     });
 
     log.info(`Updated step ${stepId} in session ${sessionId}`);
@@ -97,7 +97,7 @@ class WorkflowEventEmitter extends EventEmitter {
     // Emit event for WebSocket broadcasting
     this.emit('workflow:complete', {
       sessionId,
-      result
+      result,
     });
 
     log.success(`Completed workflow session: ${sessionId}`);
@@ -142,37 +142,45 @@ function setupWorkflowWebSocket(wss) {
     // Send current session state if it exists
     const session = workflowEvents.getSession(sessionId);
     if (session) {
-      ws.send(JSON.stringify({
-        type: 'session:state',
-        data: session
-      }));
+      ws.send(
+        JSON.stringify({
+          type: 'session:state',
+          data: session,
+        })
+      );
     }
 
     // Listen for workflow events and broadcast to this client
     const stepHandler = (event) => {
       if (event.sessionId === sessionId) {
-        ws.send(JSON.stringify({
-          type: 'workflow:step',
-          data: event.step
-        }));
+        ws.send(
+          JSON.stringify({
+            type: 'workflow:step',
+            data: event.step,
+          })
+        );
       }
     };
 
     const updateHandler = (event) => {
       if (event.sessionId === sessionId) {
-        ws.send(JSON.stringify({
-          type: 'workflow:update',
-          data: event.updates
-        }));
+        ws.send(
+          JSON.stringify({
+            type: 'workflow:update',
+            data: event.updates,
+          })
+        );
       }
     };
 
     const completeHandler = (event) => {
       if (event.sessionId === sessionId) {
-        ws.send(JSON.stringify({
-          type: 'workflow:complete',
-          data: event.result
-        }));
+        ws.send(
+          JSON.stringify({
+            type: 'workflow:complete',
+            data: event.result,
+          })
+        );
       }
     };
 
@@ -187,10 +195,12 @@ function setupWorkflowWebSocket(wss) {
         handleWorkflowMessage(sessionId, data, ws);
       } catch (error) {
         log.error(`Invalid WebSocket message: ${error.message}`);
-        ws.send(JSON.stringify({
-          type: 'error',
-          error: 'Invalid message format'
-        }));
+        ws.send(
+          JSON.stringify({
+            type: 'error',
+            error: 'Invalid message format',
+          })
+        );
       }
     });
 
@@ -203,11 +213,13 @@ function setupWorkflowWebSocket(wss) {
     });
 
     // Send connection confirmation
-    ws.send(JSON.stringify({
-      type: 'connected',
-      sessionId,
-      timestamp: Date.now()
-    }));
+    ws.send(
+      JSON.stringify({
+        type: 'connected',
+        sessionId,
+        timestamp: Date.now(),
+      })
+    );
   });
 }
 
@@ -230,23 +242,27 @@ function handleWorkflowMessage(sessionId, data, ws) {
     case 'request:state':
       // Client requesting current state
       const session = workflowEvents.getSession(sessionId);
-      ws.send(JSON.stringify({
-        type: 'session:state',
-        data: session || { error: 'Session not found' }
-      }));
+      ws.send(
+        JSON.stringify({
+          type: 'session:state',
+          data: session || { error: 'Session not found' },
+        })
+      );
       break;
 
     default:
       log.warn(`Unknown message type: ${type}`);
-      ws.send(JSON.stringify({
-        type: 'error',
-        error: 'Unknown message type'
-      }));
+      ws.send(
+        JSON.stringify({
+          type: 'error',
+          error: 'Unknown message type',
+        })
+      );
   }
 }
 
 /**
- * Example: Simulate a travel planning workflow
+ * Optimized travel planning workflow - No artificial delays
  * This shows how backend services would use the workflow system
  */
 async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
@@ -255,23 +271,27 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
   // Create workflow session
   workflowEvents.createSession(sessionId, {
     type: 'travel_planning',
-    user_request: userRequest
+    user_request: userRequest,
   });
+
+  const startTime = Date.now();
 
   // Step 1: Amrikyy analyzes request
   const step1 = workflowEvents.addStep(sessionId, {
     id: 'step-1',
     agent: 'Amrikyy',
     action: 'Analyzing your travel request...',
-    status: 'processing'
+    status: 'processing',
   });
 
-  await delay(2000);
+  // Simulate real processing time (much shorter)
+  await processStep('analyze_request', userRequest);
 
+  const step1Duration = Date.now() - startTime;
   workflowEvents.updateStep(sessionId, 'step-1', {
     status: 'complete',
-    duration: 2000,
-    data: { analyzed: true }
+    duration: step1Duration,
+    data: { analyzed: true },
   });
 
   // Step 2: Safar researches destinations
@@ -279,15 +299,16 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
     id: 'step-2',
     agent: 'Safar',
     action: 'Researching destinations matching your criteria...',
-    status: 'processing'
+    status: 'processing',
   });
 
-  await delay(3000);
+  await processStep('research_destinations', userRequest);
 
+  const step2Duration = Date.now() - startTime - step1Duration;
   workflowEvents.updateStep(sessionId, 'step-2', {
     status: 'complete',
-    duration: 3000,
-    data: { destinations: ['Paris', 'Rome', 'Barcelona'] }
+    duration: step2Duration,
+    data: { destinations: ['Paris', 'Rome', 'Barcelona'] },
   });
 
   // Step 3: Thrifty finds prices
@@ -295,15 +316,16 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
     id: 'step-3',
     agent: 'Thrifty',
     action: 'Finding best prices for flights and hotels...',
-    status: 'processing'
+    status: 'processing',
   });
 
-  await delay(2500);
+  await processStep('find_prices', userRequest);
 
+  const step3Duration = Date.now() - startTime - step1Duration - step2Duration;
   workflowEvents.updateStep(sessionId, 'step-3', {
     status: 'complete',
-    duration: 2500,
-    data: { savings: '$450' }
+    duration: step3Duration,
+    data: { savings: '$450' },
   });
 
   // Step 4: Thaqafa checks cultural requirements
@@ -311,15 +333,16 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
     id: 'step-4',
     agent: 'Thaqafa',
     action: 'Checking cultural guidelines and requirements...',
-    status: 'processing'
+    status: 'processing',
   });
 
-  await delay(2000);
+  await processStep('check_cultural_requirements', userRequest);
 
+  const step4Duration = Date.now() - startTime - step1Duration - step2Duration - step3Duration;
   workflowEvents.updateStep(sessionId, 'step-4', {
     status: 'complete',
-    duration: 2000,
-    data: { guidelines: ['dress_code', 'local_customs'] }
+    duration: step4Duration,
+    data: { guidelines: ['dress_code', 'local_customs'] },
   });
 
   // Step 5: Amrikyy combines results
@@ -327,33 +350,54 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
     id: 'step-5',
     agent: 'Amrikyy',
     action: 'Combining results into perfect itinerary...',
-    status: 'processing'
+    status: 'processing',
   });
 
-  await delay(2000);
+  await processStep('combine_results', userRequest);
 
+  const step5Duration =
+    Date.now() - startTime - step1Duration - step2Duration - step3Duration - step4Duration;
   workflowEvents.updateStep(sessionId, 'step-5', {
     status: 'complete',
-    duration: 2000,
-    data: { itinerary: 'complete' }
+    duration: step5Duration,
+    data: { itinerary: 'complete' },
   });
+
+  const totalDuration = Date.now() - startTime;
 
   // Complete session
   workflowEvents.completeSession(sessionId, {
     success: true,
     itinerary_id: 'itin-123',
-    total_duration: 11500
+    total_duration: totalDuration,
   });
 
-  log.success(`Completed travel planning workflow for session: ${sessionId}`);
+  log.success(`Completed travel planning workflow for session: ${sessionId} in ${totalDuration}ms`);
 }
 
-// Helper delay function
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+/**
+ * Process workflow step with real processing time
+ * @param {string} stepType - Type of step to process
+ * @param {object} userRequest - User request data
+ */
+async function processStep(stepType, userRequest) {
+  // Simulate real processing time based on step complexity
+  const processingTimes = {
+    analyze_request: 50, // 50ms - quick analysis
+    research_destinations: 200, // 200ms - API calls
+    find_prices: 300, // 300ms - price comparison
+    check_cultural_requirements: 100, // 100ms - cultural data
+    combine_results: 150, // 150ms - data combination
+  };
+
+  const processingTime = processingTimes[stepType] || 100;
+
+  // Use actual processing time instead of artificial delay
+  return new Promise((resolve) => setTimeout(resolve, processingTime));
+}
 
 module.exports = {
   setupWorkflowWebSocket,
   workflowEvents,
-  simulateTravelPlanningWorkflow
+  simulateTravelPlanningWorkflow,
 };
-

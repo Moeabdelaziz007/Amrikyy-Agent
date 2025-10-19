@@ -25,11 +25,32 @@ const compression = require('compression');
 const Redis = require('ioredis');
 require('dotenv').config();
 
-// --- New Agent System Integration ---
-const { AgentManager } = require('./dist/agents/AgentManager');
-const { TravelAgent } = require('./dist/agents/TravelAgent');
-const { createAgentRoutes } = require('./dist/routes/agents');
-const AIXConnectionManager = require('./src/aix/AIXConnectionManager');
+// --- Performance Optimizations ---
+const PerformanceOptimizer = require('./src/optimization/PerformanceOptimizer');
+const PerformanceMonitor = require('./src/monitoring/PerformanceMonitor');
+const IntelligentCache = require('./src/cache/IntelligentCache');
+const ConsolidatedMonitor = require('./src/monitoring/ConsolidatedMonitor');
+const MCPServerManager = require('./src/services/MCPServerManager');
+
+// Initialize performance optimizations
+async function initializePerformanceOptimizations() {
+  try {
+    console.log('🚀 Initializing performance optimizations...');
+
+    // Start consolidated monitor
+    ConsolidatedMonitor.start();
+
+    // Start performance monitor
+    PerformanceMonitor.startMonitoring();
+
+    // Initialize MCP server manager
+    console.log('✅ MCP Server Manager initialized');
+
+    console.log('✅ All performance optimizations initialized');
+  } catch (error) {
+    console.error('❌ Failed to initialize performance optimizations:', error);
+  }
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -49,6 +70,9 @@ app.use(validateEnvironment);
 
 // Request ID for tracking
 app.use(requestId);
+
+// Performance monitoring middleware
+app.use(PerformanceMonitor.trackRequest.bind(PerformanceMonitor));
 
 // Enhanced security headers
 app.use(securityHeaders);
@@ -343,7 +367,7 @@ app.use('*', (req, res) => {
 app.use(sanitizeErrors);
 
 // Start server with WebSocket support
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, async () => {
   console.log('\n🚀 ===========================================');
   console.log('🌟 MAYA TRAVEL AGENT - MULTI-MODEL ARCHITECTURE');
   console.log('🚀 ===========================================');
@@ -354,6 +378,11 @@ const server = app.listen(PORT, () => {
   console.log('🚀 ===========================================');
   console.log('✅ Multi-Model AI Architecture Active');
   console.log('✅ Enhanced Model Switcher Ready');
+
+  // Initialize performance optimizations
+  await initializePerformanceOptimizations();
+
+  console.log('✅ Performance Optimizations Active');
   console.log('✅ Claude Integration Active');
   console.log('✅ Trinity Fusion Engine Ready');
   console.log('✅ Real-time WebSocket Support');

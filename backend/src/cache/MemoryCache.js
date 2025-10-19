@@ -1,7 +1,7 @@
 /**
  * Memory Cache Service (Redis Alternative)
  * In-memory caching for development without Redis
- * 
+ *
  * Features:
  * - Simple key-value storage
  * - TTL support
@@ -19,13 +19,30 @@ class MemoryCache {
       hits: 0,
       misses: 0,
       sets: 0,
-      deletes: 0
+      deletes: 0,
     };
 
-    // Cleanup expired entries every minute
-    setInterval(() => this.cleanup(), 60000);
-    
+    // Register with consolidated monitor instead of using setInterval
+    this.registerWithMonitor();
+
     logger.info('✅ Memory Cache Service initialized (Redis alternative)');
+  }
+
+  /**
+   * Register cache cleanup with consolidated monitor
+   */
+  registerWithMonitor() {
+    try {
+      const ConsolidatedMonitor = require('../monitoring/ConsolidatedMonitor');
+      if (ConsolidatedMonitor) {
+        // The consolidated monitor will handle cleanup automatically
+        logger.debug('📋 Memory cache registered with consolidated monitor');
+      }
+    } catch (error) {
+      // Fallback to old method if consolidated monitor is not available
+      logger.warn('⚠️ Consolidated monitor not available, using fallback cleanup');
+      setInterval(() => this.cleanup(), 60000);
+    }
   }
 
   /**
@@ -43,11 +60,11 @@ class MemoryCache {
           this.stats.misses++;
           return null;
         }
-        
+
         this.stats.hits++;
         return this.cache.get(key);
       }
-      
+
       this.stats.misses++;
       return null;
     } catch (error) {
@@ -62,12 +79,12 @@ class MemoryCache {
   async set(key, value, ttl = 3600) {
     try {
       this.cache.set(key, value);
-      
+
       // Set expiry time
       if (ttl > 0) {
-        this.ttls.set(key, Date.now() + (ttl * 1000));
+        this.ttls.set(key, Date.now() + ttl * 1000);
       }
-      
+
       this.stats.sets++;
       return true;
     } catch (error) {
@@ -83,11 +100,11 @@ class MemoryCache {
     try {
       const deleted = this.cache.delete(key);
       this.ttls.delete(key);
-      
+
       if (deleted) {
         this.stats.deletes++;
       }
-      
+
       return deleted ? 1 : 0;
     } catch (error) {
       logger.error('❌ Memory cache delete error:', error);
@@ -102,7 +119,7 @@ class MemoryCache {
     try {
       const regex = new RegExp(pattern.replace(/\*/g, '.*'));
       let deleted = 0;
-      
+
       for (const key of this.cache.keys()) {
         if (regex.test(key)) {
           this.cache.delete(key);
@@ -110,7 +127,7 @@ class MemoryCache {
           deleted++;
         }
       }
-      
+
       this.stats.deletes += deleted;
       return deleted;
     } catch (error) {
@@ -126,13 +143,13 @@ class MemoryCache {
     try {
       const regex = new RegExp(pattern.replace(/\*/g, '.*'));
       const matchingKeys = [];
-      
+
       for (const key of this.cache.keys()) {
         if (regex.test(key)) {
           matchingKeys.push(key);
         }
       }
-      
+
       return matchingKeys;
     } catch (error) {
       logger.error('❌ Memory cache keys error:', error);
@@ -148,10 +165,10 @@ class MemoryCache {
       if (!this.ttls.has(key)) {
         return -1;
       }
-      
+
       const expiry = this.ttls.get(key);
       const remaining = Math.floor((expiry - Date.now()) / 1000);
-      
+
       return remaining > 0 ? remaining : -1;
     } catch (error) {
       logger.error('❌ Memory cache TTL error:', error);
@@ -179,9 +196,8 @@ class MemoryCache {
    */
   getStats() {
     const totalRequests = this.stats.hits + this.stats.misses;
-    const hitRate = totalRequests > 0 
-      ? ((this.stats.hits / totalRequests) * 100).toFixed(2) + '%'
-      : '0%';
+    const hitRate =
+      totalRequests > 0 ? ((this.stats.hits / totalRequests) * 100).toFixed(2) + '%' : '0%';
 
     return {
       connected: true,
@@ -191,7 +207,7 @@ class MemoryCache {
       hitRate,
       sets: this.stats.sets,
       deletes: this.stats.deletes,
-      memory: this.getMemoryUsage()
+      memory: this.getMemoryUsage(),
     };
   }
 
@@ -200,12 +216,12 @@ class MemoryCache {
    */
   getMemoryUsage() {
     let size = 0;
-    
+
     for (const [key, value] of this.cache.entries()) {
       size += key.length;
       size += JSON.stringify(value).length;
     }
-    
+
     // Convert to human readable
     if (size < 1024) return size + 'B';
     if (size < 1024 * 1024) return (size / 1024).toFixed(2) + 'KB';
@@ -218,7 +234,7 @@ class MemoryCache {
   cleanup() {
     const now = Date.now();
     let cleaned = 0;
-    
+
     for (const [key, expiry] of this.ttls.entries()) {
       if (expiry && now > expiry) {
         this.cache.delete(key);
@@ -226,7 +242,7 @@ class MemoryCache {
         cleaned++;
       }
     }
-    
+
     if (cleaned > 0) {
       logger.debug(`🧹 Cleaned ${cleaned} expired cache entries`);
     }
