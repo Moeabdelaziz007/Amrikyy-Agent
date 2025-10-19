@@ -1,0 +1,238 @@
+version: '3.8'
+
+# Docker volumes for persistent data
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+  loki_data: {}
+  alertmanager_data: {}
+  promtail_data: {}
+
+# Networks for service communication
+networks:
+  monitoring:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# Services configuration
+services:
+  # Prometheus - Metrics collection and alerting
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: maya-monitoring-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/alerting.yml:/etc/prometheus/alerting.yml:ro
+      - ./prometheus/recording_rules.yml:/etc/prometheus/recording_rules.yml:ro
+      - prometheus_data:/prometheus/data
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus/data'
+      - '--storage.tsdb.retention.time=200h'
+      - '--storage.tsdb.retention.size=50GB'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+      - '--log.level=info'
+    networks:
+      - monitoring
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "monitoring.service=prometheus"
+      - "monitoring.component=metrics-collector"
+
+  # Alertmanager - Alert routing and notifications
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: maya-monitoring-alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alertmanager/config.yml:/etc/alertmanager/config.yml:ro
+      - ./alertmanager/template:/etc/alertmanager/template:ro
+      - alertmanager_data:/alertmanager/data
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager/data'
+      - '--web.external-url=http://localhost:9093'
+      - '--log.level=info'
+    networks:
+      - monitoring
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9093/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "monitoring.service=alertmanager"
+      - "monitoring.component=alert-router"
+    depends_on:
+      - prometheus
+
+  # Grafana - Visualization and dashboards
+  grafana:
+    image: grafana/grafana:latest
+    container_name: maya-monitoring-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-worldmap-panel,flant-statusmap-panel
+    networks:
+      - monitoring
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "monitoring.service=grafana"
+      - "monitoring.component=visualization"
+    depends_on:
+      - prometheus
+
+  # Loki - Log aggregation
+  loki:
+    image: grafana/loki:latest
+    container_name: maya-monitoring-loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki/loki.yml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki/data
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - monitoring
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3100/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "monitoring.service=loki"
+      - "monitoring.component=log-aggregation"
+
+  # Promtail - Log collection agent for Loki
+  promtail:
+    image: grafana/promtail:latest
+    container_name: maya-monitoring-promtail
+    volumes:
+      - ./loki/promtail.yml:/etc/promtail/config.yml:ro
+      - ./loki/promtail:/etc/promtail:ro
+      - /var/log:/var/log:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - promtail_data:/promtail/data
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - monitoring
+    restart: unless-stopped
+    labels:
+      - "monitoring.service=promtail"
+      - "monitoring.component=log-collection"
+      - "logging.driver=json-file"
+      - "logging.options.max-size=10m"
+      - "logging.options.max-file=3"
+    depends_on:
+      - loki
+
+  # Node Exporter - System metrics collection
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: maya-monitoring-node-exporter
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--collector.textfile.directory=/etc/node-exporter'
+      - '--web.listen-address=:9100'
+    networks:
+      - monitoring
+    restart: unless-stopped
+    labels:
+      - "monitoring.service=node-exporter"
+      - "monitoring.component=system-metrics"
+    deploy:
+      mode: global
+
+  # cAdvisor - Container metrics
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: maya-monitoring-cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    command:
+      - '--port=8080'
+      - '--docker_only=true'
+      - '--disable_metrics=perf_event,tcp,udp,sched,process'
+      - '--storage_driver_db=cadvisor_store'
+    networks:
+      - monitoring
+    restart: unless-stopped
+    labels:
+      - "monitoring.service=cadvisor"
+      - "monitoring.component=container-metrics"
+    depends_on:
+      - prometheus
+
+  # Blackbox Exporter - External service monitoring
+  blackbox-exporter:
+    image: prom/blackbox-exporter:latest
+    container_name: maya-monitoring-blackbox-exporter
+    ports:
+      - "9115:9115"
+    volumes:
+      - ./blackbox-exporter/blackbox.yml:/config/blackbox.yml:ro
+    command:
+      - '--config.file=/config/blackbox.yml'
+      - '--web.listen-address=:9115'
+      - '--log.level=info'
+    networks:
+      - monitoring
+    restart: unless-stopped
+    labels:
+      - "monitoring.service=blackbox-exporter"
+      - "monitoring.component=external-service-monitoring"
+    depends_on:
+      - prometheus
+
+# Environment file for sensitive configuration
+# Create .env file in this directory with:
+# GRAFANA_ADMIN_PASSWORD=your_secure_password
+# PROMETHEUS_EXTERNAL_URL=
+# SLACK_WEBHOOK_URL=
+# EMAIL_SMTP_HOST=
+# And other environment variables as needed
+
+# Note: All sensitive configuration should be in environment variables
+# defined in the .env file (which should NOT be committed to version control)

@@ -462,15 +462,6 @@ class EnhancedModelSwitcher {
   }
 
   /**
-   * Initialize Claude client when available
-   * @param {Object} claudeClient - Claude client instance
-   */
-  setClaudeClient(claudeClient) {
-    this.models['claude-sonnet-4'] = claudeClient;
-    console.log('✅ Claude client initialized in Model Switcher');
-  }
-
-  /**
    * Initialize Trinity Fusion service when available
    * @param {Object} trinityService - Trinity Fusion service instance
    */

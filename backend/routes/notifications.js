@@ -1,97 +1,120 @@
 const express = require('express');
 const router = express.Router();
-const { supabase } = require('../utils/supabaseClient');
-const authMiddleware = require('../middleware/authMiddleware'); // Assuming auth middleware exists
+const { supabase } = require('../database/supabase');
+const { authenticateToken } = require('../middleware/auth'); // Assuming this middleware exists
 
-/**
- * @route   GET /api/notifications
- * @desc    List all notifications for a user
- * @access  Private
- */
-router.get('/', authMiddleware, async (req, res) => {
+// GET /api/notifications - List user notifications
+router.get('/', authenticateToken, async (req, res) => {
   try {
-    const { data: notifications, error } = await supabase
+    const userId = req.user.id;
+    const { data, error } = await supabase
       .from('notifications')
       .select('*')
-      .eq('user_id', req.user.id)
+      .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
 
-    res.json(notifications);
-  } catch (err) {
-    console.error('Error fetching notifications:', err.message);
-    res.status(500).send('Server Error');
+    res.json({ success: true, notifications: data });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
-/**
- * @route   GET /api/notifications/unread-count
- * @desc    Get the count of unread notifications
- * @access  Private
- */
-router.get('/unread-count', authMiddleware, async (req, res) => {
+// POST /api/notifications - Create a notification (for testing/internal use)
+router.post('/', authenticateToken, async (req, res) => {
+    try {
+        const { user_id, title, message, type } = req.body;
+        if (!user_id || !title || !message) {
+            return res.status(400).json({ success: false, error: 'user_id, title, and message are required' });
+        }
+
+        const { data, error } = await supabase
+            .from('notifications')
+            .insert([{ user_id, title, message, type: type || 'info' }])
+            .select();
+
+        if (error) throw error;
+
+        res.status(201).json({ success: true, notification: data[0] });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+
+// PUT /api/notifications/:id - Mark a notification as read
+router.put('/:id', authenticateToken, async (req, res) => {
   try {
-    const { count, error } = await supabase
+    const userId = req.user.id;
+    const notificationId = req.params.id;
+
+    const { data, error } = await supabase
       .from('notifications')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_id', req.user.id)
+      .update({ is_read: true })
+      .eq('id', notificationId)
+      .eq('user_id', userId)
+      .select();
+
+    if (error) throw error;
+    if (data.length === 0) {
+        return res.status(404).json({ success: false, error: 'Notification not found or you do not have permission to update it.' });
+    }
+
+    res.json({ success: true, notification: data[0] });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// DELETE /api/notifications/:id - Delete a notification
+router.delete('/:id', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const notificationId = req.params.id;
+
+        const { data, error } = await supabase
+            .from('notifications')
+            .delete()
+            .eq('id', notificationId)
+            .eq('user_id', userId);
+
+        // Here, supabase-js v2 delete doesn't return the deleted row in `data` directly,
+        // and a successful delete with a matching row returns a count.
+        // We'll assume if there's no error, the operation was successful if a row was matched.
+        // For a more robust check, one might select before deleting.
+        if (error) throw error;
+
+        // The `data` from a delete operation is often null or an empty array in v2,
+        // and what indicates success is the absence of an error and potentially the `count`.
+        // Note: The actual return structure can depend on Supabase settings (e.g., `Prefer: return=representation`).
+        // Without it, we might not get the deleted record back.
+        // A simple success message is often sufficient.
+        res.json({ success: true, message: 'Notification deleted successfully.' });
+
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+
+// POST /api/notifications/read-all - Mark all notifications as read
+router.post('/read-all', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const { data, error } = await supabase
+      .from('notifications')
+      .update({ is_read: true })
+      .eq('user_id', userId)
       .eq('is_read', false);
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
 
-    res.json({ unread_count: count });
-  } catch (err) {
-    console.error('Error fetching unread count:', err.message);
-    res.status(500).send('Server Error');
+    res.json({ success: true, message: 'All notifications marked as read.' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
   }
-});
-
-/**
- * @route   POST /api/notifications/mark-read
- * @desc    Mark notifications as read
- * @access  Private
- */
-router.post('/mark-read', authMiddleware, async (req, res) => {
-  // Can mark all as read, or specific ones via req.body.ids
-  const { ids } = req.body;
-
-  try {
-    const query = supabase
-      .from('notifications')
-      .update({ is_read: true, read_at: new Date() })
-      .eq('user_id', req.user.id)
-      .eq('is_read', false);
-
-    if (ids && Array.isArray(ids) && ids.length > 0) {
-      query.in('id', ids);
-    }
-
-    const { error } = await query;
-
-    if (error) {
-      throw error;
-    }
-
-    res.json({ msg: 'Notifications marked as read' });
-  } catch (err) {
-    console.error('Error marking notifications as read:', err.message);
-    res.status(500).send('Server Error');
-  }
-});
-
-/**
- * @route   DELETE /api/notifications/:id
- * @desc    Delete a notification
- * @access  Private
- */
-router.delete('/:id', authMiddleware, (req, res) => {
-  // Placeholder for delete logic
-  res.status(501).json({ msg: 'Delete notification not implemented yet.' });
 });
 
 module.exports = router;

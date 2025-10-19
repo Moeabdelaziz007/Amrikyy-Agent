@@ -8,7 +8,6 @@
  */
 
 const { EnhancedModelSwitcher } = require('./src/ai/EnhancedModelSwitcher');
-const { ClaudeClient } = require('./src/ai/claudeClient');
 
 console.log('🚀 ===========================================');
 console.log('🌟 MULTI-MODEL ARCHITECTURE TEST SUITE');

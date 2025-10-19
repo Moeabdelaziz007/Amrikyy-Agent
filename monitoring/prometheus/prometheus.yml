@@ -1,0 +1,75 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  # External labels for better organization
+  external_labels:
+    monitor: 'maya-travel-agent-monitor'
+    environment: 'production'
+
+  # Query timeout for complex queries
+  query_timeout: '2m'
+
+rule_files:
+  - "alerting.yml"
+  - "recording_rules.yml"
+
+# Remote write for long-term storage (optional)
+remote_write:
+  - url: "${PROMETHEUS_REMOTE_WRITE_URL}"
+    queue_config:
+      max_samples_per_send: 1000
+      batch_send_deadline: 5s
+      max_retries: 3
+      min_backoff: 30ms
+      max_backoff: 100ms
+
+# Alerting configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - 'alertmanager:9093'
+      timeout: 10s
+      api_version: v2
+
+# Storage configuration
+storage:
+  tsdb:
+    path: "/prometheus/data"
+    retention:
+      time: 200h # Keep 200 hours locally
+      size: 50GB
+    min_block_duration: 2h
+    max_block_duration: 24h
+    wal_compression: true
+
+
+
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'maya-travel-agent'
+    static_configs:
+      - targets: ['localhost:9090']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+    scrape_timeout: 10s
+
+  # Node exporter for system metrics
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['localhost:9100']
+    scrape_interval: 15s
+
+  # Application specific metrics
+  - job_name: 'maya-travel-agent-health'
+    metrics_path: '/actuator/health'
+    static_configs:
+      - targets: ['localhost:5000']
+    scrape_interval: 30s
+
+  # Database metrics (if MongoDB is used)
+  - job_name: 'mongodb'
+    static_configs:
+      - targets: ['localhost:9216']
+    scrape_interval: 30s
+    metrics_path: '/metrics'

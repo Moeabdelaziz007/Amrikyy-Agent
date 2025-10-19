@@ -60,6 +60,8 @@ const AmrikyyMainPage: React.FC = () => {
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [showHologramDemo, setShowHologramDemo] = useState(false);
   const [showVoiceControl, setShowVoiceControl] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
 
   // Agents data
   const agents: Agent[] = [
@@ -256,20 +258,18 @@ const AmrikyyMainPage: React.FC = () => {
                 <div className="px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-white/20 rounded-full">
                   <span className="text-sm font-semibold text-white flex items-center gap-2">
                     <Sparkles className="w-4 h-4" />
-                    Powered by Quantum AI
+                    Built by Gemini
                   </span>
                 </div>
               </motion.div>
 
               {/* Main Heading */}
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6">
-                <span className="text-white">Amrikyy</span>
-                <br />
-                <span className="amrikyy-text">Basic</span>
+                <span className="text-white">Quantum OS</span>
               </h1>
 
               <p className="text-xl sm:text-2xl text-gray-300 mb-4">
-                Your go-to dashboard for all AI agents, automation kits, and intelligent tools neatly organized in one place.
+                The Platform built by Gemini and powered by the first Ai OS system.
               </p>
 
               <p className="text-lg text-gray-400 mb-8">
@@ -279,7 +279,10 @@ const AmrikyyMainPage: React.FC = () => {
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
-                  onClick={() => setShowHologramDemo(true)}
+                  onClick={() => {
+                    setAuthMode('signup');
+                    setShowAuthModal(true);
+                  }}
                   className="group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-semibold text-white hover:shadow-lg hover:shadow-blue-500/50 transition-all flex items-center justify-center gap-2"
                 >
                   <Rocket className="w-5 h-5" />
@@ -287,11 +290,14 @@ const AmrikyyMainPage: React.FC = () => {
                 </button>
 
                 <button 
-                  onClick={() => setShowVoiceControl(true)}
+                  onClick={() => {
+                    setAuthMode('login');
+                    setShowAuthModal(true);
+                  }}
                   className="px-8 py-4 glass-effect rounded-xl font-semibold text-white hover:bg-white/20 transition-all flex items-center justify-center gap-2"
                 >
-                  <Mic className="w-5 h-5" />
-                  Voice Assistant
+                  <User className="w-5 h-5" />
+                  Sign In
                 </button>
               </div>
 
@@ -631,6 +637,54 @@ const AmrikyyMainPage: React.FC = () => {
               </div>
               <div className="glass-effect rounded-2xl p-6">
                 <VoiceControl />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Auth Modal */}
+      <AnimatePresence>
+        {showAuthModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowAuthModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md"
+            >
+              <div className="glass-effect rounded-2xl p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold text-white">
+                    {authMode === 'login' ? 'Sign In' : 'Get Started'}
+                  </h2>
+                  <button
+                    onClick={() => setShowAuthModal(false)}
+                    className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                  >
+                    <span className="text-white text-xl">×</span>
+                  </button>
+                </div>
+                
+                <div className="space-y-4">
+                  <button
+                    onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
+                    className="w-full py-3 px-4 bg-white/10 hover:bg-white/20 rounded-xl text-white transition-colors"
+                  >
+                    {authMode === 'login' ? 'Need an account? Sign up' : 'Have an account? Sign in'}
+                  </button>
+                  
+                  <div className="text-center text-gray-400 text-sm">
+                    Authentication system will be integrated here
+                  </div>
+                </div>
               </div>
             </motion.div>
           </motion.div>
