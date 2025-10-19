@@ -1,7 +1,7 @@
 /**
  * AIX Connection Manager - Unified Communication System
  * Created by Cursor - Team Lead
- * 
+ *
  * Unified system for connecting AI agents using multiple protocols:
  * - Node.js EventEmitter
  * - MCP (Model Context Protocol)
@@ -26,15 +26,29 @@ class AIXConnectionManager {
     this.communicationHub = new AIXCommunicationHub();
     this.mcpProtocol = new MCPProtocol();
     this.pingSystem = new AIXPingSystem();
-    
+
     this.agents = new Map();
     this.connections = new Map();
+    this.transports = new Map(); // For sending outbound messages
     this.isActive = false;
-    
+
     // Setup event listeners
     this.setupEventListeners();
-    
+
     log.info('AIX Connection Manager initialized');
+  }
+
+  /**
+   * Register an outbound transport for a specific protocol type.
+   * @param {string} transportType - e.g., 'whatsapp', 'telegram'
+   * @param {Function} sendFunction - An async function that takes (to, message) and sends it.
+   */
+  registerTransport(transportType, sendFunction) {
+    if (typeof sendFunction !== 'function') {
+      throw new Error('sendFunction must be a function');
+    }
+    this.transports.set(transportType, sendFunction);
+    log.info(`Outbound transport registered for '${transportType}'`);
   }
 
   /**
@@ -71,8 +85,9 @@ class AIXConnectionManager {
       id: agentId,
       agent,
       protocols: options.protocols || ['AIX3', 'MCP', 'PING'],
+      transportType: options.transportType || 'internal', // e.g., 'whatsapp'
       status: 'connecting',
-      connectedAt: Date.now()
+      connectedAt: Date.now(),
     };
 
     try {
@@ -97,15 +112,14 @@ class AIXConnectionManager {
 
       connectionInfo.status = 'connected';
       this.agents.set(agentId, connectionInfo);
-      
-      log.info('Agent connected successfully', { 
-        agentId, 
+
+      log.info('Agent connected successfully', {
+        agentId,
         protocols: connectionInfo.protocols,
-        status: connectionInfo.status 
+        status: connectionInfo.status,
       });
 
       return connectionInfo;
-
     } catch (error) {
       log.error('Failed to connect agent', { error: error.message, agentId });
       throw error;
@@ -121,7 +135,7 @@ class AIXConnectionManager {
    */
   async sendMessage(fromAgent, toAgent, message, protocol = 'auto') {
     const connectionInfo = this.agents.get(toAgent);
-    
+
     if (!connectionInfo) {
       throw new Error(`Agent ${toAgent} not connected`);
     }
@@ -133,16 +147,16 @@ class AIXConnectionManager {
 
     try {
       let messageId;
-      
+
       switch (protocol) {
         case 'AIX3':
           messageId = await this.communicationHub.sendMessage(fromAgent, toAgent, message, 'AIX3');
           break;
-        
+
         case 'MCP':
           messageId = await this.mcpProtocol.sendRequest(fromAgent, toAgent, message);
           break;
-        
+
         case 'PING':
           messageId = await this.pingSystem.pingAgent({
             fromAgent,
@@ -150,34 +164,55 @@ class AIXConnectionManager {
             priority: message.priority || 3,
             message: message.content || message.message,
             requiresAction: message.requiresAction || false,
-            context: message.context || {}
+            context: message.context || {},
           });
           break;
-        
+
         default:
           throw new Error(`Unknown protocol: ${protocol}`);
       }
 
-      log.info('Message sent successfully', { 
-        messageId, 
-        fromAgent, 
-        toAgent, 
-        protocol 
+      log.info('Message sent successfully', {
+        messageId,
+        fromAgent,
+        toAgent,
+        protocol,
       });
 
       return messageId;
-
     } catch (error) {
-      log.error('Failed to send message', { 
-        error: error.message, 
-        fromAgent, 
-        toAgent, 
-        protocol 
+      log.error('Failed to send message', {
+        error: error.message,
+        fromAgent,
+        toAgent,
+        protocol,
       });
       throw error;
     }
   }
 
+  /**
+   * Send a reply from an agent back to an external user (e.g., WhatsApp).
+   * @param {string} toAgentId - The ID of the recipient agent (e.g., the user's phone number).
+   * @param {Object} message - The message object to send.
+   */
+  async sendReply(toAgentId, message) {
+    const connectionInfo = this.agents.get(toAgentId);
+    if (!connectionInfo) {
+      throw new Error(`Cannot send reply: Agent ${toAgentId} not connected.`);
+    }
+
+    const transport = this.transports.get(connectionInfo.transportType);
+    if (!transport) {
+      log.warn(
+        `No outbound transport found for type '${connectionInfo.transportType}'. Cannot send reply to ${toAgentId}.`
+      );
+      return;
+    }
+
+    await transport(toAgentId, message);
+    log.info(`Reply sent to agent ${toAgentId} via ${connectionInfo.transportType} transport.`);
+  }
   /**
    * Broadcast message to all agents
    * @param {string} fromAgent - Sender agent ID
@@ -187,12 +222,12 @@ class AIXConnectionManager {
   async broadcastMessage(fromAgent, message, protocol = 'AIX3') {
     try {
       let messageId;
-      
+
       switch (protocol) {
         case 'AIX3':
           messageId = await this.communicationHub.broadcastMessage(fromAgent, message, 'AIX3');
           break;
-        
+
         case 'MCP':
           // MCP doesn't support broadcasting, send to each agent individually
           const promises = [];
@@ -204,43 +239,44 @@ class AIXConnectionManager {
           await Promise.all(promises);
           messageId = 'broadcast_mcp';
           break;
-        
+
         case 'PING':
           // Ping system doesn't support broadcasting, send to each agent individually
           const pingPromises = [];
           for (const [agentId, connectionInfo] of this.agents) {
             if (agentId !== fromAgent && connectionInfo.protocols.includes('PING')) {
-              pingPromises.push(this.pingSystem.pingAgent({
-                fromAgent,
-                toAgent: agentId,
-                priority: message.priority || 3,
-                message: message.content || message.message,
-                requiresAction: message.requiresAction || false,
-                context: message.context || {}
-              }));
+              pingPromises.push(
+                this.pingSystem.pingAgent({
+                  fromAgent,
+                  toAgent: agentId,
+                  priority: message.priority || 3,
+                  message: message.content || message.message,
+                  requiresAction: message.requiresAction || false,
+                  context: message.context || {},
+                })
+              );
             }
           }
           await Promise.all(pingPromises);
           messageId = 'broadcast_ping';
           break;
-        
+
         default:
           throw new Error(`Unknown protocol: ${protocol}`);
       }
 
-      log.info('Message broadcasted successfully', { 
-        messageId, 
-        fromAgent, 
-        protocol 
+      log.info('Message broadcasted successfully', {
+        messageId,
+        fromAgent,
+        protocol,
       });
 
       return messageId;
-
     } catch (error) {
-      log.error('Failed to broadcast message', { 
-        error: error.message, 
-        fromAgent, 
-        protocol 
+      log.error('Failed to broadcast message', {
+        error: error.message,
+        fromAgent,
+        protocol,
       });
       throw error;
     }
@@ -254,7 +290,7 @@ class AIXConnectionManager {
    */
   selectBestProtocol(connectionInfo, message) {
     const availableProtocols = connectionInfo.protocols;
-    
+
     // Priority order: AIX3 > MCP > PING
     if (availableProtocols.includes('AIX3')) {
       return 'AIX3';
@@ -274,7 +310,7 @@ class AIXConnectionManager {
    */
   getAgentStatus(agentId) {
     const connectionInfo = this.agents.get(agentId);
-    
+
     if (!connectionInfo) {
       return { error: 'Agent not found' };
     }
@@ -283,7 +319,7 @@ class AIXConnectionManager {
       id: agentId,
       status: connectionInfo.status,
       protocols: connectionInfo.protocols,
-      connectedAt: new Date(connectionInfo.connectedAt).toISOString()
+      connectedAt: new Date(connectionInfo.connectedAt).toISOString(),
     };
 
     // Add protocol-specific status
@@ -292,7 +328,8 @@ class AIXConnectionManager {
     }
 
     if (connectionInfo.protocols.includes('MCP')) {
-      status.mcp = this.mcpProtocol.getClientStatus(agentId) || this.mcpProtocol.getServerStatus(agentId);
+      status.mcp =
+        this.mcpProtocol.getClientStatus(agentId) || this.mcpProtocol.getServerStatus(agentId);
     }
 
     return status;
@@ -304,11 +341,11 @@ class AIXConnectionManager {
    */
   getAllAgentsStatus() {
     const agents = {};
-    
+
     for (const [agentId, connectionInfo] of this.agents) {
       agents[agentId] = this.getAgentStatus(agentId);
     }
-    
+
     return agents;
   }
 
@@ -318,7 +355,7 @@ class AIXConnectionManager {
    */
   async disconnectAgent(agentId) {
     const connectionInfo = this.agents.get(agentId);
-    
+
     if (!connectionInfo) {
       log.warn('Agent not found for disconnection', { agentId });
       return;
@@ -337,9 +374,8 @@ class AIXConnectionManager {
       }
 
       connectionInfo.status = 'disconnected';
-      
+
       log.info('Agent disconnected successfully', { agentId });
-      
     } catch (error) {
       log.error('Failed to disconnect agent', { error: error.message, agentId });
       throw error;
@@ -356,10 +392,10 @@ class AIXConnectionManager {
     }
 
     this.isActive = true;
-    
+
     // Start all subsystems
     this.communicationHub.start();
-    
+
     log.info('AIX Connection Manager started');
   }
 
@@ -373,13 +409,13 @@ class AIXConnectionManager {
     }
 
     this.isActive = false;
-    
+
     // Stop all subsystems
     this.communicationHub.stop();
-    
+
     // Clear all connections
     this.agents.clear();
-    
+
     log.info('AIX Connection Manager stopped');
   }
 
@@ -395,9 +431,9 @@ class AIXConnectionManager {
       subsystems: {
         communicationHub: 'active',
         mcpProtocol: 'active',
-        pingSystem: 'active'
+        pingSystem: 'active',
       },
-      agents: this.getAllAgentsStatus()
+      agents: this.getAllAgentsStatus(),
     };
   }
 }

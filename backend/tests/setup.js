@@ -40,7 +40,8 @@ jest.mock('../database/supabase', () => {
   }));
 });
 
-jest.mock('../src/ai/keloClient', () => {
+// Mock AI services
+jest.mock('../src/ai/zaiClient', () => {
   return jest.fn().mockImplementation(() => ({
     healthCheck: jest.fn().mockResolvedValue({ status: 'healthy' }),
     chat: jest.fn().mockResolvedValue({
