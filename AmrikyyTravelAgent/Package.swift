@@ -2,39 +2,45 @@
 import PackageDescription
 
 let package = Package(
-    name: "MayaTravelAgent",
+    name: "AmrikyyTravelAgent",
     platforms: [
         .iOS(.v16)
     ],
     products: [
         .library(
-            name: "MayaTravelAgent",
-            targets: ["MayaTravelAgent"])
+            name: "AmrikyyTravelAgent",
+            targets: ["AmrikyyTravelAgent"])
     ],
     dependencies: [
         // Image caching
         .package(url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git", .upToNextMajor(from: "2.0")),
+        // Firebase SDK
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "10.0")),
         // Add your dependencies here
         // .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.0")),
     ],
     targets: [
         .target(
-            name: "MayaTravelAgent",
+            name: "AmrikyyTravelAgent",
             dependencies: [
-                .product(name: "SDWebImageSwiftUI", package: "SDWebImageSwiftUI")
+                .product(name: "SDWebImageSwiftUI", package: "SDWebImageSwiftUI"),
+                .product(name: "FirebaseAuth", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseMessaging", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseCrashlytics", package: "firebase-ios-sdk")
             ],
             path: ".",
             exclude: [
-                "MayaTravelAgent.xcodeproj",
-                "MayaTravelAgent.xcworkspace",
-                "MayaTravelAgentTests",
-                "MayaTravelAgentUITests"
+                "AmrikyyTravelAgent.xcodeproj",
+                "AmrikyyTravelAgent.xcworkspace",
+                "AmrikyyTravelAgentTests",
+                "AmrikyyTravelAgentUITests"
             ]
         ),
         .testTarget(
-            name: "MayaTravelAgentTests",
-            dependencies: ["MayaTravelAgent"],
-            path: "MayaTravelAgentTests"
+            name: "AmrikyyTravelAgentTests",
+            dependencies: ["AmrikyyTravelAgent"],
+            path: "AmrikyyTravelAgentTests"
         )
     ],
     swiftLanguageVersions: [.v5]
