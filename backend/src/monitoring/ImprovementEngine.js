@@ -1,7 +1,7 @@
 /**
  * Improvement Engine
  * AI-powered continuous improvement system
- * 
+ *
  * Features:
  * - Pattern analysis and detection
  * - Performance optimization suggestions
@@ -19,27 +19,27 @@ class ImprovementEngine {
       analysisInterval: config.analysisInterval || 3600000, // 1 hour
       autoOptimize: config.autoOptimize || false,
       minConfidence: config.minConfidence || 0.8,
-      ...config
+      ...config,
     };
 
     this.patterns = {
       performance: [],
       security: [],
       codeQuality: [],
-      architecture: []
+      architecture: [],
     };
 
     this.improvements = {
       suggested: [],
       applied: [],
-      rejected: []
+      rejected: [],
     };
 
     this.metrics = {
       codeQuality: 0,
       performance: 0,
       security: 0,
-      maintainability: 0
+      maintainability: 0,
     };
 
     this.startAnalysis();
@@ -51,12 +51,30 @@ class ImprovementEngine {
   startAnalysis() {
     console.log('🧠 Improvement Engine started');
 
-    this.interval = setInterval(() => {
-      this.analyzeCodebase();
-    }, this.config.analysisInterval);
+    // Register with consolidated monitor instead of using setInterval
+    this.registerWithMonitor();
 
     // Immediate first analysis
     this.analyzeCodebase();
+  }
+
+  /**
+   * Register with consolidated monitor
+   */
+  registerWithMonitor() {
+    try {
+      const ConsolidatedMonitor = require('./ConsolidatedMonitor');
+      if (ConsolidatedMonitor) {
+        // The consolidated monitor will handle the analysis interval
+        console.log('📋 Improvement Engine registered with consolidated monitor');
+      }
+    } catch (error) {
+      // Fallback to old method if consolidated monitor is not available
+      console.warn('⚠️ Consolidated monitor not available, using fallback interval');
+      this.interval = setInterval(() => {
+        this.analyzeCodebase();
+      }, this.config.analysisInterval);
+    }
   }
 
   /**
@@ -70,7 +88,7 @@ class ImprovementEngine {
       performance: await this.analyzePerformance(),
       security: await this.analyzeSecurity(),
       codeQuality: await this.analyzeCodeQuality(),
-      architecture: await this.analyzeArchitecture()
+      architecture: await this.analyzeArchitecture(),
     };
 
     // Generate improvement suggestions
@@ -112,7 +130,7 @@ for (const trip of trips) {
 // ✅ GOOD (Single query)
 const userIds = trips.map(t => t.userId);
 const users = await db.getUsers(userIds);
-      `
+      `,
     });
 
     // Check for missing caching
@@ -139,7 +157,7 @@ async function getDestinations() {
   await cache.setex('destinations:all', 300, JSON.stringify(data));
   return data;
 }
-      `
+      `,
     });
 
     // Check for large bundle sizes
@@ -162,13 +180,13 @@ const Profile = React.lazy(() => import('./pages/Profile'));
 <Suspense fallback={<Loading />}>
   <Route path="/dashboard" element={<Dashboard />} />
 </Suspense>
-      `
+      `,
     });
 
     return {
       score: 75,
       improvements,
-      count: improvements.length
+      count: improvements.length,
     };
   }
 
@@ -198,7 +216,7 @@ module.exports = cleanEnv(process.env, {
   JWT_SECRET: str({ desc: 'JWT secret key' }),
   DATABASE_URL: url({ desc: 'Database connection string' })
 });
-      `
+      `,
     });
 
     // Check for SQL injection risks
@@ -219,7 +237,7 @@ db.query(\`SELECT * FROM users WHERE id = \${userId}\`);
 
 // ✅ GOOD (Safe)
 db.query('SELECT * FROM users WHERE id = $1', [userId]);
-      `
+      `,
     });
 
     // Check for XSS vulnerabilities
@@ -238,14 +256,14 @@ db.query('SELECT * FROM users WHERE id = $1', [userId]);
 import DOMPurify from 'dompurify';
 
 const clean = DOMPurify.sanitize(userInput);
-      `
+      `,
     });
 
     return {
       score: 65,
       vulnerabilities,
       count: vulnerabilities.length,
-      critical: vulnerabilities.filter(v => v.severity === 'critical').length
+      critical: vulnerabilities.filter((v) => v.severity === 'critical').length,
     };
   }
 
@@ -272,7 +290,7 @@ const clean = DOMPurify.sanitize(userInput);
 console.log → log.info
 console.error → log.error
 console.warn → log.warn
-      `
+      `,
     });
 
     // TODOs and technical debt
@@ -286,7 +304,7 @@ console.warn → log.warn
       recommendation: 'Create issues for TODOs and fix critical ones',
       impact: 'Cleaner codebase and reduced debt',
       confidence: 0.95,
-      autoFixable: false
+      autoFixable: false,
     });
 
     // Missing TypeScript
@@ -300,13 +318,13 @@ console.warn → log.warn
       recommendation: 'Migrate to TypeScript gradually',
       impact: 'Catch bugs at compile time',
       confidence: 0.88,
-      autoFixable: false
+      autoFixable: false,
     });
 
     return {
       score: 78,
       issues,
-      count: issues.length
+      count: issues.length,
     };
   }
 
@@ -324,7 +342,7 @@ console.warn → log.warn
       title: 'Layered Architecture (Backend)',
       description: 'Clean separation: routes → controllers → services → db',
       impact: 'Easy to maintain and test',
-      score: 95
+      score: 95,
     });
 
     insights.push({
@@ -334,7 +352,7 @@ console.warn → log.warn
       title: 'MVVM Pattern (iOS)',
       description: 'Clean View-ViewModel separation with Combine',
       impact: 'Reactive and testable',
-      score: 98
+      score: 98,
     });
 
     insights.push({
@@ -344,7 +362,7 @@ console.warn → log.warn
       title: 'AIX Multi-Agent System',
       description: 'Revolutionary agent coordination system',
       impact: 'Breakthrough innovation',
-      score: 100
+      score: 100,
     });
 
     // Improvement suggestions
@@ -379,13 +397,13 @@ class APIGateway {
     return route.handler(req, res);
   }
 }
-      `
+      `,
     });
 
     return {
       score: 92,
       insights,
-      count: insights.length
+      count: insights.length,
     };
   }
 
@@ -410,8 +428,10 @@ class APIGateway {
     return suggestions.sort((a, b) => {
       const severityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
       const severityDiff = severityOrder[a.severity] - severityOrder[b.severity];
-      
-      if (severityDiff !== 0) return severityDiff;
+
+      if (severityDiff !== 0) {
+        return severityDiff;
+      }
       return (b.confidence || 0) - (a.confidence || 0);
     });
   }
@@ -427,7 +447,7 @@ class APIGateway {
       // 1. Confidence > threshold
       // 2. Marked as auto-fixable
       // 3. Not critical (safety)
-      
+
       if (
         suggestion.autoFixable &&
         suggestion.confidence > this.config.minConfidence &&
@@ -439,12 +459,12 @@ class APIGateway {
             applied.push({
               suggestion,
               result,
-              timestamp: Date.now()
+              timestamp: Date.now(),
             });
-            
+
             this.improvements.applied.push({
               ...suggestion,
-              appliedAt: Date.now()
+              appliedAt: Date.now(),
             });
           }
         } catch (error) {
@@ -464,12 +484,12 @@ class APIGateway {
 
     // Implementation would go here
     // For now, return success
-    
+
     return {
       success: true,
       message: `Applied: ${suggestion.title}`,
       changedFiles: [],
-      linesChanged: 0
+      linesChanged: 0,
     };
   }
 
@@ -483,9 +503,9 @@ class APIGateway {
       improvements: {
         suggested: this.improvements.suggested.length,
         applied: this.improvements.applied.length,
-        rejected: this.improvements.rejected.length
+        rejected: this.improvements.rejected.length,
       },
-      topSuggestions: this.improvements.suggested.slice(0, 10)
+      topSuggestions: this.improvements.suggested.slice(0, 10),
     };
   }
 
@@ -497,18 +517,18 @@ class APIGateway {
       codeQuality: 0.3,
       performance: 0.25,
       security: 0.25,
-      maintainability: 0.2
+      maintainability: 0.2,
     };
 
     const totalScore = Object.keys(weights).reduce((sum, key) => {
-      return sum + (this.metrics[key] * weights[key]);
+      return sum + this.metrics[key] * weights[key];
     }, 0);
 
     return {
       overall: Math.round(totalScore),
       breakdown: this.metrics,
       grade: this.getGrade(totalScore),
-      recommendations: this.getTopRecommendations()
+      recommendations: this.getTopRecommendations(),
     };
   }
 
@@ -516,12 +536,24 @@ class APIGateway {
    * Get letter grade
    */
   getGrade(score) {
-    if (score >= 90) return 'A+';
-    if (score >= 85) return 'A';
-    if (score >= 80) return 'B+';
-    if (score >= 75) return 'B';
-    if (score >= 70) return 'C+';
-    if (score >= 65) return 'C';
+    if (score >= 90) {
+      return 'A+';
+    }
+    if (score >= 85) {
+      return 'A';
+    }
+    if (score >= 80) {
+      return 'B+';
+    }
+    if (score >= 75) {
+      return 'B';
+    }
+    if (score >= 70) {
+      return 'C+';
+    }
+    if (score >= 65) {
+      return 'C';
+    }
     return 'D';
   }
 
@@ -537,7 +569,7 @@ class APIGateway {
         target: '80%+',
         impact: 'Critical - Prevent bugs',
         effort: '2-3 days',
-        value: 'High'
+        value: 'High',
       },
       {
         priority: 2,
@@ -546,7 +578,7 @@ class APIGateway {
         target: '0 instances',
         impact: 'High - Professional logging',
         effort: '2 hours',
-        value: 'High'
+        value: 'High',
       },
       {
         priority: 3,
@@ -555,7 +587,7 @@ class APIGateway {
         target: 'Envalid validation',
         impact: 'High - Prevent crashes',
         effort: '3 hours',
-        value: 'High'
+        value: 'High',
       },
       {
         priority: 4,
@@ -564,7 +596,7 @@ class APIGateway {
         target: 'Redis caching layer',
         impact: 'Medium - 10x faster',
         effort: '1 day',
-        value: 'High'
+        value: 'High',
       },
       {
         priority: 5,
@@ -573,8 +605,8 @@ class APIGateway {
         target: 'Sentry integration',
         impact: 'Medium - Better debugging',
         effort: '2 hours',
-        value: 'High'
-      }
+        value: 'High',
+      },
     ];
   }
 
@@ -590,4 +622,3 @@ class APIGateway {
 }
 
 module.exports = ImprovementEngine;
-
