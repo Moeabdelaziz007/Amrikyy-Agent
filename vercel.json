@@ -5,12 +5,6 @@
   "installCommand": "cd frontend && npm ci",
   "outputDirectory": "frontend/dist",
   "framework": "vite",
-  "env": {
-    "VITE_API_URL": "@api_url",
-    "VITE_SUPABASE_URL": "@supabase_url",
-    "VITE_SUPABASE_ANON_KEY": "@supabase_anon_key",
-    "VITE_STRIPE_PUBLISHABLE_KEY": "@stripe_publishable_key"
-  },
   "rewrites": [
     {
       "source": "/(.*)",
@@ -52,10 +46,5 @@
         }
       ]
     }
-  ],
-  "functions": {
-    "frontend/api/**/*.js": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  ]
 }

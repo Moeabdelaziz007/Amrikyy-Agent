@@ -106,7 +106,7 @@ class AuthAPIService {
         const refreshed = await this.refreshAccessToken();
         if (refreshed) {
           // Retry original request with new token
-          headers['Authorization'] = `Bearer ${this.accessToken}`;
+          (headers as Record<string, string>)['Authorization'] = `Bearer ${this.accessToken}`;
           const retryResponse = await fetch(url, {
             ...options,
             headers,

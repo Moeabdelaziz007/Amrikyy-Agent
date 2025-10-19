@@ -84,7 +84,7 @@ export const VoiceSettings: React.FC<VoiceSettingsProps> = ({
    */
   const getVoicesForLanguage = (lang: string): VoiceOption[] => {
     return availableVoices.filter(voice => 
-      voice.lang.startsWith(lang.split('-')[0])
+      voice.lang.startsWith(lang.split('-')[0] ?? '')
     );
   };
 

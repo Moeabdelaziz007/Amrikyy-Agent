@@ -4,7 +4,7 @@
 
 ### CODE-QUALITY - WARNING
 **Severity**: medium
-**Message**: 1382 files have high complexity (>50). Consider refactoring.
+**Message**: 1386 files have high complexity (>50). Consider refactoring.
 
 ### ARCHITECTURE - INFO
 **Severity**: low
@@ -16,7 +16,7 @@
 
 ### PERFORMANCE - WARNING
 **Severity**: medium
-**Message**: 206 files are very large (>500 lines). Consider splitting.
+**Message**: 212 files are very large (>500 lines). Consider splitting.
 
 ### PERFORMANCE - INFO
 **Severity**: low
@@ -42,7 +42,7 @@
 
 ## 📊 Summary
 
-- **Total Files Analyzed**: 1799
-- **Processing Time**: 181040ms
+- **Total Files Analyzed**: 1803
+- **Processing Time**: 397589ms
 - **Insights Generated**: 6
 - **Recommendations**: 3

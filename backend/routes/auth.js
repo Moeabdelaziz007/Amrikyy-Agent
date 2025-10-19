@@ -7,10 +7,10 @@
 const express = require('express');
 const router = express.Router();
 const { createClient } = require('@supabase/supabase-js');
-const { logger } = require('../utils/logger');
+const logger = require('../utils/logger');
 
 // Create child logger for auth routes
-const log = logger.child('AuthRoutes');
+const log = logger;
 
 // Initialize Supabase client
 const supabase = createClient(

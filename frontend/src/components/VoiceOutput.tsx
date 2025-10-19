@@ -243,7 +243,7 @@ export const VoiceOutput: React.FC<VoiceOutputProps> = ({
             className="voice-select"
           >
             {voices
-              .filter(voice => voice.lang.startsWith(language.split('-')[0]))
+              .filter(voice => voice.lang.startsWith(language.split('-')[0] ?? ''))
               .map(voice => (
                 <option key={voice.name} value={voice.name}>
                   {voice.name} ({voice.lang})
@@ -257,3 +257,4 @@ export const VoiceOutput: React.FC<VoiceOutputProps> = ({
 };
 
 export default VoiceOutput;
+Output;

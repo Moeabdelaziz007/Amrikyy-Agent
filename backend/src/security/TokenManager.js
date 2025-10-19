@@ -4,7 +4,8 @@
  */
 
 const crypto = require('crypto');
-const logger = require('../utils/logger');
+// const logger = require('../utils/logger');
+const logger = console;
 
 class TokenManager {
   constructor() {

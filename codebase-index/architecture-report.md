@@ -12,9 +12,9 @@
 
 - **Singleton**: 2 instances
 - **Factory**: 2 instances
-- **Observer**: 417 instances
+- **Observer**: 421 instances
 - **Strategy**: 3 instances
-- **Decorator**: 145 instances
+- **Decorator**: 148 instances
 - **Adapter**: 1 instances
 - **Command**: 5 instances
 
