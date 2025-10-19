@@ -13,7 +13,12 @@
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const validator = require('validator');
-const { envValidator } = require('../src/security/envValidator');
+const { EnvironmentValidator } = require('../src/security/envValidator');
+const SecurityManager = require('../src/security/SecurityManager');
+
+// تهيئة مدير الأمان
+const securityManager = new SecurityManager();
+const envValidator = new EnvironmentValidator();
 
 /**
  * Enhanced CORS Configuration
@@ -171,30 +176,155 @@ const validateField = (fieldName, value, schema) => {
 };
 
 /**
- * String sanitization
+ * String sanitization using Security Manager
  * Fixes: Potential XSS and injection attacks
  */
 const sanitizeString = (input) => {
-  if (typeof input !== 'string') return input;
+  return securityManager.sanitizeInput(input, 'string');
+};
 
-  return (
-    input
-      // Remove potential script injections
-      .replace(/<script[^>]*>.*?<\/script>/gi, '')
-      .replace(/javascript:/gi, '')
-      .replace(/data:/gi, '')
-      // Remove potential SQL injection patterns
-      .replace(/('|(\\')|(;)|(\|)|(&)|(`)|(\$))/g, '')
-      // Remove potential command injection
-      .replace(/[;&|`$]/g, '')
-      // Remove potential template injection
-      .replace(/\{\{.*?\}\}/g, '')
-      // Remove potential prompt injection
-      .replace(/ignore previous instructions/gi, '')
-      .replace(/disregard all above/gi, '')
-      // Trim whitespace
-      .trim()
-  );
+/**
+ * Advanced Input Validation with Security Manager
+ */
+const advancedInputValidation = (req, res, next) => {
+  try {
+    // فحص IP المحظور
+    if (securityManager.isIPBlocked(req.ip)) {
+      securityManager.logSecurityEvent('blocked_ip_access', {
+        ip: req.ip,
+        userAgent: req.get('User-Agent'),
+        endpoint: req.path
+      });
+      
+      return res.status(403).json({
+        success: false,
+        error: 'Access denied',
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // تنظيف جميع المدخلات
+    if (req.body) {
+      req.body = securityManager.sanitizeInput(req.body, 'string');
+    }
+    
+    if (req.query) {
+      req.query = securityManager.sanitizeInput(req.query, 'string');
+    }
+    
+    if (req.params) {
+      req.params = securityManager.sanitizeInput(req.params, 'string');
+    }
+
+    next();
+  } catch (error) {
+    securityManager.logSecurityEvent('input_validation_error', {
+      error: error.message,
+      ip: req.ip,
+      endpoint: req.path
+    });
+    
+    res.status(400).json({
+      success: false,
+      error: 'Invalid input',
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+/**
+ * SQL Injection Protection
+ */
+const sqlInjectionProtection = (req, res, next) => {
+  const sqlPatterns = [
+    /union\s+select/i,
+    /drop\s+table/i,
+    /delete\s+from/i,
+    /insert\s+into/i,
+    /update\s+set/i,
+    /alter\s+table/i,
+    /create\s+table/i,
+    /exec\s*\(/i,
+    /execute\s*\(/i
+  ];
+
+  const checkForSQLInjection = (obj) => {
+    for (const [key, value] of Object.entries(obj)) {
+      if (typeof value === 'string') {
+        for (const pattern of sqlPatterns) {
+          if (pattern.test(value)) {
+            securityManager.logSecurityEvent('sql_injection_attempt', {
+              ip: req.ip,
+              userAgent: req.get('User-Agent'),
+              endpoint: req.path,
+              maliciousInput: value,
+              pattern: pattern.toString()
+            });
+            
+            return res.status(400).json({
+              success: false,
+              error: 'Invalid input detected',
+              timestamp: new Date().toISOString()
+            });
+          }
+        }
+      }
+    }
+    return null;
+  };
+
+  // فحص جميع المدخلات
+  if (req.body && checkForSQLInjection(req.body)) return;
+  if (req.query && checkForSQLInjection(req.query)) return;
+  if (req.params && checkForSQLInjection(req.params)) return;
+
+  next();
+};
+
+/**
+ * XSS Protection
+ */
+const xssProtection = (req, res, next) => {
+  const xssPatterns = [
+    /<script[^>]*>.*?<\/script>/gi,
+    /javascript:/gi,
+    /on\w+\s*=/gi,
+    /<iframe[^>]*>.*?<\/iframe>/gi,
+    /<object[^>]*>.*?<\/object>/gi,
+    /<embed[^>]*>/gi
+  ];
+
+  const checkForXSS = (obj) => {
+    for (const [key, value] of Object.entries(obj)) {
+      if (typeof value === 'string') {
+        for (const pattern of xssPatterns) {
+          if (pattern.test(value)) {
+            securityManager.logSecurityEvent('xss_attempt', {
+              ip: req.ip,
+              userAgent: req.get('User-Agent'),
+              endpoint: req.path,
+              maliciousInput: value,
+              pattern: pattern.toString()
+            });
+            
+            return res.status(400).json({
+              success: false,
+              error: 'Invalid input detected',
+              timestamp: new Date().toISOString()
+            });
+          }
+        }
+      }
+    }
+    return null;
+  };
+
+  // فحص جميع المدخلات
+  if (req.body && checkForXSS(req.body)) return;
+  if (req.query && checkForXSS(req.query)) return;
+  if (req.params && checkForXSS(req.params)) return;
+
+  next();
 };
 
 /**
@@ -360,4 +490,9 @@ module.exports = {
   requestId,
   validateEnvironment,
   sanitizeString,
+  advancedInputValidation,
+  sqlInjectionProtection,
+  xssProtection,
+  securityManager,
+  envValidator
 };
