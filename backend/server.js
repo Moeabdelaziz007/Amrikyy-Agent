@@ -240,7 +240,7 @@ app.use('/api/auth', require('./routes/auth'));
 // app.use('/api/users', require('./routes/users'));
 app.use('/api/trips', require('./routes/trips'));
 app.use('/api/bookings', require('./routes/bookings'));
-app.use('/api/profile', require('./routes/profile'));
+napp.use('/api/profile', require('./routes/profile'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/payments', require('./routes/payment'));
 app.use('/api/destinations', require('./routes/destinations'));

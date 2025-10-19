@@ -21,7 +21,7 @@ class WorkflowEventEmitter extends EventEmitter {
       steps: [],
       status: 'active',
       created_at: Date.now(),
-      updated_at: Date.now(),
+      updated_at: Date.now()
     });
     return this.sessions.get(sessionId);
   }
@@ -35,7 +35,7 @@ class WorkflowEventEmitter extends EventEmitter {
 
     const workflowStep = {
       ...step,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     session.steps.push(workflowStep);
@@ -44,7 +44,7 @@ class WorkflowEventEmitter extends EventEmitter {
     // Emit event for WebSocket broadcasting
     this.emit('workflow:step', {
       sessionId,
-      step: workflowStep,
+      step: workflowStep
     });
 
     log.info(`Added step to session ${sessionId}: ${step.agent} - ${step.action}`);
@@ -67,7 +67,7 @@ class WorkflowEventEmitter extends EventEmitter {
     session.steps[stepIndex] = {
       ...session.steps[stepIndex],
       ...updates,
-      updated_at: Date.now(),
+      updated_at: Date.now()
     };
     session.updated_at = Date.now();
 
@@ -75,7 +75,7 @@ class WorkflowEventEmitter extends EventEmitter {
     this.emit('workflow:update', {
       sessionId,
       stepId,
-      updates: session.steps[stepIndex],
+      updates: session.steps[stepIndex]
     });
 
     log.info(`Updated step ${stepId} in session ${sessionId}`);
@@ -97,7 +97,7 @@ class WorkflowEventEmitter extends EventEmitter {
     // Emit event for WebSocket broadcasting
     this.emit('workflow:complete', {
       sessionId,
-      result,
+      result
     });
 
     log.success(`Completed workflow session: ${sessionId}`);
@@ -145,7 +145,7 @@ function setupWorkflowWebSocket(wss) {
       ws.send(
         JSON.stringify({
           type: 'session:state',
-          data: session,
+          data: session
         })
       );
     }
@@ -156,7 +156,7 @@ function setupWorkflowWebSocket(wss) {
         ws.send(
           JSON.stringify({
             type: 'workflow:step',
-            data: event.step,
+            data: event.step
           })
         );
       }
@@ -167,7 +167,7 @@ function setupWorkflowWebSocket(wss) {
         ws.send(
           JSON.stringify({
             type: 'workflow:update',
-            data: event.updates,
+            data: event.updates
           })
         );
       }
@@ -178,7 +178,7 @@ function setupWorkflowWebSocket(wss) {
         ws.send(
           JSON.stringify({
             type: 'workflow:complete',
-            data: event.result,
+            data: event.result
           })
         );
       }
@@ -198,7 +198,7 @@ function setupWorkflowWebSocket(wss) {
         ws.send(
           JSON.stringify({
             type: 'error',
-            error: 'Invalid message format',
+            error: 'Invalid message format'
           })
         );
       }
@@ -217,7 +217,7 @@ function setupWorkflowWebSocket(wss) {
       JSON.stringify({
         type: 'connected',
         sessionId,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       })
     );
   });
@@ -230,34 +230,34 @@ function handleWorkflowMessage(sessionId, data, ws) {
   const { type, payload } = data;
 
   switch (type) {
-    case 'ping':
-      ws.send(JSON.stringify({ type: 'pong', timestamp: Date.now() }));
-      break;
+  case 'ping':
+    ws.send(JSON.stringify({ type: 'pong', timestamp: Date.now() }));
+    break;
 
-    case 'subscribe':
-      // Client confirming subscription (already subscribed by default)
-      log.info(`Client subscribed to session: ${sessionId}`);
-      break;
+  case 'subscribe':
+    // Client confirming subscription (already subscribed by default)
+    log.info(`Client subscribed to session: ${sessionId}`);
+    break;
 
-    case 'request:state':
-      // Client requesting current state
-      const session = workflowEvents.getSession(sessionId);
-      ws.send(
-        JSON.stringify({
-          type: 'session:state',
-          data: session || { error: 'Session not found' },
-        })
-      );
-      break;
+  case 'request:state':
+    // Client requesting current state
+    const session = workflowEvents.getSession(sessionId);
+    ws.send(
+      JSON.stringify({
+        type: 'session:state',
+        data: session || { error: 'Session not found' }
+      })
+    );
+    break;
 
-    default:
-      log.warn(`Unknown message type: ${type}`);
-      ws.send(
-        JSON.stringify({
-          type: 'error',
-          error: 'Unknown message type',
-        })
-      );
+  default:
+    log.warn(`Unknown message type: ${type}`);
+    ws.send(
+      JSON.stringify({
+        type: 'error',
+        error: 'Unknown message type'
+      })
+    );
   }
 }
 
@@ -271,7 +271,7 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
   // Create workflow session
   workflowEvents.createSession(sessionId, {
     type: 'travel_planning',
-    user_request: userRequest,
+    user_request: userRequest
   });
 
   const startTime = Date.now();
@@ -281,7 +281,7 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
     id: 'step-1',
     agent: 'Amrikyy',
     action: 'Analyzing your travel request...',
-    status: 'processing',
+    status: 'processing'
   });
 
   // Simulate real processing time (much shorter)
@@ -291,7 +291,7 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
   workflowEvents.updateStep(sessionId, 'step-1', {
     status: 'complete',
     duration: step1Duration,
-    data: { analyzed: true },
+    data: { analyzed: true }
   });
 
   // Step 2: Safar researches destinations
@@ -299,7 +299,7 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
     id: 'step-2',
     agent: 'Safar',
     action: 'Researching destinations matching your criteria...',
-    status: 'processing',
+    status: 'processing'
   });
 
   await processStep('research_destinations', userRequest);
@@ -308,7 +308,7 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
   workflowEvents.updateStep(sessionId, 'step-2', {
     status: 'complete',
     duration: step2Duration,
-    data: { destinations: ['Paris', 'Rome', 'Barcelona'] },
+    data: { destinations: ['Paris', 'Rome', 'Barcelona'] }
   });
 
   // Step 3: Thrifty finds prices
@@ -316,7 +316,7 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
     id: 'step-3',
     agent: 'Thrifty',
     action: 'Finding best prices for flights and hotels...',
-    status: 'processing',
+    status: 'processing'
   });
 
   await processStep('find_prices', userRequest);
@@ -325,7 +325,7 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
   workflowEvents.updateStep(sessionId, 'step-3', {
     status: 'complete',
     duration: step3Duration,
-    data: { savings: '$450' },
+    data: { savings: '$450' }
   });
 
   // Step 4: Thaqafa checks cultural requirements
@@ -333,7 +333,7 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
     id: 'step-4',
     agent: 'Thaqafa',
     action: 'Checking cultural guidelines and requirements...',
-    status: 'processing',
+    status: 'processing'
   });
 
   await processStep('check_cultural_requirements', userRequest);
@@ -342,7 +342,7 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
   workflowEvents.updateStep(sessionId, 'step-4', {
     status: 'complete',
     duration: step4Duration,
-    data: { guidelines: ['dress_code', 'local_customs'] },
+    data: { guidelines: ['dress_code', 'local_customs'] }
   });
 
   // Step 5: Amrikyy combines results
@@ -350,7 +350,7 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
     id: 'step-5',
     agent: 'Amrikyy',
     action: 'Combining results into perfect itinerary...',
-    status: 'processing',
+    status: 'processing'
   });
 
   await processStep('combine_results', userRequest);
@@ -360,7 +360,7 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
   workflowEvents.updateStep(sessionId, 'step-5', {
     status: 'complete',
     duration: step5Duration,
-    data: { itinerary: 'complete' },
+    data: { itinerary: 'complete' }
   });
 
   const totalDuration = Date.now() - startTime;
@@ -369,7 +369,7 @@ async function simulateTravelPlanningWorkflow(sessionId, userRequest) {
   workflowEvents.completeSession(sessionId, {
     success: true,
     itinerary_id: 'itin-123',
-    total_duration: totalDuration,
+    total_duration: totalDuration
   });
 
   log.success(`Completed travel planning workflow for session: ${sessionId} in ${totalDuration}ms`);
@@ -387,7 +387,7 @@ async function processStep(stepType, userRequest) {
     research_destinations: 200, // 200ms - API calls
     find_prices: 300, // 300ms - price comparison
     check_cultural_requirements: 100, // 100ms - cultural data
-    combine_results: 150, // 150ms - data combination
+    combine_results: 150 // 150ms - data combination
   };
 
   const processingTime = processingTimes[stepType] || 100;
@@ -399,5 +399,5 @@ async function processStep(stepType, userRequest) {
 module.exports = {
   setupWorkflowWebSocket,
   workflowEvents,
-  simulateTravelPlanningWorkflow,
+  simulateTravelPlanningWorkflow
 };

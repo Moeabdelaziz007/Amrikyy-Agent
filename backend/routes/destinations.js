@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { supabase } = require('../src/utils/supabaseClient');
+const supabase = require('../src/utils/supabaseClient');
 
 // GET /api/destinations - List all destinations with filtering, sorting, and search
 router.get('/', async (req, res) => {
