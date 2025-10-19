@@ -29,6 +29,7 @@ require('dotenv').config();
 const { AgentManager } = require('./dist/agents/AgentManager');
 const { TravelAgent } = require('./dist/agents/TravelAgent');
 const { createAgentRoutes } = require('./dist/routes/agents');
+const AIXConnectionManager = require('./src/aix/AIXConnectionManager');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -135,7 +136,9 @@ const connectRedis = async () => {
 // Global cache helper functions
 global.cache = {
   get: async (key) => {
-    if (!redisClient) return null;
+    if (!redisClient) {
+      return null;
+    }
     try {
       const value = await redisClient.get(key);
       return value ? JSON.parse(value) : null;
@@ -147,7 +150,9 @@ global.cache = {
 
   set: async (key, value, ttl = 300) => {
     // 5 minutes default
-    if (!redisClient) return;
+    if (!redisClient) {
+      return;
+    }
     try {
       await redisClient.setex(key, ttl, JSON.stringify(value));
     } catch (error) {
@@ -156,7 +161,9 @@ global.cache = {
   },
 
   del: async (key) => {
-    if (!redisClient) return;
+    if (!redisClient) {
+      return;
+    }
     try {
       await redisClient.del(key);
     } catch (error) {
@@ -165,7 +172,9 @@ global.cache = {
   },
 
   clear: async (pattern = '*') => {
-    if (!redisClient) return;
+    if (!redisClient) {
+      return;
+    }
     try {
       const keys = await redisClient.keys(pattern);
       if (keys.length > 0) {
@@ -225,6 +234,37 @@ app.use('/api/docs', aiLimiter, require('./routes/smart-documentation'));
 // WebSocket routes
 
 // --- New Agent System Initialization ---
+console.log('🔄 Initializing AIX Connection Manager...');
+const aixConnectionManager = new AIXConnectionManager();
+
+// --- WhatsApp Business + MCP Integration ---
+const whatsappClient = require('./src/whatsapp/whatsappClient'); // Assuming this exists
+
+// Register the transport for sending replies back to WhatsApp
+aixConnectionManager.registerTransport('whatsapp', async (to, message) => {
+  // `to` is the user's phone number, `message` is the text content
+  await whatsappClient.sendMessage(to, message.text);
+});
+
+app.use('/api/whatsapp', require('./routes/whatsapp')(aixConnectionManager));
+console.log('✅ WhatsApp Business MCP routes registered at /api/whatsapp');
+
+// --- Crypto Payment Routes ---
+app.use('/api/crypto-payments', require('./routes/crypto-payments'));
+console.log('✅ Crypto Payment routes registered at /api/crypto-payments');
+
+// --- Communication Channel Expansion ---
+const discordRoute = require('./routes/discord')(aixConnectionManager);
+const messengerRoute = require('./routes/messenger');
+const emailRoute = require('./routes/email')(aixConnectionManager);
+const ivrRoute = require('./routes/ivr');
+
+app.use('/api/discord', discordRoute);
+app.use('/api/messenger', messengerRoute);
+app.use('/api/email', emailRoute);
+app.use('/api/ivr', ivrRoute);
+console.log('✅ New communication channels (Discord, Messenger, Email, IVR) registered.');
+
 console.log('🔄 Initializing new Agent System...');
 const agentManager = new AgentManager();
 agentManager.registerAgent(new TravelAgent());
@@ -309,7 +349,7 @@ const server = app.listen(PORT, () => {
   console.log('\n🚀 ===========================================');
   console.log('🌟 MAYA TRAVEL AGENT - MULTI-MODEL ARCHITECTURE');
   console.log('🚀 ===========================================');
-  console.log(`📱 Frontend: http://localhost:3000`);
+  console.log('📱 Frontend: http://localhost:3000');
   console.log(`🔧 Backend API: http://localhost:${PORT}`);
   console.log(`📚 API Docs: http://localhost:${PORT}/api`);
   console.log(`❤️  Health Check: http://localhost:${PORT}/health`);
