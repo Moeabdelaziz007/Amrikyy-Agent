@@ -72,8 +72,8 @@ COPY --from=builder --chown=maya:nodejs /app/frontend/public ./frontend/public
 
 # Copy other necessary files
 COPY --chown=maya:nodejs .env.example .env.example
-COPY --chown=maya:nodejs README.md ./
-COPY --chown=maya:nodejs ARCHITECTURE.md ./
+# Copy documentation files if they exist
+COPY --chown=maya:nodejs README.md ./ 2>/dev/null || echo "README.md not found, skipping..."
 
 # Create necessary directories
 RUN mkdir -p /app/logs /app/uploads /app/temp && \

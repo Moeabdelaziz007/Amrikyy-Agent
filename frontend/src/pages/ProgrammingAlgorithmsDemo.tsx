@@ -22,7 +22,12 @@ import {
 interface Algorithm {
   id: string;
   name: string;
-  category: 'sorting' | 'searching' | 'graph' | 'dynamic-programming' | 'greedy';
+  category:
+    | 'sorting'
+    | 'searching'
+    | 'graph'
+    | 'dynamic-programming'
+    | 'greedy';
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   timeComplexity: string;
   spaceComplexity: string;
@@ -50,8 +55,12 @@ interface TestCase {
 }
 
 const ProgrammingAlgorithmsDemo: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'learn' | 'practice' | 'code'>('learn');
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState<Algorithm | null>(null);
+  const [activeTab, setActiveTab] = useState<'learn' | 'practice' | 'code'>(
+    'learn'
+  );
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState<Algorithm | null>(
+    null
+  );
   const [selectedProblem, setSelectedProblem] = useState<Problem | null>(null);
   const [code, setCode] = useState('');
   const [isRunning, setIsRunning] = useState(false);
@@ -67,7 +76,8 @@ const ProgrammingAlgorithmsDemo: React.FC = () => {
       difficulty: 'beginner',
       timeComplexity: 'O(n²)',
       spaceComplexity: 'O(1)',
-      description: 'A simple sorting algorithm that repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order.',
+      description:
+        'A simple sorting algorithm that repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order.',
       code: `function bubbleSort(arr) {
   const n = arr.length;
   for (let i = 0; i < n - 1; i++) {
@@ -80,7 +90,11 @@ const ProgrammingAlgorithmsDemo: React.FC = () => {
   }
   return arr;
 }`,
-      visualization: ['Compare adjacent elements', 'Swap if in wrong order', 'Repeat until sorted'],
+      visualization: [
+        'Compare adjacent elements',
+        'Swap if in wrong order',
+        'Repeat until sorted',
+      ],
     },
     {
       id: 'quick-sort',
@@ -89,7 +103,8 @@ const ProgrammingAlgorithmsDemo: React.FC = () => {
       difficulty: 'intermediate',
       timeComplexity: 'O(n log n)',
       spaceComplexity: 'O(log n)',
-      description: 'An efficient sorting algorithm that uses divide and conquer strategy. It picks a pivot element and partitions the array around the pivot.',
+      description:
+        'An efficient sorting algorithm that uses divide and conquer strategy. It picks a pivot element and partitions the array around the pivot.',
       code: `function quickSort(arr, low = 0, high = arr.length - 1) {
   if (low < high) {
     const pivotIndex = partition(arr, low, high);
@@ -112,7 +127,11 @@ function partition(arr, low, high) {
   [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
   return i + 1;
 }`,
-      visualization: ['Choose pivot', 'Partition array', 'Recursively sort subarrays'],
+      visualization: [
+        'Choose pivot',
+        'Partition array',
+        'Recursively sort subarrays',
+      ],
     },
     {
       id: 'binary-search',
@@ -121,7 +140,8 @@ function partition(arr, low, high) {
       difficulty: 'beginner',
       timeComplexity: 'O(log n)',
       spaceComplexity: 'O(1)',
-      description: 'An efficient search algorithm that finds the position of a target value within a sorted array by repeatedly dividing the search interval in half.',
+      description:
+        'An efficient search algorithm that finds the position of a target value within a sorted array by repeatedly dividing the search interval in half.',
       code: `function binarySearch(arr, target) {
   let left = 0;
   let right = arr.length - 1;
@@ -140,7 +160,11 @@ function partition(arr, low, high) {
   
   return -1; // Target not found
 }`,
-      visualization: ['Compare with middle element', 'Eliminate half of array', 'Repeat until found'],
+      visualization: [
+        'Compare with middle element',
+        'Eliminate half of array',
+        'Repeat until found',
+      ],
     },
     {
       id: 'dijkstra',
@@ -149,7 +173,8 @@ function partition(arr, low, high) {
       difficulty: 'advanced',
       timeComplexity: 'O((V + E) log V)',
       spaceComplexity: 'O(V)',
-      description: 'An algorithm for finding the shortest paths between nodes in a graph, which may represent road networks.',
+      description:
+        'An algorithm for finding the shortest paths between nodes in a graph, which may represent road networks.',
       code: `function dijkstra(graph, start) {
   const distances = {};
   const previous = {};
@@ -177,7 +202,12 @@ function partition(arr, low, high) {
   
   return { distances, previous };
 }`,
-      visualization: ['Initialize distances', 'Visit nearest unvisited node', 'Update neighbor distances', 'Repeat until all visited'],
+      visualization: [
+        'Initialize distances',
+        'Visit nearest unvisited node',
+        'Update neighbor distances',
+        'Repeat until all visited',
+      ],
     },
   ];
 
@@ -187,7 +217,8 @@ function partition(arr, low, high) {
       title: 'Two Sum',
       difficulty: 'easy',
       acceptance: 45.7,
-      description: 'Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.',
+      description:
+        'Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.',
       examples: [
         {
           input: 'nums = [2,7,11,15], target = 9',
@@ -213,7 +244,8 @@ function partition(arr, low, high) {
       title: 'Valid Parentheses',
       difficulty: 'easy',
       acceptance: 38.4,
-      description: 'Given a string s containing just the characters \'(\', \')\', \'{\', \'}\', \'[\' and \']\', determine if the input string is valid.',
+      description:
+        "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.",
       examples: [
         {
           input: 's = "()"',
@@ -228,7 +260,7 @@ function partition(arr, low, high) {
       ],
       constraints: [
         '1 <= s.length <= 10⁴',
-        's consists of parentheses only \'()[]{}\'.',
+        "s consists of parentheses only '()[]{}'.",
       ],
       tags: ['String', 'Stack'],
     },
@@ -237,7 +269,8 @@ function partition(arr, low, high) {
       title: 'Merge Two Sorted Lists',
       difficulty: 'easy',
       acceptance: 56.3,
-      description: 'Merge two sorted linked lists and return it as a sorted list. The list should be made by splicing together the nodes of the first two lists.',
+      description:
+        'Merge two sorted linked lists and return it as a sorted list. The list should be made by splicing together the nodes of the first two lists.',
       examples: [
         {
           input: 'l1 = [1,2,4], l2 = [1,3,4]',
@@ -257,7 +290,8 @@ function partition(arr, low, high) {
       title: 'Longest Substring Without Repeating Characters',
       difficulty: 'medium',
       acceptance: 33.1,
-      description: 'Given a string s, find the length of the longest substring without repeating characters.',
+      description:
+        'Given a string s, find the length of the longest substring without repeating characters.',
       examples: [
         {
           input: 's = "abcabcbb"',
@@ -292,7 +326,8 @@ function partition(arr, low, high) {
       title: 'Sorting Algorithms',
       duration: '45 min',
       difficulty: 'beginner',
-      description: 'Master bubble sort, selection sort, insertion sort, and merge sort',
+      description:
+        'Master bubble sort, selection sort, insertion sort, and merge sort',
       completed: true,
     },
     {
@@ -330,7 +365,7 @@ function partition(arr, low, high) {
 
     // Simulate code execution
     const startTime = Date.now();
-    
+
     // Mock test cases based on the problem
     const mockTestCases: TestCase[] = [
       {
@@ -339,7 +374,8 @@ function partition(arr, low, high) {
       },
       {
         input: selectedProblem.examples[1]?.input || 'additional test case',
-        expectedOutput: selectedProblem.examples[1]?.output || 'expected output',
+        expectedOutput:
+          selectedProblem.examples[1]?.output || 'expected output',
       },
     ];
 
@@ -418,7 +454,8 @@ function partition(arr, low, high) {
             Programming & Algorithms Lab
           </h1>
           <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-            Master data structures, algorithms, and problem-solving techniques with interactive coding challenges and visualizations
+            Master data structures, algorithms, and problem-solving techniques
+            with interactive coding challenges and visualizations
           </p>
         </motion.div>
 
@@ -426,12 +463,16 @@ function partition(arr, low, high) {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-slate-400">Learning Progress</span>
-            <span className="text-sm text-blue-400">{completedProblems.length}/{problems.length} problems solved</span>
+            <span className="text-sm text-blue-400">
+              {completedProblems.length}/{problems.length} problems solved
+            </span>
           </div>
           <div className="w-full bg-slate-800 rounded-full h-2">
             <motion.div
               initial={{ width: 0 }}
-              animate={{ width: `${(completedProblems.length / problems.length) * 100}%` }}
+              animate={{
+                width: `${(completedProblems.length / problems.length) * 100}%`,
+              }}
               transition={{ duration: 0.5 }}
               className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full"
             />
@@ -445,7 +486,7 @@ function partition(arr, low, high) {
               { id: 'learn', label: 'Learn', icon: BookOpen },
               { id: 'practice', label: 'Practice', icon: Target },
               { id: 'code', label: 'Code', icon: Code2 },
-            ].map((tab) => (
+            ].map(tab => (
               <motion.button
                 key={tab.id}
                 whileHover={{ scale: 1.05 }}
@@ -476,7 +517,9 @@ function partition(arr, low, high) {
             >
               {/* Lessons */}
               <div className="space-y-4">
-                <h2 className="text-2xl font-bold text-white mb-4">Learning Path</h2>
+                <h2 className="text-2xl font-bold text-white mb-4">
+                  Learning Path
+                </h2>
                 {lessons.map((lesson, index) => (
                   <motion.div
                     key={lesson.id}
@@ -486,8 +529,7 @@ function partition(arr, low, high) {
                     className={`p-6 rounded-xl border transition-all duration-300 ${
                       lesson.completed
                         ? 'bg-green-900/20 border-green-500/50'
-                        : 'bg-slate-Always applied workspace rules
-                        : 'bg-slate-800/50 \"border-slate-700/50 hover:border-blue-500/50'
+                        : 'bg-slate-800/50 border-slate-700/50 hover:border-blue-500/50'
                     }`}
                   >
                     <div className="flex items-start justify-between">
@@ -498,12 +540,18 @@ function partition(arr, low, high) {
                           ) : (
                             <Circle size={20} className="text-slate-400" />
                           )}
-                          <h3 className="text-lg font-semibold text-white">{lesson.title}</h3>
-                          <span className={`text-sm font-medium ${getDifficultyColor(lesson.difficulty)}`}>
+                          <h3 className="text-lg font-semibold text-white">
+                            {lesson.title}
+                          </h3>
+                          <span
+                            className={`text-sm font-medium ${getDifficultyColor(lesson.difficulty)}`}
+                          >
                             {lesson.difficulty}
                           </span>
                         </div>
-                        <p className="text-slate-300 mb-3">{lesson.description}</p>
+                        <p className="text-slate-300 mb-3">
+                          {lesson.description}
+                        </p>
                         <div className="flex items-center space-x-4 text-sm text-slate-400">
                           <div className="flex items-center space-x-1">
                             <Clock size={16} />
@@ -527,7 +575,9 @@ function partition(arr, low, high) {
 
               {/* Algorithms Library */}
               <div className="space-y-4">
-                <h2 className="text-2xl font-bold text-white mb-4">Algorithm Library</h2>
+                <h2 className="text-2xl font-bold text-white mb-4">
+                  Algorithm Library
+                </h2>
                 <div className="grid grid-cols-1 gap-4">
                   {algorithms.map((algorithm, index) => (
                     <motion.div
@@ -541,10 +591,16 @@ function partition(arr, low, high) {
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                          <span className="text-2xl">{getCategoryIcon(algorithm.category)}</span>
+                          <span className="text-2xl">
+                            {getCategoryIcon(algorithm.category)}
+                          </span>
                           <div>
-                            <h3 className="text-lg font-semibold text-white">{algorithm.name}</h3>
-                            <p className="text-sm text-slate-400 capitalize">{algorithm.category}</p>
+                            <h3 className="text-lg font-semibold text-white">
+                              {algorithm.name}
+                            </h3>
+                            <p className="text-sm text-slate-400 capitalize">
+                              {algorithm.category}
+                            </p>
                           </div>
                         </div>
                         <div className="text-right">
@@ -552,7 +608,9 @@ function partition(arr, low, high) {
                             <div>Time: {algorithm.timeComplexity}</div>
                             <div>Space: {algorithm.spaceComplexity}</div>
                           </div>
-                          <span className={`text-xs font-medium ${getDifficultyColor(algorithm.difficulty)}`}>
+                          <span
+                            className={`text-xs font-medium ${getDifficultyColor(algorithm.difficulty)}`}
+                          >
                             {algorithm.difficulty}
                           </span>
                         </div>
@@ -572,7 +630,9 @@ function partition(arr, low, high) {
               exit={{ opacity: 0, y: -20 }}
               className="space-y-6"
             >
-              <h2 className="text-2xl font-bold text-white mb-6">Coding Problems</h2>
+              <h2 className="text-2xl font-bold text-white mb-6">
+                Coding Problems
+              </h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {problems.map((problem, index) => (
                   <motion.div
@@ -595,12 +655,18 @@ function partition(arr, low, high) {
                           ) : (
                             <Circle size={20} className="text-slate-400" />
                           )}
-                          <h3 className="text-xl font-semibold text-white">{problem.title}</h3>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(problem.difficulty)}`}>
+                          <h3 className="text-xl font-semibold text-white">
+                            {problem.title}
+                          </h3>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(problem.difficulty)}`}
+                          >
                             {problem.difficulty}
                           </span>
                         </div>
-                        <p className="text-slate-300 mb-3">{problem.description}</p>
+                        <p className="text-slate-300 mb-3">
+                          {problem.description}
+                        </p>
                         <div className="flex items-center space-x-4 text-sm text-slate-400">
                           <div className="flex items-center space-x-1">
                             <TrendingUp size={16} />
@@ -610,7 +676,7 @@ function partition(arr, low, high) {
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {problem.tags.map((tag) => (
+                      {problem.tags.map(tag => (
                         <span
                           key={tag}
                           className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs"
@@ -637,18 +703,31 @@ function partition(arr, low, high) {
                 {/* Problem Description */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold text-white">{selectedProblem.title}</h2>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(selectedProblem.difficulty)}`}>
+                    <h2 className="text-2xl font-bold text-white">
+                      {selectedProblem.title}
+                    </h2>
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(selectedProblem.difficulty)}`}
+                    >
                       {selectedProblem.difficulty}
                     </span>
                   </div>
-                  <p className="text-slate-300">{selectedProblem.description}</p>
+                  <p className="text-slate-300">
+                    {selectedProblem.description}
+                  </p>
 
                   <div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Examples</h3>
+                    <h3 className="text-lg font-semibold text-white mb-2">
+                      Examples
+                    </h3>
                     {selectedProblem.examples.map((example, index) => (
-                      <div key={index} className="bg-slate-800/50 rounded-lg p-4 mb-3">
-                        <div className="text-sm text-slate-400 mb-1">Example {index + 1}:</div>
+                      <div
+                        key={index}
+                        className="bg-slate-800/50 rounded-lg p-4 mb-3"
+                      >
+                        <div className="text-sm text-slate-400 mb-1">
+                          Example {index + 1}:
+                        </div>
                         <div className="text-sm text-white mb-2">
                           <strong>Input:</strong> {example.input}
                         </div>
@@ -663,7 +742,9 @@ function partition(arr, low, high) {
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Constraints</h3>
+                    <h3 className="text-lg font-semibold text-white mb-2">
+                      Constraints
+                    </h3>
                     <ul className="text-sm text-slate-300 space-y-1">
                       {selectedProblem.constraints.map((constraint, index) => (
                         <li key={index}>• {constraint}</li>
@@ -675,7 +756,9 @@ function partition(arr, low, high) {
                 {/* Code Editor */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-white">Code Editor</h3>
+                    <h3 className="text-lg font-semibold text-white">
+                      Code Editor
+                    </h3>
                     <div className="flex space-x-2">
                       <motion.button
                         whileHover={{ scale: 1.05 }}
@@ -697,7 +780,7 @@ function partition(arr, low, high) {
                   <div className="bg-slate-900 rounded-lg p-4">
                     <textarea
                       value={code}
-                      onChange={(e) => setCode(e.target.value)}
+                      onChange={e => setCode(e.target.value)}
                       placeholder="// Write your solution here..."
                       className="w-full h-64 bg-transparent text-white font-mono text-sm resize-none outline-none"
                     />
@@ -735,7 +818,9 @@ function partition(arr, low, high) {
                   {/* Test Results */}
                   {testResults.length > 0 && (
                     <div className="space-y-3">
-                      <h4 className="text-lg font-semibold text-white">Test Results</h4>
+                      <h4 className="text-lg font-semibold text-white">
+                        Test Results
+                      </h4>
                       {testResults.map((result, index) => (
                         <div
                           key={index}
@@ -747,18 +832,28 @@ function partition(arr, low, high) {
                         >
                           <div className="flex items-center space-x-2 mb-2">
                             {result.passed ? (
-                              <CheckCircle size={16} className="text-green-400" />
+                              <CheckCircle
+                                size={16}
+                                className="text-green-400"
+                              />
                             ) : (
                               <Circle size={16} className="text-red-400" />
                             )}
                             <span className="text-sm font-medium">
-                              Test Case {index + 1} - {result.passed ? 'Passed' : 'Failed'}
+                              Test Case {index + 1} -{' '}
+                              {result.passed ? 'Passed' : 'Failed'}
                             </span>
                           </div>
                           <div className="text-sm text-slate-300">
-                            <div><strong>Input:</strong> {result.input}</div>
-                            <div><strong>Expected:</strong> {result.expectedOutput}</div>
-                            <div><strong>Actual:</strong> {result.actualOutput}</div>
+                            <div>
+                              <strong>Input:</strong> {result.input}
+                            </div>
+                            <div>
+                              <strong>Expected:</strong> {result.expectedOutput}
+                            </div>
+                            <div>
+                              <strong>Actual:</strong> {result.actualOutput}
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -784,11 +879,13 @@ function partition(arr, low, high) {
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                onClick={(e) => e.stopPropagation()}
+                onClick={e => e.stopPropagation()}
                 className="bg-slate-800 border border-slate-700 rounded-xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-2xl font-bold text-white">{selectedAlgorithm.name}</h3>
+                  <h3 className="text-2xl font-bold text-white">
+                    {selectedAlgorithm.name}
+                  </h3>
                   <button
                     onClick={() => setSelectedAlgorithm(null)}
                     className="text-slate-400 hover:text-white transition-colors"
@@ -800,28 +897,46 @@ function partition(arr, low, high) {
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="bg-slate-900/50 rounded-lg p-4">
-                      <h4 className="text-lg font-semibold text-white mb-2">Time Complexity</h4>
-                      <p className="text-blue-400 font-mono">{selectedAlgorithm.timeComplexity}</p>
+                      <h4 className="text-lg font-semibold text-white mb-2">
+                        Time Complexity
+                      </h4>
+                      <p className="text-blue-400 font-mono">
+                        {selectedAlgorithm.timeComplexity}
+                      </p>
                     </div>
                     <div className="bg-slate-900/50 rounded-lg p-4">
-                      <h4 className="text-lg font-semibold text-white mb-2">Space Complexity</h4>
-                      <p className="text-blue-400 font-mono">{selectedAlgorithm.spaceComplexity}</p>
+                      <h4 className="text-lg font-semibold text-white mb-2">
+                        Space Complexity
+                      </h4>
+                      <p className="text-blue-400 font-mono">
+                        {selectedAlgorithm.spaceComplexity}
+                      </p>
                     </div>
                     <div className="bg-slate-900/50 rounded-lg p-4">
-                      <h4 className="text-lg font-semibold text-white mb-2">Difficulty</h4>
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(selectedAlgorithm.difficulty)}`}>
+                      <h4 className="text-lg font-semibold text-white mb-2">
+                        Difficulty
+                      </h4>
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(selectedAlgorithm.difficulty)}`}
+                      >
                         {selectedAlgorithm.difficulty}
                       </span>
                     </div>
                   </div>
 
                   <div>
-                    <h4 className="text-lg font-semibold text-white mb-2">Description</h4>
-                    <p className="text-slate-300">{selectedAlgorithm.description}</p>
+                    <h4 className="text-lg font-semibold text-white mb-2">
+                      Description
+                    </h4>
+                    <p className="text-slate-300">
+                      {selectedAlgorithm.description}
+                    </p>
                   </div>
 
                   <div>
-                    <h4 className="text-lg font-semibold text-white mb-2">Implementation</h4>
+                    <h4 className="text-lg font-semibold text-white mb-2">
+                      Implementation
+                    </h4>
                     <div className="bg-slate-900/50 rounded-lg p-4">
                       <pre className="text-green-400 font-mono text-sm overflow-x-auto">
                         <code>{selectedAlgorithm.code}</code>
@@ -830,10 +945,14 @@ function partition(arr, low, high) {
                   </div>
 
                   <div>
-                    <h4 className="text-lg font-semibold text-white mb-2">Visualization Steps</h4>
+                    <h4 className="text-lg font-semibold text-white mb-2">
+                      Visualization Steps
+                    </h4>
                     <ol className="list-decimal list-inside space-y-2">
                       {selectedAlgorithm.visualization.map((step, index) => (
-                        <li key={index} className="text-slate-300">{step}</li>
+                        <li key={index} className="text-slate-300">
+                          {step}
+                        </li>
                       ))}
                     </ol>
                   </div>
