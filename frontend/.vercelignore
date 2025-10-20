@@ -1,0 +1,33 @@
+# Ignore source files
+src/
+*.ts
+*.tsx
+!dist/**
+
+# Ignore config files
+vite.config.ts
+tailwind.config.js
+postcss.config.js
+tsconfig.json
+
+# Ignore development files
+node_modules/
+.git/
+.husky/
+.vercel/
+
+# Ignore test files
+**/*.test.*
+**/*.spec.*
+test/
+tests/
+__tests__/
+
+# Ignore documentation (except essential)
+*.md
+!README.md
+
+# Keep only production files
+!dist/**
+!package.json
+!package-lock.json
