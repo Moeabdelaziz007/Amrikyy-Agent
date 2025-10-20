@@ -73,7 +73,6 @@ COPY --from=builder --chown=maya:nodejs /app/frontend/public ./frontend/public
 # Copy other necessary files
 COPY --chown=maya:nodejs .env.example .env.example
 COPY --chown=maya:nodejs README.md ./
-COPY --chown=maya:nodejs ARCHITECTURE.md ./
 
 # Create necessary directories
 RUN mkdir -p /app/logs /app/uploads /app/temp && \
