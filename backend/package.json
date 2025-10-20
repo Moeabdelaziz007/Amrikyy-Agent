@@ -5,8 +5,11 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
+    "dev:unified": "ts-node-dev --respawn --transpile-only src/server.ts",
     "start": "node server.js",
-    "build": "echo 'Backend build completed'",
+    "start:unified": "node dist/src/server.js",
+    "build": "tsc",
+    "build:check": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -81,6 +84,7 @@
     "sinon": "^21.0.0",
     "supertest": "^7.1.4",
     "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.3"
   },
   "keywords": [
