@@ -1,19 +1,12 @@
 import React from 'react';
-import { AnimatePresence } from 'framer-motion';
 import AppRouter from './router/AppRouter';
-import Navigation from './components/Navigation';
 
 function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A0A0F] via-[#1A1A2E] to-[#16213E]">
-      {/* Navigation */}
-      <Navigation />
-
       {/* Main Content */}
-      <main className="pt-16">
-        <AnimatePresence mode="wait">
-          <AppRouter />
-        </AnimatePresence>
+      <main>
+        <AppRouter />
       </main>
 
       {/* Background Effects */}
