@@ -3,53 +3,13 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  server: {
-    host: '0.0.0.0',
-    port: 5173,
-    strictPort: true,
-    hmr: {
-      clientPort: 5173,
-    },
-    watch: {
-      usePolling: true,
-    },
-    // Allow all hosts for Gitpod
-    allowedHosts: ['all'],
-  },
-  preview: {
-    host: '0.0.0.0',
-    port: 5173,
-    strictPort: true,
-  },
   build: {
     outDir: 'dist',
     sourcemap: false,
     minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-      },
-    },
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          ui: ['framer-motion', 'lucide-react'],
-          routing: ['react-router-dom'],
-          state: ['zustand'],
-        },
-      },
-    },
-    chunkSizeWarningLimit: 1000,
   },
-  define: {
-    'import.meta.env': {
-      VITE_SUPABASE_URL: JSON.stringify(process.env.VITE_SUPABASE_URL),
-      VITE_SUPABASE_ANON_KEY: JSON.stringify(process.env.VITE_SUPABASE_ANON_KEY),
-      VITE_APP_NAME: JSON.stringify(process.env.VITE_APP_NAME || 'Amrikyy Trips'),
-      VITE_APP_VERSION: JSON.stringify(process.env.VITE_APP_VERSION || '1.0.0'),
-      VITE_ENVIRONMENT: JSON.stringify(process.env.VITE_ENVIRONMENT || 'development'),
-    }
+  server: {
+    port: 3000,
+    host: '0.0.0.0'
   }
 })
