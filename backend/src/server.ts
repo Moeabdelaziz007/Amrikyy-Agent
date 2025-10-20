@@ -254,6 +254,15 @@ console.log('  ✅ POST /api/memory/query - Query memory');
 console.log('  ✅ POST /api/memory/store - Store memory');
 console.log('  ✅ GET  /api/memory/patterns - Get learned patterns');
 
+// Creative Agent routes (NEW - GeminiCreativeAgent)
+const creativeAgentRoutes = require('../routes/creative-agent');
+app.use('/api/creative-agent', creativeAgentRoutes);
+console.log('  ✅ GET  /api/creative-agent/status - Creative agent status');
+console.log('  ✅ POST /api/creative-agent/run - Trigger idea generation');
+console.log('  ✅ POST /api/creative-agent/urls - Update inspiration sources');
+console.log('  ✅ POST /api/creative-agent/start - Start autonomous mode');
+console.log('  ✅ POST /api/creative-agent/stop - Stop autonomous mode');
+
 console.log('\n✅ All routes mounted successfully!\n');
 
 // ============================================
@@ -341,6 +350,85 @@ try {
   console.log('   Server will continue without MCP tool features');
 }
 
+// Initialize GeminiCreativeAgent
+console.log('🎨 Initializing Gemini Creative Agent...');
+try {
+  const { GeminiCreativeAgent } = require('./agents/GeminiCreativeAgent');
+  
+  const creativeAgent = new GeminiCreativeAgent({
+    geminiApiKey: config.gemini.apiKey,
+    model: config.gemini.model,
+    schedule: '0 */6 * * *', // Every 6 hours
+    runOnInit: false,
+    maxIdeasPerRun: 3,
+    categories: ['productivity', 'games', 'tools', 'education', 'creative', 'content_creation', 'ai_automation'],
+    inspirationUrls: [
+      'https://news.ycombinator.com',
+      'https://www.producthunt.com',
+      'https://github.com/trending',
+    ],
+    storageCallback: async ({ ideas, miniApps, timestamp }) => {
+      const creativeAgentId = 'gemini-creative-agent-v1';
+      const projectId = 'Amrikyy_AIX_CreativeOS';
+      const systemUserId = 'system';
+
+      // Store ideas in OpenMemory
+      for (const idea of ideas) {
+        await memoryService.storeMemory(
+          {
+            agentId: creativeAgentId,
+            userId: systemUserId,
+            projectId: projectId,
+            namespace: 'creative_ideas',
+          },
+          'long_term',
+          `idea_${idea.id}`,
+          idea,
+          {
+            contentType: 'creative_idea',
+            metadata: {
+              category: idea.category,
+              complexity: idea.estimatedComplexity,
+              source: 'GeminiCreativeAgent',
+            },
+          }
+        );
+      }
+
+      // Store mini-apps in OpenMemory
+      for (const miniApp of miniApps) {
+        await memoryService.storeMemory(
+          {
+            agentId: creativeAgentId,
+            userId: systemUserId,
+            projectId: projectId,
+            namespace: 'generated_mini_apps',
+          },
+          'long_term',
+          `miniapp_${miniApp.id}`,
+          miniApp,
+          {
+            contentType: 'generated_mini_app',
+            metadata: {
+              category: miniApp.category,
+              source: 'GeminiCreativeAgent',
+            },
+          }
+        );
+      }
+
+      console.log('💾 OpenMemory MCP: Stored creative ideas and mini-apps!');
+    },
+  });
+
+  creativeAgent.start();
+  app.locals.creativeAgent = creativeAgent;
+  console.log('✅ Gemini Creative Agent initialized and started');
+} catch (error) {
+  console.error('⚠️  Creative Agent initialization failed:', error);
+  console.log('   Server will continue without creative agent features');
+}
+
 // ============================================
 // WEBSOCKET SETUP
 // ============================================
@@ -410,6 +498,7 @@ async function startServer(): Promise<void> {
     console.log(`  ${agentManager ? '✅' : '⏳'} Agent Manager - ${agentManager ? 'Ready' : 'Not initialized'}`);
     console.log('  ✅ OpenMemory MCP - Ready');
     console.log(`  ${travelMcpServer ? '✅' : '⏳'} Travel MCP Server - ${travelMcpServer ? 'Ready' : 'Not initialized'}`);
+    console.log(`  ${app.locals.creativeAgent ? '✅' : '⏳'} Gemini Creative Agent - ${app.locals.creativeAgent ? 'Ready' : 'Not initialized'}`);
     console.log('  ⏳ WebSocket Server - Pending configuration\n');
     
     // Start HTTP server

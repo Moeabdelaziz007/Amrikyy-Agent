@@ -26,7 +26,8 @@ const requiredEnvVars = [
   'SUPABASE_ANON_KEY',
   'REDIS_URL',
   'JWT_SECRET',
-  'PORT'
+  'PORT',
+  'GEMINI_API_KEY' // For GeminiCreativeAgent
 ];
 
 // ============================================
@@ -42,7 +43,8 @@ const optionalEnvVars: Record<string, string> = {
   LANGCHAIN_PROJECT: 'amrikyy-agent',
   CORS_ORIGIN: 'http://localhost:3000',
   RATE_LIMIT_WINDOW_MS: '900000',
-  RATE_LIMIT_MAX_REQUESTS: '100'
+  RATE_LIMIT_MAX_REQUESTS: '100',
+  GEMINI_MODEL: 'gemini-1.5-flash' // Default Gemini model
 };
 
 // ============================================
@@ -105,7 +107,8 @@ export const config = {
   },
   
   gemini: {
-    apiKey: process.env.GEMINI_API_KEY || '',
+    apiKey: process.env.GEMINI_API_KEY!,
+    model: process.env.GEMINI_MODEL!,
   },
   
   // Database
