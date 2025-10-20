@@ -236,6 +236,15 @@ app.use('/api/mcp', mcpRoutes);
 console.log('  ✅ GET  /api/mcp/tools - List MCP tools');
 console.log('  ✅ POST /api/mcp/execute - Execute MCP tool');
 
+// Agency routes (NEW - Day 4)
+const agencyRoutes = require('../routes/agency');
+app.use('/api/agency', agencyRoutes);
+console.log('  ✅ GET  /api/agency/status - Agent Manager status');
+console.log('  ✅ POST /api/agency/tasks - Create agent task');
+console.log('  ✅ GET  /api/agency/tasks/:id - Get task status');
+console.log('  ✅ GET  /api/agency/agents/:name - Get agent info');
+console.log('  ✅ GET  /api/agency/stats - Agency statistics');
+
 console.log('\n✅ All routes mounted successfully!\n');
 
 // ============================================
