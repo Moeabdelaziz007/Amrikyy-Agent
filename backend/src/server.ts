@@ -301,7 +301,11 @@ console.log('✅ HTTP server instance created');
 import { AgentManager } from './agents/AgentManager';
 import { memoryService } from './memory/MemoryService';
 
+// Import MCP Servers
+const TravelMCPServer = require('./mcp/TravelMCPServer');
+
 let agentManager: AgentManager;
+let travelMcpServer: any;
 
 // Initialize Memory Service
 console.log('🧠 Initializing OpenMemory MCP...');
@@ -323,6 +327,18 @@ try {
 } catch (error) {
   console.error('⚠️  Agent Manager initialization failed:', error);
   console.log('   Server will continue without agent management features');
+}
+
+// Initialize MCP Servers
+console.log('🔧 Initializing MCP Servers...');
+try {
+  travelMcpServer = new TravelMCPServer();
+  app.locals.travelMcpServer = travelMcpServer;
+  console.log('✅ Travel MCP Server initialized');
+  console.log(`   → ${travelMcpServer.listTools().length} tools registered`);
+} catch (error) {
+  console.error('⚠️  MCP Server initialization failed:', error);
+  console.log('   Server will continue without MCP tool features');
 }
 
 // ============================================
@@ -393,6 +409,7 @@ async function startServer(): Promise<void> {
     console.log('\n🔧 Core services status:');
     console.log(`  ${agentManager ? '✅' : '⏳'} Agent Manager - ${agentManager ? 'Ready' : 'Not initialized'}`);
     console.log('  ✅ OpenMemory MCP - Ready');
+    console.log(`  ${travelMcpServer ? '✅' : '⏳'} Travel MCP Server - ${travelMcpServer ? 'Ready' : 'Not initialized'}`);
     console.log('  ⏳ WebSocket Server - Pending configuration\n');
     
     // Start HTTP server
