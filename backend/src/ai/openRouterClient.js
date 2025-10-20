@@ -10,7 +10,13 @@ const ModelSwitcher = require('./modelSwitcher');
 
 class OpenRouterClient {
   constructor() {
-    this.apiKey = process.env.OPENROUTER_API_KEY || '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';
+    this.apiKey = process.env.OPENROUTER_API_KEY;
+    
+    // Fail fast if API key is not configured
+    if (!this.apiKey) {
+      throw new Error('OPENROUTER_API_KEY is required but not configured. Please check your .env file.');
+    }
+    
     this.baseUrl = 'https://openrouter.ai/api/v1';
     
     // Initialize cost optimization components
