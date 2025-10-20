@@ -9,6 +9,10 @@ const fetch = require('node-fetch');
 class MoonshotClient {
   constructor() {
     this.apiKey = process.env.MOONSHOT_API_KEY;
+    
+    if (!this.apiKey) {
+      throw new Error('MOONSHOT_API_KEY is required but not configured. Please check your .env file.');
+    }
     this.baseUrl = process.env.MOONSHOT_BASE_URL || 'https://api.moonshot.cn/v1';
     this.model = process.env.MOONSHOT_MODEL || 'moonshot-v1-8k';
     this.maxTokens = parseInt(process.env.MOONSHOT_MAX_TOKENS) || 4000;

@@ -6,6 +6,10 @@
 class KeloClient {
   constructor() {
     this.apiKey = process.env.KELO_API_KEY;
+    
+    if (!this.apiKey) {
+      throw new Error('KELO_API_KEY is required but not configured. Please check your .env file.');
+    }
     this.baseUrl = process.env.KELO_BASE_URL || 'https://api.kelo.ai';
     this.isEnabled = !!this.apiKey;
   }
