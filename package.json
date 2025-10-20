@@ -1,7 +1,7 @@
 {
-  "name": "maya-trips",
+  "name": "amrikyy-ai-platform",
   "version": "1.0.0",
-  "description": "AI Travel Assistant (Frontend + Backend) powered by Maya Trips Persona",
+  "description": "Amrikyy AI Learning Platform - AI-powered education for Quantum Computing, Programming & More",
   "private": true,
   "workspaces": [
     "frontend",
@@ -28,15 +28,17 @@
     "jest": "^30.2.0"
   },
   "keywords": [
-    "travel",
     "ai",
-    "assistant",
-    "maya",
-    "trips",
+    "education",
+    "learning",
+    "amrikyy",
+    "quantum-computing",
+    "programming",
+    "ai-trading",
     "react",
     "nodejs"
   ],
-  "author": "Maya Trips Team",
+  "author": "Amrikyy AI Team",
   "license": "MIT",
   "main": "index.js",
   "repository": {
