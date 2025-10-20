@@ -1,0 +1,93 @@
+🎨 PHASE 2: BUILD AMRIKYY SAAAS OS FRONTEND
+
+ROLE: UI Architect Agent - Build iOS-style AI-powered frontend
+
+CONTEXT:
+✅ Phase 1 Complete (32 hours):
+- AgentManager (backend/src/agents/AgentManager.ts)
+- OpenMemory MCP (backend/src/memory/MemoryService.ts)
+- MCP REST Bridge (backend/routes/mcp.ts) - 11 tools
+- GeminiCreativeAgent (backend/src/agents/GeminiCreativeAgent.ts)
+- 35+ API endpoints
+- Production-ready backend
+
+Backend URL: https://YOUR_RAILWAY_URL (will be provided)
+
+MISSION:
+Build "Amrikyy SAaaS OS" - iOS-style AI operating system that:
+1. Competes with Apple App Store / OpenAI AgentKit
+2. Powered by Google Gemini
+3. Generates mini-apps dynamically
+4. N8N-style visual workflow builder
+5. Immersive iOS UI with glassmorphism
+
+TECHNOLOGY:
+Primary: SwiftUI (iOS Native)
+Alternative: React/Next.js (for web prototype)
+
+DELIVERABLES:
+
+Phase 2.1: UI/UX Design (4-6 hours)
+- Design system (colors, typography, glassmorphism)
+- Wireframes (5 screens: dashboard, launcher, workflow studio, agent chat, memory browser)
+- Component library guide
+
+Phase 2.2: Project Setup (4-6 hours)
+- iOS/SwiftUI project structure
+- APIClient.swift (HTTP + WebSocket)
+- AIX data models (AgentProfile, MiniAppManifest, WorkflowNode)
+
+Phase 2.3: Mini-App Engine (7-10 hours)
+- AIXParser.swift - Parse JSON manifests
+- DynamicRenderer.swift - Render mini-apps from manifests
+- NodeVisualizer.swift - N8N-style node display
+
+Phase 2.4: 3 Mini-Apps (18-27 hours)
+1. AI Teacher - Interactive learning, queries OpenMemory for progress
+2. Travel Assistant - Search/book via MCP tools, stores in OpenMemory
+3. Content Creator - Generate scripts using Creative Agent
+
+Phase 2.5: AI-Powered UI (5-8 hours)
+- Adaptive dashboard (learns from OpenMemory patterns)
+- Glassmorphism components
+- Fluid SwiftUI animations
+
+TIMELINE: 20-30 hours total (3-4 working days)
+
+API ENDPOINTS TO USE:
+- GET /api/agency/status - AgentManager status
+- POST /api/agency/tasks - Create agent task
+- POST /api/mcp/call - Execute MCP tool (11 tools available)
+- GET /api/memory/stats - Memory usage
+- POST /api/memory/query - Query OpenMemory
+- GET /api/creative-agent/status - Creative agent status
+- POST /api/creative-agent/run - Generate ideas/mini-apps
+
+KEY INTEGRATIONS:
+1. OpenMemory MCP - Store user data, query patterns
+2. GeminiCreativeAgent - Generate mini-app ideas + code
+3. AgentManager - Coordinate AI agents
+4. MCP Tools - 11 tools (openmemory_query, openmemory_store, search_flights, etc.)
+
+SUCCESS CRITERIA:
+✅ iOS app with glassmorphism design
+✅ 3 functional mini-apps
+✅ Dynamic mini-app rendering from AIX manifests
+✅ Basic N8N-style node visualizer
+✅ Real-time backend integration
+✅ OpenMemory integration for learning
+✅ 60 FPS animations
+
+START WITH:
+1. Read: PHASE1_FINAL_REPORT.md
+2. Test: Backend APIs (verify they work)
+3. Create: iOS project structure
+4. Design: Design system + wireframes
+5. Build: APIClient + models
+6. Implement: Mini-app engine
+7. Create: 3 mini-apps
+8. Polish: Animations + AI features
+
+FULL DETAILS: See PHASE2_UI_ARCHITECT_PROMPT.md
+
+GO! Build the future of AI operating systems! 🚀
