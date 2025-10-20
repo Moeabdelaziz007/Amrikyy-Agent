@@ -93,6 +93,7 @@ const HologramWorkflow: React.FC<HologramWorkflowProps> = ({
         // Add step as thinking
         setSteps(prev => [...prev, { 
           ...step, 
+          id: step.id || `step-${Date.now()}`,
           timestamp: Date.now(),
           status: 'thinking' 
         }]);
@@ -101,14 +102,14 @@ const HologramWorkflow: React.FC<HologramWorkflowProps> = ({
         // After 2 seconds, mark as processing
         setTimeout(() => {
           setSteps(prev => prev.map(s => 
-            s.id === step.id ? { ...s, status: 'processing' } : s
+            s.id === step?.id ? { ...s, status: 'processing' } : s
           ));
         }, 1000);
 
         // After 4 seconds, mark as complete
         setTimeout(() => {
           setSteps(prev => prev.map(s => 
-            s.id === step.id ? { 
+            s.id === step?.id ? { 
               ...s, 
               status: 'complete',
               duration: 3000 

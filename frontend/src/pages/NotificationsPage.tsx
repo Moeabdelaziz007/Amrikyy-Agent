@@ -276,7 +276,7 @@ const NotificationsPage: React.FC = () => {
                       {/* Icon */}
                       <motion.div
                         whileHover={{ scale: 1.1, rotate: 5 }}
-                        className={`flex-shrink-0 w-12 h-12 rounded-xl ${colorClasses.bg} ${colorClasses.text} flex items-center justify-center border ${colorClasses.border}`}
+                        className={`flex-shrink-0 w-12 h-12 rounded-xl ${colorClasses?.bg || 'bg-blue-500'} ${colorClasses?.text || 'text-white'} flex items-center justify-center border ${colorClasses?.border || 'border-blue-500'}`}
                       >
                         {notification.icon}
                       </motion.div>
@@ -324,7 +324,7 @@ const NotificationsPage: React.FC = () => {
                             onClick={notification.action.onClick}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className={`px-4 py-2 ${colorClasses.bg} ${colorClasses.text} rounded-xl font-medium transition-all border ${colorClasses.border}`}
+                            className={`px-4 py-2 ${colorClasses?.bg || 'bg-blue-500'} ${colorClasses?.text || 'text-white'} rounded-xl font-medium transition-all border ${colorClasses?.border || 'border-blue-500'}`}
                           >
                             {notification.action.label}
                           </motion.button>
@@ -332,7 +332,7 @@ const NotificationsPage: React.FC = () => {
 
                         {/* Type Badge */}
                         <div className="flex items-center gap-2 mt-3">
-                          <span className={`text-xs px-2 py-1 rounded-full ${colorClasses.bg} ${colorClasses.text} border ${colorClasses.border}`}>
+                          <span className={`text-xs px-2 py-1 rounded-full ${colorClasses?.bg || 'bg-blue-500'} ${colorClasses?.text || 'text-white'} border ${colorClasses?.border || 'border-blue-500'}`}>
                             {notification.type.charAt(0).toUpperCase() + notification.type.slice(1)}
                           </span>
                           {!notification.read && (

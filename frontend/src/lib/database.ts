@@ -3,12 +3,15 @@ import { Database } from './supabase'
 
 type Tables = Database['public']['Tables']
 
+// Type assertion helper
+const typedSupabase = supabase as any;
+
 // Trip service
 export class TripService {
   // Get all trips for a user
   static async getTrips(userId: string) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await typedSupabase
         .from('trips')
         .select('*')
         .eq('user_id', userId)
@@ -24,7 +27,7 @@ export class TripService {
   // Get trip by ID
   static async getTrip(tripId: string) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await typedSupabase
         .from('trips')
         .select('*')
         .eq('id', tripId)
@@ -40,7 +43,7 @@ export class TripService {
   // Create new trip
   static async createTrip(trip: Tables['trips']['Insert']) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await typedSupabase
         .from('trips')
         .insert(trip)
         .select()
@@ -56,7 +59,7 @@ export class TripService {
   // Update trip
   static async updateTrip(tripId: string, updates: Tables['trips']['Update']) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await typedSupabase
         .from('trips')
         .update(updates)
         .eq('id', tripId)
@@ -73,7 +76,7 @@ export class TripService {
   // Delete trip
   static async deleteTrip(tripId: string) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await typedSupabase
         .from('trips')
         .delete()
         .eq('id', tripId)
@@ -91,7 +94,7 @@ export class DestinationService {
   // Get all destinations
   static async getDestinations() {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await typedSupabase
         .from('destinations')
         .select('*')
         .order('rating', { ascending: false })
@@ -106,7 +109,7 @@ export class DestinationService {
   // Search destinations
   static async searchDestinations(query: string) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await typedSupabase
         .from('destinations')
         .select('*')
         .or(`name.ilike.%${query}%,country.ilike.%${query}%`)
@@ -122,7 +125,7 @@ export class DestinationService {
   // Get destination by ID
   static async getDestination(destinationId: string) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await typedSupabase
         .from('destinations')
         .select('*')
         .eq('id', destinationId)
@@ -141,7 +144,7 @@ export class ExpenseService {
   // Get expenses for a trip
   static async getExpenses(tripId: string) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await typedSupabase
         .from('expenses')
         .select('*')
         .eq('trip_id', tripId)
@@ -157,7 +160,7 @@ export class ExpenseService {
   // Add expense
   static async addExpense(expense: Tables['expenses']['Insert']) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await typedSupabase
         .from('expenses')
         .insert(expense)
         .select()
@@ -173,7 +176,7 @@ export class ExpenseService {
   // Update expense
   static async updateExpense(expenseId: string, updates: Tables['expenses']['Update']) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await typedSupabase
         .from('expenses')
         .update(updates)
         .eq('id', expenseId)
@@ -190,7 +193,7 @@ export class ExpenseService {
   // Delete expense
   static async deleteExpense(expenseId: string) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await typedSupabase
         .from('expenses')
         .delete()
         .eq('id', expenseId)
@@ -208,7 +211,7 @@ export class AIConversationService {
   // Get conversation history
   static async getConversations(userId: string) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await typedSupabase
         .from('ai_conversations')
         .select('*')
         .eq('user_id', userId)
@@ -224,7 +227,7 @@ export class AIConversationService {
   // Save conversation
   static async saveConversation(conversation: Tables['ai_conversations']['Insert']) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await typedSupabase
         .from('ai_conversations')
         .insert(conversation)
         .select()

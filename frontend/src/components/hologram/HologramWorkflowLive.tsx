@@ -167,6 +167,7 @@ const HologramWorkflowLive: React.FC<HologramWorkflowLiveProps> = ({
         {
           ...step,
           id: stepId,
+          agent: step.agent || 'system',
           timestamp: Date.now()
         }
       ]);

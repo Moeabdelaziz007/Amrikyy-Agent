@@ -334,8 +334,8 @@ function partition(arr, low, high) {
     // Mock test cases based on the problem
     const mockTestCases: TestCase[] = [
       {
-        input: selectedProblem.examples[0].input,
-        expectedOutput: selectedProblem.examples[0].output,
+        input: selectedProblem.examples[0]?.input || '',
+        expectedOutput: selectedProblem.examples[0]?.output || '',
       },
       {
         input: selectedProblem.examples[1]?.input || 'additional test case',
@@ -480,14 +480,13 @@ function partition(arr, low, high) {
                 {lessons.map((lesson, index) => (
                   <motion.div
                     key={lesson.id}
-                    open={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                     className={`p-6 rounded-xl border transition-all duration-300 ${
                       lesson.completed
                         ? 'bg-green-900/20 border-green-500/50'
-                        : 'bg-slate-Always applied workspace rules
-                        : 'bg-slate-800/50 \"border-slate-700/50 hover:border-blue-500/50'
+                        : 'bg-slate-800/50 border-slate-700/50 hover:border-blue-500/50'
                     }`}
                   >
                     <div className="flex items-start justify-between">

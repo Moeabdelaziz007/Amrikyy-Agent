@@ -13,6 +13,7 @@ import {
   Rocket,
   Brain,
   MessageSquare,
+  User as UserIcon,
   Workflow,
   Code,
   Database,
@@ -296,7 +297,7 @@ const AmrikyyMainPage: React.FC = () => {
                   }}
                   className="px-8 py-4 glass-effect rounded-xl font-semibold text-white hover:bg-white/20 transition-all flex items-center justify-center gap-2"
                 >
-                  <User className="w-5 h-5" />
+                  <UserIcon className="w-5 h-5" />
                   Sign In
                 </button>
               </div>

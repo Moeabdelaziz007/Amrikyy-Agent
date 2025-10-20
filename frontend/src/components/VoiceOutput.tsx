@@ -46,10 +46,10 @@ export const VoiceOutput: React.FC<VoiceOutputProps> = ({
       
       // Select default voice for language
       const defaultVoice = availableVoices.find(
-        voice => voice.lang.startsWith(language.split('-')[0])
+        voice => voice.lang.startsWith(language?.split('-')[0] || 'en')
       ) || availableVoices[0];
       
-      setSelectedVoice(defaultVoice);
+      setSelectedVoice(defaultVoice || null);
     };
 
     loadVoices();
@@ -257,4 +257,3 @@ export const VoiceOutput: React.FC<VoiceOutputProps> = ({
 };
 
 export default VoiceOutput;
-Output;

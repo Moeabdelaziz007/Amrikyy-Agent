@@ -5,8 +5,8 @@ import { createClient } from '@supabase/supabase-js';
  * This client uses the public anonymous key and is safe to use in the browser.
  * It's used for user authentication and data fetching where Row Level Security (RLS) is enabled.
  */
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = (import.meta as any).env?.VITE_SUPABASE_URL;
+const supabaseAnonKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY;
 
 // Database types
 export interface Database {

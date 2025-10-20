@@ -190,7 +190,7 @@ export class TelegramService {
 
   // Check if user is authenticated
   static isAuthenticated(): boolean {
-    return isTelegramWebApp() && this.getCurrentUser() !== null;
+    return isTelegramWebApp() === true && this.getCurrentUser() !== null;
   }
 
   // Get user display name

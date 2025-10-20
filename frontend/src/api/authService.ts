@@ -89,7 +89,7 @@ class AuthAPIService {
       !endpoint.includes('/auth/login') &&
       !endpoint.includes('/auth/signup')
     ) {
-      headers['Authorization'] = `Bearer ${this.accessToken}`;
+      (headers as any)['Authorization'] = `Bearer ${this.accessToken}`;
     }
 
     try {

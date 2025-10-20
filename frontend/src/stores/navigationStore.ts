@@ -317,7 +317,7 @@ export const useNavigationStore = create<NavigationStore>()(
               learningProgress: {
                 ...state.user.learningProgress,
                 [track]: {
-                  ...state.user.learningProgress[track],
+                  ...(state.user.learningProgress?.[track] as any || {}),
                   ...progress,
                 } as TrackProgress,
               },
