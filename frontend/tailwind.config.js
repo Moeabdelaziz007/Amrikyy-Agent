@@ -4,6 +4,8 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  // Enable JIT mode for smaller CSS
+  mode: 'jit',
   theme: {
     extend: {
       colors: {
@@ -44,4 +46,9 @@ export default {
     },
   },
   plugins: [],
+  // Optimize for production
+  future: {
+    removeDeprecatedGapUtilities: true,
+    purgeLayersByDefault: true,
+  },
 }

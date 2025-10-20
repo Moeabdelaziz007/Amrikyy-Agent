@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
+    "build:analyze": "vite build && open dist/stats.html",
     "preview": "vite preview",
     "start": "vite preview --port 3000",
     "test": "vitest",
