@@ -94,11 +94,11 @@ ENV NODE_ENV=production
 ENV PORT=5000
 ENV PM2_HOME=/app/.pm2
 
-# Create PM2 ecosystem file
+# Create PM2 ecosystem file for unified backend
 RUN echo 'module.exports = {' > ecosystem.config.js && \
     echo '  apps: [{' >> ecosystem.config.js && \
-    echo '    name: "maya-travel-agent",' >> ecosystem.config.js && \
-    echo '    script: "./backend/server.js",' >> ecosystem.config.js && \
+    echo '    name: "amrikyy-agent-backend",' >> ecosystem.config.js && \
+    echo '    script: "./backend/dist/server.js",' >> ecosystem.config.js && \
     echo '    instances: "max",' >> ecosystem.config.js && \
     echo '    exec_mode: "cluster",' >> ecosystem.config.js && \
     echo '    env: {' >> ecosystem.config.js && \

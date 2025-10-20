@@ -8,7 +8,12 @@ const fetch = require('node-fetch');
 
 class KeloClient {
   constructor() {
-    this.apiKey = process.env.KELO_API_KEY;
+    // Note: Using GEMINI_API_KEY instead of KELO_API_KEY
+    this.apiKey = process.env.GEMINI_API_KEY || process.env.KELO_API_KEY;
+    
+    if (!this.apiKey) {
+      throw new Error('GEMINI_API_KEY is required but not configured. Please check your .env file.');
+    }
     this.baseUrl = process.env.KELO_BASE_URL || 'https://api.kelo.ai/v1';
     this.model = process.env.KELO_MODEL || 'kelo-travel-pro';
     this.maxTokens = parseInt(process.env.KELO_MAX_TOKENS) || 3000;
