@@ -1,24 +1,9 @@
-import React, { useEffect } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import React from 'react';
+import { AnimatePresence } from 'framer-motion';
 import AppRouter from './router/AppRouter';
 import Navigation from './components/Navigation';
-import { useNavigationStore } from './stores/navigationStore';
 
 function App() {
-  const { user, setLoading } = useNavigationStore();
-
-  // Initialize app
-  useEffect(() => {
-    setLoading(true);
-
-    // Simulate loading
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [setLoading]);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A0A0F] via-[#1A1A2E] to-[#16213E]">
       {/* Navigation */}
@@ -47,7 +32,6 @@ function App() {
         {/* Grid Pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px] opacity-30" />
       </div>
-
     </div>
   );
 }
