@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 // Import all our enhanced components
@@ -27,8 +27,7 @@ const PageTransition: React.FC<{ children: React.ReactNode }> = ({
 
 const AppRouter: React.FC = () => {
   return (
-    <Router>
-      <Routes>
+    <Routes>
         {/* Main AI Learning Platform Routes */}
         <Route
           path="/"
@@ -58,22 +57,24 @@ const AppRouter: React.FC = () => {
                     transition={{ duration: 0.6, delay: 0.4 }}
                     className="flex flex-col sm:flex-row gap-4 justify-center"
                   >
-                    <motion.a
-                      href="/ai-school"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg shadow-lg shadow-cyan-500/50 hover:shadow-xl hover:shadow-cyan-500/70 transition-all duration-300"
-                    >
-                      Start Learning
-                    </motion.a>
-                    <motion.a
-                      href="/quantum-computing"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="px-8 py-4 bg-slate-800/50 text-white font-bold rounded-lg border-2 border-slate-700 hover:border-cyan-500 transition-all duration-300"
-                    >
-                      Explore Courses
-                    </motion.a>
+                    <Link to="/ai-school">
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg shadow-lg shadow-cyan-500/50 hover:shadow-xl hover:shadow-cyan-500/70 transition-all duration-300"
+                      >
+                        Start Learning
+                      </motion.div>
+                    </Link>
+                    <Link to="/quantum-computing">
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="px-8 py-4 bg-slate-800/50 text-white font-bold rounded-lg border-2 border-slate-700 hover:border-cyan-500 transition-all duration-300"
+                      >
+                        Explore Courses
+                      </motion.div>
+                    </Link>
                   </motion.div>
                   <motion.div
                     initial={{ opacity: 0 }}
@@ -204,20 +205,19 @@ const AppRouter: React.FC = () => {
               <div className="min-h-screen bg-gradient-to-br from-[#0A0A0F] via-[#1A1A2E] to-[#16213E] flex items-center justify-center">
                 <div className="text-center text-white">
                   <h1 className="text-6xl font-bold mb-4 text-red-400">404</h1>
-                  <p className="text-xl text-slate-300">Page Not Found</p>
-                  <a
-                    href="/"
+                  <p className="text-xl text-slate-300 mb-4">Page Not Found</p>
+                  <Link
+                    to="/"
                     className="text-cyan-400 hover:text-cyan-300 transition-colors"
                   >
                     Return to Home
-                  </a>
+                  </Link>
                 </div>
               </div>
             </PageTransition>
           }
         />
       </Routes>
-    </Router>
   );
 };
 
