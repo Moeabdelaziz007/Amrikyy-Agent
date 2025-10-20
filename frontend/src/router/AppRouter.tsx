@@ -104,15 +104,6 @@ const AppRouter: React.FC = () => {
           }
         />
 
-        <Route
-          path="/learning-platform"
-          element={
-            <PageTransition>
-              <AILearningPlatformPage />
-            </PageTransition>
-          }
-        />
-
         {/* AI School Routes */}
         <Route
           path="/ai-school"
@@ -123,39 +114,12 @@ const AppRouter: React.FC = () => {
           }
         />
 
-        <Route
-          path="/cyberpunk-school"
-          element={
-            <PageTransition>
-              <CyberpunkAISchoolLayout />
-            </PageTransition>
-          }
-        />
-
         {/* Learning Track Routes */}
         <Route
           path="/quantum-computing"
           element={
             <PageTransition>
               <QuantumComputingDemo />
-            </PageTransition>
-          }
-        />
-
-        <Route
-          path="/programming-algorithms"
-          element={
-            <PageTransition>
-              <ProgrammingAlgorithmsDemo />
-            </PageTransition>
-          }
-        />
-
-        <Route
-          path="/ai-trading"
-          element={
-            <PageTransition>
-              <AITradingDemo />
             </PageTransition>
           }
         />
@@ -218,6 +182,7 @@ const AppRouter: React.FC = () => {
           }
         />
       </Routes>
+    </Suspense>
   );
 };
 
