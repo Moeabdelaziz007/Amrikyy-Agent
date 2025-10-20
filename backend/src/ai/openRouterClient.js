@@ -8,10 +8,14 @@ const fetch = require('node-fetch');
 const ContextManager = require('./contextManager');
 const ModelSwitcher = require('./modelSwitcher');
 
+// Import centralized config (will validate env vars)
+const { config } = require('../config/env');
+
 class OpenRouterClient {
   constructor() {
-    this.apiKey = process.env.OPENROUTER_API_KEY || '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';
-    this.baseUrl = 'https://openrouter.ai/api/v1';
+    // ✅ SECURITY FIX: Use centralized config instead of hardcoded key
+    this.apiKey = config.openRouter.apiKey;
+    this.baseUrl = config.openRouter.baseUrl;
     
     // Initialize cost optimization components
     this.contextManager = new ContextManager();
