@@ -13,3 +13,7 @@ test-results/
 .continue/
 .trunk/
 .vscode/
+
+# OpenMemory - IDE/Assistant specific rules
+.cursor/rules/openmemory.mdc
+CLAUDE.md

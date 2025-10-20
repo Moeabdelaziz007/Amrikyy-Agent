@@ -14,5 +14,8 @@
     "**/node_modules": true,
     "**/dist": true,
     "**/.git": true
-  }
+  },
+  "notebook.defaultFormatter": "Blackboxapp.blackbox",
+  "editor.defaultFoldingRangeProvider": "saoudrizwan.claude-dev",
+  "chat.mcp.autostart": "newAndOutdated"
 }
