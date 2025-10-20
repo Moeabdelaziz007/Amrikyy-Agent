@@ -2,6 +2,7 @@ import { createClient, RedisClientType } from 'redis';
 import { v4 as uuidv4 } from 'uuid';
 import { BaseAgent } from './BaseAgent';
 import { config } from '../config/env';
+import { memoryService, MemoryContext } from '../memory/MemoryService';
 
 type TaskStatus = 'pending' | 'processing' | 'completed' | 'failed';
 type TaskPriority = 'low' | 'normal' | 'high' | 'urgent';
@@ -186,11 +187,17 @@ export class AgentManager {
 
   /**
    * Process a new task (alias for createTask for API compatibility)
+   * 
+   * Enhanced with OpenMemory MCP integration
    */
   async processNewTask(
     agentId: string,
     taskInput: any,
-    taskConfig?: { priority?: TaskPriority; metadata?: Record<string, any> }
+    taskConfig?: { 
+      priority?: TaskPriority; 
+      metadata?: Record<string, any>;
+      memoryContext?: MemoryContext;
+    }
   ): Promise<string> {
     const task = await this.createTask(
       agentId,
@@ -198,6 +205,33 @@ export class AgentManager {
       taskConfig?.priority || 'normal',
       taskConfig?.metadata
     );
+    
+    // Store task context in OpenMemory for agent access
+    if (taskConfig?.memoryContext) {
+      try {
+        await memoryService.storeMemory(
+          taskConfig.memoryContext,
+          'short_term',
+          `task_context_${task.id}`,
+          {
+            taskId: task.id,
+            agentId,
+            input: taskInput,
+            createdAt: task.createdAt
+          },
+          {
+            contentType: 'task_context',
+            ttl: 86400, // 24 hours
+            metadata: taskConfig.metadata
+          }
+        );
+        console.log(`🧠 OpenMemory: Task context stored for ${task.id}`);
+      } catch (error) {
+        console.error('⚠️  Failed to store task context in memory:', error);
+        // Continue even if memory storage fails
+      }
+    }
+    
     return task.id;
   }
 
@@ -256,6 +290,30 @@ export class AgentManager {
       
       console.log(`✅ Task ${task.id} completed in ${processingTime}ms`);
       
+      // Learn from successful task (Pattern Learning)
+      try {
+        const memoryContext: MemoryContext = {
+          agentId: task.agent,
+          namespace: 'tasks',
+          userId: task.metadata?.userId
+        };
+        
+        await memoryService.savePattern({
+          pattern: `${task.agent}:success:${task.request.type || 'unknown'}`,
+          context: 'task_execution',
+          frequency: 1,
+          confidence: 0.8,
+          memoryContext,
+          metadata: {
+            taskType: task.request.type,
+            processingTime,
+            priority: task.priority
+          }
+        });
+      } catch (error) {
+        console.warn('⚠️  Failed to save success pattern:', error);
+      }
+      
       if (this.isRedisConnected)
         await this.redisClient.set(`task:${task.id}`, JSON.stringify(task));
     } catch (error: any) {
@@ -271,6 +329,29 @@ export class AgentManager {
       stats.lastActive = new Date();
       
       console.error(`❌ Task ${task.id} failed:`, error.message);
+      
+      // Learn from failed task (Pattern Learning)
+      try {
+        const memoryContext: MemoryContext = {
+          agentId: task.agent,
+          namespace: 'tasks',
+          userId: task.metadata?.userId
+        };
+        
+        await memoryService.savePattern({
+          pattern: `${task.agent}:error:${error.message.substring(0, 50)}`,
+          context: 'task_execution',
+          frequency: 1,
+          confidence: 0.3,
+          memoryContext,
+          metadata: {
+            error: error.message,
+            taskType: task.request.type
+          }
+        });
+      } catch (patternError) {
+        console.warn('⚠️  Failed to save error pattern:', patternError);
+      }
       
       if (this.isRedisConnected)
         await this.redisClient.set(`task:${task.id}`, JSON.stringify(task));

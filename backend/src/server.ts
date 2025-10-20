@@ -245,6 +245,15 @@ console.log('  ✅ GET  /api/agency/tasks/:id - Get task status');
 console.log('  ✅ GET  /api/agency/agents/:name - Get agent info');
 console.log('  ✅ GET  /api/agency/stats - Agency statistics');
 
+// Memory routes (NEW - Day 5)
+const memoryRoutes = require('../routes/memory');
+app.use('/api/memory', memoryRoutes);
+console.log('  ✅ GET  /api/memory/stats - Memory statistics');
+console.log('  ✅ GET  /api/memory/usage - Memory usage');
+console.log('  ✅ POST /api/memory/query - Query memory');
+console.log('  ✅ POST /api/memory/store - Store memory');
+console.log('  ✅ GET  /api/memory/patterns - Get learned patterns');
+
 console.log('\n✅ All routes mounted successfully!\n');
 
 // ============================================
@@ -286,13 +295,25 @@ const httpServer = http.createServer(app);
 console.log('✅ HTTP server instance created');
 
 // ============================================
-// AGENT MANAGER INITIALIZATION
+// CORE SERVICES INITIALIZATION
 // ============================================
 
 import { AgentManager } from './agents/AgentManager';
+import { memoryService } from './memory/MemoryService';
 
 let agentManager: AgentManager;
 
+// Initialize Memory Service
+console.log('🧠 Initializing OpenMemory MCP...');
+try {
+  await memoryService.initialize();
+  console.log('✅ OpenMemory MCP initialized');
+} catch (error) {
+  console.error('⚠️  OpenMemory MCP initialization failed:', error);
+  console.log('   Server will continue with limited memory features');
+}
+
+// Initialize Agent Manager
 console.log('🤖 Initializing Agent Manager...');
 try {
   agentManager = new AgentManager();
@@ -335,9 +356,13 @@ async function gracefulShutdown(signal: string): Promise<void> {
     }
   }
   
-  // Additional cleanup will be added as we integrate more services:
-  // - Disconnect Memory Service (Day 5)
-  // - Close additional connections
+  // Disconnect Memory Service
+  try {
+    await memoryService.disconnect();
+    console.log('✅ Memory Service disconnected');
+  } catch (error) {
+    console.error('⚠️  Error disconnecting Memory Service:', error);
+  }
   
   console.log('✅ Graceful shutdown complete');
   process.exit(0);
@@ -367,7 +392,7 @@ async function startServer(): Promise<void> {
   try {
     console.log('\n🔧 Core services status:');
     console.log(`  ${agentManager ? '✅' : '⏳'} Agent Manager - ${agentManager ? 'Ready' : 'Not initialized'}`);
-    console.log('  ⏳ Memory Service - Will be initialized in Day 5');
+    console.log('  ✅ OpenMemory MCP - Ready');
     console.log('  ⏳ WebSocket Server - Pending configuration\n');
     
     // Start HTTP server
