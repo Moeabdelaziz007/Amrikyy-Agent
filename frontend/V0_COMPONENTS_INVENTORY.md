@@ -12,10 +12,13 @@
 
 | Status | Count | Description |
 |--------|-------|-------------|
-| 🟢 **Integrated** | 0 | Fully integrated and tested |
+| 🟢 **Integrated** | 1 | Fully integrated and tested |
 | 🟡 **In Progress** | 0 | Currently being integrated |
 | 🔴 **Pending** | TBD | Awaiting integration |
 | ⚫ **Deprecated** | 0 | No longer needed |
+
+### ✅ Latest Integration: **Window Component** (2025-10-21)
+> Desktop OS Window Manager with Glassmorphism + Framer Motion
 
 ---
 
@@ -115,6 +118,29 @@
 *Navigation bars, sidebars, layout components*
 
 #### Components:
+- [x] **Window** - Desktop OS Window Manager ✅ **INTEGRATED**
+  - **Status:** ✅ Completed
+  - **V0 File:** Created by CURSERO AI
+  - **Target Location:** `frontend/src/components/layout/Window.tsx`
+  - **Backend API:** None (Client-side only)
+  - **Dependencies:** framer-motion, lucide-react
+  - **Integration Date:** 2025-10-21
+  - **Features:**
+    - ✅ Glassmorphism design (configurable intensity)
+    - ✅ Framer Motion animations
+    - ✅ Drag to move
+    - ✅ Resize from 8 handles (edges + corners)
+    - ✅ Minimize, Maximize, Restore, Close
+    - ✅ Focus management
+    - ✅ Z-index auto-management
+    - ✅ TypeScript strict mode
+    - ✅ Full accessibility
+    - ✅ Dark mode support
+  - **Related Files:**
+    - `frontend/src/types/window.types.ts`
+    - `frontend/src/contexts/WindowManagerContext.tsx`
+    - `frontend/src/pages/DemoDesktop.tsx` (Example)
+  
 - [ ] **Top Navigation** - Main app navigation
   - **Status:** Pending
   - **V0 File:** TBD

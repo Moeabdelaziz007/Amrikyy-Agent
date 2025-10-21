@@ -1,11 +1,13 @@
 import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
+import DemoDesktop from '@/pages/DemoDesktop';
 
 function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/desktop" element={<DemoDesktop />} />
         <Route path="/demo" element={<DemoPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
@@ -18,29 +20,29 @@ function HomePage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="text-center max-w-4xl mx-auto">
         <h1 className="text-7xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-transparent bg-clip-text">
-          AMRIKYY AI
+          AMRIKYY AI OS
         </h1>
         <p className="text-2xl text-slate-300 mb-12">
-          Your AI-Powered Learning Platform
+          Desktop OS Experience • SaaS Platform
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
           <Link 
-            to="/demo" 
+            to="/desktop" 
             className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg hover:shadow-xl transition-all"
           >
-            Start Learning
+            🖥️ Launch Desktop OS
           </Link>
           <Link 
             to="/demo" 
             className="px-8 py-4 bg-slate-800 text-white font-bold rounded-lg border-2 border-slate-700 hover:border-cyan-500 transition-all"
           >
-            Explore Courses
+            Explore Features
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <FeatureCard emoji="🚀" title="AI-Powered" description="Personalized learning with advanced AI" />
-          <FeatureCard emoji="🎯" title="Interactive" description="Hands-on projects and real-world skills" />
-          <FeatureCard emoji="🌟" title="Expert-Led" description="Learn from industry professionals" />
+          <FeatureCard emoji="🪟" title="Window Manager" description="Drag, resize, maximize - full desktop experience" />
+          <FeatureCard emoji="✨" title="Glassmorphism" description="Beautiful glass-like UI with smooth animations" />
+          <FeatureCard emoji="🚀" title="Performance" description="Built with React + TypeScript + Framer Motion" />
         </div>
       </div>
     </div>
@@ -65,7 +67,7 @@ function DemoPage() {
           Coming Soon
         </h1>
         <p className="text-xl text-slate-300 mb-8">
-          AI Learning Platform - Under Development
+          More features under development
         </p>
         <Link 
           to="/" 
