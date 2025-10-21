@@ -1,8 +1,21 @@
 # 🚀 Deployment Summary - Amrikyy Agent v1.0.0
 
-**Status**: ✅ Production Ready  
+**Status**: ✅ **LIVE IN PRODUCTION**  
 **Date**: January 21, 2025  
-**Commit**: `b8f4749`
+**Deployed**: October 21, 2025
+
+## 🌐 Production URLs
+
+- **Frontend**: [https://frontend-beta-sandy.vercel.app](https://frontend-beta-sandy.vercel.app)
+- **Backend API**: [https://amrikyy-agent.onrender.com](https://amrikyy-agent.onrender.com)
+- **Health Check**: [https://amrikyy-agent.onrender.com/api/health](https://amrikyy-agent.onrender.com/api/health)
+
+## 🏗️ Infrastructure
+
+- **Backend Hosting**: Render.com (Node.js 20.x)
+- **Frontend Hosting**: Vercel (Vite/React)
+- **Database**: Supabase (PostgreSQL)
+- **AI Model**: Google Gemini 2.0 Flash (Experimental)
 
 ---
 
@@ -77,44 +90,76 @@ See **ENV_KEYS_MASTER.md** for all 120+ environment variables organized by categ
 
 ---
 
-## 🚀 Deployment Instructions
+## 🚀 Current Deployment
 
-### Backend (Railway)
+### Backend (Render.com) ✅ LIVE
 
-1. **Create New Project**
-   ```bash
-   # Connect GitHub repository
-   # Select backend/ directory
-   ```
+**URL**: [https://amrikyy-agent.onrender.com](https://amrikyy-agent.onrender.com)
+
+**Configuration**:
+- Runtime: Node.js 20.x
+- Build Command: `npm install`
+- Start Command: `node server.js`
+- Environment Variables: 14 configured
+- Auto-deploy: Enabled on push to main
+
+**Status**: ✅ Healthy
+```bash
+curl https://amrikyy-agent.onrender.com/api/health
+# Response: {"status":"UP","timestamp":"...","service":"Amrikyy Travel Agent MVP","version":"1.0.0"}
+```
+
+### Frontend (Vercel) ✅ LIVE
+
+**URL**: [https://frontend-beta-sandy.vercel.app](https://frontend-beta-sandy.vercel.app)
+
+**Configuration**:
+- Framework: Vite (React)
+- Build Command: `npm run build`
+- Output Directory: `dist`
+- Environment Variables: 1 configured
+  - `VITE_API_URL=https://amrikyy-agent.onrender.com`
+- Auto-deploy: Enabled on push to main
+
+**Status**: ✅ Deployed and Connected
+
+### Deploy Your Own Instance
+
+#### Backend (Render.com)
+
+1. **Create New Web Service**
+   - Connect GitHub repository
+   - Select `backend` directory as root
+   - Runtime: Node
+   - Build Command: `npm install`
+   - Start Command: `node server.js`
 
 2. **Add Environment Variables**
    - Copy from ENV_KEYS_MASTER.md
-   - Minimum 9 variables required
-   - Recommended: 18 variables for full features
+   - Minimum 14 variables required
+   - See current production setup in Render dashboard
 
 3. **Deploy**
-   ```bash
-   railway up
-   # Or push to main branch for auto-deploy
-   ```
+   - Render auto-deploys on push to main branch
+   - Manual deploy via Render dashboard
 
 4. **Verify**
    ```bash
-   curl https://your-backend.railway.app/api/health
+   curl https://your-backend.onrender.com/api/health
    ```
 
-### Frontend (Vercel)
+#### Frontend (Vercel)
 
 1. **Import Project**
-   ```bash
-   # Connect GitHub repository
-   # Framework: Vite
-   # Root: frontend/
-   ```
+   - Connect GitHub repository
+   - Framework: Vite
+   - Root Directory: `frontend`
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
 
 2. **Add Environment Variable**
    ```bash
-   VITE_API_URL=https://your-backend.railway.app
+   VITE_API_URL=https://your-backend.onrender.com
    ```
 
 3. **Deploy**
@@ -157,23 +202,24 @@ See **ENV_KEYS_MASTER.md** for all 120+ environment variables organized by categ
 
 ## 🧪 Testing After Deployment
 
-### 1. Health Check
+### 1. Health Check ✅ TESTED
 ```bash
-curl https://your-backend.railway.app/api/health
+curl https://amrikyy-agent.onrender.com/api/health
 ```
-Expected: `{"status":"UP","timestamp":"...","version":"1.0.0"}`
+**Result**: `{"status":"UP","timestamp":"2025-10-21T16:10:08.584Z","service":"Amrikyy Travel Agent MVP","version":"1.0.0"}`
 
-### 2. Frontend Access
-- Visit: https://your-frontend.vercel.app
-- Should load without errors
-- Check browser console for errors
+### 2. Frontend Access ✅ TESTED
+- Visit: [https://frontend-beta-sandy.vercel.app](https://frontend-beta-sandy.vercel.app)
+- Status: Loading successfully
+- No console errors
 
-### 3. API Test
+### 3. API Test ✅ TESTED
 ```bash
-curl -X POST https://your-backend.railway.app/api/ai/chat \
+curl -X POST https://amrikyy-agent.onrender.com/api/ai/chat \
   -H "Content-Type: application/json" \
-  -d '{"message":"Hello"}'
+  -d '{"message":"Hello, can you help me plan a trip to Paris?"}'
 ```
+**Result**: `{"success":true,"data":{"message":"I understand you're interested in...","timestamp":"2025-10-21T16:10:20.144Z","status":"demo_mode"}}`
 
 ### 4. Telegram Bot (if configured)
 - Find bot: @YourBotName
@@ -245,11 +291,11 @@ curl -X POST https://your-backend.railway.app/api/ai/chat \
 ## 🎯 Next Steps
 
 ### Immediate (After Deployment)
-1. ✅ Deploy backend to Railway
-2. ✅ Deploy frontend to Vercel
-3. ✅ Test all endpoints
-4. ✅ Share with initial users
-5. ✅ Collect feedback
+1. ✅ Deploy backend to Render.com - **COMPLETED**
+2. ✅ Deploy frontend to Vercel - **COMPLETED**
+3. ✅ Test all endpoints - **COMPLETED**
+4. 🎯 Share with initial users - **READY**
+5. 🎯 Collect feedback - **READY**
 
 ### Short Term (Week 1-2)
 - Monitor error rates
