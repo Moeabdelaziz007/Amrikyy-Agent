@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import DemoDesktop from '@/pages/DemoDesktop';
+import DesktopWithDashboard from '@/pages/DesktopWithDashboard';
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/desktop" element={<DemoDesktop />} />
+        <Route path="/dashboard" element={<DesktopWithDashboard />} />
         <Route path="/demo" element={<DemoPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
@@ -27,20 +29,27 @@ function HomePage() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
           <Link 
-            to="/desktop" 
+            to="/dashboard" 
             className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg hover:shadow-xl transition-all"
           >
-            🖥️ Launch Desktop OS
+            📊 Launch Dashboard
+          </Link>
+          <Link 
+            to="/desktop" 
+            className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold rounded-lg hover:shadow-xl transition-all"
+          >
+            🖥️ Desktop OS Demo
           </Link>
           <Link 
             to="/demo" 
             className="px-8 py-4 bg-slate-800 text-white font-bold rounded-lg border-2 border-slate-700 hover:border-cyan-500 transition-all"
           >
-            Explore Features
+            Explore More
           </Link>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <FeatureCard emoji="🪟" title="Window Manager" description="Drag, resize, maximize - full desktop experience" />
+          <FeatureCard emoji="📊" title="Dashboard" description="Real-time analytics and agent monitoring" />
           <FeatureCard emoji="✨" title="Glassmorphism" description="Beautiful glass-like UI with smooth animations" />
           <FeatureCard emoji="🚀" title="Performance" description="Built with React + TypeScript + Framer Motion" />
         </div>
