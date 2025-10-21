@@ -8,6 +8,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import {
   Sparkles,
   Brain,
@@ -107,6 +108,7 @@ const MINI_APPS: MiniApp[] = [
 
 export default function LandingPage() {
   const [selectedApp, setSelectedApp] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-hidden">
@@ -166,13 +168,19 @@ export default function LandingPage() {
               transition={{ delay: 0.6 }}
               className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
             >
-              <button className="group px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105">
+              <button 
+                onClick={() => navigate('/desktop')}
+                className="group px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105"
+              >
                 <span className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                   Launch AI OS
                 </span>
               </button>
-              <button className="px-8 py-4 bg-slate-800/50 backdrop-blur-lg text-white font-bold rounded-xl border-2 border-slate-700 hover:border-cyan-500 transition-all duration-300 transform hover:scale-105">
+              <button 
+                onClick={() => navigate('/demo')}
+                className="px-8 py-4 bg-slate-800/50 backdrop-blur-lg text-white font-bold rounded-xl border-2 border-slate-700 hover:border-cyan-500 transition-all duration-300 transform hover:scale-105"
+              >
                 View Demo
               </button>
             </motion.div>

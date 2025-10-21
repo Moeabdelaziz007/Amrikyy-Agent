@@ -83,7 +83,14 @@ bot.onText(
   /\/start/,
   safeHandler(async (msg) => {
     const chatId = msg.chat.id;
-    const welcomeMessage = `
+    const chatType = msg.chat.type;
+    
+    let welcomeMessage = '';
+    let keyboard = null;
+
+    if (chatType === 'private') {
+      // Private chat welcome
+      welcomeMessage = `
 🌍 مرحباً بك في Amrikyy Trips!
 
 أنا مساعد السفر الذكي المدعوم بـ Google Gemini AI 🤖
@@ -94,10 +101,9 @@ bot.onText(
 🤖 نصائح سفر شخصية بالذكاء الاصطناعي
 
 🚀 ابدأ الآن:
-  `;
+      `;
 
-    await bot.sendMessage(chatId, welcomeMessage, {
-      reply_markup: {
+      keyboard = {
         inline_keyboard: [
           [
             { text: '🚀 تخطيط رحلة جديدة', callback_data: 'new_trip' },
@@ -112,8 +118,31 @@ bot.onText(
             { text: '🏥 حالة النظام', callback_data: 'health' },
           ],
         ],
-      },
-    });
+      };
+    } else {
+      // Group chat welcome
+      const botInfo = await bot.getMe();
+      welcomeMessage = `
+👋 مرحباً! أنا ${botInfo.first_name}
+
+🤖 مساعد السفر الذكي المدعوم بـ Google Gemini AI
+
+📱 كيف تستخدمني في المجموعة:
+• اذكرني: @${botInfo.username} + سؤالك
+• رد على رسالتي مباشرة
+• مثال: @${botInfo.username} أريد السفر إلى باريس
+
+✈️ يمكنني مساعدتك في:
+• تخطيط الرحلات
+• إدارة الميزانية
+• توصيات الوجهات
+• نصائح السفر
+
+💬 جرب الآن: @${botInfo.username} مرحباً
+      `;
+    }
+
+    await bot.sendMessage(chatId, welcomeMessage, keyboard ? { reply_markup: keyboard } : {});
   })
 );
 
@@ -122,7 +151,14 @@ bot.onText(
   /\/help/,
   safeHandler(async (msg) => {
     const chatId = msg.chat.id;
-    const helpMessage = `
+    const chatType = msg.chat.type;
+    const botInfo = await bot.getMe();
+    
+    let helpMessage = '';
+
+    if (chatType === 'private') {
+      // Private chat help
+      helpMessage = `
 🆘 مساعدة Amrikyy Trips
 
 الأوامر المتاحة:
@@ -141,9 +177,34 @@ bot.onText(
 🤖 مدعوم بـ Google Gemini AI
 
 📞 الدعم الفني:
-📧 support@mayatrips.com
-💬 @AmrikyyTripsSupport
-  `;
+📧 Amrikyy@gmail.com
+💬 WhatsApp: +17706160211
+      `;
+    } else {
+      // Group chat help
+      helpMessage = `
+🆘 مساعدة Amrikyy Trips (المجموعات)
+
+📱 كيف تستخدمني في المجموعة:
+
+1️⃣ **اذكرني في رسالتك:**
+   @${botInfo.username} أريد السفر إلى باريس
+
+2️⃣ **رد على رسائلي:**
+   اضغط "Reply" على أي رسالة مني واكتب سؤالك
+
+3️⃣ **استخدم الأوامر:**
+   /start - معلومات عن البوت
+   /help - هذه المساعدة
+
+✈️ أمثلة:
+• @${botInfo.username} ما أفضل وقت لزيارة دبي؟
+• @${botInfo.username} أحتاج فندق في القاهرة
+• @${botInfo.username} ميزانيتي 1000 دولار
+
+🤖 مدعوم بـ Google Gemini AI
+      `;
+    }
 
     await bot.sendMessage(chatId, helpMessage);
   })
@@ -156,9 +217,40 @@ bot.on(
     const chatId = msg.chat.id;
     const userId = msg.from.id;
     const text = msg.text;
+    const chatType = msg.chat.type; // 'private', 'group', 'supergroup', 'channel'
 
     // Skip commands
     if (text.startsWith('/')) return;
+
+    // Get bot info for mention detection
+    const botInfo = await bot.getMe();
+    const botUsername = botInfo.username;
+    const botMention = `@${botUsername}`;
+
+    // In groups/supergroups, only respond if:
+    // 1. Bot is mentioned
+    // 2. Message is a reply to bot's message
+    if (chatType === 'group' || chatType === 'supergroup') {
+      const isMentioned = text.includes(botMention);
+      const isReplyToBot = msg.reply_to_message && msg.reply_to_message.from.id === botInfo.id;
+      
+      if (!isMentioned && !isReplyToBot) {
+        // Ignore messages in groups where bot is not mentioned
+        return;
+      }
+
+      // Remove bot mention from text for cleaner processing
+      const cleanText = text.replace(botMention, '').trim();
+      
+      // Log group interaction
+      logger.info('Group message received', {
+        chat_id: chatId,
+        chat_title: msg.chat.title,
+        user_id: userId,
+        mentioned: isMentioned,
+        reply: isReplyToBot
+      });
+    }
 
     // Add message to conversation history
     await conversationManager.addMessage(userId, text, true);
@@ -182,19 +274,21 @@ bot.on(
     if (aiResponse.success) {
       response = aiResponse.content;
 
-      // Add helpful buttons based on context
-      keyboard = {
-        inline_keyboard: [
-          [
-            { text: '🚀 تخطيط رحلة', callback_data: 'new_trip' },
-            { text: '💰 الميزانية', callback_data: 'budget' },
+      // Only add inline keyboard in private chats (not in groups)
+      if (chatType === 'private') {
+        keyboard = {
+          inline_keyboard: [
+            [
+              { text: '🚀 تخطيط رحلة', callback_data: 'new_trip' },
+              { text: '💰 الميزانية', callback_data: 'budget' },
+            ],
+            [
+              { text: '🎁 العروض', callback_data: 'offers' },
+              { text: '❓ المساعدة', callback_data: 'help' },
+            ],
           ],
-          [
-            { text: '🎁 العروض', callback_data: 'offers' },
-            { text: '❓ المساعدة', callback_data: 'help' },
-          ],
-        ],
-      };
+        };
+      }
     } else {
       response = 'عذراً، حدث خطأ في معالجة طلبك. يرجى المحاولة مرة أخرى.';
     }
@@ -203,6 +297,42 @@ bot.on(
     await conversationManager.addMessage(userId, response, false);
   })
 );
+
+// Handle new chat members (bot added to group)
+bot.on('new_chat_members', safeHandler(async (msg) => {
+  const chatId = msg.chat.id;
+  const newMembers = msg.new_chat_members;
+  const botInfo = await bot.getMe();
+
+  // Check if bot was added
+  const botAdded = newMembers.some(member => member.id === botInfo.id);
+
+  if (botAdded) {
+    const welcomeMessage = `
+👋 شكراً لإضافتي إلى المجموعة!
+
+🤖 أنا ${botInfo.first_name} - مساعد السفر الذكي
+
+📱 كيف تستخدمني:
+1️⃣ اذكرني: @${botInfo.username} + سؤالك
+2️⃣ رد على رسائلي مباشرة
+3️⃣ استخدم الأوامر: /help
+
+✈️ مثال:
+@${botInfo.username} أريد السفر إلى دبي في الصيف
+
+🚀 جاهز للمساعدة!
+    `;
+
+    await bot.sendMessage(chatId, welcomeMessage);
+    
+    logger.info('Bot added to group', {
+      chat_id: chatId,
+      chat_title: msg.chat.title,
+      added_by: msg.from.id
+    });
+  }
+}));
 
 // Handle callback queries
 bot.on(
