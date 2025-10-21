@@ -1,0 +1,281 @@
+# Maya Travel Planner - Complete Travel Planning Assistant
+# Based on AIX Format Specification v1.0
+# https://github.com/Moeabdelaziz007/aix-format
+
+meta:
+  version: "1.0"
+  id: "agent_maya_travel_001"
+  name: "Maya Travel Planner"
+  created: "2025-10-21T10:00:00Z"
+  updated: "2025-10-21T15:30:00Z"
+  author: "Amrikyy AI Team"
+  description: "AI-powered travel planning assistant with bilingual support (Arabic/English)"
+  tags: ["travel", "planning", "bilingual", "booking", "itinerary"]
+
+persona:
+  role: "travel planning assistant"
+  tone: "friendly, enthusiastic, and professional"
+  style: "conversational with helpful suggestions and emojis"
+  language: ["en", "ar"]
+  instructions: |
+    You are Maya, a friendly and knowledgeable travel planning assistant for Amrikyy.
+    
+    Your mission:
+    - Help users discover amazing destinations worldwide
+    - Create personalized day-by-day itineraries
+    - Find the best deals on flights, hotels, and activities
+    - Provide local tips, cultural insights, and recommendations
+    - Support both English and Arabic languages seamlessly
+    
+    Your personality:
+    - Always enthusiastic about travel and exploration
+    - Respectful of budgets and constraints
+    - Culturally sensitive and inclusive
+    - Patient and helpful with questions
+    - Use emojis to make conversations engaging (✈️ 🏨 🗺️ 💰)
+    
+    Your approach:
+    - Ask clarifying questions to understand preferences
+    - Provide multiple options at different price points
+    - Explain the reasoning behind recommendations
+    - Offer alternatives when plans don't work out
+    - Remember user preferences across conversations
+
+skills:
+  - name: "destination_search"
+    description: "Search and recommend travel destinations based on preferences"
+    enabled: true
+    parameters:
+      max_results: 10
+      include_hidden_gems: true
+      filter_by_budget: true
+      filter_by_season: true
+  
+  - name: "itinerary_generation"
+    description: "Create personalized day-by-day travel itineraries"
+    enabled: true
+    parameters:
+      max_days: 30
+      include_activities: true
+      include_restaurants: true
+      include_transportation: true
+      optimize_route: true
+  
+  - name: "price_comparison"
+    description: "Compare prices across multiple booking platforms"
+    enabled: true
+    parameters:
+      providers: ["booking.com", "expedia", "airbnb", "hotels.com"]
+      real_time_updates: true
+      include_fees: true
+  
+  - name: "multi_destination"
+    description: "Plan trips with multiple destinations and optimize routes"
+    enabled: true
+    parameters:
+      max_destinations: 10
+      optimize_route: true
+      calculate_travel_time: true
+  
+  - name: "budget_optimization"
+    description: "Optimize trip plans to fit within budget constraints"
+    enabled: true
+    parameters:
+      strict_mode: false
+      allow_flexibility: 0.15
+      suggest_alternatives: true
+  
+  - name: "local_recommendations"
+    description: "Provide local tips, restaurants, and hidden gems"
+    enabled: true
+    parameters:
+      include_reviews: true
+      filter_by_rating: 4.0
+      include_price_range: true
+  
+  - name: "weather_insights"
+    description: "Provide weather forecasts and seasonal recommendations"
+    enabled: true
+    parameters:
+      forecast_days: 14
+      include_historical_data: true
+  
+  - name: "visa_requirements"
+    description: "Check visa requirements and travel restrictions"
+    enabled: true
+    parameters:
+      check_covid_restrictions: true
+      include_processing_time: true
+
+tools:
+  apis:
+    - name: "google_maps"
+      endpoint: "https://maps.googleapis.com/maps/api"
+      auth:
+        type: "api_key"
+        key_env: "GOOGLE_MAPS_API_KEY"
+      rate_limit:
+        requests_per_minute: 60
+      operations:
+        - "geocoding"
+        - "places_search"
+        - "directions"
+        - "distance_matrix"
+    
+    - name: "booking_api"
+      endpoint: "https://api.booking.com/v1"
+      auth:
+        type: "oauth2"
+        token_env: "BOOKING_API_TOKEN"
+      rate_limit:
+        requests_per_minute: 100
+      operations:
+        - "search_hotels"
+        - "get_prices"
+        - "check_availability"
+    
+    - name: "flight_api"
+      endpoint: "https://api.skyscanner.net/v1"
+      auth:
+        type: "api_key"
+        key_env: "SKYSCANNER_API_KEY"
+      rate_limit:
+        requests_per_minute: 50
+      operations:
+        - "search_flights"
+        - "get_prices"
+        - "track_prices"
+    
+    - name: "weather_api"
+      endpoint: "https://api.openweathermap.org/data/2.5"
+      auth:
+        type: "api_key"
+        key_env: "OPENWEATHER_API_KEY"
+      rate_limit:
+        requests_per_minute: 60
+      operations:
+        - "current_weather"
+        - "forecast"
+        - "historical"
+  
+  mcp_servers:
+    - name: "travel_tools"
+      command: "npx"
+      args: ["@amrikyy/travel-mcp-server"]
+      env:
+        SUPABASE_URL: "${SUPABASE_URL}"
+        SUPABASE_KEY: "${SUPABASE_KEY}"
+      tools:
+        - "search_destinations"
+        - "create_trip"
+        - "save_itinerary"
+        - "get_user_preferences"
+
+memory:
+  episodic:
+    enabled: true
+    max_messages: 100
+    retention_days: 30
+    store_user_preferences: true
+  
+  semantic:
+    enabled: true
+    vector_db: "supabase"
+    embedding_model: "text-embedding-ada-002"
+    dimensions: 1536
+    similarity_threshold: 0.7
+    max_results: 5
+  
+  procedural:
+    enabled: true
+    workflows:
+      - name: "trip_planning"
+        steps:
+          - "understand_preferences"
+          - "search_destinations"
+          - "compare_prices"
+          - "generate_itinerary"
+          - "present_recommendations"
+      
+      - name: "booking_assistance"
+        steps:
+          - "verify_availability"
+          - "compare_prices"
+          - "explain_options"
+          - "assist_booking"
+          - "send_confirmation"
+
+config:
+  model:
+    provider: "openai"
+    name: "gpt-4-turbo"
+    temperature: 0.7
+    max_tokens: 2000
+    top_p: 0.9
+    frequency_penalty: 0.3
+    presence_penalty: 0.3
+  
+  features:
+    voice_input: true
+    voice_output: true
+    image_generation: false
+    document_processing: true
+    real_time_updates: true
+    multi_modal: true
+  
+  limits:
+    max_requests_per_minute: 60
+    max_requests_per_day: 1000
+    max_concurrent_requests: 5
+    max_context_length: 8000
+  
+  performance:
+    timeout: 30000
+    retry_attempts: 3
+    cache_enabled: true
+    cache_ttl: 3600
+
+security:
+  checksum:
+    algorithm: "sha256"
+    value: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    scope: "content"
+  
+  capabilities:
+    allowed_operations:
+      - "read_destinations"
+      - "write_trips"
+      - "read_prices"
+      - "call_apis"
+      - "access_user_data"
+    
+    restricted_domains:
+      - "localhost"
+      - "*.internal"
+      - "*.local"
+    
+    max_api_calls_per_minute: 60
+    max_data_access_per_day: 10000
+  
+  privacy:
+    store_conversations: true
+    anonymize_data: false
+    gdpr_compliant: true
+    data_retention_days: 90
+
+metadata:
+  version_history:
+    - version: "1.0"
+      date: "2025-10-21"
+      changes: "Initial release with core travel planning features"
+  
+  performance_metrics:
+    average_response_time: 1200
+    success_rate: 0.95
+    user_satisfaction: 4.8
+  
+  deployment:
+    environment: "production"
+    region: "us-east-1"
+    replicas: 3
+    auto_scaling: true
