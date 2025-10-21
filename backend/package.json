@@ -2,13 +2,13 @@
   "name": "amrikyy-agent-backend",
   "version": "2.0.0",
   "description": "Amrikyy Agent Platform - Unified Backend Server",
-  "main": "dist/server.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon --exec ts-node src/server.ts",
+    "dev": "nodemon server.js",
     "dev:old": "nodemon server.js",
-    "start": "node dist/server.js",
+    "start": "node server.js",
     "start:ts": "ts-node src/server.ts",
-    "build": "tsc",
+    "build": "echo 'No build needed for JavaScript'",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -24,9 +24,7 @@
     "security-check": "bash scripts/security-check.sh",
     "typecheck": "tsc --noEmit",
     "lint": "echo 'Linting not configured yet'",
-    "clean": "rm -rf dist",
-    "prebuild": "npm run clean",
-    "prestart": "npm run build"
+    "clean": "echo 'No dist to clean'"
   },
   "dependencies": {
     "@google-cloud/speech": "^7.2.1",
