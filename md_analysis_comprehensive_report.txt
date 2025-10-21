@@ -1,0 +1,488 @@
+==============================================================================
+COMPREHENSIVE MARKDOWN FILES ANALYSIS REPORT
+Generated: Tue Oct 21 13:42:41 UTC 2025
+==============================================================================
+
+1. SUMMARY STATISTICS
+==============================================================================
+Total MD Files: 298
+Total Lines: 128782
+Root Level Files: 11
+Docs Directory Files: 242
+
+2. ROOT LEVEL FILES
+==============================================================================
+/workspaces/Amrikyy-Agent/AI_AGENTS_EDUCATION_README.md (14K)
+/workspaces/Amrikyy-Agent/QUICK_START_PHASE1.md (4.7K)
+/workspaces/Amrikyy-Agent/DEPLOYMENT_STATUS.md (4.8K)
+/workspaces/Amrikyy-Agent/AI_AGENTS_EDUCATION_SYSTEM.md (23K)
+/workspaces/Amrikyy-Agent/openmemory.md (17K)
+/workspaces/Amrikyy-Agent/CODEBASE_INDEX.md (11K)
+/workspaces/Amrikyy-Agent/AMRIKYY_TRAVEL_AGENT_KNOWLEDGE_INDEX.md (7.2K)
+/workspaces/Amrikyy-Agent/PHASE1_COMPLETION_SUMMARY.md (12K)
+/workspaces/Amrikyy-Agent/MEMORY_UPDATE_COMPREHENSIVE.md (11K)
+/workspaces/Amrikyy-Agent/MIGRATION_CHECKLIST.md (1.5K)
+/workspaces/Amrikyy-Agent/CHAT_HISTORY_INDEX.md (11K)
+
+3. EXACT DUPLICATES (by MD5 hash)
+==============================================================================
+Found 3 files with same hash:
+  - /workspaces/Amrikyy-Agent/docs/core/N8N_INTEGRATION_SUMMARY.md
+  - /workspaces/Amrikyy-Agent/docs/agents/AUTONOMOUS_PROFIT_AGENT_RESEARCH_PROMPT.md
+  - /workspaces/Amrikyy-Agent/backend/src/ai/analysis_report.md
+
+
+4. EMPTY OR NEAR-EMPTY FILES (< 10 lines)
+==============================================================================
+/workspaces/Amrikyy-Agent/docs/core/N8N_INTEGRATION_SUMMARY.md (0 lines)
+/workspaces/Amrikyy-Agent/docs/core/GITHUB_SETUP.md (0 lines)
+/workspaces/Amrikyy-Agent/docs/agents/AUTONOMOUS_PROFIT_AGENT_RESEARCH_PROMPT.md (0 lines)
+/workspaces/Amrikyy-Agent/backend/mcp-servers/private-journal/.private-journal/2025-05-27/20-17-18-901887.md (3 lines)
+/workspaces/Amrikyy-Agent/backend/mcp-servers/private-journal/.private-journal/2025-05-27/20-16-46-544103.md (3 lines)
+/workspaces/Amrikyy-Agent/backend/src/ai/analysis_report.md (0 lines)
+
+5. LARGEST FILES (Top 20)
+==============================================================================
+   2763 /workspaces/Amrikyy-Agent/docs/agents/collaboration/AGENT_COLLABORATION_NOTES.md
+   1600 /workspaces/Amrikyy-Agent/docs/core/DATABASE_SECURITY_AUDIT.md
+   1377 /workspaces/Amrikyy-Agent/docs/governance/DESIGN_SYSTEM.md
+   1262 /workspaces/Amrikyy-Agent/docs/core/TELEGRAM_SECURITY_AUDIT.md
+   1156 /workspaces/Amrikyy-Agent/docs/governance/TEAM_STRUCTURE.md
+   1145 /workspaces/Amrikyy-Agent/.gemini/GEMINI.md
+   1133 /workspaces/Amrikyy-Agent/docs/core/BACKEND_SECURITY_AUDIT.md
+   1121 /workspaces/Amrikyy-Agent/docs/governance/THINKING_STRATEGY.md
+   1108 /workspaces/Amrikyy-Agent/docs/identity/AGENT_IDENTITY_SYSTEM.md
+   1105 /workspaces/Amrikyy-Agent/docs/core/API_DOCUMENTATION.md
+   1089 /workspaces/Amrikyy-Agent/docs/platforms/backend/BACKEND_TASKS.md
+   1088 /workspaces/Amrikyy-Agent/docs/design/KOMBAI_DESIGN_BRIEF.md
+   1080 /workspaces/Amrikyy-Agent/docs/governance/DEPLOYMENT_GUIDE.md
+   1079 /workspaces/Amrikyy-Agent/docs/core/MULTI_MODEL_ARCHITECTURE_PLAN.md
+   1066 /workspaces/Amrikyy-Agent/docs/core/API_ENDPOINTS_DOCUMENTATION.md
+   1060 /workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_QUANTUM_V0.3_FRAMEWORK.md
+   1022 /workspaces/Amrikyy-Agent/docs/reports/team-progress/CURSERO_DEEP_LEARNING_REPORT.md
+   1017 /workspaces/Amrikyy-Agent/.cursor/CLAUDE_DEEP_DIVE_MISSION.md
+    949 /workspaces/Amrikyy-Agent/docs/ai-persona-kit/AI_PERSONAKIT_FRAMEWORK.md
+    936 /workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_V3_IMPLEMENTATION_GUIDE.md
+
+6. FILES REFERENCING OLD NAME 'MAYA' (should be Amrikyy)
+==============================================================================
+/workspaces/Amrikyy-Agent/docs/development/workflows/CURSOR_OPTIMIZATION_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/development/workflows/CURSOR_SESSION_COMPLETE.md
+/workspaces/Amrikyy-Agent/docs/development/workflows/CURSOR_PERFORMANCE_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/MULTI_MODEL_PLAN_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/development/guides/MAYA_AI_ADVANCED_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/LANGSMITH_INTEGRATION_PLAN.md
+/workspaces/Amrikyy-Agent/docs/development/guides/ZAI_CODING_TOOLS_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/QUICK_DEPLOY_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/TELEGRAM_IOS_INTEGRATION_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/UI_IMPROVEMENTS_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/RATE_LIMITING_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/FRONTEND_TEST_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/PAYMENT_SETUP_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/AMRIKYY_RENAMING_PLAN.md
+/workspaces/Amrikyy-Agent/docs/governance/WORKSPACE_SETUP.md
+/workspaces/Amrikyy-Agent/docs/memory-system/pattern-learning/openmemory.md
+/workspaces/Amrikyy-Agent/docs/platforms/quantumos/FRONTEND_UI_STATUS.md
+/workspaces/Amrikyy-Agent/docs/platforms/backend/IOS_IMPLEMENTATION_PROGRESS.md
+/workspaces/Amrikyy-Agent/docs/platforms/backend/BACKEND_TASKS.md
+/workspaces/Amrikyy-Agent/docs/FINAL_IMPLEMENTATION_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/FINAL_SESSION_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/HONEST_STATUS_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/CODEBASE_RATING_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/CODEBASE_INSIGHTS_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/FINAL_PROJECT_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/PROJECT_STATUS_REPORT_COMPLETE.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/MAYA_TRAVEL_AGENT_ENTERPRISE_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/LANGSMITH_TRACING_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/PROGRESS_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/PROJECT_STATUS_REPORT.md
+/workspaces/Amrikyy-Agent/docs/analysis/CHINESE_SUPER_APPS_COMPARISON.md
+/workspaces/Amrikyy-Agent/docs/core/PROJECT_DOCUMENTATION.md
+/workspaces/Amrikyy-Agent/docs/core/CRITICAL_SECURITY_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/BACKEND_SECURITY_AUDIT.md
+/workspaces/Amrikyy-Agent/docs/core/ADVANCED_TOOLS_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/DATABASE_SECURITY_AUDIT.md
+/workspaces/Amrikyy-Agent/docs/core/DEPLOYMENT_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/core/WHATSAPP_BUSINESS_SETUP.md
+/workspaces/Amrikyy-Agent/docs/core/MULTI_MODEL_ARCHITECTURE_PLAN.md
+/workspaces/Amrikyy-Agent/docs/core/PRODUCTION_READY.md
+/workspaces/Amrikyy-Agent/docs/core/VERCEL_DEPLOYMENT_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/core/PROJECT_COMPLETE_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/DEPLOYMENT.md
+/workspaces/Amrikyy-Agent/docs/core/EIDE_SETUP.md
+/workspaces/Amrikyy-Agent/docs/core/API_DOCUMENTATION.md
+/workspaces/Amrikyy-Agent/docs/core/TELEGRAM_SECURITY_AUDIT.md
+/workspaces/Amrikyy-Agent/docs/core/STRATEGIC_AI_REPOSITORIES.md
+/workspaces/Amrikyy-Agent/docs/core/TELEGRAM_BOT_SETUP_COMPLETE.md
+/workspaces/Amrikyy-Agent/docs/core/CODEBASE_INTERACTIVE_MAP.md
+/workspaces/Amrikyy-Agent/docs/core/REALITY_VS_CLAIMS.md
+
+7. FILES WITH TODO/FIXME/WIP MARKERS
+==============================================================================
+/workspaces/Amrikyy-Agent/docs/AI_INTELLIGENCE_SYSTEM.md
+/workspaces/Amrikyy-Agent/docs/development/workflows/CURSOR_SESSION_COMPLETE.md
+/workspaces/Amrikyy-Agent/docs/governance/PROJECT_RULES.md
+/workspaces/Amrikyy-Agent/docs/memory-system/collaboration-notes/SMART_THEME_SYSTEM.md
+/workspaces/Amrikyy-Agent/docs/platforms/backend/IOS_IMPLEMENTATION_PROGRESS.md
+/workspaces/Amrikyy-Agent/docs/platforms/backend/BACKEND_TASKS.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/KOMBAI_PROGRESS_CHECK.md
+/workspaces/Amrikyy-Agent/docs/core/SESSION_UPDATE_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/CURSERO_MEGA_SESSION_COMPLETE.md
+/workspaces/Amrikyy-Agent/docs/core/WORKSPACE_CODEBASE_ANALYSIS.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_V3_SPECIFICATION_REVIEW.md
+/workspaces/Amrikyy-Agent/docs/agents/AI_AGENTS_ROLES.md
+/workspaces/Amrikyy-Agent/docs/agents/gemini/SMART_DOCUMENTATION_GEMINI_INTEGRATION.md
+/workspaces/Amrikyy-Agent/docs/agents/collaboration/AGENT_COLLABORATION_NOTES.md
+/workspaces/Amrikyy-Agent/DEPLOYMENT_STATUS.md
+
+8. FILES MARKED AS DEPRECATED
+==============================================================================
+/workspaces/Amrikyy-Agent/docs/development/guides/TESTING_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/CODEBASE_INDEX_AND_NEXT_PLAN.md
+/workspaces/Amrikyy-Agent/docs/governance/PROJECT_RULES.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/AGENT_CLEANUP_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/PROJECT_RATING_REPORT.md
+/workspaces/Amrikyy-Agent/docs/ai-team/CLAUDE-persona-workflow.md
+/workspaces/Amrikyy-Agent/docs/core/VULNERABILITY_PRIORITY.md
+/workspaces/Amrikyy-Agent/docs/core/REALITY_VS_CLAIMS.md
+/workspaces/Amrikyy-Agent/docs/agents/collaboration/AGENT_COLLABORATION_NOTES.md
+
+9. DEPLOYMENT-RELATED FILES (potential duplicates)
+==============================================================================
+/workspaces/Amrikyy-Agent/docs/development/guides/QUICK_DEPLOY_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/governance/DEPLOYMENT_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/core/RAILWAY_DEPLOYMENT_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/core/DEPLOYMENT_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/core/VERCEL_DEPLOYMENT_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/core/DEPLOYMENT.md
+/workspaces/Amrikyy-Agent/docs/core/REAL_DEPLOYMENT_STATUS.md
+/workspaces/Amrikyy-Agent/docs/INTAKE_ANALYZER_DEPLOYMENT.md
+/workspaces/Amrikyy-Agent/DEPLOYMENT_STATUS.md
+
+10. README FILES (potential duplicates)
+==============================================================================
+/workspaces/Amrikyy-Agent/docs/core/README_AUTONOMOUS_TRANSFORMATION.md
+/workspaces/Amrikyy-Agent/docs/core/README-TrinityFusionEngine.md
+/workspaces/Amrikyy-Agent/docs/core/README_BOT.md
+/workspaces/Amrikyy-Agent/docs/core/README.md
+/workspaces/Amrikyy-Agent/docs/ai-setup/README.md
+/workspaces/Amrikyy-Agent/docs/README.md
+/workspaces/Amrikyy-Agent/frontend/src/components/README.md
+/workspaces/Amrikyy-Agent/out/patches/README.md
+/workspaces/Amrikyy-Agent/backend/websocket/README.md
+/workspaces/Amrikyy-Agent/backend/mcp-servers/pattern-learning-journal/README.md
+/workspaces/Amrikyy-Agent/backend/mcp-servers/private-journal/README.md
+/workspaces/Amrikyy-Agent/backend/utils/__tests__/k210_demo-template/README.md
+/workspaces/Amrikyy-Agent/backend/tests/README.md
+/workspaces/Amrikyy-Agent/backend/src/aix/README.md
+
+11. CURSOR-RELATED FILES
+==============================================================================
+/workspaces/Amrikyy-Agent/docs/development/workflows/CURSOR_MONITORING_LOG.md
+/workspaces/Amrikyy-Agent/docs/development/workflows/CURSOR_OPTIMIZATION_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/workflows/CURSOR_OPTIMIZATION_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/development/workflows/CURSOR_SESSION_COMPLETE.md
+/workspaces/Amrikyy-Agent/docs/development/workflows/CURSOR_PERFORMANCE_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/workflows/CURSOR_ULTIMATE_TEST_REPORT.md
+/workspaces/Amrikyy-Agent/docs/development/workflows/CURSOR_PATTERN_LEARNING_SETUP.md
+/workspaces/Amrikyy-Agent/docs/agents/gemini/CURSOR_TO_GEMINI_NOTES.md
+/workspaces/Amrikyy-Agent/.cursor/CONTINUE_SECRET_SAUCE.md
+/workspaces/Amrikyy-Agent/.cursor/pattern-learning-prompts.md
+/workspaces/Amrikyy-Agent/.cursor/CLAUDE_DEEP_DIVE_MISSION.md
+/workspaces/Amrikyy-Agent/.cursor/plans/web-app-integration-fcfc6687.plan.md
+/workspaces/Amrikyy-Agent/.cursor/PATTERN_LEARNING_JOURNAL_INTEGRATION.md
+/workspaces/Amrikyy-Agent/.cursor/ULTIMATE_8_AGENT_WORKFLOW.md
+/workspaces/Amrikyy-Agent/.cursor/CONTINUE_INTEGRATION_MASTER_PLAN.md
+/workspaces/Amrikyy-Agent/.cursor/CONTINUE_CAPABILITIES_ANALYSIS.md
+/workspaces/Amrikyy-Agent/.cursor/SECRET_SAUCE_WORKFLOW.md
+/workspaces/Amrikyy-Agent/.cursor/ULTIMATE_SETUP_COMPLETE.md
+/workspaces/Amrikyy-Agent/.cursor/CONTINUE_INTEGRATION_COMPLETE.md
+/workspaces/Amrikyy-Agent/.cursor/START_AI_TEAM.md
+/workspaces/Amrikyy-Agent/.cursor/CLINE_INTEGRATION.md
+/workspaces/Amrikyy-Agent/.cursor/CONTINUE_CLINE_SYNERGY.md
+/workspaces/Amrikyy-Agent/.cursor/ULTIMATE_7_AGENT_WORKFLOW.md
+
+12. REPORT FILES (in docs/reports)
+==============================================================================
+/workspaces/Amrikyy-Agent/docs/reports/API_TEST_RUN_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/CHROME_EXTENSION_DASHBOARD_PLAN.md
+/workspaces/Amrikyy-Agent/docs/reports/FULL_STACK_HEALTH_CHECK_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/LOCAL_TESTING_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/reports/PROJECT_VISUAL_TIMELINE.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/AGENT_CLEANUP_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/AMRIKYY_TEAM_PROGRESS_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/CODEBASE_INSIGHTS_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/CODEBASE_RATING_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/COMPLETE_TEAM_PROGRESS_JAN13.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/COMPREHENSIVE_ANALYSIS_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/CROSS_DOMAIN_SYNTHESIS_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/CURSERO_DEEP_LEARNING_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/FINAL_PROJECT_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/FINAL_SESSION_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/FINAL_TEST_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/HONEST_STATUS_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/KELO_CURRENT_PROGRESS.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/KELO_PROGRESS_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/KOMBAI_PROGRESS_CHECK.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/LANGSMITH_TRACING_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/MAYA_AI_FINAL_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/MAYA_TRAVEL_AGENT_ENTERPRISE_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/MINI_APPS_TEST_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/PROGRESS_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/PROJECT_RATING_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/PROJECT_STATUS_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/PROJECT_STATUS_REPORT_COMPLETE.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/TEST_RESULTS_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/TODAY_PROGRESS.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/UI_AUDIT_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/VIDEO_ANALYSIS_REPORT.md
+
+13. GUIDE FILES
+==============================================================================
+/workspaces/Amrikyy-Agent/backend/docs/ANALYTICS_USAGE_GUIDE.md
+/workspaces/Amrikyy-Agent/backend/utils/LOGGER_USAGE_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_3.0_IMPLEMENTATION_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_3.0_SIMPLE_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_DASHBOARD_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_V3_IMPLEMENTATION_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/agents/gemini/GEMINI_MCP_SETUP_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/ai-setup/agent-system-messages/SETUP_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/ai-setup/apply-models/APPLY_MODELS_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/ai-setup/autocomplete-models/AUTOCOMPLETE_MODELS_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/core/API_KEYS_SETUP_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/core/DEPLOYMENT_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/core/RAILWAY_DEPLOYMENT_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/core/TRAVEL_APIS_SETUP_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/core/VERCEL_DEPLOYMENT_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/ACTIVATION_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/AI_AGENTS_TESTING_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/DEVELOPMENT_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/FRONTEND_AUTH_INTEGRATION_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/FRONTEND_TEST_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/MAYA_AI_ADVANCED_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/MONEY_HUNTER_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/NANO_COORDINATOR_COMPLETE_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/PAYMENT_SETUP_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/QUANTUM_REWARD_ENGINE_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/QUICK_DEPLOY_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/RATE_LIMITING_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/TELEGRAM_IOS_INTEGRATION_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/TESTING_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/UI_IMPROVEMENTS_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/VOICE_INTERFACE_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/VOICE_TESTING_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/ZAI_CODING_TOOLS_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/workflows/CURSOR_OPTIMIZATION_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/workflows/CURSOR_PERFORMANCE_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/workflows/SMART_DOCUMENTATION_WORKFLOW_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/workflows/TEAM_WORKFLOW_VISUAL_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/governance/DEPLOYMENT_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/integrations/NANOAGENT_INTEGRATION_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/reports/LOCAL_TESTING_GUIDE.md
+
+14. STATUS/SUMMARY FILES
+==============================================================================
+/workspaces/Amrikyy-Agent/DEPLOYMENT_STATUS.md
+/workspaces/Amrikyy-Agent/PHASE1_COMPLETION_SUMMARY.md
+/workspaces/Amrikyy-Agent/backend/utils/LOGGER_UPGRADE_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/FINAL_IMPLEMENTATION_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/ADVANCED_TOOLS_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/CRITICAL_SECURITY_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/IMPLEMENTATION_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/KOMBAI_IMPROVEMENTS_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/MASTER_PROJECT_STATUS.md
+/workspaces/Amrikyy-Agent/docs/core/N8N_INTEGRATION_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/PROJECT_COMPLETE_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/REAL_DEPLOYMENT_STATUS.md
+/workspaces/Amrikyy-Agent/docs/core/SESSION_SUMMARY_JAN13.md
+/workspaces/Amrikyy-Agent/docs/core/SESSION_UPDATE_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/TODAY_FINAL_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/UI_COMPLETION_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/development/guides/MULTI_MODEL_PLAN_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/development/workflows/CURSOR_OPTIMIZATION_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/platforms/quantumos/FRONTEND_UI_STATUS.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/HONEST_STATUS_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/PROJECT_STATUS_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/PROJECT_STATUS_REPORT_COMPLETE.md
+/workspaces/Amrikyy-Agent/frontend/FRONTEND_COMPLETION_SUMMARY.md
+/workspaces/Amrikyy-Agent/frontend/REDESIGN_SUMMARY.md
+
+15. FILES BY DIRECTORY
+==============================================================================
+     86 /workspaces/Amrikyy-Agent/docs/core
+     27 /workspaces/Amrikyy-Agent/docs/reports/team-progress
+     27 /workspaces/Amrikyy-Agent/docs/development/guides
+     17 /workspaces/Amrikyy-Agent/docs/agents/dna-specifications
+     14 /workspaces/Amrikyy-Agent/.cursor
+     11 /workspaces/Amrikyy-Agent/docs/agents/gemini
+     11 /workspaces/Amrikyy-Agent/docs
+     11 /workspaces/Amrikyy-Agent
+      9 /workspaces/Amrikyy-Agent/docs/governance
+      9 /workspaces/Amrikyy-Agent/docs/development/workflows
+      6 /workspaces/Amrikyy-Agent/docs/agents
+      5 /workspaces/Amrikyy-Agent/docs/reports
+      4 /workspaces/Amrikyy-Agent/frontend
+      4 /workspaces/Amrikyy-Agent/docs/platforms/backend
+      4 /workspaces/Amrikyy-Agent/docs/memory-system/pattern-learning
+      3 /workspaces/Amrikyy-Agent/docs/platforms/quantumos
+      3 /workspaces/Amrikyy-Agent/docs/integrations
+      3 /workspaces/Amrikyy-Agent/codebase-index
+      2 /workspaces/Amrikyy-Agent/docs/memory-system/collaboration-notes
+      2 /workspaces/Amrikyy-Agent/docs/ai-team
+      2 /workspaces/Amrikyy-Agent/docs/ai-setup/free-models
+      2 /workspaces/Amrikyy-Agent/docs/ai-setup/autocomplete-models
+      2 /workspaces/Amrikyy-Agent/docs/ai-setup/agent-system-messages
+      2 /workspaces/Amrikyy-Agent/docs/ai-setup
+      2 /workspaces/Amrikyy-Agent/backend/utils
+      2 /workspaces/Amrikyy-Agent/backend/mcp-servers/private-journal/docs
+      2 /workspaces/Amrikyy-Agent/backend/mcp-servers/private-journal/.private-journal/2025-05-27
+      2 /workspaces/Amrikyy-Agent/backend/mcp-servers/private-journal
+      2 /workspaces/Amrikyy-Agent/backend/docs
+      2 /workspaces/Amrikyy-Agent/.gemini
+      1 /workspaces/Amrikyy-Agent/system-monitoring
+      1 /workspaces/Amrikyy-Agent/out/patches
+      1 /workspaces/Amrikyy-Agent/frontend/src/components
+      1 /workspaces/Amrikyy-Agent/docs/prompts
+      1 /workspaces/Amrikyy-Agent/docs/identity
+      1 /workspaces/Amrikyy-Agent/docs/design
+      1 /workspaces/Amrikyy-Agent/docs/analysis
+      1 /workspaces/Amrikyy-Agent/docs/ai-setup/apply-models
+      1 /workspaces/Amrikyy-Agent/docs/ai-persona-kit
+      1 /workspaces/Amrikyy-Agent/docs/agents/collaboration
+      1 /workspaces/Amrikyy-Agent/docs/agents/claude
+      1 /workspaces/Amrikyy-Agent/backend/websocket
+      1 /workspaces/Amrikyy-Agent/backend/utils/__tests__/k210_demo-template
+      1 /workspaces/Amrikyy-Agent/backend/tests
+      1 /workspaces/Amrikyy-Agent/backend/src/aix
+      1 /workspaces/Amrikyy-Agent/backend/src/ai
+      1 /workspaces/Amrikyy-Agent/backend/mcp-servers/pattern-learning-journal
+      1 /workspaces/Amrikyy-Agent/backend
+      1 /workspaces/Amrikyy-Agent/.gemini/persona
+      1 /workspaces/Amrikyy-Agent/.cursor/plans
+
+16. FILES WITH DATES IN NAME (potential outdated)
+==============================================================================
+/workspaces/Amrikyy-Agent/docs/development/workflows/CURSOR_OPTIMIZATION_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/development/workflows/SMART_DOCUMENTATION_WORKFLOW_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/MULTI_MODEL_PLAN_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/development/guides/MAYA_AI_ADVANCED_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/UPDATED_PROJECT_PLAN_2025.md
+/workspaces/Amrikyy-Agent/docs/memory-system/collaboration-notes/SMART_DOCUMENTATION_SYSTEM.md
+/workspaces/Amrikyy-Agent/docs/memory-system/collaboration-notes/SMART_THEME_SYSTEM.md
+/workspaces/Amrikyy-Agent/docs/memory-system/pattern-learning/SMART_MEMORY_SYSTEM.md
+/workspaces/Amrikyy-Agent/docs/FINAL_IMPLEMENTATION_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/MAYA_TRAVEL_AGENT_ENTERPRISE_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/COMPLETE_TEAM_PROGRESS_JAN13.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/MAYA_AI_FINAL_REPORT.md
+/workspaces/Amrikyy-Agent/docs/SMART_DOCUMENTATION_HUB.md
+/workspaces/Amrikyy-Agent/docs/core/CRITICAL_SECURITY_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/SESSION_SUMMARY_JAN13.md
+/workspaces/Amrikyy-Agent/docs/core/ADVANCED_TOOLS_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/PROJECT_COMPLETE_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/UI_COMPLETION_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/KOMBAI_IMPROVEMENTS_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/N8N_INTEGRATION_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/SESSION_UPDATE_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/TODAY_FINAL_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/core/RENAME_MAYA_TO_AMRIKYY.md
+/workspaces/Amrikyy-Agent/docs/core/IMPLEMENTATION_SUMMARY.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_FORMAT_DECISION_ANALYSIS.md
+/workspaces/Amrikyy-Agent/docs/agents/gemini/SMART_DOCUMENTATION_GEMINI_INTEGRATION.md
+/workspaces/Amrikyy-Agent/docs/agents/gemini/GEMINI_PROGRESS_CHECK_JAN13.md
+/workspaces/Amrikyy-Agent/docs/agents/gemini/MAYA_TRAVEL_AGENT_CONTEXT_FOR_GEMINI.md
+/workspaces/Amrikyy-Agent/docs/agents/gemini/GEMINI_PRIMARY_BRAIN_IMPLEMENTATION.md
+/workspaces/Amrikyy-Agent/frontend/REDESIGN_SUMMARY.md
+/workspaces/Amrikyy-Agent/frontend/FRONTEND_COMPLETION_SUMMARY.md
+/workspaces/Amrikyy-Agent/.cursor/plans/web-app-integration-fcfc6687.plan.md
+/workspaces/Amrikyy-Agent/backend/mcp-servers/private-journal/.private-journal/2025-05-27/20-17-18-901887.md
+/workspaces/Amrikyy-Agent/backend/mcp-servers/private-journal/.private-journal/2025-05-27/20-16-46-544103.md
+/workspaces/Amrikyy-Agent/backend/utils/LOGGER_UPGRADE_SUMMARY.md
+/workspaces/Amrikyy-Agent/PHASE1_COMPLETION_SUMMARY.md
+
+17. SIMILAR FILENAMES (potential duplicates)
+==============================================================================
+Files with similar names:
+     11 README.md
+      3 QUICK_START.md
+      2 openmemory.md
+      2 GEMINI.md
+      2 DEPLOYMENT_GUIDE.md
+
+18. AIX-RELATED FILES
+==============================================================================
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_3.0_EVALUATION_REPORT.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_3.0_IMPLEMENTATION_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_3.0_SIMPLE_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_AGENTS_CONVERSION_REPORT.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_AGENT_TEAM_SPECIFICATIONS.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_COMPLETE_ECOSYSTEM.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_DASHBOARD_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_FORMAT_DECISION_ANALYSIS.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_INTEGRATION_MASTER_PLAN.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_INTEGRATION_TEST_REPORT.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_QUANTUM_V0.3_FRAMEWORK.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_SPECIFICATION_COMPATIBILITY_REPORT.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_V2_IMPROVEMENT_PROPOSAL.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_V3_COMPLETE_DOCUMENTATION_INDEX.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_V3_IMPLEMENTATION_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_V3_SPECIFICATION_REVIEW.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/UPDATED_AIX_SPECIFICATION_COMPATIBILITY_REPORT.md
+
+19. AGENT-RELATED FILES
+==============================================================================
+/workspaces/Amrikyy-Agent/.cursor/ULTIMATE_7_AGENT_WORKFLOW.md
+/workspaces/Amrikyy-Agent/.cursor/ULTIMATE_8_AGENT_WORKFLOW.md
+/workspaces/Amrikyy-Agent/AI_AGENTS_EDUCATION_README.md
+/workspaces/Amrikyy-Agent/AI_AGENTS_EDUCATION_SYSTEM.md
+/workspaces/Amrikyy-Agent/AMRIKYY_TRAVEL_AGENT_KNOWLEDGE_INDEX.md
+/workspaces/Amrikyy-Agent/docs/agents/AGENTS_TESTING_COMPLETE.md
+/workspaces/Amrikyy-Agent/docs/agents/AGENT_COORDINATOR_TOPOLOGY_ANALYSIS_AND_SOLUTIONS.md
+/workspaces/Amrikyy-Agent/docs/agents/AI_AGENTS_ROLES.md
+/workspaces/Amrikyy-Agent/docs/agents/AUTONOMOUS_MONEY_AGENT_RESEARCH_PROMPT.md
+/workspaces/Amrikyy-Agent/docs/agents/AUTONOMOUS_PROFIT_AGENT_RESEARCH_PROMPT.md
+/workspaces/Amrikyy-Agent/docs/agents/QUICK_START_AI_AGENTS.md
+/workspaces/Amrikyy-Agent/docs/agents/collaboration/AGENT_COLLABORATION_NOTES.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_AGENTS_CONVERSION_REPORT.md
+/workspaces/Amrikyy-Agent/docs/agents/dna-specifications/AIX_AGENT_TEAM_SPECIFICATIONS.md
+/workspaces/Amrikyy-Agent/docs/agents/gemini/MAYA_TRAVEL_AGENT_CONTEXT_FOR_GEMINI.md
+/workspaces/Amrikyy-Agent/docs/ai-setup/agent-system-messages/DEFAULT_AGENT_SYSTEM_MESSAGE.md
+/workspaces/Amrikyy-Agent/docs/core/NANOAGENT_QUANTUM_SYSTEM_COMPLETE.md
+/workspaces/Amrikyy-Agent/docs/development/guides/AI_AGENTS_TESTING_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/governance/AI_AGENT_WORKFLOW_STANDARD.md
+/workspaces/Amrikyy-Agent/docs/identity/AGENT_IDENTITY_SYSTEM.md
+/workspaces/Amrikyy-Agent/docs/integrations/NANOAGENT_INTEGRATION_GUIDE.md
+/workspaces/Amrikyy-Agent/docs/memory-system/pattern-learning/PATTERN_LEARNING_AGENT_RESULTS.md
+/workspaces/Amrikyy-Agent/docs/memory-system/pattern-learning/PATTERN_LEARNING_AGENT_VALIDATION_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/AGENT_CLEANUP_REPORT.md
+/workspaces/Amrikyy-Agent/docs/reports/team-progress/MAYA_TRAVEL_AGENT_ENTERPRISE_REPORT.md
+
+20. RECENTLY MODIFIED FILES (last 30 days)
+==============================================================================
+-rw-r--r-- 1 vscode vscode  10333 Oct 21 13:36 /workspaces/Amrikyy-Agent/CODEBASE_INDEX.md
+-rw-r--r-- 1 vscode vscode   4824 Oct 21 13:26 /workspaces/Amrikyy-Agent/DEPLOYMENT_STATUS.md
+-rw-r--r-- 1 vscode vscode   1517 Oct 21 13:23 /workspaces/Amrikyy-Agent/MIGRATION_CHECKLIST.md
+-rw-r--r-- 1 vscode vscode   6460 Oct 21 13:05 /workspaces/Amrikyy-Agent/frontend/src/components/README.md
+-rw-r--r-- 1 vscode root     4140 Oct 21 12:48 /workspaces/Amrikyy-Agent/backend/mcp-servers/private-journal/docs/spec.md
+-rw-r--r-- 1 vscode root       34 Oct 21 12:48 /workspaces/Amrikyy-Agent/backend/mcp-servers/private-journal/.private-journal/2025-05-27/20-17-18-901887.md
+-rw-r--r-- 1 vscode root     3422 Oct 21 12:48 /workspaces/Amrikyy-Agent/backend/mcp-servers/private-journal/CLAUDE.md
+-rw-r--r-- 1 vscode root     4951 Oct 21 12:48 /workspaces/Amrikyy-Agent/backend/mcp-servers/private-journal/README.md
+-rw-r--r-- 1 vscode root     7580 Oct 21 12:48 /workspaces/Amrikyy-Agent/backend/mcp-servers/private-journal/docs/implementation-plan.md
+-rw-r--r-- 1 vscode root       34 Oct 21 12:48 /workspaces/Amrikyy-Agent/backend/mcp-servers/private-journal/.private-journal/2025-05-27/20-16-46-544103.md
+-rw-r--r-- 1 vscode root     1339 Oct 21 12:48 /workspaces/Amrikyy-Agent/system-monitoring/QUICK_START.md
+-rw-r--r-- 1 vscode root      596 Oct 21 12:48 /workspaces/Amrikyy-Agent/out/patches/README.md
+-rw-r--r-- 1 vscode root    17042 Oct 21 12:48 /workspaces/Amrikyy-Agent/openmemory.md
+-rw-r--r-- 1 vscode root     6734 Oct 21 12:48 /workspaces/Amrikyy-Agent/frontend/DESIGN_FIXES_COMPLETED.md
+-rw-r--r-- 1 vscode root     8780 Oct 21 12:48 /workspaces/Amrikyy-Agent/frontend/EXACT_DESIGN_APPLIED.md
+-rw-r--r-- 1 vscode root     4504 Oct 21 12:48 /workspaces/Amrikyy-Agent/frontend/FRONTEND_COMPLETION_SUMMARY.md
+-rw-r--r-- 1 vscode root     4794 Oct 21 12:48 /workspaces/Amrikyy-Agent/frontend/REDESIGN_SUMMARY.md
+-rw-r--r-- 1 vscode root     5646 Oct 21 12:48 /workspaces/Amrikyy-Agent/docs/reports/team-progress/VIDEO_ANALYSIS_REPORT.md
+-rw-r--r-- 1 vscode root    12313 Oct 21 12:48 /workspaces/Amrikyy-Agent/docs/reports/team-progress/AMRIKYY_TEAM_PROGRESS_REPORT.md
+-rw-r--r-- 1 vscode root    10385 Oct 21 12:48 /workspaces/Amrikyy-Agent/docs/reports/team-progress/CODEBASE_INSIGHTS_REPORT.md
+
+21. OLD FILES (not modified in 90+ days)
+==============================================================================
+Count: 0
+
+==============================================================================
+ANALYSIS COMPLETE
+==============================================================================
