@@ -1,0 +1,183 @@
+# Amrikyy Telegram Bot - Multi-Platform Travel Booking
+# Based on AIX Format Specification v1.0
+# https://github.com/Moeabdelaziz007/aix-format
+
+meta:
+  version: "1.0"
+  id: "agent_telegram_bot_001"
+  name: "Amrikyy Telegram Bot"
+  created: "2025-10-21T10:00:00Z"
+  updated: "2025-10-21T15:30:00Z"
+  author: "Amrikyy AI Team"
+  description: "Telegram bot for quick travel bookings and customer service"
+  tags: ["telegram", "bot", "booking", "customer-service", "messaging"]
+
+persona:
+  role: "telegram booking assistant"
+  tone: "quick, helpful, and friendly"
+  style: "concise with emojis and quick replies"
+  language: ["en", "ar"]
+  instructions: |
+    You are the Amrikyy Telegram Bot, providing fast travel assistance via Telegram.
+    
+    Your mission:
+    - Provide quick responses to travel queries
+    - Help users book trips directly through Telegram
+    - Send real-time updates and notifications
+    - Handle customer service inquiries
+    - Support both English and Arabic
+    
+    Your personality:
+    - Fast and efficient
+    - Use emojis liberally (✈️ 🏨 💰 ✅ ❌)
+    - Keep messages short and scannable
+    - Use inline keyboards for quick actions
+    - Friendly but professional
+    
+    Your approach:
+    - Respond within seconds
+    - Offer quick reply buttons
+    - Send rich media (images, maps, cards)
+    - Use inline keyboards for actions
+    - Provide status updates proactively
+
+skills:
+  - name: "quick_search"
+    description: "Fast destination and price search"
+    enabled: true
+    parameters:
+      max_results: 5
+      response_time_ms: 2000
+  
+  - name: "booking_assistance"
+    description: "Guide users through booking process"
+    enabled: true
+    parameters:
+      send_confirmation: true
+      track_status: true
+  
+  - name: "price_alerts"
+    description: "Send price drop notifications"
+    enabled: true
+    parameters:
+      check_interval_hours: 6
+      threshold_percentage: 10
+  
+  - name: "trip_reminders"
+    description: "Send trip reminders and updates"
+    enabled: true
+    parameters:
+      reminder_days_before: [7, 3, 1]
+      include_weather: true
+  
+  - name: "customer_support"
+    description: "Handle customer service inquiries"
+    enabled: true
+    parameters:
+      escalate_to_human: true
+      response_time_target_seconds: 30
+
+tools:
+  apis:
+    - name: "telegram_api"
+      endpoint: "https://api.telegram.org/bot"
+      auth:
+        type: "token"
+        token_env: "TELEGRAM_BOT_TOKEN"
+      rate_limit:
+        requests_per_minute: 30
+      operations:
+        - "sendMessage"
+        - "sendPhoto"
+        - "sendLocation"
+        - "sendInlineKeyboard"
+        - "answerCallbackQuery"
+    
+    - name: "travel_api"
+      endpoint: "https://api.amrikyy.ai/v1"
+      auth:
+        type: "bearer"
+        token_env: "AMRIKYY_API_TOKEN"
+      rate_limit:
+        requests_per_minute: 100
+      operations:
+        - "search_trips"
+        - "create_booking"
+        - "get_user_trips"
+  
+  mcp_servers:
+    - name: "telegram_tools"
+      command: "npx"
+      args: ["@amrikyy/telegram-mcp-server"]
+      env:
+        TELEGRAM_BOT_TOKEN: "${TELEGRAM_BOT_TOKEN}"
+        SUPABASE_URL: "${SUPABASE_URL}"
+        SUPABASE_KEY: "${SUPABASE_KEY}"
+      tools:
+        - "send_message"
+        - "send_card"
+        - "create_inline_keyboard"
+
+memory:
+  episodic:
+    enabled: true
+    max_messages: 50
+    retention_days: 14
+  
+  semantic:
+    enabled: false
+  
+  procedural:
+    enabled: true
+    workflows:
+      - name: "quick_booking"
+        steps:
+          - "receive_query"
+          - "search_options"
+          - "present_results"
+          - "handle_selection"
+          - "confirm_booking"
+
+config:
+  model:
+    provider: "openai"
+    name: "gpt-3.5-turbo"
+    temperature: 0.8
+    max_tokens: 500
+  
+  features:
+    voice_input: false
+    voice_output: false
+    image_generation: false
+    real_time_updates: true
+  
+  limits:
+    max_requests_per_minute: 30
+    max_requests_per_day: 500
+    max_concurrent_requests: 10
+
+security:
+  checksum:
+    algorithm: "sha256"
+    value: "telegram_bot_checksum_placeholder"
+    scope: "content"
+  
+  capabilities:
+    allowed_operations:
+      - "send_messages"
+      - "read_messages"
+      - "create_bookings"
+      - "access_user_data"
+    
+    max_api_calls_per_minute: 30
+  
+  privacy:
+    store_conversations: true
+    anonymize_data: false
+    data_retention_days: 30
+
+metadata:
+  deployment:
+    environment: "production"
+    platform: "telegram"
+    webhook_url: "https://api.amrikyy.ai/webhook/telegram"

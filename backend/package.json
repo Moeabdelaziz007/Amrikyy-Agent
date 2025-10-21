@@ -9,6 +9,7 @@
     "start": "node server.js",
     "start:ts": "ts-node src/server.ts",
     "build": "echo 'No build needed for JavaScript'",
+    "quantum-agent": "node src/agents/QuantumGeminiCore.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",

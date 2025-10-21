@@ -1,46 +1,62 @@
-import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
-import { WindowManagerProvider } from '@/contexts/WindowManagerContext';
-import { DesktopOS } from '@/components/desktop-os';
+import { AppLayout } from '@/components/layout';
+import { Home } from '@/pages/Home';
 import LandingPage from '@/pages/LandingPage';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/demo" element={<DemoPage />} />
-        <Route 
-          path="/desktop" 
-          element={
-            <WindowManagerProvider>
-              <DesktopOS />
-            </WindowManagerProvider>
-          } 
-        />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </div>
+    <Routes>
+      {/* New Clean Routes */}
+      <Route path="/" element={
+        <AppLayout>
+          <Home />
+        </AppLayout>
+      } />
+      
+      {/* Legacy Landing Page (temporary) */}
+      <Route path="/landing" element={<LandingPage />} />
+      
+      {/* Placeholder Routes */}
+      <Route path="/search" element={
+        <AppLayout>
+          <ComingSoon title="Search Flights" />
+        </AppLayout>
+      } />
+      <Route path="/bookings" element={
+        <AppLayout>
+          <ComingSoon title="My Bookings" />
+        </AppLayout>
+      } />
+      <Route path="/auth" element={
+        <AppLayout>
+          <ComingSoon title="Authentication" />
+        </AppLayout>
+      } />
+      
+      {/* 404 */}
+      <Route path="*" element={
+        <AppLayout>
+          <NotFound />
+        </AppLayout>
+      } />
+    </Routes>
   );
 }
 
 
 
-function DemoPage() {
+function ComingSoon({ title }: { title: string }) {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center text-white">
-        <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-transparent bg-clip-text">
-          Coming Soon
-        </h1>
-        <p className="text-xl text-slate-300 mb-8">
-          AI Learning Platform - Under Development
+    <div className="container py-20">
+      <div className="max-w-2xl mx-auto text-center space-y-6">
+        <h1 className="text-4xl font-bold">{title}</h1>
+        <p className="text-xl text-muted-foreground">
+          This feature is coming soon in Week {title.includes('Search') ? '2' : title.includes('Booking') ? '3' : '1'} of development.
         </p>
-        <Link 
-          to="/" 
-          className="px-6 py-3 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors inline-block"
-        >
-          Back to Home
+        <Link to="/">
+          <button className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+            Back to Home
+          </button>
         </Link>
       </div>
     </div>
@@ -49,15 +65,14 @@ function DemoPage() {
 
 function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center text-white">
-        <h1 className="text-6xl font-bold mb-4 text-red-400">404</h1>
-        <p className="text-xl text-slate-300 mb-4">Page Not Found</p>
-        <Link 
-          to="/" 
-          className="text-cyan-400 hover:text-cyan-300 transition-colors"
-        >
-          Return to Home
+    <div className="container py-20">
+      <div className="max-w-2xl mx-auto text-center space-y-6">
+        <h1 className="text-6xl font-bold">404</h1>
+        <p className="text-xl text-muted-foreground">Page Not Found</p>
+        <Link to="/">
+          <button className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+            Return to Home
+          </button>
         </Link>
       </div>
     </div>
