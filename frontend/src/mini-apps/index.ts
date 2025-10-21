@@ -7,4 +7,7 @@
  */
 
 export { DashboardMiniApp } from './DashboardMiniApp';
+export { LunaMiniApp } from './LunaMiniApp';
+export { KarimMiniApp } from './KarimMiniApp';
+export { KodyMiniApp } from './KodyMiniApp';
 export { default as Dashboard } from './DashboardMiniApp';
