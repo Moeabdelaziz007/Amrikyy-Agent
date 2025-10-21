@@ -113,41 +113,68 @@ npm run dev
 ```
 
 ### 4. Access Application
+
+**Local Development:**
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:3001
 - Health Check: http://localhost:3001/api/health
+
+**Production:**
+- Frontend: [https://frontend-beta-sandy.vercel.app](https://frontend-beta-sandy.vercel.app)
+- Backend API: [https://amrikyy-agent.onrender.com](https://amrikyy-agent.onrender.com)
+- Health Check: [https://amrikyy-agent.onrender.com/api/health](https://amrikyy-agent.onrender.com/api/health)
 
 ---
 
 ## 📦 Deployment
 
-### Backend (Railway/Render)
+### Current Production Setup
 
-1. **Create New Project**
+**Backend**: Deployed on [Render.com](https://render.com)
+- URL: [https://amrikyy-agent.onrender.com](https://amrikyy-agent.onrender.com)
+- Runtime: Node.js 20.x
+- Build Command: `npm install`
+- Start Command: `node server.js`
+- Environment: 14 variables configured (see DEPLOYMENT_KEYS.md)
+
+**Frontend**: Deployed on [Vercel](https://vercel.com)
+- URL: [https://frontend-beta-sandy.vercel.app](https://frontend-beta-sandy.vercel.app)
+- Framework: Vite (React)
+- Build Command: `npm run build`
+- Output Directory: `dist`
+- Environment: `VITE_API_URL=https://amrikyy-agent.onrender.com`
+
+### Deploy Your Own Instance
+
+#### Backend (Render.com)
+
+1. **Create New Web Service**
    - Connect GitHub repository
    - Select `backend` directory as root
+   - Runtime: Node
+   - Build Command: `npm install`
+   - Start Command: `node server.js`
 
 2. **Environment Variables**
    - See `DEPLOYMENT_KEYS.md` for complete list
-   - Minimum required: 9 variables (see Minimal Setup)
+   - Minimum required: 14 variables (see ENV_KEYS_MASTER.md)
 
 3. **Deploy**
-   ```bash
-   # Railway auto-deploys on push
-   # Or use Railway CLI
-   railway up
-   ```
+   - Render auto-deploys on push to main branch
+   - Manual deploy via Render dashboard
 
-### Frontend (Vercel)
+#### Frontend (Vercel)
 
 1. **Import Project**
    - Connect GitHub repository
    - Framework: Vite
    - Root Directory: `frontend`
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
 
 2. **Environment Variables**
    ```bash
-   VITE_API_URL=https://your-backend.railway.app
+   VITE_API_URL=https://your-backend.onrender.com
    ```
 
 3. **Deploy**
@@ -260,15 +287,15 @@ npm run test:integration
 - **Authentication**: JWT + Passport.js
 
 ### AI & ML
-- **Primary**: OpenAI GPT-4
-- **Alternatives**: Gemini, Claude, OpenRouter
-- **Tracing**: LangSmith
+- **Primary**: Google Gemini 2.0 Flash (Experimental)
+- **Alternatives**: Gemini 2.5 Pro, OpenAI GPT-4, Claude
+- **Tracing**: LangSmith (optional)
 - **Vector DB**: Qdrant (optional)
 
 ### DevOps
-- **Hosting**: Railway (backend), Vercel (frontend)
-- **CI/CD**: GitHub Actions
-- **Monitoring**: Sentry
+- **Hosting**: Render.com (backend), Vercel (frontend)
+- **CI/CD**: GitHub Actions + Auto-deploy
+- **Monitoring**: Sentry (optional)
 - **Analytics**: Custom analytics middleware
 
 ---
@@ -327,21 +354,25 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📊 Project Status
 
 - ✅ Core AI chat functionality
-- ✅ Multi-model architecture
+- ✅ Multi-model architecture (Gemini 2.0 Flash)
 - ✅ Authentication system
 - ✅ Telegram bot integration
 - ✅ Travel API integrations
 - ✅ Modern UI/UX
+- ✅ **Backend deployed on Render.com**
+- ✅ **Frontend deployed on Vercel**
+- ✅ **Production ready for user testing**
 - 🚧 Payment processing (in progress)
 - 🚧 Voice interface (coming soon)
 - 🚧 Mobile apps (planned)
 
 ---
 
-## 🔗 Links
+## 🔗 Production Links
 
-- **Live Demo**: [https://amrikyy-agent.vercel.app](https://amrikyy-agent.vercel.app)
-- **API Docs**: [https://api.amrikyy.com/docs](https://api.amrikyy.com/docs)
+- **Live Application**: [https://frontend-beta-sandy.vercel.app](https://frontend-beta-sandy.vercel.app)
+- **Backend API**: [https://amrikyy-agent.onrender.com](https://amrikyy-agent.onrender.com)
+- **API Health Check**: [https://amrikyy-agent.onrender.com/api/health](https://amrikyy-agent.onrender.com/api/health)
 - **Telegram Bot**: [@AmrikyyBot](https://t.me/AmrikyyBot)
 - **Support**: [Amrikyy@gmail.com](mailto:Amrikyy@gmail.com)
 
