@@ -1,61 +1,30 @@
 import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
+import { WindowManagerProvider } from '@/contexts/WindowManagerContext';
+import { DesktopOS } from '@/components/desktop-os';
+import LandingPage from '@/pages/LandingPage';
 
 function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/demo" element={<DemoPage />} />
+        <Route 
+          path="/desktop" 
+          element={
+            <WindowManagerProvider>
+              <DesktopOS />
+            </WindowManagerProvider>
+          } 
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );
 }
 
-function HomePage() {
-  return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="text-center max-w-4xl mx-auto">
-        <h1 className="text-7xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-transparent bg-clip-text">
-          AMRIKYY AI
-        </h1>
-        <p className="text-2xl text-slate-300 mb-12">
-          Your AI-Powered Learning Platform
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-          <Link 
-            to="/demo" 
-            className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg hover:shadow-xl transition-all"
-          >
-            Start Learning
-          </Link>
-          <Link 
-            to="/demo" 
-            className="px-8 py-4 bg-slate-800 text-white font-bold rounded-lg border-2 border-slate-700 hover:border-cyan-500 transition-all"
-          >
-            Explore Courses
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <FeatureCard emoji="🚀" title="AI-Powered" description="Personalized learning with advanced AI" />
-          <FeatureCard emoji="🎯" title="Interactive" description="Hands-on projects and real-world skills" />
-          <FeatureCard emoji="🌟" title="Expert-Led" description="Learn from industry professionals" />
-        </div>
-      </div>
-    </div>
-  );
-}
 
-function FeatureCard({ emoji, title, description }: { emoji: string; title: string; description: string }) {
-  return (
-    <div className="p-6 bg-slate-800/50 backdrop-blur-lg border border-slate-700 rounded-xl">
-      <div className="text-4xl mb-4">{emoji}</div>
-      <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
-      <p className="text-slate-400">{description}</p>
-    </div>
-  );
-}
 
 function DemoPage() {
   return (

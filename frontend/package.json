@@ -34,9 +34,17 @@
     ]
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.4",
+    "@radix-ui/react-label": "^2.1.1",
+    "@radix-ui/react-progress": "^1.1.1",
+    "@radix-ui/react-scroll-area": "^1.2.2",
+    "@radix-ui/react-select": "^2.1.4",
+    "@radix-ui/react-switch": "^1.1.2",
+    "@radix-ui/react-tabs": "^1.1.2",
     "@supabase/supabase-js": "^2.74.0",
     "@twa-dev/sdk": "^0.0.1",
     "axios": "^1.12.2",
+    "clsx": "^2.1.0",
     "date-fns": "^2.29.0",
     "framer-motion": "^10.16.0",
     "lucide-react": "^0.263.1",
@@ -45,6 +53,7 @@
     "react-hook-form": "^7.43.0",
     "react-router-dom": "^6.8.0",
     "std-env": "^3.10.0",
+    "tailwind-merge": "^2.2.0",
     "zustand": "^4.3.0"
   },
   "devDependencies": {
