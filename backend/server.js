@@ -1,7 +1,7 @@
 // ============================================
-// AMRIKYY TRAVEL AGENT - MVP BACKEND SERVER
-// Simple Express.js server for MVP deployment
-// © 2025 Mohamed H Abdelaziz / AMRIKYY AI Solutions
+// AMRIKYY AGENT - BACKEND SERVER
+// AI-Powered Travel Assistant
+// © 2025 Mohamed Hossameldin Abdelaziz
 // ============================================
 
 const express = require('express');
