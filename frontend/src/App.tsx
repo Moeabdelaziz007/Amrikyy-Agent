@@ -28,10 +28,10 @@ function HomePage() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
           <Link 
-            to="/demo" 
+            to="/dashboard" 
             className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg hover:shadow-xl transition-all"
           >
-            Start Learning
+            AI OS Dashboard 🚀
           </Link>
           <Link 
             to="/demo" 
@@ -76,6 +76,63 @@ function DemoPage() {
         >
           Back to Home
         </Link>
+      </div>
+    </div>
+  );
+}
+
+function DashboardPage() {
+  const [showDashboard, setShowDashboard] = useState(true);
+
+  return (
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.1),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(168,85,247,0.15),transparent_50%)]" />
+      </div>
+
+      {/* Desktop OS Environment */}
+      <div className="relative z-10">
+        {/* Top Bar */}
+        <div className="h-12 px-4 flex items-center justify-between bg-slate-900/50 backdrop-blur-md border-b border-cyan-500/20">
+          <div className="flex items-center gap-3">
+            <Link to="/" className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-purple-400 text-transparent bg-clip-text">
+              AMRIKYY AI OS
+            </Link>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-slate-400">
+            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+            <span>System Online</span>
+          </div>
+        </div>
+
+        {/* Windows Container */}
+        {showDashboard && (
+          <Window
+            id="dashboard-1"
+            title="AI OS Control Center"
+            initialPosition={{ x: 50, y: 50 }}
+            initialSize={{ width: 1200, height: 800 }}
+            onClose={() => setShowDashboard(false)}
+            zIndex={100}
+          >
+            <DashboardMiniApp />
+          </Window>
+        )}
+
+        {/* Desktop Icons (Future Feature) */}
+        <div className="absolute bottom-8 left-8 flex flex-col gap-4">
+          <button
+            onClick={() => setShowDashboard(true)}
+            className="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-slate-800/50 transition-colors group"
+          >
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-cyan-500/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <span className="text-2xl">📊</span>
+            </div>
+            <span className="text-xs text-slate-300">Dashboard</span>
+          </button>
+        </div>
       </div>
     </div>
   );
