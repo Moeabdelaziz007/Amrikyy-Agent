@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
+import { Window } from './components/windows';
+import { DashboardMiniApp } from './components/dashboard';
 
 function App() {
   return (
@@ -7,6 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/demo" element={<DemoPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
