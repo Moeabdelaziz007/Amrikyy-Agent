@@ -185,11 +185,81 @@ export function DashboardMiniApp() {
     return () => clearInterval(timer);
   }, []);
 
-  // Simulate real-time data updates (Replace with actual API)
+  // Fetch dashboard data from API
   useEffect(() => {
-    // Fetch real data from API here
-    // For now, using mock data
+    const fetchDashboardData = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+        const response = await fetch(`${apiUrl}/api/dashboard/stats`);
+        
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success && result.data) {
+            setStats({
+              activeAgents: result.data.activeAgents,
+              totalTasks: result.data.totalTasks,
+              successRate: result.data.successRate,
+              responseTime: result.data.responseTime
+            });
+            
+            if (result.data.agents) {
+              setAgents(result.data.agents.map((agent: any) => ({
+                ...agent,
+                icon: getAgentIcon(agent.id),
+                color: getAgentColor(agent.id)
+              })));
+            }
+            
+            if (result.data.recentActivity) {
+              setActivities(result.data.recentActivity.map((activity: any) => ({
+                ...activity,
+                icon: getActivityIcon(activity.type)
+              })));
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch dashboard data:', error);
+        // Keep using mock data on error
+      }
+    };
+
+    fetchDashboardData();
+    
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchDashboardData, 30000);
+    return () => clearInterval(interval);
   }, []);
+
+  // Helper functions for icons and colors
+  const getAgentIcon = (agentId: string) => {
+    const icons: Record<string, React.ReactNode> = {
+      luna: <Database size={20} />,
+      karim: <Brain size={20} />,
+      scout: <Globe size={20} />,
+      maya: <MessageSquare size={20} />
+    };
+    return icons[agentId] || <Cpu size={20} />;
+  };
+
+  const getAgentColor = (agentId: string) => {
+    const colors: Record<string, string> = {
+      luna: 'cyan',
+      karim: 'purple',
+      scout: 'green',
+      maya: 'yellow'
+    };
+    return colors[agentId] || 'blue';
+  };
+
+  const getActivityIcon = (type: string) => {
+    const icons: Record<string, React.ReactNode> = {
+      success: <CheckCircle size={16} />,
+      info: <AlertCircle size={16} />,
+      warning: <AlertCircle size={16} />
+    };
+    return icons[type] || <Activity size={16} />;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 p-6">

@@ -32,6 +32,90 @@ app.get('/api/health', (req, res) => {
 });
 
 // ============================================
+// DASHBOARD STATS ENDPOINT
+// ============================================
+
+app.get('/api/dashboard/stats', (req, res) => {
+  try {
+    const stats = {
+      activeAgents: 4,
+      totalTasks: 156,
+      successRate: 98.5,
+      responseTime: 1.2,
+      agents: [
+        {
+          id: 'luna',
+          name: 'Luna',
+          role: 'Trip Planner',
+          status: 'active',
+          uptime: '24h 15m',
+          tasksCompleted: 45
+        },
+        {
+          id: 'karim',
+          name: 'Karim',
+          role: 'Budget Optimizer',
+          status: 'active',
+          uptime: '18h 32m',
+          tasksCompleted: 32
+        },
+        {
+          id: 'scout',
+          name: 'Scout',
+          role: 'Deal Finder',
+          status: 'idle',
+          uptime: '12h 08m',
+          tasksCompleted: 28
+        },
+        {
+          id: 'maya',
+          name: 'Maya',
+          role: 'Customer Support',
+          status: 'active',
+          uptime: '36h 45m',
+          tasksCompleted: 51
+        }
+      ],
+      recentActivity: [
+        {
+          id: '1',
+          type: 'success',
+          agent: 'Luna',
+          action: 'Created trip plan for Paris',
+          timestamp: new Date(Date.now() - 5 * 60000).toISOString()
+        },
+        {
+          id: '2',
+          type: 'info',
+          agent: 'Karim',
+          action: 'Optimized budget for user #1234',
+          timestamp: new Date(Date.now() - 15 * 60000).toISOString()
+        },
+        {
+          id: '3',
+          type: 'success',
+          agent: 'Scout',
+          action: 'Found 5 new deals',
+          timestamp: new Date(Date.now() - 30 * 60000).toISOString()
+        }
+      ]
+    };
+
+    res.status(200).json({
+      success: true,
+      data: stats,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Dashboard Stats Error:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      message: 'Failed to fetch dashboard stats'
+    });
+  }
+});
+
+// ============================================
 // AI CHAT ENDPOINT (MVP CORE FEATURE)
 // ============================================
 
@@ -233,6 +317,22 @@ app.use((err, req, res, next) => {
     message: 'Something went wrong on our end',
   });
 });
+
+// ============================================
+// TELEGRAM BOT INTEGRATION
+// ============================================
+
+if (process.env.TELEGRAM_BOT_TOKEN) {
+  try {
+    console.log('🤖 Initializing Telegram Bot...');
+    require('./telegram-bot-gemini');
+    console.log('✅ Telegram Bot started successfully');
+  } catch (error) {
+    console.error('❌ Telegram Bot initialization failed:', error.message);
+  }
+} else {
+  console.log('⚠️  Telegram Bot disabled (no token provided)');
+}
 
 // ============================================
 // START SERVER

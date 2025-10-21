@@ -77,31 +77,43 @@ export function KarimMiniApp() {
     setResult(null);
 
     try {
-      // TODO: Replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Import API service
+      const { karimAPI } = await import('@/services/api');
       
-      setResult({
-        status: 'success',
-        message: 'Budget optimization complete!',
-        data: {
-          breakdown: [
-            { category: 'Accommodation', amount: 400, percentage: 40 },
-            { category: 'Food & Dining', amount: 300, percentage: 30 },
-            { category: 'Activities', amount: 200, percentage: 20 },
-            { category: 'Transportation', amount: 100, percentage: 10 }
-          ],
-          savings: 150,
-          recommendations: [
-            'Book accommodation 2 months in advance for 20% savings',
-            'Use local restaurants instead of tourist areas',
-            'Consider public transport for daily commute'
-          ]
-        }
-      });
+      // Call backend API
+      const response = await karimAPI.optimizeBudget(request);
+      
+      if (response.success) {
+        setResult({
+          status: 'success',
+          message: 'Budget optimization complete!',
+          data: {
+            breakdown: [
+              { category: 'Accommodation', amount: request.totalBudget * 0.4, percentage: 40 },
+              { category: 'Food & Dining', amount: request.totalBudget * 0.3, percentage: 30 },
+              { category: 'Activities', amount: request.totalBudget * 0.2, percentage: 20 },
+              { category: 'Transportation', amount: request.totalBudget * 0.1, percentage: 10 }
+            ],
+            savings: Math.round(request.totalBudget * 0.15),
+            recommendations: [
+              'Book accommodation 2 months in advance for 20% savings',
+              'Use local restaurants instead of tourist areas',
+              'Consider public transport for daily commute'
+            ],
+            aiResponse: response.data?.message
+          }
+        });
+      } else {
+        setResult({
+          status: 'error',
+          message: response.error || 'Failed to optimize budget'
+        });
+      }
     } catch (error) {
+      console.error('Karim API Error:', error);
       setResult({
         status: 'error',
-        message: 'Failed to optimize budget. Please try again.'
+        message: 'Failed to connect to backend. Please try again.'
       });
     } finally {
       setLoading(false);

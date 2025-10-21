@@ -1,0 +1,61 @@
+# ============================================
+# RAILWAY ENVIRONMENT VARIABLES
+# Copy these to Railway Dashboard
+# ============================================
+
+# Server Configuration
+PORT=3001
+NODE_ENV=production
+
+# Supabase Database
+SUPABASE_URL=https://driujancggfxgdsuyaih.supabase.co
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRyaXVqYW5jZ2dmeGdkc3V5YWloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4MTc3MDgsImV4cCI6MjA3NjM5MzcwOH0.4CZCB1D2pPcxELpS5edmRW6lJ7y3_N0aRubjJGl2bhY
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRyaXVqYW5jZ2dmeGdkc3V5YWloIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MDgxNzcwOCwiZXhwIjoyMDc2MzkzNzA4fQ.u-jExSAb_ZhM2fwH82D9p_EdJ0ths4OfrE1BSNSEWMc
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRyaXVqYW5jZ2dmeGdkc3V5YWloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4MTc3MDgsImV4cCI6MjA3NjM5MzcwOH0.4CZCB1D2pPcxELpS5edmRW6lJ7y3_N0aRubjJGl2bhY
+
+# Security
+JWT_SECRET=f8bb6957caa6dbc287832253c85b1f8cbb539af21fb2e5a7157783a0dc9b8624
+ENCRYPTION_KEY=f8bb6957caa6dbc287832253c85b1f8cbb539af21fb2e5a7157783a0dc9b8624
+
+# ============================================
+# GOOGLE & GEMINI APIs (PRIMARY PLATFORM)
+# ============================================
+
+# Gemini AI (Primary AI Model - Student Pack)
+GEMINI_API_KEY=AIzaSyDbNxJcOnP3PCHPZVtBdA3v3Oep4Owhpg0
+GOOGLE_AI_API_KEY=AIzaSyDbNxJcOnP3PCHPZVtBdA3v3Oep4Owhpg0
+GEMINI_MODEL=gemini-2.0-flash-exp
+GEMINI_PRO_MODEL=gemini-2.5-pro
+
+# Google Cloud Services (Optional - Add later)
+# GOOGLE_APPLICATION_CREDENTIALS=/app/google-credentials.json
+# GOOGLE_CLOUD_PROJECT=your-project-id
+
+# Google Maps API (Optional - Add later)
+# GOOGLE_MAPS_API_KEY=YOUR_GOOGLE_MAPS_KEY_HERE
+
+# Google Search API (Optional - Add later)
+# GOOGLE_SEARCH_API_KEY=YOUR_GOOGLE_SEARCH_KEY_HERE
+# GOOGLE_SEARCH_ENGINE_ID=YOUR_SEARCH_ENGINE_ID_HERE
+
+# ============================================
+# BACKUP AI MODELS (OPTIONAL)
+# ============================================
+# OPENAI_API_KEY=sk-proj-your-key-here
+# OPENROUTER_API_KEY=sk-or-your-key-here
+
+# Frontend URL (Update after Vercel deployment)
+FRONTEND_URL=https://amrikyy-agent.vercel.app
+CORS_ORIGIN=https://amrikyy-agent.vercel.app
+
+# ============================================
+# DEPLOYMENT INSTRUCTIONS
+# ============================================
+# 1. Go to Railway Dashboard
+# 2. Select your project
+# 3. Go to Variables tab
+# 4. Click "Raw Editor"
+# 5. Copy ALL variables above (except comments)
+# 6. Paste and Save
+# 7. Railway will auto-redeploy
+# ============================================

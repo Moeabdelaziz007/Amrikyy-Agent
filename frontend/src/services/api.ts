@@ -7,7 +7,7 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 
 // API Base URL from environment or default
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 // Create axios instance with default config
 const apiClient: AxiosInstance = axios.create({
@@ -120,33 +120,33 @@ export interface TripPlanRequest {
 
 export const lunaAPI = {
   /**
-   * Plan a trip
+   * Plan a trip using AI chat
    */
   planTrip: async (request: TripPlanRequest) => {
-    return agentsAPI.executeTask('luna', {
-      action: 'plan_trip',
-      params: request
-    });
+    const prompt = `Plan a trip to ${request.destination} from ${request.startDate} to ${request.endDate} for ${request.travelers} traveler(s) with a ${request.budget} budget. Provide:
+1. Day-by-day itinerary
+2. Estimated costs breakdown
+3. Flight and hotel recommendations
+4. Local tips and must-see attractions`;
+    
+    const response = await apiClient.post('/api/ai/chat', { message: prompt });
+    return response.data;
   },
 
   /**
-   * Search flights
+   * Create trip record
    */
-  searchFlights: async (from: string, to: string, date: string) => {
-    return agentsAPI.executeTask('luna', {
-      action: 'search_flights',
-      params: { from, to, date }
-    });
+  createTrip: async (tripData: any) => {
+    const response = await apiClient.post('/api/trips', tripData);
+    return response.data;
   },
 
   /**
-   * Search hotels
+   * Get all trips
    */
-  searchHotels: async (destination: string, checkIn: string, checkOut: string) => {
-    return agentsAPI.executeTask('luna', {
-      action: 'search_hotels',
-      params: { destination, checkIn, checkOut }
-    });
+  getTrips: async () => {
+    const response = await apiClient.get('/api/trips');
+    return response.data;
   }
 };
 
@@ -164,33 +164,38 @@ export interface BudgetOptimizeRequest {
 
 export const karimAPI = {
   /**
-   * Optimize budget
+   * Optimize budget using AI
    */
   optimizeBudget: async (request: BudgetOptimizeRequest) => {
-    return agentsAPI.executeTask('karim', {
-      action: 'optimize_budget',
-      params: request
-    });
+    const prompt = `Optimize a budget of $${request.totalBudget} for a ${request.duration}-day trip to ${request.destination} for ${request.travelers} traveler(s). 
+Priorities: ${request.priorities.join(', ')}
+
+Provide:
+1. Detailed budget breakdown by category with percentages
+2. Potential savings opportunities
+3. Smart recommendations for each priority
+4. Tips to maximize value`;
+    
+    const response = await apiClient.post('/api/ai/chat', { message: prompt });
+    return response.data;
   },
 
   /**
    * Analyze expenses
    */
   analyzeExpenses: async (expenses: any[]) => {
-    return agentsAPI.executeTask('karim', {
-      action: 'analyze_expenses',
-      params: { expenses }
-    });
+    const prompt = `Analyze these travel expenses and provide insights: ${JSON.stringify(expenses)}`;
+    const response = await apiClient.post('/api/ai/chat', { message: prompt });
+    return response.data;
   },
 
   /**
    * Get savings recommendations
    */
   getSavingsRecommendations: async (budget: number, destination: string) => {
-    return agentsAPI.executeTask('karim', {
-      action: 'get_savings',
-      params: { budget, destination }
-    });
+    const prompt = `Provide savings recommendations for a trip to ${destination} with a budget of $${budget}`;
+    const response = await apiClient.post('/api/ai/chat', { message: prompt });
+    return response.data;
   }
 };
 

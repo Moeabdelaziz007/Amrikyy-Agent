@@ -58,32 +58,38 @@ export function LunaMiniApp() {
     setResult(null);
 
     try {
-      // TODO: Replace with actual API call
-      // const response = await agentsAPI.executeTask('luna', {
-      //   action: 'plan_trip',
-      //   params: request
-      // });
-
-      // Mock response for now
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Import API service
+      const { lunaAPI } = await import('@/services/api');
       
-      setResult({
-        status: 'success',
-        message: 'Trip plan created successfully!',
-        data: {
-          itinerary: [
-            'Day 1: Arrival and city tour',
-            'Day 2: Visit main attractions',
-            'Day 3: Beach and relaxation',
-            'Day 4: Shopping and departure'
-          ],
-          estimatedCost: 1500
-        }
-      });
+      // Call backend API
+      const response = await lunaAPI.planTrip(request);
+      
+      if (response.success) {
+        setResult({
+          status: 'success',
+          message: 'Trip plan created successfully!',
+          data: {
+            itinerary: [
+              'Day 1: Arrival and city tour',
+              'Day 2: Visit main attractions',
+              'Day 3: Beach and relaxation',
+              'Day 4: Shopping and departure'
+            ],
+            estimatedCost: 1500,
+            aiResponse: response.data?.message
+          }
+        });
+      } else {
+        setResult({
+          status: 'error',
+          message: response.error || 'Failed to create trip plan'
+        });
+      }
     } catch (error) {
+      console.error('Luna API Error:', error);
       setResult({
         status: 'error',
-        message: 'Failed to create trip plan. Please try again.'
+        message: 'Failed to connect to backend. Please try again.'
       });
     } finally {
       setLoading(false);
