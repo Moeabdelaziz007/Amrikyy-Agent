@@ -133,8 +133,9 @@ curl https://your-backend.onrender.com/api/health
 ```
 
 Expected response:
+
 ```json
-{"status":"UP","timestamp":"...","version":"2.0.0"}
+{ "status": "UP", "timestamp": "...", "version": "2.0.0" }
 ```
 
 ### Test Backend API (after login)
@@ -149,6 +150,7 @@ curl -X POST https://your-backend.onrender.com/api/ai/chat \
 ### Test Frontend
 
 Open in browser:
+
 ```
 https://your-app.vercel.app
 ```
@@ -164,6 +166,7 @@ Check browser console (F12) for errors.
 **Error**: `Cannot find module '@vercel/analytics'`
 
 **Solution**: Package is in dependencies. Clear Vercel cache:
+
 1. Go to project Settings
 2. Click "Clear Cache"
 3. Redeploy
@@ -178,7 +181,8 @@ Check browser console (F12) for errors.
 
 **Error**: Frontend can't connect to backend
 
-**Solution**: 
+**Solution**:
+
 1. Verify `FRONTEND_URL` in Render matches Vercel URL exactly
 2. No trailing slash in URLs
 3. Wait for both platforms to redeploy after env var changes
@@ -203,12 +207,14 @@ Check browser console (F12) for errors.
 ## 💰 Cost Summary
 
 ### Free Tier (Testing)
+
 - Vercel: Free (Hobby plan)
 - Render: Free (sleeps after inactivity)
 - Supabase: Free (up to 500MB database)
 - **Total**: $0/month
 
 ### Production (Recommended)
+
 - Vercel: Free or $20/mo (Pro)
 - Render: $7/mo (Starter - always on)
 - Supabase: Free or $25/mo (Pro)
@@ -262,6 +268,7 @@ rm -rf ~/Library/Caches/*
 ### Auto-Deploy Configured
 
 Both platforms will auto-deploy when you push to `main` branch:
+
 - Vercel: ✅ Enabled by default
 - Render: ✅ Configured in `render.yaml`
 
