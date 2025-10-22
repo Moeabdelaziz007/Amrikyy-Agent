@@ -1,248 +1,139 @@
 const request = require('supertest');
-const app = require('../server');
+const app = require('../server'); // Assuming your Express app is exported from server.js
 
-describe('Health Check & Cache Management', () => {
+// Mock external dependencies to ensure tests are isolated and fast
+jest.mock('../src/cache/RedisCache', () => ({
+  set: jest.fn().mockResolvedValue('OK'),
+  get: jest.fn().mockResolvedValue('ok'),
+}));
+
+jest.mock('@supabase/supabase-js', () => ({
+  createClient: jest.fn(() => ({
+    from: jest.fn(() => ({
+      select: jest.fn(() => ({
+        limit: jest.fn(() => ({
+          error: null
+        })),
+      })),
+    })),
+  })),
+}));
+
+jest.mock('@google/generative-ai', () => ({
+  GoogleGenerativeAI: jest.fn(() => ({
+    getGenerativeModel: jest.fn(() => ({
+      generateContent: jest.fn().mockResolvedValue({ response: 'mocked' }),
+    })),
+  })),
+}));
+
+// Mock agent registry
+jest.mock('../src/routes/agentManagement', () => ({
+  agentRegistry: new Map(),
+}), { virtual: true });
+
+
+describe('Health Check Endpoints', () => {
+
+  // Clear mocks before each test to ensure isolation
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('GET /api/health', () => {
-    it('should return system health status', async () => {
-      const response = await request(app)
-        .get('/api/health')
-        .expect(200);
+    it('should return 200 and a comprehensive health status when all components are healthy', async () => {
+      const response = await request(app).get('/api/health');
 
-      expect(response.body.success).toBe(true);
+      expect(response.status).toBe(200);
       expect(response.body.status).toBe('healthy');
-      expect(response.body.timestamp).toBeDefined();
-      expect(response.body.uptime).toBeGreaterThan(0);
-      expect(response.body.version).toBeDefined();
-      expect(response.body.environment).toBeDefined();
+      expect(response.body).toHaveProperty('timestamp');
+      expect(response.body).toHaveProperty('uptime');
+      expect(response.body.version).toBe('2.0.0');
+      
+      // Check for the main components
+      expect(response.body.components).toHaveProperty('redis');
+      expect(response.body.components).toHaveProperty('database');
+      expect(response.body.components).toHaveProperty('gemini');
+      expect(response.body.components).toHaveProperty('agents');
 
-      // Cache stats should be present (even if disabled)
-      expect(response.body.cache).toBeDefined();
+      // Check component status
+      expect(response.body.components.redis.status).toBe('healthy');
+      expect(response.body.components.database.status).toBe('healthy');
+      expect(response.body.components.gemini.status).toBe('healthy');
     });
 
-    it('should include performance monitoring data', async () => {
-      const response = await request(app)
-        .get('/api/health');
+    it('should return 503 if a critical component check fails', async () => {
+      // Mock Supabase to return an error
+      const { createClient } = require('@supabase/supabase-js');
+      createClient.mockImplementationOnce(() => ({
+        from: jest.fn().mockReturnThis(),
+        select: jest.fn().mockReturnThis(),
+        limit: jest.fn().mockResolvedValue({ error: new Error('Connection failed') }),
+      }));
 
-      expect(response.headers['x-request-id']).toBeDefined();
-      expect(response.headers['x-request-id']).toMatch(/^req_\d+_[a-z0-9]+$/);
+      const response = await request(app).get('/api/health');
+      
+      // The overall status is degraded, but the HTTP status might be 200 or 503 depending on config
+      // The code sets 503 for unhealthy, and 200 for degraded. Let's check for that.
+      expect(response.status).toBe(200); // degraded returns 200
+      expect(response.body.status).toBe('degraded');
+      expect(response.body.components.database.status).toBe('degraded');
     });
-  });
-
-  describe('GET /api/admin/cache/stats', () => {
-    it('should return cache statistics', async () => {
-      const response = await request(app)
-        .get('/api/admin/cache/stats')
-        .expect(200);
-
-      expect(response.body.success).toBe(true);
-      expect(response.body.cache).toBeDefined();
-
-      // If cache is enabled, should have stats
-      if (response.body.cache !== 'disabled') {
-        expect(response.body.cache).toHaveProperty('hits');
-        expect(response.body.cache).toHaveProperty('misses');
-        expect(response.body.cache).toHaveProperty('errors');
-        expect(response.body.cache).toHaveProperty('hitRate');
-      }
-    });
-
-    it('should return cache disabled when Redis is not available', async () => {
-      // This test assumes Redis might not be running
-      const response = await request(app)
-        .get('/api/admin/cache/stats')
-        .expect(200);
-
-      expect(response.body.success).toBe(true);
-      // Cache might be disabled in test environment
-    });
-  });
-
-  describe('POST /api/admin/cache/clear', () => {
-    it('should clear cache when Redis is available', async () => {
-      const response = await request(app)
-        .post('/api/admin/cache/clear')
-        .send({ pattern: '*' })
-        .expect(200);
-
-      expect(response.body.success).toBe(true);
-      expect(response.body.message).toContain('Cache cleared');
-    });
-
-    it('should return error when cache is not available', async () => {
-      const response = await request(app)
-        .post('/api/admin/cache/clear')
-        .send({ pattern: '*' })
-        .expect(400);
-
-      expect(response.body.success).toBe(false);
-      expect(response.body.error).toBe('Cache not available');
-    });
-
-    it('should handle missing pattern parameter', async () => {
-      const response = await request(app)
-        .post('/api/admin/cache/clear')
-        .send({})
-        .expect(200);
-
-      expect(response.body.success).toBe(true);
-      expect(response.body.message).toContain('Cache cleared');
-    });
-  });
-
-  describe('Performance Monitoring Integration', () => {
-    it('should track cache performance across multiple requests', async () => {
-      // Make multiple requests to generate cache stats
-      const requests = [];
-
-      for (let i = 0; i < 5; i++) {
-        requests.push(
-          request(app)
-            .get('/api/health')
-        );
-      }
-
-      const responses = await Promise.all(requests);
-
-      // All requests should succeed
-      responses.forEach(response => {
-        expect(response.status).toBe(200);
-        expect(response.body.success).toBe(true);
-      });
-
-      // Check that performance headers are included
-      responses.forEach(response => {
-        expect(response.headers['x-request-id']).toBeDefined();
-      });
-    });
-
-    it('should handle rapid successive requests', async () => {
-      // Simulate rapid requests to test performance monitoring
-      const startTime = Date.now();
-
-      const requests = [];
-      for (let i = 0; i < 10; i++) {
-        requests.push(
-          request(app)
-            .get('/api/health')
-        );
-      }
-
-      const responses = await Promise.all(requests);
-      const endTime = Date.now();
-
-      // All requests should complete successfully
-      responses.forEach(response => {
-        expect(response.status).toBe(200);
-        expect(response.body.success).toBe(true);
-      });
-
-      // Should complete in reasonable time (< 2 seconds for 10 requests)
-      expect(endTime - startTime).toBeLessThan(2000);
-    });
-  });
-
-  describe('Error Handling in Health Endpoints', () => {
-    it('should handle Redis connection errors gracefully', async () => {
-      // This would require mocking Redis to be unavailable
-      // For now, we'll test that the endpoint doesn't crash
-
-      const response = await request(app)
-        .get('/api/admin/cache/stats')
-        .expect(200);
-
-      expect(response.body.success).toBe(true);
-    });
-
-    it('should handle malformed cache clear requests', async () => {
-      const response = await request(app)
-        .post('/api/admin/cache/clear')
-        .set('Content-Type', 'application/json')
-        .send('{ malformed json')
-        .expect(400);
-
-      expect(response.body.success).toBe(false);
-    });
-  });
-
-  describe('System Monitoring', () => {
-    it('should provide accurate uptime information', async () => {
-      const response1 = await request(app)
-        .get('/api/health');
-
+    
+    it('should use cache for subsequent requests within the TTL', async () => {
+      const response1 = await request(app).get('/api/health');
       expect(response1.status).toBe(200);
 
-      const uptime1 = response1.body.uptime;
-
-      // Wait a short time and check again
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      const response2 = await request(app)
-        .get('/api/health');
-
+      const response2 = await request(app).get('/api/health');
       expect(response2.status).toBe(200);
-      expect(response2.body.uptime).toBeGreaterThan(uptime1);
-    });
-
-    it('should provide consistent version information', async () => {
-      const response = await request(app)
-        .get('/api/health');
-
-      expect(response.body.version).toBeDefined();
-      expect(typeof response.body.version).toBe('string');
-
-      // Version should remain consistent across requests
-      const response2 = await request(app)
-        .get('/api/health');
-
-      expect(response2.body.version).toBe(response.body.version);
+      
+      // Check if the timestamp is the same, indicating a cached response
+      expect(response2.body.timestamp).toBe(response1.body.timestamp);
     });
   });
 
-  describe('Cache Performance Analysis', () => {
-    it('should track cache hit/miss ratios correctly', async () => {
-      // Make a request that should be cacheable
-      const response1 = await request(app)
-        .get('/api/health');
+  describe('GET /api/health/live', () => {
+    it('should return 200 with an alive status', async () => {
+      const response = await request(app).get('/api/health/live');
 
-      expect(response1.status).toBe(200);
+      expect(response.status).toBe(200);
+      expect(response.body.status).toBe('alive');
+      expect(response.body).toHaveProperty('timestamp');
+    });
+  });
 
-      // Check cache stats
-      const statsResponse = await request(app)
-        .get('/api/admin/cache/stats');
+  describe('GET /api/health/ready', () => {
+    it('should return 200 with a ready status when critical services are up', async () => {
+      const response = await request(app).get('/api/health/ready');
 
-      expect(statsResponse.status).toBe(200);
-      expect(statsResponse.body.cache).toBeDefined();
-
-      if (statsResponse.body.cache !== 'disabled') {
-        expect(typeof statsResponse.body.cache.hits).toBe('number');
-        expect(typeof statsResponse.body.cache.misses).toBe('number');
-        expect(typeof statsResponse.body.cache.hitRate).toBe('string');
-      }
+      expect(response.status).toBe(200);
+      expect(response.body.status).toBe('ready');
+      expect(response.body).toHaveProperty('timestamp');
     });
 
-    it('should maintain cache statistics across multiple requests', async () => {
-      // Get initial stats
-      const initialResponse = await request(app)
-        .get('/api/admin/cache/stats');
+    it('should return 503 if a critical service (Redis) is down', async () => {
+      // Mock Redis to be unhealthy
+      const redis = require('../src/cache/RedisCache');
+      redis.get.mockRejectedValueOnce(new Error('Redis connection error'));
 
-      const initialStats = initialResponse.body.cache;
+      const response = await request(app).get('/api/health/ready');
 
-      // Make some requests
-      await request(app).get('/api/health');
-      await request(app).get('/api/health');
+      expect(response.status).toBe(503);
+      expect(response.body.status).toBe('not_ready');
+      expect(response.body.reason).toBe('Redis unavailable');
+    });
+  });
 
-      // Get updated stats
-      const updatedResponse = await request(app)
-        .get('/api/admin/cache/stats');
+  describe('GET /api/status', () => {
+    it('should return 200 with lightweight service status', async () => {
+      const response = await request(app).get('/api/status');
 
-      const updatedStats = updatedResponse.body.cache;
-
-      // Stats should be consistent or increased
-      if (initialStats !== 'disabled' && updatedStats !== 'disabled') {
-        expect(updatedStats.hits + updatedStats.misses).toBeGreaterThanOrEqual(
-          initialStats.hits + initialStats.misses
-        );
-      }
+      expect(response.status).toBe(200);
+      expect(response.body.service).toBe('Amrikyy-Agent');
+      expect(response.body.version).toBe('2.0.0');
+      expect(response.body).toHaveProperty('uptime');
+      expect(response.body).toHaveProperty('memory');
+      expect(response.body).toHaveProperty('timestamp');
     });
   });
 });

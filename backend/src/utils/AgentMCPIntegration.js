@@ -1,14 +1,14 @@
 /**
  * Agent MCP Integration - Model Context Protocol integration for AI agents
  * Enables agents to use external tools for enhanced capabilities
- * 
+ *
  * Features:
  * - Filesystem operations
  * - Memory management
  * - Sequential thinking
  * - Web search
  * - Code execution
- * 
+ *
  * @author Mohamed Hossameldin Abdelaziz
  * @created 2025-10-23
  */
@@ -20,13 +20,13 @@ class AgentMCPIntegration {
     this.agentName = agentName;
     this.mcpManager = mcpManager;
     this.toolCache = new Map();
-    
+
     // Tool usage statistics
     this.stats = {
       totalCalls: 0,
       successfulCalls: 0,
       failedCalls: 0,
-      byTool: {}
+      byTool: {},
     };
   }
 
@@ -36,23 +36,22 @@ class AgentMCPIntegration {
   async initialize(mcpManager) {
     try {
       this.mcpManager = mcpManager;
-      
+
       if (!this.mcpManager) {
         logger.warn(`${this.agentName}: No MCP manager provided, tool capabilities limited`);
         return false;
       }
-      
+
       // Verify MCP server availability
       const available = await this.checkAvailability();
-      
+
       if (available) {
         logger.info(`${this.agentName}: MCP integration initialized successfully`);
         return true;
       }
-      
+
       logger.warn(`${this.agentName}: MCP servers not available`);
       return false;
-      
     } catch (error) {
       logger.error(`${this.agentName}: MCP initialization error:`, error);
       return false;
@@ -67,11 +66,10 @@ class AgentMCPIntegration {
       if (!this.mcpManager) {
         return false;
       }
-      
+
       // Try to list available tools
       const tools = await this.listTools();
       return tools && tools.length > 0;
-      
     } catch (error) {
       return false;
     }
@@ -85,10 +83,9 @@ class AgentMCPIntegration {
       if (!this.mcpManager || !this.mcpManager.listTools) {
         return [];
       }
-      
+
       const tools = await this.mcpManager.listTools();
       return tools || [];
-      
     } catch (error) {
       logger.error(`${this.agentName}: Error listing MCP tools:`, error);
       return [];
@@ -101,39 +98,38 @@ class AgentMCPIntegration {
   async callTool(toolName, params = {}) {
     try {
       this.stats.totalCalls++;
-      
+
       if (!this.mcpManager) {
         throw new Error('MCP manager not initialized');
       }
-      
+
       logger.debug(`${this.agentName}: Calling MCP tool "${toolName}"`, params);
-      
+
       const result = await this.mcpManager.callTool(toolName, params);
-      
+
       this.stats.successfulCalls++;
       this.updateToolStats(toolName, true);
-      
+
       // Cache result if appropriate
       if (this.shouldCache(toolName)) {
         this.cacheToolResult(toolName, params, result);
       }
-      
+
       return {
         success: true,
         tool: toolName,
-        result
+        result,
       };
-      
     } catch (error) {
       this.stats.failedCalls++;
       this.updateToolStats(toolName, false);
-      
+
       logger.error(`${this.agentName}: MCP tool error for "${toolName}":`, error);
-      
+
       return {
         success: false,
         tool: toolName,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -149,9 +145,9 @@ class AgentMCPIntegration {
    * Write file using filesystem tool
    */
   async writeFile(filePath, content) {
-    return this.callTool('filesystem_write_file', { 
+    return this.callTool('filesystem_write_file', {
       path: filePath,
-      content 
+      content,
     });
   }
 
@@ -172,8 +168,8 @@ class AgentMCPIntegration {
       metadata: {
         agent: this.agentName,
         timestamp: Date.now(),
-        ...metadata
-      }
+        ...metadata,
+      },
     });
   }
 
@@ -188,10 +184,10 @@ class AgentMCPIntegration {
    * Search memory
    */
   async searchMemory(query, limit = 10) {
-    return this.callTool('memory_search', { 
+    return this.callTool('memory_search', {
       query,
       limit,
-      agent: this.agentName
+      agent: this.agentName,
     });
   }
 
@@ -202,7 +198,7 @@ class AgentMCPIntegration {
     return this.callTool('sequential_thinking', {
       problem,
       steps,
-      agent: this.agentName
+      agent: this.agentName,
     });
   }
 
@@ -213,7 +209,7 @@ class AgentMCPIntegration {
     return this.callTool('web_search', {
       query,
       maxResults,
-      agent: this.agentName
+      agent: this.agentName,
     });
   }
 
@@ -224,7 +220,7 @@ class AgentMCPIntegration {
     return this.callTool('code_execution', {
       code,
       language,
-      agent: this.agentName
+      agent: this.agentName,
     });
   }
 
@@ -232,10 +228,11 @@ class AgentMCPIntegration {
    * Generate tool-augmented prompt
    */
   generateToolPrompt(originalPrompt, availableTools = []) {
-    const toolsList = availableTools.length > 0 
-      ? availableTools.join(', ')
-      : 'filesystem, memory, sequential thinking';
-    
+    const toolsList =
+      availableTools.length > 0
+        ? availableTools.join(', ')
+        : 'filesystem, memory, sequential thinking';
+
     return `
 ${originalPrompt}
 
@@ -260,15 +257,15 @@ When you need to use a tool, indicate it clearly in your response.
    */
   parseToolCalls(response) {
     const toolCalls = [];
-    
+
     // Look for tool call patterns like: [TOOL:tool_name|param1=value1|param2=value2]
     const pattern = /\[TOOL:([^|]+)(?:\|([^\]]+))?\]/g;
     let match;
-    
+
     while ((match = pattern.exec(response)) !== null) {
       const toolName = match[1].trim();
       const paramsStr = match[2] || '';
-      
+
       const params = {};
       if (paramsStr) {
         const pairs = paramsStr.split('|');
@@ -279,14 +276,14 @@ When you need to use a tool, indicate it clearly in your response.
           }
         }
       }
-      
+
       toolCalls.push({
         tool: toolName,
         params,
-        original: match[0]
+        original: match[0],
       });
     }
-    
+
     return toolCalls;
   }
 
@@ -295,37 +292,33 @@ When you need to use a tool, indicate it clearly in your response.
    */
   async executeToolCalls(response) {
     const toolCalls = this.parseToolCalls(response);
-    
+
     if (toolCalls.length === 0) {
       return { response, toolResults: [] };
     }
-    
+
     logger.debug(`${this.agentName}: Executing ${toolCalls.length} tool calls`);
-    
+
     const toolResults = [];
     let enhancedResponse = response;
-    
+
     for (const call of toolCalls) {
       const result = await this.callTool(call.tool, call.params);
       toolResults.push(result);
-      
+
       // Replace tool call with result in response
       if (result.success) {
-        const resultStr = typeof result.result === 'string' 
-          ? result.result 
-          : JSON.stringify(result.result);
-        
-        enhancedResponse = enhancedResponse.replace(
-          call.original,
-          `[TOOL_RESULT:${resultStr}]`
-        );
+        const resultStr =
+          typeof result.result === 'string' ? result.result : JSON.stringify(result.result);
+
+        enhancedResponse = enhancedResponse.replace(call.original, `[TOOL_RESULT:${resultStr}]`);
       }
     }
-    
+
     return {
       response: enhancedResponse,
       toolResults,
-      toolCallCount: toolCalls.length
+      toolCallCount: toolCalls.length,
     };
   }
 
@@ -345,9 +338,9 @@ When you need to use a tool, indicate it clearly in your response.
     this.toolCache.set(key, {
       result,
       timestamp: Date.now(),
-      ttl: 300000 // 5 minutes
+      ttl: 300000, // 5 minutes
     });
-    
+
     // Limit cache size
     if (this.toolCache.size > 100) {
       const oldest = this.toolCache.keys().next().value;
@@ -361,7 +354,7 @@ When you need to use a tool, indicate it clearly in your response.
   getCachedResult(toolName, params) {
     const key = `${toolName}:${JSON.stringify(params)}`;
     const cached = this.toolCache.get(key);
-    
+
     if (cached) {
       const age = Date.now() - cached.timestamp;
       if (age < cached.ttl) {
@@ -369,7 +362,7 @@ When you need to use a tool, indicate it clearly in your response.
       }
       this.toolCache.delete(key);
     }
-    
+
     return null;
   }
 
@@ -381,10 +374,10 @@ When you need to use a tool, indicate it clearly in your response.
       this.stats.byTool[toolName] = {
         total: 0,
         successful: 0,
-        failed: 0
+        failed: 0,
       };
     }
-    
+
     this.stats.byTool[toolName].total++;
     if (success) {
       this.stats.byTool[toolName].successful++;
@@ -400,9 +393,10 @@ When you need to use a tool, indicate it clearly in your response.
     return {
       ...this.stats,
       cacheSize: this.toolCache.size,
-      successRate: this.stats.totalCalls > 0 
-        ? ((this.stats.successfulCalls / this.stats.totalCalls) * 100).toFixed(2) + '%'
-        : '0%'
+      successRate:
+        this.stats.totalCalls > 0
+          ? ((this.stats.successfulCalls / this.stats.totalCalls) * 100).toFixed(2) + '%'
+          : '0%',
     };
   }
 
@@ -414,9 +408,9 @@ When you need to use a tool, indicate it clearly in your response.
       totalCalls: 0,
       successfulCalls: 0,
       failedCalls: 0,
-      byTool: {}
+      byTool: {},
     };
-    
+
     logger.info(`${this.agentName}: MCP statistics reset`);
   }
 
@@ -435,21 +429,20 @@ When you need to use a tool, indicate it clearly in your response.
     try {
       const available = await this.checkAvailability();
       const tools = await this.listTools();
-      
+
       return {
         agent: this.agentName,
         mcpAvailable: available,
         managerPresent: !!this.mcpManager,
         toolCount: tools.length,
-        tools: tools.map(t => t.name || t),
-        stats: this.getStats()
+        tools: tools.map((t) => t.name || t),
+        stats: this.getStats(),
       };
-      
     } catch (error) {
       return {
         agent: this.agentName,
         healthy: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
