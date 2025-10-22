@@ -125,8 +125,10 @@ export default function VoiceAI({
   const handleAIResponse = async (text: string) => {
     setIsProcessing(true);
     try {
-      // Call your AI API here
-      const res = await fetch('http://localhost:5000/api/ai/chat', {
+      // Get backend URL from environment or use relative path
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+      
+      const res = await fetch(`${backendUrl}/api/ai/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text })

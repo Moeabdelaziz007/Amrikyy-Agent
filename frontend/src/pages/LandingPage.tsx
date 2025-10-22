@@ -33,9 +33,12 @@ import {
   ChevronDown
 } from 'lucide-react';
 import VoiceAI from '@/components/VoiceAI';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const { t, isRTL } = useLanguage();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
