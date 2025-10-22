@@ -34,7 +34,7 @@ const {
 const healthRoutes = require('./routes/health');
 const metricsRoutes = require('./routes/metrics');
 const agentManagementRoutes = require('./routes/agentManagement');
-const agentStreamingRoutes = require('./routes/agentStreaming');
+const streamRoutes = require('./routes/streamRoutes');
 const coordinatorRoutes = require('./routes/coordinator');
 
 // Utilities
@@ -180,7 +180,7 @@ function createApp() {
   app.use('/api/stream',
     authenticate,
     dynamicRateLimiter,
-    agentStreamingRoutes
+    streamRoutes
   );
 
   // Multi-Agent Coordinator API
