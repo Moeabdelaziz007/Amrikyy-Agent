@@ -6,6 +6,9 @@ import TestBooking from '@/pages/TestBooking';
 import VoiceAI from '@/components/VoiceAI';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { LanguageToggle } from '@/components/LanguageToggle';
+import { FlightSearch } from '@/pages/FlightSearch';
+import { SearchResults } from '@/pages/SearchResults';
+import { MyBookings } from '@/pages/MyBookings';
 
 function App() {
   return (
@@ -30,17 +33,10 @@ function App() {
       {/* Test Booking */}
       <Route path="/test-booking" element={<TestBooking />} />
       
-      {/* Placeholder Routes */}
-      <Route path="/search" element={
-        <AppLayout>
-          <ComingSoon title="Search Flights" />
-        </AppLayout>
-      } />
-      <Route path="/bookings" element={
-        <AppLayout>
-          <ComingSoon title="My Bookings" />
-        </AppLayout>
-      } />
+      {/* Search & Bookings */}
+      <Route path="/search" element={<FlightSearch />} />
+      <Route path="/search/results" element={<SearchResults />} />
+      <Route path="/bookings" element={<MyBookings />} />
       <Route path="/auth" element={
         <AppLayout>
           <ComingSoon title="Authentication" />
