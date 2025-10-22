@@ -332,6 +332,76 @@ const customValidators = {
   }),
 };
 
+/**
+ * Coordinator workflow validators
+ */
+const validateSequentialWorkflow = validate(
+  Joi.object({
+    steps: Joi.array()
+      .items(
+        Joi.object({
+          agent: Joi.string().required(),
+          method: Joi.string().required(),
+          transform: Joi.any().optional(),
+        })
+      )
+      .min(1)
+      .required(),
+    input: Joi.any().required(),
+    transformers: Joi.any().optional(),
+  }),
+  'body'
+);
+
+const validateParallelWorkflow = validate(
+  Joi.object({
+    tasks: Joi.array()
+      .items(
+        Joi.object({
+          agent: Joi.string().required(),
+          method: Joi.string().required(),
+          input: Joi.any().optional(),
+        })
+      )
+      .min(1)
+      .required(),
+    input: Joi.any().optional(),
+  }),
+  'body'
+);
+
+const validateHierarchicalWorkflow = validate(
+  Joi.object({
+    master: Joi.object({
+      name: Joi.string().required(),
+      method: Joi.string().required(),
+    }).required(),
+    subAgents: Joi.array()
+      .items(
+        Joi.object({
+          name: Joi.string().required(),
+          method: Joi.string().required(),
+          inputTransform: Joi.any().optional(),
+        })
+      )
+      .min(1)
+      .required(),
+    input: Joi.any().required(),
+    aggregator: Joi.any().optional(),
+  }),
+  'body'
+);
+
+const validateCoordinatorWorkflow = validate(
+  Joi.object({
+    workflowName: Joi.string().required(),
+    inputs: Joi.any().required(),
+    options: Joi.object().optional(),
+    async: Joi.boolean().optional(),
+  }),
+  'body'
+);
+
 module.exports = {
   validate,
   validateAgentName,
@@ -342,6 +412,10 @@ module.exports = {
   validateContentAgent,
   validateInnovationAgent,
   validateCustom,
+  validateSequentialWorkflow,
+  validateParallelWorkflow,
+  validateHierarchicalWorkflow,
+  validateCoordinatorWorkflow,
   customValidators,
   schemas,
 };
