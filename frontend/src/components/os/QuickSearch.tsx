@@ -1,6 +1,6 @@
 /**
  * Quick Search Component - Universal OS Search
- *
+ * 
  * Features:
  * - Cmd+K / Ctrl+K keyboard shortcut
  * - Search apps, files, commands
@@ -20,8 +20,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
-import {
-  Search,
+import { 
+  Search, 
   Command,
   Folder,
   FileText,
@@ -51,11 +51,11 @@ interface QuickSearchProps {
   onExecuteCommand?: (command: string) => void
 }
 
-export function QuickSearch({
-  open,
+export function QuickSearch({ 
+  open, 
   onOpenChange,
   onLaunchApp,
-  onExecuteCommand
+  onExecuteCommand 
 }: QuickSearchProps) {
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -77,12 +77,12 @@ export function QuickSearch({
   // Save recent search
   const saveRecentSearch = useCallback((search: string) => {
     if (!search.trim()) return
-
+    
     const updated = [
       search,
       ...recentSearches.filter(s => s !== search)
     ].slice(0, 10) // Keep only 10 recent searches
-
+    
     setRecentSearches(updated)
     localStorage.setItem('amrikyy_recent_searches', JSON.stringify(updated))
   }, [recentSearches])
@@ -203,17 +203,17 @@ export function QuickSearch({
   const fuzzyMatch = (str: string, pattern: string): boolean => {
     const strLower = str.toLowerCase()
     const patternLower = pattern.toLowerCase()
-
+    
     let patternIdx = 0
     let strIdx = 0
-
+    
     while (patternIdx < patternLower.length && strIdx < strLower.length) {
       if (patternLower[patternIdx] === strLower[strIdx]) {
         patternIdx++
       }
       strIdx++
     }
-
+    
     return patternIdx === patternLower.length
   }
 
@@ -221,22 +221,22 @@ export function QuickSearch({
   const calculateScore = (result: SearchResult, query: string): number => {
     const queryLower = query.toLowerCase()
     const titleLower = result.title.toLowerCase()
-
+    
     // Exact match gets highest score
     if (titleLower === queryLower) return 1000
-
+    
     // Starts with query gets high score
     if (titleLower.startsWith(queryLower)) return 100
-
+    
     // Contains query gets medium score
     if (titleLower.includes(queryLower)) return 50
-
+    
     // Keyword match
-    const keywordMatch = result.keywords?.some(k =>
+    const keywordMatch = result.keywords?.some(k => 
       k.toLowerCase().includes(queryLower)
     )
     if (keywordMatch) return 25
-
+    
     // Fuzzy match gets low score
     return fuzzyMatch(result.title, query) ? 10 : 0
   }
@@ -254,12 +254,12 @@ export function QuickSearch({
           setQuery(search)
         }
       }))
-
+      
       return recents.length > 0 ? recents : apps.slice(0, 5)
     }
 
     const allResults = [...apps, ...commands]
-
+    
     return allResults
       .map(result => ({
         result,
@@ -279,7 +279,7 @@ export function QuickSearch({
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault()
-          setSelectedIndex(prev =>
+          setSelectedIndex(prev => 
             prev < filteredResults.length - 1 ? prev + 1 : prev
           )
           break
@@ -324,7 +324,7 @@ export function QuickSearch({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl p-0 gap-0">
+      <DialogContent className="max-w-2xl p-0 gap-0" showCloseButton={false}>
         {/* Header */}
         <DialogHeader className="p-4 pb-0 border-b-0">
           <div className="flex items-center gap-3">
