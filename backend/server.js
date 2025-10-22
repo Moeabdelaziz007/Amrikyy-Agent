@@ -15,30 +15,6 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ============================================
-// MONITORING & ERROR TRACKING
-// ============================================
-const { 
-  initializeSentry, 
-  sentryRequestHandler, 
-  sentryTracingHandler,
-  sentryErrorHandler,
-  metricsMiddleware,
-  performanceMonitoring
-} = require('./config/monitoring');
-
-// Initialize Sentry (if configured)
-if (process.env.SENTRY_DSN) {
-  initializeSentry(app);
-  app.use(sentryRequestHandler());
-  app.use(sentryTracingHandler());
-  console.log('✅ Sentry error tracking enabled');
-}
-
-// Metrics and performance monitoring
-app.use(metricsMiddleware);
-app.use(performanceMonitoring);
-
-// ============================================
 // STRIPE WEBHOOK - MUST BE BEFORE express.json()
 // ============================================
 // Stripe webhooks need raw body for signature verification
@@ -56,11 +32,11 @@ app.use(express.json());
 // ============================================
 const authRoutes = require('./routes/auth');
 const bookingRoutes = require('./routes/bookings');
-const healthRoutes = require('./routes/health');
+const paypalRoutes = require('./routes/paypal');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
-app.use('/health', healthRoutes);
+app.use('/api/paypal', paypalRoutes);
 
 // ============================================
 // HEALTH CHECK ENDPOINT
@@ -344,12 +320,6 @@ app.post('/api/auth/login', (req, res) => {
 // ============================================
 // ERROR HANDLING
 // ============================================
-
-// Sentry error handler (BEFORE other error handlers)
-if (process.env.SENTRY_DSN && typeof sentryErrorHandler === 'function') {
-  app.use(sentryErrorHandler());
-}
-
 const { notFoundHandler, globalErrorHandler } = require('./middleware/errorHandler');
 
 // 404 handler
@@ -379,32 +349,12 @@ if (process.env.TELEGRAM_BOT_TOKEN) {
 // ============================================
 
 app.listen(PORT, () => {
-  console.log(`
-╔═══════════════════════════════════════════════════════════╗
-║                                                           ║
-║   🚀 AMRIKYY TRAVEL AGENT BACKEND - v2.0                 ║
-║                                                           ║
-║   Status: ✅ RUNNING                                      ║
-║   Port: ${PORT}                                         ║
-║   Environment: ${process.env.NODE_ENV || 'development'}  ║
-║   Monitoring: ${process.env.SENTRY_DSN ? '✅ Sentry Enabled' : '⚠️  Disabled'}  ║
-║                                                           ║
-║   📍 Health & Monitoring:                                 ║
-║   - Health: http://localhost:${PORT}/health              ║
-║   - Detailed: http://localhost:${PORT}/health/detailed   ║
-║   - Metrics: http://localhost:${PORT}/health/metrics     ║
-║   - Ready: http://localhost:${PORT}/health/ready         ║
-║   - Live: http://localhost:${PORT}/health/live           ║
-║                                                           ║
-║   📍 API Endpoints:                                       ║
-║   - Dashboard: http://localhost:${PORT}/api/dashboard/stats ║
-║   - AI Chat: http://localhost:${PORT}/api/ai/chat        ║
-║   - Auth: http://localhost:${PORT}/api/auth              ║
-║   - Bookings: http://localhost:${PORT}/api/bookings      ║
-║   - Trips: http://localhost:${PORT}/api/trips            ║
-║                                                           ║
-╚═══════════════════════════════════════════════════════════╝
-  `);
+  console.log(`🚀 Amrikyy Travel Agent MVP Server running on port ${PORT}`);
+  console.log(`📡 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`🤖 AI Chat: http://localhost:${PORT}/api/ai/chat`);
+  console.log(`✈️  Trips API: http://localhost:${PORT}/api/trips`);
+  console.log(`👤 Auth API: http://localhost:${PORT}/api/auth/login`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
 module.exports = app;

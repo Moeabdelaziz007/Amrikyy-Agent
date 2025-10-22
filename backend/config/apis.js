@@ -38,15 +38,15 @@ module.exports = {
     }
   },
 
-  // Z.ai (AI Model)
-  zai: {
-    apiKey: process.env.KELO_API_KEY,
-    baseURL: process.env.KELO_API_BASE_URL || 'https://api.kelo.ai/v4',
-    model: process.env.KELO_MODEL || 'glm-4.6',
-    enabled: !!process.env.KELO_API_KEY,
+  // Gemini AI (Google)
+  gemini: {
+    apiKey: process.env.GEMINI_API_KEY,
+    model: process.env.GEMINI_MODEL || 'gemini-2.0-flash-exp',
+    proModel: process.env.GEMINI_PRO_MODEL || 'gemini-2.5-pro',
+    enabled: !!process.env.GEMINI_API_KEY,
     rateLimit: {
-      requestsPerMinute: 10,
-      requestsPerHour: 100
+      requestsPerMinute: 60,
+      requestsPerHour: 1500
     }
   },
 

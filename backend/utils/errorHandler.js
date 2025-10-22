@@ -4,10 +4,11 @@
  */
 
 const logger = require('./logger');
-const EnhancedPatternLearningEngine = require('../src/aix/EnhancedPatternLearningEngine');
+// const EnhancedPatternLearningEngine = require('../src/aix/EnhancedPatternLearningEngine');
 
-// Singleton instance of the learning engine
-const patternLearningEngine = new EnhancedPatternLearningEngine();
+// Singleton instance of the learning engine (disabled for now)
+// const patternLearningEngine = new EnhancedPatternLearningEngine();
+const patternLearningEngine = null;
 
 class AppError extends Error {
   constructor(message, statusCode = 500, isOperational = true, meta = {}) {
@@ -41,7 +42,9 @@ class ErrorHandler {
     });
 
     // Feed the error to the learning engine for pattern detection
-    patternLearningEngine.observe({ type: 'error', ...errorInfo });
+    if (patternLearningEngine) {
+      patternLearningEngine.observe({ type: 'error', ...errorInfo });
+    }
 
     // Track error frequency
     this.trackError(errorInfo.type);

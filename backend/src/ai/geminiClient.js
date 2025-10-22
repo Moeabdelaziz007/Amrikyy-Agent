@@ -1,76 +1,58 @@
 /**
- * Kelo AI API Client
- * Advanced AI provider for Amrikyy Travel Agent
- * Replaces Gemini 2.5 with enhanced capabilities
+ * Google Gemini AI Client
+ * Official Gemini API integration for Amrikyy Travel Agent
  */
 
-const fetch = require('node-fetch');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-class KeloClient {
+class GeminiClient {
   constructor() {
-    // Note: Using GEMINI_API_KEY instead of KELO_API_KEY
-    this.apiKey = process.env.GEMINI_API_KEY || process.env.KELO_API_KEY;
+    this.apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY;
     
     if (!this.apiKey) {
-      throw new Error('GEMINI_API_KEY is required but not configured. Please check your .env file.');
+      console.warn('⚠️ GEMINI_API_KEY not configured. AI features will be limited.');
+      this.isEnabled = false;
+      return;
     }
-    this.baseUrl = process.env.KELO_BASE_URL || 'https://api.kelo.ai/v1';
-    this.model = process.env.KELO_MODEL || 'kelo-travel-pro';
-    this.maxTokens = parseInt(process.env.KELO_MAX_TOKENS) || 3000;
-    this.temperature = parseFloat(process.env.KELO_TEMPERATURE) || 0.7;
-    this.contextWindow = parseInt(process.env.KELO_CONTEXT_WINDOW) || 8000;
+
+    this.genAI = new GoogleGenerativeAI(this.apiKey);
+    this.model = process.env.GEMINI_MODEL || 'gemini-2.0-flash-exp';
+    this.proModel = process.env.GEMINI_PRO_MODEL || 'gemini-2.5-pro';
+    this.isEnabled = true;
   }
 
   /**
-   * Send chat completion request to Kelo AI
+   * Send chat completion request to Gemini
    */
   async chatCompletion(messages, options = {}) {
-    try {
-      // Convert messages to Kelo format
-      const contents = this.convertMessagesToKelo(messages);
-      
-      const requestBody = {
-        model: this.model,
-        messages: contents,
-        max_tokens: options.maxTokens || this.maxTokens,
-        temperature: options.temperature || this.temperature,
-        top_p: 0.9,
-        frequency_penalty: 0.1,
-        presence_penalty: 0.1,
-        stream: false,
-        context_window: this.contextWindow
+    if (!this.isEnabled) {
+      return {
+        success: false,
+        error: 'Gemini API not configured',
+        content: 'عذراً، خدمة الذكاء الاصطناعي غير متاحة حالياً.'
       };
+    }
 
-      const response = await fetch(`${this.baseUrl}/chat/completions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`,
-          'X-Kelo-Version': '2024-12'
-        },
-        body: JSON.stringify(requestBody)
-      });
+    try {
+      // Use Pro model for complex tasks, Flash for simple ones
+      const modelName = options.useProModel ? this.proModel : this.model;
+      const model = this.genAI.getGenerativeModel({ model: modelName });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Kelo API Error ${response.status}: ${errorText}`);
-      }
+      // Convert messages to Gemini format
+      const prompt = this.convertMessagesToPrompt(messages);
 
-      const data = await response.json();
-      
-      // Extract content from response
-      const content = data.choices?.[0]?.message?.content || 'No response generated';
-      
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const content = response.text();
+
       return {
         success: true,
-        data: data,
         content: content,
-        usage: data.usage,
-        model: data.model
+        model: modelName
       };
 
     } catch (error) {
-      console.error('Kelo API Error:', error);
+      console.error('Gemini API Error:', error);
       return {
         success: false,
         error: error.message,
@@ -80,17 +62,13 @@ class KeloClient {
   }
 
   /**
-   * Convert OpenAI-style messages to Kelo format
+   * Convert OpenAI-style messages to Gemini prompt
    */
-  convertMessagesToKelo(messages) {
-    return messages.map(msg => ({
-      role: msg.role,
-      content: msg.content,
-      metadata: {
-        timestamp: new Date().toISOString(),
-        source: 'amrikyy-travel-agent'
-      }
-    }));
+  convertMessagesToPrompt(messages) {
+    return messages.map(msg => {
+      const role = msg.role === 'assistant' ? 'model' : 'user';
+      return `${role}: ${msg.content}`;
+    }).join('\n\n');
   }
 
   /**
@@ -116,10 +94,7 @@ class KeloClient {
       { role: 'user', content: userPrompt }
     ];
 
-    return await this.chatCompletion(messages, {
-      temperature: 0.8,
-      maxTokens: 1500
-    });
+    return await this.chatCompletion(messages, { useProModel: true });
   }
 
   /**
@@ -146,10 +121,7 @@ class KeloClient {
       { role: 'user', content: userPrompt }
     ];
 
-    return await this.chatCompletion(messages, {
-      temperature: 0.6,
-      maxTokens: 1200
-    });
+    return await this.chatCompletion(messages, { useProModel: true });
   }
 
   /**
@@ -173,10 +145,7 @@ class KeloClient {
       { role: 'user', content: userMessage }
     ];
 
-    return await this.chatCompletion(messages, {
-      temperature: 0.7,
-      maxTokens: 1000
-    });
+    return await this.chatCompletion(messages);
   }
 
   /**
@@ -201,56 +170,27 @@ class KeloClient {
       { role: 'user', content: userPrompt }
     ];
 
-    return await this.chatCompletion(messages, {
-      temperature: 0.8,
-      maxTokens: 1800
-    });
-  }
-
-  /**
-   * Generate payment recommendations
-   */
-  async generatePaymentRecommendations(tripDetails, paymentMethod = 'credit_card') {
-    const systemPrompt = `أنت Maya، مستشار مالي للسفر. قدم نصائح الدفع والحجز بما في ذلك:
-    - أفضل طرق الدفع للسفر
-    - استراتيجيات صرف العملات
-    - توصيات التأمين على السفر
-    - نصائح توقيت الحجز
-    - نصائح دفع لتوفير التكاليف
-    - اعتبارات الأمان`;
-
-    const userPrompt = `قدم توصيات الدفع والحجز لـ:
-    الوجهة: ${tripDetails.destination}
-    الميزانية: $${tripDetails.budget}
-    المدة: ${tripDetails.duration} أيام
-    الدفع المفضل: ${paymentMethod}
-    
-    قم بتضمين نصائح عملية للمدفوعات الآمنة والفعالة من حيث التكلفة.`;
-
-    const messages = [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt }
-    ];
-
-    return await this.chatCompletion(messages, {
-      temperature: 0.6,
-      maxTokens: 1000
-    });
+    return await this.chatCompletion(messages, { useProModel: true });
   }
 
   /**
    * Health check
    */
   async healthCheck() {
+    if (!this.isEnabled) {
+      return {
+        success: false,
+        status: 'unhealthy',
+        error: 'Gemini API not configured'
+      };
+    }
+
     try {
       const testMessages = [
         { role: 'user', content: 'مرحبا، هل تعمل؟' }
       ];
 
-      const response = await this.chatCompletion(testMessages, {
-        maxTokens: 50,
-        temperature: 0.1
-      });
+      const response = await this.chatCompletion(testMessages);
 
       return {
         success: response.success,

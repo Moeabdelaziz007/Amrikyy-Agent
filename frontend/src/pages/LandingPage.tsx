@@ -32,6 +32,7 @@ import {
   Heart,
   ChevronDown
 } from 'lucide-react';
+import VoiceAI from '@/components/VoiceAI';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -107,10 +108,27 @@ export default function LandingPage() {
       {/* Content */}
       <div className="relative z-10">
         {/* Hero Section */}
-        <section className="min-h-screen flex items-center justify-center px-4 py-20">
+        <section className="min-h-screen flex items-center justify-center px-4 py-20 relative">
+          {/* Big Hero Image Background */}
+          <div className="absolute inset-0 overflow-hidden">
+            <motion.div
+              initial={{ scale: 1.2, opacity: 0 }}
+              animate={{ scale: 1, opacity: 0.3 }}
+              transition={{ duration: 1.5 }}
+              className="absolute inset-0"
+            >
+              <img
+                src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2400&auto=format&fit=crop"
+                alt="Travel Adventure"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/90" />
+            </motion.div>
+          </div>
+
           <motion.div
             style={{ opacity, scale }}
-            className="text-center max-w-7xl mx-auto"
+            className="text-center max-w-7xl mx-auto relative z-10"
           >
             {/* Main Heading with Glow Effect */}
             <motion.div
@@ -540,3 +558,6 @@ function StepCard({ step, title, description, icon, delay }: {
     </motion.div>
   );
 }
+
+// Add Voice AI to the page
+export { VoiceAI };

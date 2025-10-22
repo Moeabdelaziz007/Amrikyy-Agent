@@ -93,6 +93,46 @@ class BookingService {
   }
 
   /**
+   * Get booking by ID (alias for compatibility)
+   */
+  async getBookingById(bookingId, userId) {
+    const result = await this.getBooking(bookingId, userId);
+    return result.success ? result.booking : null;
+  }
+
+  /**
+   * Update booking (generic update method)
+   */
+  async updateBooking(bookingId, userId, updateData) {
+    try {
+      const { data, error } = await supabase
+        .from('bookings')
+        .update({
+          ...updateData,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', bookingId)
+        .eq('user_id', userId)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      logger.info(`✅ Booking updated: ${bookingId}`);
+      return {
+        success: true,
+        booking: data,
+      };
+    } catch (error) {
+      logger.error('❌ Update booking error:', error);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  }
+
+  /**
    * Get booking by reference
    */
   async getBookingByReference(bookingReference, userId) {

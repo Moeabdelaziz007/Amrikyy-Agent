@@ -1,0 +1,17 @@
+services:
+  # Backend API Service
+  - type: web
+    name: amrikyy-backend
+    runtime: node
+    region: frankfurt  # EU Central - closest to your users
+    plan: free  # Change to 'starter' for production
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      # Add other environment variables in Render dashboard
+      # or sync from .env file

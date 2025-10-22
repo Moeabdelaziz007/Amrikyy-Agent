@@ -4,12 +4,13 @@
  */
 
 const logger = require('./logger');
-const KeloClient = require('../src/ai/keloClient');
+// const KeloClient = require('../src/ai/keloClient');
 const SupabaseDB = require('../database/supabase');
 
 class HealthMonitor {
   constructor() {
-    this.keloClient = new KeloClient();
+    // this.keloClient = new KeloClient();
+    this.keloClient = null; // Disabled - using Gemini instead
     this.db = new SupabaseDB();
 
     this.metrics = {

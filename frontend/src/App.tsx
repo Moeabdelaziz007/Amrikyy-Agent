@@ -2,10 +2,16 @@ import { Routes, Route, Link } from 'react-router-dom';
 import { AppLayout } from '@/components/layout';
 import { Home } from '@/pages/Home';
 import LandingPage from '@/pages/LandingPage';
+import TestBooking from '@/pages/TestBooking';
+import VoiceAI from '@/components/VoiceAI';
 
 function App() {
   return (
-    <Routes>
+    <>
+      {/* Global Voice AI Assistant */}
+      <VoiceAI position="fixed" />
+      
+      <Routes>
       {/* New Stunning Landing Page */}
       <Route path="/" element={<LandingPage />} />
       
@@ -15,6 +21,9 @@ function App() {
           <Home />
         </AppLayout>
       } />
+      
+      {/* Test Booking */}
+      <Route path="/test-booking" element={<TestBooking />} />
       
       {/* Placeholder Routes */}
       <Route path="/search" element={
@@ -40,6 +49,7 @@ function App() {
         </AppLayout>
       } />
     </Routes>
+    </>
   );
 }
 
