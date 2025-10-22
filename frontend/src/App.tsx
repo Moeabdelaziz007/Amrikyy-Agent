@@ -5,6 +5,8 @@ import LandingPage from '@/pages/LandingPage';
 import OSDemo from '@/pages/OSDemo';
 import MobileOSDemo from '@/pages/MobileOSDemo';
 import ResponsiveTest from '@/pages/ResponsiveTest';
+import AmrikyyOSComplete from '@/pages/AmrikyyOSComplete';
+import AppLauncher from '@/pages/AppLauncher';
 
 function App() {
   return (
@@ -27,6 +29,12 @@ function App() {
 
       {/* Responsive Test */}
       <Route path="/responsive-test" element={<ResponsiveTest />} />
+
+      {/* Complete OS (Claude 4.5) */}
+      <Route path="/amrikyy-os" element={<AmrikyyOSComplete />} />
+
+      {/* App Launcher (Blackbox) */}
+      <Route path="/launcher" element={<AppLauncher />} />
 
       {/* Placeholder Routes */}
       <Route path="/search" element={
