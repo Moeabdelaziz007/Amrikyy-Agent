@@ -87,14 +87,22 @@ console.log('🔌 Server.js Route Registration:\n');
 
 const usedRoutes = [];
 routeInfo.forEach(route => {
-  const routePattern = new RegExp(`require.*routes/${route.name}|app\\.use.*/${route.name}`, 'i');
-  if (routePattern.test(serverContent)) {
+  // Check for various route registration patterns
+  const patterns = [
+    new RegExp(`require.*routes/${route.name}`, 'i'),
+    new RegExp(`app\\.use.*/${route.name}`, 'i'),
+    new RegExp(`loadRoute.*routes/${route.name}`, 'i'),
+    new RegExp(`${route.name.replace(/-/g, '')}:.*require`, 'i')
+  ];
+  
+  if (patterns.some(pattern => pattern.test(serverContent))) {
     usedRoutes.push(route.name);
   }
 });
 
 if (usedRoutes.length > 0) {
-  console.log(`   ✅ Routes registered in server.js: ${usedRoutes.join(', ')}`);
+  console.log(`   ✅ Routes registered in server.js: ${usedRoutes.length} routes`);
+  console.log(`      (Use production server with loadRoute for graceful error handling)`);
 } else {
   console.log(`   ⚠️  NO ROUTES ARE REGISTERED IN SERVER.JS`);
   console.log(`   ⚠️  The server.js file appears to be a basic MVP implementation`);
