@@ -8,9 +8,12 @@
  * - Token usage monitoring
  * - Performance analytics
  * - Export to LangSmith (optional)
+ * - Event sampling and aggregation for high-frequency events
+ * - PII redaction for secure logging
  *
  * @author Mohamed Hossameldin Abdelaziz
  * @created 2025-10-22
+ * @updated 2025-10-22 (Issue #107 - Sampling & Aggregation)
  */
 
 const logger = require('./logger');
@@ -45,10 +48,34 @@ class AgentLangSmith {
       logToConsole: process.env.NODE_ENV === 'development',
       exportToLangSmith: !!process.env.LANGSMITH_API_KEY,
       maxTraces: 1000, // Keep last 1000 traces in memory
+      // Sampling configuration for high-frequency events
+      sampling: {
+        enabled: process.env.LANGSMITH_SAMPLING_ENABLED !== 'false',
+        chunkSampleRate: parseInt(process.env.LANGSMITH_CHUNK_SAMPLE_RATE) || 10, // Sample every Nth chunk
+        tokenSampleRate: parseInt(process.env.LANGSMITH_TOKEN_SAMPLE_RATE) || 10,
+        progressSampleRate: parseInt(process.env.LANGSMITH_PROGRESS_SAMPLE_RATE) || 5,
+      },
+      // PII redaction patterns
+      redaction: {
+        enabled: process.env.LANGSMITH_REDACT_PII !== 'false',
+        patterns: [
+          { name: 'email', regex: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, replace: '[EMAIL_REDACTED]' },
+          { name: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, replace: '[PHONE_REDACTED]' },
+          { name: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g, replace: '[SSN_REDACTED]' },
+          { name: 'credit_card', regex: /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, replace: '[CARD_REDACTED]' },
+          { name: 'api_key', regex: /\b[A-Za-z0-9_-]{32,}\b/g, replace: '[API_KEY_REDACTED]' },
+        ],
+      },
     };
 
     // Traces storage
     this.traces = [];
+
+    // Spans storage (for span-based tracking)
+    this.spans = new Map();
+
+    // Event aggregation storage (per span)
+    this.eventAggregations = new Map();
 
     // Aggregated statistics
     this.stats = {
@@ -62,11 +89,348 @@ class AgentLangSmith {
       byModel: {},
       byOperation: {},
       errors: 0,
+      // Sampling statistics
+      sampling: {
+        totalEvents: 0,
+        sampledEvents: 0,
+        aggregatedEvents: 0,
+      },
     };
   }
 
   /**
-   * Start tracing an agent operation
+   * Start a span for tracking an operation
+   * @param {Object} options - Span options
+   * @param {string} options.name - Span name (e.g., 'api.stream', 'api.workflow')
+   * @param {string} options.operation - Operation type
+   * @param {string} options.model - Model name
+   * @param {Object} options.params - Additional parameters
+   * @param {Object} options.metadata - Additional metadata
+   * @returns {Object} - Span object with methods to manage the span
+   */
+  startSpan(options = {}) {
+    const {
+      name,
+      operation = 'unknown',
+      model = 'gemini-2.0-flash-exp',
+      params = {},
+      metadata = {},
+    } = options;
+
+    const spanId = `${this.agentName}_${operation}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+    const span = {
+      spanId,
+      name: name || operation,
+      agent: this.agentName,
+      operation,
+      model,
+      params,
+      startTime: Date.now(),
+      endTime: null,
+      latency: null,
+      tokens: {
+        input: 0,
+        output: 0,
+        total: 0,
+      },
+      cost: 0,
+      success: null,
+      error: null,
+      metadata,
+      events: [],
+    };
+
+    // Initialize event aggregation for this span
+    this.eventAggregations.set(spanId, {
+      chunk: { count: 0, sampledCount: 0, totalTokens: 0, lastSampled: 0 },
+      token: { count: 0, sampledCount: 0, totalTokens: 0, lastSampled: 0 },
+      progress: { count: 0, sampledCount: 0, lastSampled: 0 },
+    });
+
+    this.spans.set(spanId, span);
+
+    if (this.config.logToConsole) {
+      logger.debug(`[LangSmith] Span started: ${spanId} (${name})`);
+    }
+
+    // Return span object with helper methods
+    return {
+      spanId,
+      span,
+      addEvent: (eventName, payload) => this.addEvent(span, eventName, payload),
+      addRedactedEvent: (eventName, payload) => this.addRedactedEvent(span, eventName, payload),
+      finish: (result = {}) => this.finishSpan(spanId, result),
+      getAggregatedData: () => this.getAggregatedData(spanId),
+    };
+  }
+
+  /**
+   * Add an event to a span with sampling and aggregation logic
+   * @param {Object} span - The span object
+   * @param {string} eventName - Event name (e.g., 'chunk', 'token', 'progress', 'status')
+   * @param {Object} payload - Event payload
+   * @returns {Object} - Aggregated data for this event type
+   */
+  addEvent(span, eventName, payload = {}) {
+    if (!this.config.enabled) {
+      return null;
+    }
+
+    const aggregation = this.eventAggregations.get(span.spanId);
+    if (!aggregation) {
+      logger.warn(`[LangSmith] No aggregation found for span: ${span.spanId}`);
+      return null;
+    }
+
+    this.stats.sampling.totalEvents++;
+
+    // Check if this is a high-frequency event that should be sampled
+    const highFrequencyEvents = ['chunk', 'token', 'progress'];
+    const isHighFrequency = highFrequencyEvents.includes(eventName);
+
+    let shouldSample = !isHighFrequency; // Always log non-high-frequency events
+    let eventAgg = null;
+
+    if (isHighFrequency && this.config.sampling.enabled) {
+      // Apply sampling logic based on event type
+      const sampleRate = this.config.sampling[`${eventName}SampleRate`] || 10;
+      
+      if (aggregation[eventName]) {
+        eventAgg = aggregation[eventName];
+        eventAgg.count++;
+
+        // Update aggregated data based on event type
+        if (eventName === 'chunk' || eventName === 'token') {
+          // Extract token count from payload
+          const tokenCount = payload.tokenCount || payload.tokens || 
+                           (payload.chunk ? payload.chunk.length / 4 : 0); // Rough estimate
+          eventAgg.totalTokens += tokenCount;
+        }
+
+        // Determine if we should sample this event
+        shouldSample = (eventAgg.count % sampleRate) === 0;
+        
+        if (shouldSample) {
+          eventAgg.sampledCount++;
+          eventAgg.lastSampled = eventAgg.count;
+        } else {
+          this.stats.sampling.aggregatedEvents++;
+        }
+      }
+    }
+
+    // Log the event if we should sample it
+    if (shouldSample) {
+      const event = {
+        name: eventName,
+        timestamp: Date.now(),
+        payload,
+      };
+
+      span.events.push(event);
+      this.stats.sampling.sampledEvents++;
+
+      // Export to LangSmith if enabled
+      if (this.config.exportToLangSmith) {
+        this.logEvent(span.spanId, eventName, payload);
+      }
+
+      if (this.config.logToConsole && eventName !== 'chunk' && eventName !== 'token') {
+        logger.debug(`[LangSmith] Event logged: ${eventName} (span: ${span.spanId})`);
+      }
+    }
+
+    // Return aggregated data for this event type
+    return eventAgg || { count: 1, sampledCount: shouldSample ? 1 : 0 };
+  }
+
+  /**
+   * Add a redacted event to strip PII/secrets before logging
+   * @param {Object} span - The span object
+   * @param {string} eventName - Event name
+   * @param {Object} payload - Event payload (will be redacted)
+   * @returns {Object} - Aggregated data for this event type
+   */
+  addRedactedEvent(span, eventName, payload = {}) {
+    if (!this.config.redaction.enabled) {
+      return this.addEvent(span, eventName, payload);
+    }
+
+    // Deep clone the payload to avoid modifying the original
+    const redactedPayload = JSON.parse(JSON.stringify(payload));
+
+    // Recursively redact sensitive data
+    this.redactSensitiveData(redactedPayload);
+
+    return this.addEvent(span, eventName, redactedPayload);
+  }
+
+  /**
+   * Recursively redact sensitive data from an object
+   * @param {Object} obj - Object to redact
+   * @returns {Object} - Redacted object
+   */
+  redactSensitiveData(obj) {
+    if (typeof obj !== 'object' || obj === null) {
+      return obj;
+    }
+
+    for (const [key, value] of Object.entries(obj)) {
+      if (typeof value === 'string') {
+        // Apply redaction patterns
+        let redactedValue = value;
+        for (const pattern of this.config.redaction.patterns) {
+          redactedValue = redactedValue.replace(pattern.regex, pattern.replace);
+        }
+        obj[key] = redactedValue;
+      } else if (typeof value === 'object' && value !== null) {
+        // Recursively redact nested objects
+        this.redactSensitiveData(value);
+      }
+    }
+
+    return obj;
+  }
+
+  /**
+   * Get aggregated data for a span
+   * @param {string} spanId - Span ID
+   * @returns {Object} - Aggregated event data
+   */
+  getAggregatedData(spanId) {
+    const aggregation = this.eventAggregations.get(spanId);
+    if (!aggregation) {
+      return null;
+    }
+
+    return {
+      chunk: {
+        totalCount: aggregation.chunk.count,
+        sampledCount: aggregation.chunk.sampledCount,
+        totalTokens: aggregation.chunk.totalTokens,
+        samplingRate: aggregation.chunk.count > 0 
+          ? (aggregation.chunk.sampledCount / aggregation.chunk.count * 100).toFixed(2) + '%'
+          : '0%',
+      },
+      token: {
+        totalCount: aggregation.token.count,
+        sampledCount: aggregation.token.sampledCount,
+        totalTokens: aggregation.token.totalTokens,
+        samplingRate: aggregation.token.count > 0
+          ? (aggregation.token.sampledCount / aggregation.token.count * 100).toFixed(2) + '%'
+          : '0%',
+      },
+      progress: {
+        totalCount: aggregation.progress.count,
+        sampledCount: aggregation.progress.sampledCount,
+        samplingRate: aggregation.progress.count > 0
+          ? (aggregation.progress.sampledCount / aggregation.progress.count * 100).toFixed(2) + '%'
+          : '0%',
+      },
+    };
+  }
+
+  /**
+   * Finish a span and record results
+   * @param {string} spanId - Span ID
+   * @param {Object} result - Result data
+   * @returns {Object} - Completed span
+   */
+  finishSpan(spanId, result = {}) {
+    const span = this.spans.get(spanId);
+    if (!span) {
+      logger.warn(`[LangSmith] Span not found: ${spanId}`);
+      return null;
+    }
+
+    // Calculate timing
+    span.endTime = Date.now();
+    span.latency = span.endTime - span.startTime;
+
+    // Get aggregated data
+    const aggregatedData = this.getAggregatedData(spanId);
+
+    // Extract tokens from result or use aggregated data
+    if (result.usage) {
+      span.tokens.input = result.usage.promptTokens || 0;
+      span.tokens.output = result.usage.completionTokens || 0;
+      span.tokens.total = result.usage.totalTokens || span.tokens.input + span.tokens.output;
+    } else if (aggregatedData) {
+      // Use aggregated token count from chunks/tokens
+      span.tokens.total = aggregatedData.chunk.totalTokens + aggregatedData.token.totalTokens;
+      span.tokens.output = span.tokens.total; // Assume all aggregated tokens are output
+    }
+
+    // Calculate cost
+    span.cost = this.calculateCost(span.model, span.tokens.input, span.tokens.output);
+
+    // Record success/error
+    span.success = !result.error && !result.cancelled;
+    span.error = result.error || null;
+
+    // Store metadata (including aggregated data)
+    span.metadata = {
+      ...span.metadata,
+      ...(result.metadata || {}),
+      aggregatedEvents: aggregatedData,
+      cancelled: result.cancelled || false,
+    };
+
+    // Convert to trace format for storage
+    const trace = { ...span, traceId: spanId };
+    this.traces.push(trace);
+
+    // Limit trace history
+    if (this.traces.length > this.config.maxTraces) {
+      this.traces.shift();
+    }
+
+    // Update statistics
+    this.updateStats(trace);
+
+    // Export to LangSmith if enabled
+    if (this.config.exportToLangSmith) {
+      this.exportTrace(trace);
+    }
+
+    // Clean up
+    this.spans.delete(spanId);
+    this.eventAggregations.delete(spanId);
+
+    if (this.config.logToConsole) {
+      logger.debug(
+        `[LangSmith] Span finished: ${spanId} (${span.latency}ms, ${span.tokens.total} tokens, $${span.cost.toFixed(4)})`
+      );
+    }
+
+    return span;
+  }
+
+  /**
+   * Log an event to LangSmith (placeholder for actual LangSmith SDK integration)
+   * @param {string} spanId - Span ID
+   * @param {string} eventName - Event name
+   * @param {Object} payload - Event payload
+   */
+  async logEvent(spanId, eventName, payload) {
+    try {
+      // Note: This would require actual LangSmith SDK integration
+      // For now, we log to console in debug mode
+      if (process.env.LANGSMITH_API_KEY) {
+        logger.debug('[LangSmith] Log event:', {
+          spanId,
+          eventName,
+          payload: typeof payload === 'object' ? JSON.stringify(payload).substring(0, 100) : payload,
+        });
+      }
+    } catch (error) {
+      logger.error('[LangSmith] Event logging error:', error);
+    }
+  }
+
+  /**
+   * Start tracing an agent operation (legacy method, maintained for backwards compatibility)
    */
   startTrace(operation, params = {}, model = 'gemini-2.0-flash-exp') {
     const traceId = `${this.agentName}_${operation}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -270,7 +634,7 @@ class AgentLangSmith {
   }
 
   /**
-   * Get all statistics
+   * Get all statistics (including sampling stats)
    */
   getStats() {
     const avgLatency =
@@ -281,6 +645,10 @@ class AgentLangSmith {
         ? (((this.stats.totalCalls - this.stats.errors) / this.stats.totalCalls) * 100).toFixed(2)
         : 100;
 
+    const samplingEfficiency = this.stats.sampling.totalEvents > 0
+      ? ((this.stats.sampling.aggregatedEvents / this.stats.sampling.totalEvents) * 100).toFixed(2)
+      : 0;
+
     return {
       agent: this.agentName,
       totalCalls: this.stats.totalCalls,
@@ -289,6 +657,18 @@ class AgentLangSmith {
       avgLatency: `${avgLatency}ms`,
       successRate: `${successRate}%`,
       errors: this.stats.errors,
+      sampling: {
+        enabled: this.config.sampling.enabled,
+        totalEvents: this.stats.sampling.totalEvents,
+        sampledEvents: this.stats.sampling.sampledEvents,
+        aggregatedEvents: this.stats.sampling.aggregatedEvents,
+        efficiency: `${samplingEfficiency}%`, // Percentage of events that were aggregated (not logged)
+        rates: {
+          chunk: this.config.sampling.chunkSampleRate,
+          token: this.config.sampling.tokenSampleRate,
+          progress: this.config.sampling.progressSampleRate,
+        },
+      },
       byModel: this.formatModelStats(),
       byOperation: this.formatOperationStats(),
     };
@@ -441,6 +821,8 @@ class AgentLangSmith {
    */
   resetStats() {
     this.traces = [];
+    this.spans.clear();
+    this.eventAggregations.clear();
     this.stats = {
       totalCalls: 0,
       totalTokens: { input: 0, output: 0 },
@@ -449,6 +831,11 @@ class AgentLangSmith {
       byModel: {},
       byOperation: {},
       errors: 0,
+      sampling: {
+        totalEvents: 0,
+        sampledEvents: 0,
+        aggregatedEvents: 0,
+      },
     };
 
     logger.info(`[LangSmith] Statistics reset for ${this.agentName}`);
