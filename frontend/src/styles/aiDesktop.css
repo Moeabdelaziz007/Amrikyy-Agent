@@ -2,42 +2,42 @@
 
 :root {
   /* Desktop Background Colors */
-  --desktop-bg-primary: #0F172A;
-  --desktop-bg-secondary: #1E293B;
+  --desktop-bg-primary: #0f172a;
+  --desktop-bg-secondary: #1e293b;
   --desktop-bg-tertiary: #334155;
-  
+
   /* Glassmorphism */
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-highlight: rgba(255, 255, 255, 0.2);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  
+
   /* Neon/Cyan Accents */
-  --neon-cyan: #22D3EE;
-  --neon-blue: #60A5FA;
-  --neon-purple: #A78BFA;
-  --neon-green: #10B981;
-  --neon-amber: #F59E0B;
-  --neon-pink: #EC4899;
-  
+  --neon-cyan: #22d3ee;
+  --neon-blue: #60a5fa;
+  --neon-purple: #a78bfa;
+  --neon-green: #10b981;
+  --neon-amber: #f59e0b;
+  --neon-pink: #ec4899;
+
   /* Agent Colors */
-  --agent-amrikyy: #3B82F6;
-  --agent-safar: #10B981;
-  --agent-thrifty: #F59E0B;
-  --agent-thaqafa: #8B5CF6;
-  
+  --agent-amrikyy: #3b82f6;
+  --agent-safar: #10b981;
+  --agent-thrifty: #f59e0b;
+  --agent-thaqafa: #8b5cf6;
+
   /* Grid Animation */
   --grid-color: rgba(34, 211, 238, 0.3);
   --grid-size: 40px;
-  
+
   /* Hexagon Clip Path */
   --hexagon-clip: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 }
 
 /* Desktop Background with Animated Grid */
 .desktop-background {
-  background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
-  background-image: 
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background-image:
     linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
     linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
   background-size: var(--grid-size) var(--grid-size);
@@ -45,13 +45,21 @@
 }
 
 @keyframes gridMove {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 40px; }
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 40px;
+  }
 }
 
 /* Glassmorphic Card */
 .glass-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
   backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
@@ -64,13 +72,14 @@
 
 /* Breathing Animation */
 @keyframes breathing {
-  0%, 100% { 
-    transform: scale(1); 
-    opacity: 1; 
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
-  50% { 
-    transform: scale(1.05); 
-    opacity: 0.8; 
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
   }
 }
 
@@ -80,8 +89,13 @@
 
 /* Float Animation */
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
 }
 
 .animate-float {
@@ -90,8 +104,12 @@
 
 /* Rotate Animation */
 @keyframes rotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-rotate-slow {
@@ -100,8 +118,13 @@
 
 /* Pulse Glow */
 @keyframes pulseGlow {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .animate-pulse-glow {
@@ -135,7 +158,9 @@
 .form-input {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  box-shadow: 0px 0px 0px 1px rgba(11, 18, 52, 0.10), 0px 1px 2px rgba(11, 18, 52, 0.15);
+  box-shadow:
+    0px 0px 0px 1px rgba(11, 18, 52, 0.1),
+    0px 1px 2px rgba(11, 18, 52, 0.15);
 }
 
 .form-input:focus {
@@ -174,4 +199,69 @@
     transform: translateY(-100vh) translateX(20px);
     opacity: 0;
   }
+}
+
+/* aiDesktop.css */
+
+.holographic-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.holographic-card-inner {
+  transition: transform 0.5s ease-out;
+}
+
+.holographic-card:hover .holographic-card-inner {
+  transform: rotateY(5deg) rotateX(5deg) translateZ(10px);
+}
+
+.holographic-card-glow::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  background: radial-gradient(
+    circle at var(--mouse-x) var(--mouse-y),
+    rgba(0, 180, 255, 0.3) 0%,
+    transparent 50%
+  );
+  filter: blur(15px);
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  pointer-events: none;
+}
+
+.holographic-card:hover .holographic-card-glow::before {
+  opacity: 1;
+}
+
+/* Dock Bar Animations */
+.dock-bar-item {
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+}
+
+.dock-bar-item:hover {
+  transform: translateY(-10px) scale(1.1);
+  box-shadow: 0 0 20px rgba(0, 180, 255, 0.6);
+}
+
+/* Particle System */
+@keyframes particle-fly {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(var(--s));
+    opacity: 0;
+  }
+}
+
+.particle {
+  animation: particle-fly var(--duration) infinite ease-out;
 }

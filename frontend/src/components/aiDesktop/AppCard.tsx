@@ -1,99 +1,61 @@
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Terminal, 
-  Folder, 
-  LayoutDashboard, 
-  Newspaper, 
-  Plane, 
-  Bug, 
-  FileText 
-} from 'lucide-react';
-import type { App } from '../../types/aiDesktop';
+import { AppData } from '../../types/aiDesktop';
+import { formatAppName } from '../../utils/aiDesktopFormatters';
+import { getIconComponent } from '../../utils/aiDesktopIconMapping';
 
 interface AppCardProps {
-  app: App;
-  onLaunch: () => void;
+  app: AppData;
+  onLaunch: (app: AppData) => void;
 }
 
-const iconMap = {
-  terminal: Terminal,
-  folder: Folder,
-  'layout-dashboard': LayoutDashboard,
-  newspaper: Newspaper,
-  plane: Plane,
-  bug: Bug,
-  'file-text': FileText,
-};
+const AppCard: React.FC<AppCardProps> = ({ app, onLaunch }) => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-/**
- * AppCard - Glassmorphic app launcher card
- * Features:
- * - Dark glass effect with cyan border
- * - Icon and app name
- * - Hover lift and glow animations
- * - Click to launch app
- */
-const AppCard = ({ app, onLaunch }: AppCardProps) => {
-  const IconComponent = iconMap[app.icon as keyof typeof iconMap] || LayoutDashboard;
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { currentTarget } = e;
+    const rect = currentTarget.getBoundingClientRect();
+    setMousePosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  const IconComponent = getIconComponent(app.icon);
 
   return (
-    <motion.button
-      type="button"
-      className="glass-card rounded-2xl p-6 flex flex-col items-center justify-center gap-4 cursor-pointer relative overflow-hidden group"
+    <motion.div
+      className="holographic-card relative w-40 h-40 rounded-xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out"
+      whileHover={{ scale: 1.05, z: 10 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={() => onLaunch(app)}
+      onMouseMove={handleMouseMove}
       style={{
-        borderColor: app.isActive ? app.color : 'rgba(255, 255, 255, 0.1)',
+        // @ts-ignore
+        '--mouse-x': `${mousePosition.x}px`,
+        '--mouse-y': `${mousePosition.y}px`,
       }}
-      whileHover={{
-        y: -8,
-        scale: 1.02,
-      }}
-      whileTap={{ scale: 0.98 }}
-      onClick={onLaunch}
-      transition={{ duration: 0.3 }}
     >
-      {/* Background Glow on Hover */}
-      <motion.div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        style={{
-          background: `radial-gradient(circle at center, ${app.color}22, transparent)`,
-        }}
-      />
-
-      {/* Icon */}
-      <motion.div
-        className="relative z-10"
-        whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-        transition={{ duration: 0.5 }}
-      >
-        <IconComponent 
-          size={48} 
-          color={app.color}
-          strokeWidth={1.5}
-        />
-      </motion.div>
-
-      {/* App Name */}
-      <span className="text-white font-medium text-sm relative z-10">
-        {app.name}
-      </span>
-
-      {/* Active Indicator */}
-      {app.isActive && (
+      <div className="holographic-card-inner relative w-full h-full bg-gradient-to-br from-gray-800/70 to-gray-900/70 backdrop-blur-lg border border-gray-700/50 rounded-xl flex flex-col items-center justify-center p-4">
+        <div className="holographic-card-glow absolute inset-0" />
         <motion.div
-          className="absolute bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
-          style={{ background: app.color }}
-          animate={{
-            scale: [1, 1.5, 1],
-            opacity: [1, 0.5, 1],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeInOut'
-          }}
-        />
-      )}
-    </motion.button>
+          className="text-white mb-2"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.1, duration: 0.3 }}
+        >
+          {IconComponent && <IconComponent className="w-12 h-12" />}
+        </motion.div>
+        <motion.p
+          className="text-white text-lg font-semibold text-center"
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.3 }}
+        >
+          {formatAppName(app.name)}
+        </motion.p>
+      </div>
+    </motion.div>
   );
 };
 

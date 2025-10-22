@@ -1,4 +1,5 @@
-import type { AppType, AgentStatus, Language, App, Agent, Particle, CustomerFormData } from '../types/aiDesktop';
+import React from 'react';
+import type { AppType, AgentStatus, Language, App, Agent, Particle, CustomerFormData, AppData } from '../types/aiDesktop';
 
 // Mock data for AI OS Desktop
 
@@ -146,4 +147,42 @@ export const mockLanguages = [
   { value: 'es', label: 'Spanish' },
   { value: 'fr', label: 'French' },
   { value: 'de', label: 'German' }
+];
+
+// Mock Components for demonstration
+const MockApp: React.FC<{ name: string }> = ({ name }) => (
+  <div className="flex items-center justify-center w-full h-full bg-gradient-to-br from-purple-600 to-indigo-800 text-white text-2xl font-bold rounded-lg shadow-lg">
+    {name} App Content
+  </div>
+);
+
+export const aiDesktopApps: AppData[] = [
+  {
+    id: '1',
+    name: 'AI Chat',
+    icon: 'robot',
+    component: () => <MockApp name="AI Chat" />,
+    category: 'core',
+  },
+  {
+    id: '2',
+    name: 'File Explorer',
+    icon: 'folder',
+    component: () => <MockApp name="File Explorer" />,
+    category: 'utility',
+  },
+  {
+    id: '3',
+    name: 'Document Editor',
+    icon: 'document',
+    component: () => <MockApp name="Document Editor" />,
+    category: 'creative',
+  },
+  {
+    id: '4',
+    name: 'Settings',
+    icon: 'settings',
+    component: () => <MockApp name="Settings" />,
+    category: 'system',
+  },
 ];

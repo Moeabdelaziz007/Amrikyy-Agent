@@ -7,7 +7,7 @@ export enum AppType {
   NEWS = 'news',
   QUANTUM_TRAVEL = 'quantum_travel',
   DEBUGGER = 'debugger',
-  AI_NOTES = 'ai_notes'
+  AI_NOTES = 'ai_notes',
 }
 
 export type CustomerFormStep = 'overview' | 'address' | 'notes';
@@ -16,7 +16,7 @@ export enum AgentStatus {
   ACTIVE = 'active',
   BUSY = 'busy',
   IDLE = 'idle',
-  LEARNING = 'learning'
+  LEARNING = 'learning',
 }
 
 export enum Language {
@@ -24,14 +24,14 @@ export enum Language {
   SPANISH = 'es',
   FRENCH = 'fr',
   GERMAN = 'de',
-  ARABIC = 'ar'
+  ARABIC = 'ar',
 }
 
 export enum AgentColor {
   AMRIKYY = '#3B82F6',
   SAFAR = '#10B981',
   THRIFTY = '#F59E0B',
-  THAQAFA = '#8B5CF6'
+  THAQAFA = '#8B5CF6',
 }
 
 // Props types
@@ -134,4 +134,27 @@ export interface RegionOption {
 export interface LanguageOption {
   value: string;
   label: string;
+}
+
+export interface AppData {
+  id: string;
+  name: string;
+  icon: string;
+  component: React.FC;
+  category: 'core' | 'utility' | 'creative' | 'system';
+}
+
+export interface HologramProps {
+  size?: number;
+  color?: string;
+  opacity?: number;
+  speed?: number;
+}
+
+export interface ParticleProps {
+  color?: string;
+  count?: number;
+  minSize?: number;
+  maxSize?: number;
+  speed?: number;
 }
