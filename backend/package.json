@@ -28,6 +28,8 @@
     "clean": "echo 'No dist to clean'"
   },
   "dependencies": {
+    "@babel/parser": "^7.28.4",
+    "@babel/traverse": "^7.28.4",
     "@google-cloud/speech": "^7.2.1",
     "@google/generative-ai": "^0.24.1",
     "@supabase/supabase-js": "^2.74.0",
@@ -43,6 +45,7 @@
     "express-rate-limit": "^6.7.0",
     "express-session": "^1.17.3",
     "express-winston": "^4.2.0",
+    "glob": "^11.0.3",
     "helmet": "^6.0.0",
     "ioredis": "^5.8.1",
     "isomorphic-dompurify": "^2.29.0",

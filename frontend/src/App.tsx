@@ -7,6 +7,7 @@ import MobileOSDemo from '@/pages/MobileOSDemo';
 import ResponsiveTest from '@/pages/ResponsiveTest';
 import AmrikyyOSComplete from '@/pages/AmrikyyOSComplete';
 import AppLauncher from '@/pages/AppLauncher';
+import CodebaseExplorer from '@/pages/CodebaseExplorer';
 
 function App() {
   return (
@@ -35,6 +36,9 @@ function App() {
 
       {/* App Launcher (Blackbox) */}
       <Route path="/launcher" element={<AppLauncher />} />
+
+      {/* Codebase Explorer (Ona AI) */}
+      <Route path="/codebase" element={<CodebaseExplorer />} />
 
       {/* Placeholder Routes */}
       <Route path="/search" element={

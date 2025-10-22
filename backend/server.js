@@ -33,10 +33,12 @@ app.use(express.json());
 const authRoutes = require('./routes/auth');
 const bookingRoutes = require('./routes/bookings');
 const osRoutes = require('./routes/os');
+const codebaseRoutes = require('./routes/codebase-routes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/os', osRoutes);
+app.use('/api/codebase', codebaseRoutes);
 
 // ============================================
 // HEALTH CHECK ENDPOINT
