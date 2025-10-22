@@ -3,6 +3,8 @@ import { AppLayout } from '@/components/layout';
 import { Home } from '@/pages/Home';
 import LandingPage from '@/pages/LandingPage';
 import OSDemo from '@/pages/OSDemo';
+import MobileOSDemo from '@/pages/MobileOSDemo';
+import ResponsiveTest from '@/pages/ResponsiveTest';
 
 function App() {
   return (
@@ -19,6 +21,12 @@ function App() {
 
       {/* AI OS Demo */}
       <Route path="/os-demo" element={<OSDemo />} />
+
+      {/* Mobile OS Demo */}
+      <Route path="/mobile-demo" element={<MobileOSDemo />} />
+
+      {/* Responsive Test */}
+      <Route path="/responsive-test" element={<ResponsiveTest />} />
 
       {/* Placeholder Routes */}
       <Route path="/search" element={
