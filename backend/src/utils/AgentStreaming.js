@@ -14,6 +14,8 @@
  */
 
 const logger = require('./logger');
+const metricsService = require('../services/metricsService');
+const { wrapLLMCall } = require('./langsmith_helpers');
 
 class AgentStreaming {
   constructor(agentName) {
@@ -55,6 +57,9 @@ class AgentStreaming {
     this.activeStreams.set(streamId, stream);
     this.stats.totalStreams++;
     this.stats.activeStreams++;
+
+    // Record metric
+    metricsService.recordStreamEvent('started', { agent: this.agentName });
     
     // Send initial connection message
     this.sendEvent(streamId, 'connected', {
@@ -138,11 +143,17 @@ class AgentStreaming {
    * Send chunk (for streaming content)
    */
   sendChunk(streamId, chunk, chunkIndex = 0) {
-    return this.sendEvent(streamId, 'chunk', {
+    const sent = this.sendEvent(streamId, 'chunk', {
       chunk,
       index: chunkIndex,
       timestamp: Date.now()
     });
+
+    if (sent) {
+      metricsService.recordStreamEvent('chunk', { agent: this.agentName });
+    }
+
+    return sent;
   }
 
   /**
@@ -189,17 +200,26 @@ class AgentStreaming {
     // Update stream status
     stream.status = 'closed';
     stream.endTime = Date.now();
-    const duration = stream.endTime - stream.startTime;
+    const duration = (stream.endTime - stream.startTime) / 1000; // Duration in seconds
     
     // Update statistics
     this.stats.activeStreams--;
     this.stats.totalDuration += duration;
     this.stats.avgDuration = Math.round(this.stats.totalDuration / this.stats.totalStreams);
     
+    // Record metrics
+    const metricData = { agent: this.agentName, duration };
+
     if (reason === 'complete') {
       this.stats.completedStreams++;
+      metricsService.recordStreamEvent('completed', metricData);
     } else if (reason === 'error') {
       this.stats.failedStreams++;
+      metricsService.recordStreamEvent('failed', { ...metricData, error_type: 'unknown' });
+    } else if (reason === 'client_disconnect') {
+      metricsService.recordStreamEvent('cancelled', { ...metricData, reason });
+    } else {
+      metricsService.recordStreamEvent('cancelled', { ...metricData, reason });
     }
     
     // Send final event
@@ -220,7 +240,7 @@ class AgentStreaming {
     // Remove from active streams
     this.activeStreams.delete(streamId);
     
-    logger.debug(`[Streaming] Stream closed: ${streamId} (${reason}, ${duration}ms)`);
+    logger.debug(`[Streaming] Stream closed: ${streamId} (${reason}, ${duration}s)`);
   }
 
   /**
