@@ -1,11 +1,16 @@
 /**
  * Stream Controller
  * 
+ * Handles HTTP requests for streaming endpoints.
+ * Uses streamService for core streaming logic with LangSmith integration.
+ * 
  * @author Mohamed Hossameldin Abdelaziz
  * @created 2025-10-23
+ * @updated 2025-10-22 (Issue #104, #107 - streamService integration)
  */
 
 const { v4: uuidv4 } = require('uuid');
+const streamService = require('../services/streamService');
 const AgentStreaming = require('../utils/AgentStreaming');
 const TravelAgencyAgent = require('../agents/TravelAgencyAgent');
 const ContentCreatorAgent = require('../agents/ContentCreatorAgent');
@@ -17,14 +22,14 @@ const agentInstances = {
   content: new ContentCreatorAgent(),
 };
 
-// Initialize streaming managers for each agent
+// Initialize streaming managers for each agent (for stats)
 const streamingManagers = {
   travel: new AgentStreaming('TravelAgent'),
   content: new AgentStreaming('ContentAgent'),
 };
 
 /**
- * Generic agent streaming handler
+ * Generic agent streaming handler with LangSmith integration
  * @route GET /api/stream/:agent
  * @group Streaming - Agent response streaming
  * @param {string} agent.params.required - The name of the agent to use (e.g., 'travel', 'content')
@@ -37,12 +42,10 @@ const streamingManagers = {
 const streamAgentResponse = async (req, res) => {
   const { agent: agentName } = req.params;
   const { prompt } = req.query;
-  const streamId = uuidv4();
 
   const agent = agentInstances[agentName];
-  const streamer = streamingManagers[agentName];
 
-  if (!agent || !streamer) {
+  if (!agent) {
     return res.status(404).json({ error: 'Agent not found' });
   }
 
@@ -51,25 +54,52 @@ const streamAgentResponse = async (req, res) => {
   }
 
   try {
-    // Initialize SSE stream
-    streamer.initializeStream(res, streamId);
+    // Set SSE Headers (streamService will initialize the stream)
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no'); // Disable nginx buffering
 
-    // Use the agent's model to stream the response
-    const result = await streamer.streamGeminiResponse(
-      streamId,
-      agent.model,
-      prompt
-    );
-
-    if (!result.success) {
-      // The error is already sent to the stream, but we log it here
-      logger.error(`[StreamController] Streaming failed for agent ${agentName} (stream ${streamId}): ${result.error}`);
+    // Optional: Send headers immediately
+    if (res.flushHeaders) {
+      res.flushHeaders();
     }
+
+    // Use streamService for comprehensive tracking and streaming
+    const { cancel, cancelled, error, result } = await streamService.streamWithSSE({
+      req,
+      res,
+      prompt,
+      model: agent.model,
+      agentName: agentName.charAt(0).toUpperCase() + agentName.slice(1) + 'Agent',
+      options: {},
+      meta: {
+        endpoint: req.path,
+        method: req.method,
+        userAgent: req.get('user-agent'),
+      },
+    });
+
+    // Handle client disconnect - critical for resource cleanup
+    req.on('close', () => {
+      if (cancel && !cancelled) {
+        cancel();
+        logger.info(`[StreamController] Client disconnected, stream cancelled for ${agentName}`);
+      }
+    });
+
+    if (error) {
+      logger.error(`[StreamController] Streaming failed for agent ${agentName}: ${error}`);
+    } else if (result) {
+      logger.info(`[StreamController] Streaming completed for agent ${agentName}: ${result.chunks} chunks, ${result.usage?.totalTokens || 0} tokens`);
+    }
+
   } catch (error) {
-    logger.error(`[StreamController] Unhandled error for agent ${agentName} (stream ${streamId}):`, error);
-    // If the stream is still active, send an error. Otherwise, it's already closed.
-    if (streamer.isStreamActive(streamId)) {
-      streamer.sendError(streamId, error, false);
+    logger.error(`[StreamController] Unhandled error for agent ${agentName}:`, error);
+    
+    // If headers not sent, send error response
+    if (!res.headersSent) {
+      return res.status(500).json({ error: 'Internal server error' });
     }
   }
 };
