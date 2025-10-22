@@ -10,6 +10,7 @@ import AmrikyyOSComplete from '@/pages/AmrikyyOSComplete';
 import AppLauncher from '@/pages/AppLauncher';
 import CodebaseExplorer from '@/pages/CodebaseExplorer';
 import SEODashboard from '@/pages/SEODashboard';
+import AIUIDashboard from '@/pages/AIUIDashboard';
 
 /**
  * Amrikyy Travel Agent - Route Configuration
@@ -74,6 +75,9 @@ function App() {
         
         {/* Codebase Explorer (Developer Tool) */}
         <Route path="/codebase" element={<CodebaseExplorer />} />
+        
+        {/* AI UI Dashboard (Kombai-like Tool) */}
+        <Route path="/ai-ui" element={<AIUIDashboard />} />
 
         {/* ============================================ */}
         {/* FEATURE ROUTES - Coming Soon */}
