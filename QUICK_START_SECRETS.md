@@ -207,7 +207,7 @@ git push origin main
 
 ## ✅ YOU'RE DONE WHEN:
 
-- [x] All 6 secrets added to GitHub
+- [x] All 8 secrets added to GitHub
 - [x] Local `.env` updated with Sentry DSN
 - [x] Health endpoint works locally
 - [x] Metrics endpoint works locally
