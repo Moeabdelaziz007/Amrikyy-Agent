@@ -9,6 +9,14 @@ const express = require('express');
 const router = express.Router();
 const logger = require('../utils/logger');
 const authService = require('../services/authService');
+const {
+  validateSignup,
+  validateLogin,
+  validatePasswordReset,
+  validateTokenRefresh,
+  validateAuthHeader
+} = require('../middleware/validation');
+const { asyncHandler } = require('../middleware/errorHandler');
 
 // Create child logger for auth routes
 const log = logger;
@@ -19,27 +27,18 @@ const log = logger;
  * @access  Public
  * @body    { email: string, password: string, fullName?: string }
  */
-router.post('/signup', async (req, res) => {
-  try {
-    const { email, password, fullName } = req.body;
-    
-    const result = await authService.signup({ email, password, fullName });
-    
-    if (!result.success) {
-      const statusCode = result.error.includes('already registered') ? 409 : 400;
-      return res.status(statusCode).json(result);
-    }
-
-    res.status(201).json(result);
-
-  } catch (error) {
-    log.error('Signup error', { error: error.message });
-    res.status(500).json({
-      success: false,
-      error: 'Failed to create account. Please try again.'
-    });
+router.post('/signup', validateSignup, asyncHandler(async (req, res) => {
+  const { email, password, fullName } = req.body;
+  
+  const result = await authService.signup({ email, password, fullName });
+  
+  if (!result.success) {
+    const statusCode = result.error.includes('already registered') ? 409 : 400;
+    return res.status(statusCode).json(result);
   }
-});
+
+  res.status(201).json(result);
+}));
 
 /**
  * @route   POST /api/auth/login
@@ -47,26 +46,17 @@ router.post('/signup', async (req, res) => {
  * @access  Public
  * @body    { email: string, password: string }
  */
-router.post('/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    
-    const result = await authService.login({ email, password });
-    
-    if (!result.success) {
-      return res.status(401).json(result);
-    }
-
-    res.json(result);
-
-  } catch (error) {
-    log.error('Login error', { error: error.message });
-    res.status(500).json({
-      success: false,
-      error: 'Login failed. Please try again.'
-    });
+router.post('/login', validateLogin, asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  
+  const result = await authService.login({ email, password });
+  
+  if (!result.success) {
+    return res.status(401).json(result);
   }
-});
+
+  res.json(result);
+}));
 
 /**
  * @route   POST /api/auth/refresh-token
@@ -74,26 +64,17 @@ router.post('/login', async (req, res) => {
  * @access  Public
  * @body    { refresh_token: string }
  */
-router.post('/refresh-token', async (req, res) => {
-  try {
-    const { refresh_token } = req.body;
-    
-    const result = await authService.refreshToken(refresh_token);
-    
-    if (!result.success) {
-      return res.status(401).json(result);
-    }
-
-    res.json(result);
-
-  } catch (error) {
-    log.error('Token refresh error', { error: error.message });
-    res.status(500).json({
-      success: false,
-      error: 'Failed to refresh token'
-    });
+router.post('/refresh-token', validateTokenRefresh, asyncHandler(async (req, res) => {
+  const { refresh_token } = req.body;
+  
+  const result = await authService.refreshToken(refresh_token);
+  
+  if (!result.success) {
+    return res.status(401).json(result);
   }
-});
+
+  res.json(result);
+}));
 
 /**
  * @route   POST /api/auth/logout
@@ -128,22 +109,13 @@ router.post('/logout', async (req, res) => {
  * @access  Public
  * @body    { email: string }
  */
-router.post('/forgot-password', async (req, res) => {
-  try {
-    const { email } = req.body;
-    
-    const result = await authService.forgotPassword(email);
-    
-    res.json(result);
-
-  } catch (error) {
-    log.error('Password reset error', { error: error.message });
-    res.status(500).json({
-      success: false,
-      error: 'Failed to process password reset request'
-    });
-  }
-});
+router.post('/forgot-password', validatePasswordReset, asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  
+  const result = await authService.forgotPassword(email);
+  
+  res.json(result);
+}));
 
 /**
  * @route   POST /api/auth/reset-password
@@ -181,26 +153,17 @@ router.post('/reset-password', async (req, res) => {
  * @access  Private
  * @headers Authorization: Bearer <token>
  */
-router.get('/me', async (req, res) => {
-  try {
-    const token = req.headers.authorization?.split(' ')[1];
-    
-    const result = await authService.getCurrentUser(token);
-    
-    if (!result.success) {
-      return res.status(401).json(result);
-    }
-
-    res.json(result);
-
-  } catch (error) {
-    log.error('Get user error', { error: error.message });
-    res.status(500).json({
-      success: false,
-      error: 'Failed to get user profile'
-    });
+router.get('/me', validateAuthHeader, asyncHandler(async (req, res) => {
+  const token = req.headers.authorization.split(' ')[1];
+  
+  const result = await authService.getCurrentUser(token);
+  
+  if (!result.success) {
+    return res.status(401).json(result);
   }
-});
+
+  res.json(result);
+}));
 
 /**
  * @route   POST /api/auth/verify-email
