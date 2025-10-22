@@ -37,6 +37,8 @@ const codebaseRoutes = require('./routes/codebase-routes');
 const seoRoutes = require('./routes/seo-routes');
 const youtubeRoutes = require('./routes/youtube-automation');
 const notebooklmRoutes = require('./routes/notebooklm');
+const vaultRoutes = require('./routes/vault-routes');
+const sabreRoutes = require('./routes/sabre-routes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
@@ -45,6 +47,8 @@ app.use('/api/codebase', codebaseRoutes);
 app.use('/api/seo', seoRoutes);
 app.use('/api/youtube', youtubeRoutes);
 app.use('/api/notebooklm', notebooklmRoutes);
+app.use('/api/vault', vaultRoutes);
+app.use('/api/sabre', sabreRoutes);
 
 // ============================================
 // HEALTH CHECK ENDPOINT
