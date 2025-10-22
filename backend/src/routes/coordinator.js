@@ -10,6 +10,8 @@ const express = require('express');
 const router = express.Router();
 const MultiAgentCoordinator = require('../utils/MultiAgentCoordinator');
 const metricsService = require('../services/metricsService');
+const coordinatorController = require('../controllers/coordinatorController');
+const coordinatorService = require('../services/coordinatorService');
 const {
   validateCoordinatorWorkflow,
   validateSequentialWorkflow,
@@ -17,8 +19,21 @@ const {
   validateHierarchicalWorkflow
 } = require('../middleware/agentValidation');
 
-// Create coordinator instance
-const coordinator = new MultiAgentCoordinator();
+// Get coordinator instance from service (shared singleton)
+const coordinator = coordinatorService.getCoordinator();
+
+/**
+ * POST /api/coordinator
+ * Main endpoint for executing workflows (with service layer)
+ * Supports both sync and async execution
+ */
+router.post('/', coordinatorController.runWorkflow);
+
+/**
+ * GET /api/coordinator/status/:workflowId
+ * Get status of an async workflow
+ */
+router.get('/status/:workflowId', coordinatorController.getStatus);
 
 /**
  * POST /api/coordinator/sequential
