@@ -21,13 +21,9 @@ const authenticate = authenticateToken;
 
 /**
  * Rate limiting middleware
- * Uses the agent rate limiter
+ * Uses the global rate limiter from agentRateLimit
  */
-const rateLimiter = agentRateLimit.createRateLimiter({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  maxRequests: 100, // 100 requests per window
-  message: 'Too many requests from this IP, please try again later.'
-});
+const rateLimiter = agentRateLimit.globalLimiter;
 
 /**
  * Admin authentication middleware
