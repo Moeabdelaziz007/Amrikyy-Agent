@@ -6,7 +6,7 @@ import {
   Layout, 
   Sparkles,
   Layers,
-  Grid3x3,
+  Grid,
   ArrowRight,
   Github,
   ExternalLink
@@ -109,7 +109,7 @@ export default function AppLauncher() {
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-6 py-2 mb-6 border border-white/20">
-            <Grid3x3 className="w-4 h-4 text-purple-300" />
+            <Grid className="w-4 h-4 text-purple-300" />
             <span className="text-sm text-white/90 font-medium">App Launcher</span>
           </div>
           

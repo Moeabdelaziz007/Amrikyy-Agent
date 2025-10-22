@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Brain, Layers, Code2, Sliders, Globe, StickyNote, Grid3x3, Home, MessageSquare, Calendar, Camera, Music, Video, FileText, Download, Image, Folder, Wifi, Battery, Volume2, Lock, Info, Monitor, X, Minus, Maximize2 } from 'lucide-react';
+import { Brain, Layers, Code2, Sliders, Globe, StickyNote, Grid, Home, MessageSquare, Calendar, Camera, Music, Video, FileText, Download, Image, Folder, Wifi, Battery, Volume2, Lock, Info, Monitor, X, Minus, Maximize2 } from 'lucide-react';
+import { AnimatedIcon, BounceIcon } from '../components/ui/AnimatedIcon';
+import { RippleEffect } from '../components/ui/RippleEffect';
+import { NotificationBadge } from '../components/ui/NotificationBadge';
 
 // Custom Hooks
 const useDeviceType = () => {
@@ -54,16 +57,16 @@ const useGestures = (onSwipeUp, onSwipeDown) => {
 
 // App Definitions
 const apps = [
-  { id: 'maya', name: 'Maya AI', icon: Brain, gradient: 'from-purple-500 via-pink-500 to-blue-500', animate: true },
-  { id: 'files', name: 'Files', icon: Layers, gradient: 'from-blue-500 to-cyan-500' },
-  { id: 'terminal', name: 'Terminal', icon: Code2, gradient: 'from-green-500 to-emerald-500' },
-  { id: 'settings', name: 'Settings', icon: Sliders, gradient: 'from-gray-600 to-gray-800' },
-  { id: 'browser', name: 'Browser', icon: Globe, gradient: 'from-orange-500 to-red-500' },
-  { id: 'notes', name: 'Notes', icon: StickyNote, gradient: 'from-yellow-500 to-amber-500' },
-  { id: 'photos', name: 'Photos', icon: Camera, gradient: 'from-pink-500 to-rose-500' },
-  { id: 'music', name: 'Music', icon: Music, gradient: 'from-purple-600 to-indigo-500' },
-  { id: 'calendar', name: 'Calendar', icon: Calendar, gradient: 'from-red-500 to-pink-500' },
-  { id: 'messages', name: 'Messages', icon: MessageSquare, gradient: 'from-green-400 to-emerald-500' },
+  { id: 'maya', name: 'Maya AI', icon: Brain, gradient: 'from-purple-500 via-pink-500 to-blue-500', animate: true, notifications: 0 },
+  { id: 'files', name: 'Files', icon: Layers, gradient: 'from-blue-500 to-cyan-500', notifications: 0 },
+  { id: 'terminal', name: 'Terminal', icon: Code2, gradient: 'from-green-500 to-emerald-500', notifications: 0 },
+  { id: 'settings', name: 'Settings', icon: Sliders, gradient: 'from-gray-600 to-gray-800', notifications: 0 },
+  { id: 'browser', name: 'Browser', icon: Globe, gradient: 'from-orange-500 to-red-500', notifications: 0 },
+  { id: 'notes', name: 'Notes', icon: StickyNote, gradient: 'from-yellow-500 to-amber-500', notifications: 0 },
+  { id: 'photos', name: 'Photos', icon: Camera, gradient: 'from-pink-500 to-rose-500', notifications: 0 },
+  { id: 'music', name: 'Music', icon: Music, gradient: 'from-purple-600 to-indigo-500', notifications: 0 },
+  { id: 'calendar', name: 'Calendar', icon: Calendar, gradient: 'from-red-500 to-pink-500', notifications: 3 },
+  { id: 'messages', name: 'Messages', icon: MessageSquare, gradient: 'from-green-400 to-emerald-500', notifications: 5 },
 ];
 
 // Mobile Components
@@ -75,15 +78,28 @@ const MobileDock = ({ apps, onAppClick, activeApp }) => (
           <button
             key={app.id}
             onClick={() => onAppClick(app.id)}
-            className={`flex flex-col items-center gap-1 min-w-[56px] min-h-[56px] rounded-xl transition-all active:scale-95 ${
+            className={`flex flex-col items-center gap-1 min-w-[56px] min-h-[56px] rounded-xl transition-all ${
               activeApp === app.id ? 'bg-gray-100 dark:bg-gray-800' : ''
             }`}
           >
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${app.gradient} flex items-center justify-center shadow-lg ${
-              app.animate ? 'animate-pulse' : ''
-            }`}>
-              <app.icon className="w-6 h-6 text-white" />
-            </div>
+            <RippleEffect>
+              <NotificationBadge 
+                count={app.notifications || 0} 
+                position="top-right"
+                size="sm"
+                pulse={app.notifications > 0}
+              >
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${app.gradient} flex items-center justify-center shadow-lg ${
+                  app.animate ? 'animate-pulse' : ''
+                }`}>
+                  <BounceIcon 
+                    icon={<app.icon className="w-6 h-6 text-white" />}
+                    size="w-6 h-6"
+                    aria-label={app.name}
+                  />
+                </div>
+              </NotificationBadge>
+            </RippleEffect>
           </button>
         ))}
       </div>
@@ -104,9 +120,22 @@ const MobileAppDrawer = ({ apps, onAppClick, onClose }) => (
             onClick={() => { onAppClick(app.id); onClose(); }}
             className="flex flex-col items-center gap-2 p-2 rounded-xl active:bg-gray-100 dark:active:bg-gray-800 transition-colors"
           >
-            <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${app.gradient} flex items-center justify-center shadow-lg`}>
-              <app.icon className="w-7 h-7 text-white" />
-            </div>
+            <RippleEffect>
+              <NotificationBadge 
+                count={app.notifications || 0} 
+                position="top-right"
+                size="sm"
+                pulse={app.notifications > 0}
+              >
+                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${app.gradient} flex items-center justify-center shadow-lg`}>
+                  <BounceIcon 
+                    icon={<app.icon className="w-7 h-7 text-white" />}
+                    size="w-7 h-7"
+                    aria-label={app.name}
+                  />
+                </div>
+              </NotificationBadge>
+            </RippleEffect>
             <span className="text-xs text-gray-700 dark:text-gray-300 text-center">{app.name}</span>
           </button>
         ))}
@@ -116,12 +145,18 @@ const MobileAppDrawer = ({ apps, onAppClick, onClose }) => (
 );
 
 const FloatingActionButton = ({ onClick }) => (
-  <button
-    onClick={onClick}
-    className="fixed bottom-24 right-6 w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full shadow-2xl flex items-center justify-center active:scale-95 transition-transform z-40"
-  >
-    <Grid3x3 className="w-6 h-6 text-white" />
-  </button>
+  <RippleEffect>
+    <button
+      onClick={onClick}
+      className="fixed bottom-24 right-6 w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full shadow-2xl flex items-center justify-center transition-transform z-40"
+    >
+      <BounceIcon 
+        icon={<Grid className="w-6 h-6 text-white" />}
+        size="w-6 h-6"
+        aria-label="Open app drawer"
+      />
+    </button>
+  </RippleEffect>
 );
 
 // App Windows
@@ -152,9 +187,11 @@ const AppWindow = ({ app, onClose, isMaximized, onToggleMaximize }) => {
                   placeholder="Ask Maya anything..."
                   className="flex-1 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 border-0 focus:ring-2 focus:ring-purple-500 text-gray-900 dark:text-white"
                 />
-                <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition-shadow">
-                  Send
-                </button>
+                <RippleEffect>
+                  <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition-shadow">
+                    Send
+                  </button>
+                </RippleEffect>
               </div>
             </div>
           </div>
@@ -274,21 +311,42 @@ const AppWindow = ({ app, onClose, isMaximized, onToggleMaximize }) => {
           <span className="font-medium text-gray-900 dark:text-white">{app.name}</span>
         </div>
         <div className="flex items-center gap-2">
-          <button className="w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 flex items-center justify-center transition-colors">
-            <Minus className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-          </button>
-          <button 
-            onClick={onToggleMaximize}
-            className="w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 flex items-center justify-center transition-colors"
-          >
-            <Maximize2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-          </button>
-          <button 
-            onClick={onClose}
-            className="w-8 h-8 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/20 flex items-center justify-center transition-colors"
-          >
-            <X className="w-4 h-4 text-red-600 dark:text-red-400" />
-          </button>
+          <RippleEffect>
+            <button className="w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 flex items-center justify-center transition-colors">
+              <AnimatedIcon 
+                icon={<Minus className="w-4 h-4 text-gray-600 dark:text-gray-400" />}
+                animation="scale"
+                size="w-4 h-4"
+                aria-label="Minimize"
+              />
+            </button>
+          </RippleEffect>
+          <RippleEffect>
+            <button 
+              onClick={onToggleMaximize}
+              className="w-8 h-8 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 flex items-center justify-center transition-colors"
+            >
+              <AnimatedIcon 
+                icon={<Maximize2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />}
+                animation="scale"
+                size="w-4 h-4"
+                aria-label="Maximize"
+              />
+            </button>
+          </RippleEffect>
+          <RippleEffect>
+            <button 
+              onClick={onClose}
+              className="w-8 h-8 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/20 flex items-center justify-center transition-colors"
+            >
+              <AnimatedIcon 
+                icon={<X className="w-4 h-4 text-red-600 dark:text-red-400" />}
+                animation="scale"
+                size="w-4 h-4"
+                aria-label="Close"
+              />
+            </button>
+          </RippleEffect>
         </div>
       </div>
       <div className="flex-1 overflow-hidden">
