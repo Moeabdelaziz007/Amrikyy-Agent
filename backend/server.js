@@ -41,6 +41,13 @@ const vaultRoutes = require('./routes/vault-routes');
 const sabreRoutes = require('./routes/sabre-routes');
 const voiceRoutes = require('./routes/voice');
 
+// Import middleware
+const { authenticateToken } = require('./middleware/auth');
+const { aiLimiter } = require('./middleware/rateLimiter');
+
+// Import coordinator routes (new API)
+const coordinatorRoutes = require('./src/routes/coordinator');
+
 app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/os', osRoutes);
@@ -51,6 +58,9 @@ app.use('/api/notebooklm', notebooklmRoutes);
 app.use('/api/vault', vaultRoutes);
 app.use('/api/sabre', sabreRoutes);
 app.use('/api/voice', voiceRoutes);
+
+// Coordinator API - Protected with auth and rate limiting
+app.use('/api/coordinator', authenticateToken, aiLimiter, coordinatorRoutes);
 
 // ============================================
 // HEALTH CHECK ENDPOINT
