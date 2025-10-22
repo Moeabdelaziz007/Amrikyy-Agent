@@ -2,6 +2,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import { AppLayout } from '@/components/layout';
 import { Home } from '@/pages/Home';
 import LandingPage from '@/pages/LandingPage';
+import OSDemo from '@/pages/OSDemo';
 
 function App() {
   return (
@@ -15,6 +16,9 @@ function App() {
       
       {/* Legacy Landing Page (temporary) */}
       <Route path="/landing" element={<LandingPage />} />
+      
+      {/* AI OS Demo */}
+      <Route path="/os-demo" element={<OSDemo />} />
       
       {/* Placeholder Routes */}
       <Route path="/search" element={

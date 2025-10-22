@@ -63,5 +63,22 @@ export type ResizeHandle =
 export interface DragData {
   startX: number;
   startY: number;
-  startPosition: WindowPosition;
+  startWidth: number;
+  startHeight: number;
+  startPosition?: WindowPosition;
+  handle?: ResizeHandle;
+}
+
+// Add missing properties for WindowData
+export interface WindowData {
+  id: string;
+  title: string;
+  state: WindowState;
+  position: WindowPosition;
+  size: WindowSize;
+  zIndex: number;
+  isActive: boolean;
+  isFocused?: boolean;
+  isMaximized?: boolean;
+  isMinimized?: boolean;
 }
