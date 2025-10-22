@@ -39,6 +39,7 @@ const youtubeRoutes = require('./routes/youtube-automation');
 const notebooklmRoutes = require('./routes/notebooklm');
 const vaultRoutes = require('./routes/vault-routes');
 const sabreRoutes = require('./routes/sabre-routes');
+const voiceRoutes = require('./routes/voice');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
@@ -49,6 +50,7 @@ app.use('/api/youtube', youtubeRoutes);
 app.use('/api/notebooklm', notebooklmRoutes);
 app.use('/api/vault', vaultRoutes);
 app.use('/api/sabre', sabreRoutes);
+app.use('/api/voice', voiceRoutes);
 
 // ============================================
 // HEALTH CHECK ENDPOINT

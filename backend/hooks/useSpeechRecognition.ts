@@ -44,7 +44,7 @@ const useSpeechRecognition = (): SpeechRecognitionHook => {
         setIsListening(true);
     };
 
-    recognition.onend = = () => {
+    recognition.onend = () => {
         setIsListening(false);
     };
 
