@@ -56,8 +56,8 @@ export interface WindowProps {
   modal?: boolean;
 }
 
-export type ResizeHandle = 
-  | 'n' | 's' | 'e' | 'w' 
+export type ResizeHandle =
+  | 'n' | 's' | 'e' | 'w'
   | 'ne' | 'nw' | 'se' | 'sw';
 
 export interface DragData {

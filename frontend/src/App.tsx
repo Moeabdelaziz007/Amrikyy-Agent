@@ -13,13 +13,13 @@ function App() {
           <Home />
         </AppLayout>
       } />
-      
+
       {/* Legacy Landing Page (temporary) */}
       <Route path="/landing" element={<LandingPage />} />
-      
+
       {/* AI OS Demo */}
       <Route path="/os-demo" element={<OSDemo />} />
-      
+
       {/* Placeholder Routes */}
       <Route path="/search" element={
         <AppLayout>
@@ -36,7 +36,7 @@ function App() {
           <ComingSoon title="Authentication" />
         </AppLayout>
       } />
-      
+
       {/* 404 */}
       <Route path="*" element={
         <AppLayout>

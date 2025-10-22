@@ -1,7 +1,7 @@
 /**
  * Dashboard Mini-App - Main Application Dashboard
  * For AMRIKYY AI OS - Desktop Experience
- * 
+ *
  * Features:
  * - Glassmorphism design
  * - 4 top stats cards
@@ -9,7 +9,7 @@
  * - Recent activity timeline
  * - Charts & analytics
  * - Framer Motion animations
- * 
+ *
  * @component
  * @author CURSERO AI - Creative Autonomous Engineer
  * @created 2025-10-21
@@ -191,7 +191,7 @@ export function DashboardMiniApp() {
       try {
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
         const response = await fetch(`${apiUrl}/api/dashboard/stats`);
-        
+
         if (response.ok) {
           const result = await response.json();
           if (result.success && result.data) {
@@ -201,7 +201,7 @@ export function DashboardMiniApp() {
               successRate: result.data.successRate,
               responseTime: result.data.responseTime
             });
-            
+
             if (result.data.agents) {
               setAgents(result.data.agents.map((agent: any) => ({
                 ...agent,
@@ -209,7 +209,7 @@ export function DashboardMiniApp() {
                 color: getAgentColor(agent.id)
               })));
             }
-            
+
             if (result.data.recentActivity) {
               setActivities(result.data.recentActivity.map((activity: any) => ({
                 ...activity,
@@ -225,7 +225,7 @@ export function DashboardMiniApp() {
     };
 
     fetchDashboardData();
-    
+
     // Refresh every 30 seconds
     const interval = setInterval(fetchDashboardData, 30000);
     return () => clearInterval(interval);
@@ -347,17 +347,17 @@ function DashboardHeader({ currentTime }: DashboardHeaderProps) {
             Welcome back! Here's what's happening with your AI agents.
           </p>
         </div>
-        
+
         <div className="text-right">
           <div className="text-2xl font-semibold text-white">
             {currentTime.toLocaleTimeString()}
           </div>
           <div className="text-sm text-slate-400">
-            {currentTime.toLocaleDateString('en-US', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
+            {currentTime.toLocaleDateString('en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
             })}
           </div>
         </div>
@@ -402,7 +402,7 @@ function StatsCard({ title, value, subtitle, icon, trend, color }: StatsCardProp
     >
       {/* Background Gradient Accent */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent rounded-full blur-2xl" />
-      
+
       {/* Content */}
       <div className="relative">
         {/* Icon */}

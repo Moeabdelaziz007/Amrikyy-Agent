@@ -7,23 +7,23 @@
  * - User menu (profile, settings, logout)
  * - Smooth dropdown animations
  * - Glassmorphism design
- * 
+ *
  * @component
  * @example
  * ```tsx
- * <SystemTray 
+ * <SystemTray
  *   user={{ name: 'John Doe', avatar: '/avatar.jpg' }}
  *   onLogout={() => console.log('Logout')}
  * />
  * ```
- * 
+ *
  * @author CURSERO AI
  * @created 2025-10-22
  */
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
+import {
   Bell,
   Volume2,
   VolumeX,
@@ -88,27 +88,27 @@ export function SystemTray({
   onProfile,
   className
 }: SystemTrayProps) {
-  
+
   // ==================== State ====================
-  
+
   const [currentTime, setCurrentTime] = useState(new Date());
   const [volume, setVolume] = useState(75);
   const [isMuted, setIsMuted] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showVolumeControl, setShowVolumeControl] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  
+
   const notificationsRef = useRef<HTMLDivElement>(null);
   const volumeRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
-  
+
   // ==================== Computed Values ====================
-  
+
   const unreadCount = notifications.filter(n => !n.read).length;
   const hasNotifications = notifications.length > 0;
-  
+
   // ==================== Effects ====================
-  
+
   /**
    * Update clock every second
    */
@@ -116,10 +116,10 @@ export function SystemTray({
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
-    
+
     return () => clearInterval(timer);
   }, []);
-  
+
   /**
    * Close dropdowns when clicking outside
    */
@@ -135,19 +135,19 @@ export function SystemTray({
         setShowUserMenu(false);
       }
     };
-    
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-  
+
   // ==================== Handlers ====================
-  
+
   const handleVolumeChange = useCallback((newVolume: number) => {
     setVolume(newVolume);
     setIsMuted(newVolume === 0);
     onVolumeChange?.(newVolume);
   }, [onVolumeChange]);
-  
+
   const toggleMute = useCallback(() => {
     if (isMuted) {
       setIsMuted(false);
@@ -159,22 +159,22 @@ export function SystemTray({
       onVolumeChange?.(0);
     }
   }, [isMuted, onVolumeChange]);
-  
+
   const handleNotificationClick = useCallback((notification: Notification) => {
     onNotificationClick?.(notification);
     setShowNotifications(false);
   }, [onNotificationClick]);
-  
+
   // ==================== Get Volume Icon ====================
-  
+
   const getVolumeIcon = () => {
     if (isMuted || volume === 0) return <VolumeX className="w-4 h-4" />;
     if (volume < 50) return <Volume1 className="w-4 h-4" />;
     return <Volume2 className="w-4 h-4" />;
   };
-  
+
   // ==================== Get Notification Type Color ====================
-  
+
   const getNotificationColor = (type?: string) => {
     switch (type) {
       case 'success':
@@ -187,12 +187,12 @@ export function SystemTray({
         return 'text-blue-400';
     }
   };
-  
+
   // ==================== Render ====================
-  
+
   return (
     <div className={cn('flex items-center gap-2 px-4 py-2', className)}>
-      
+
       {/* Clock */}
       <div className="flex flex-col items-end text-white/90 mr-2">
         <div className="text-sm font-semibold tabular-nums">
@@ -202,17 +202,17 @@ export function SystemTray({
           {format(currentTime, 'EEE, MMM d')}
         </div>
       </div>
-      
+
       {/* Divider */}
       <div className="w-px h-8 bg-white/10" />
-      
+
       {/* Notifications */}
       <div ref={notificationsRef} className="relative">
         <button
           onClick={() => setShowNotifications(!showNotifications)}
           className={cn(
             'p-2 rounded-lg transition-colors relative',
-            showNotifications 
+            showNotifications
               ? 'bg-blue-500/20 text-blue-400'
               : 'hover:bg-white/10 text-white/70 hover:text-white'
           )}
@@ -231,7 +231,7 @@ export function SystemTray({
             </span>
           )}
         </button>
-        
+
         {/* Notifications Dropdown */}
         <AnimatePresence>
           {showNotifications && (
@@ -275,7 +275,7 @@ export function SystemTray({
                   )}
                 </div>
               </div>
-              
+
               {/* Notifications List */}
               <div className="max-h-80 overflow-y-auto">
                 {notifications.length === 0 ? (
@@ -302,7 +302,7 @@ export function SystemTray({
                         )}>
                           {notification.icon || <Bell className="w-4 h-4" />}
                         </div>
-                        
+
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
                             <h4 className="text-sm font-medium text-white truncate">
@@ -328,7 +328,7 @@ export function SystemTray({
           )}
         </AnimatePresence>
       </div>
-      
+
       {/* Volume Control */}
       <div ref={volumeRef} className="relative">
         <button
@@ -344,7 +344,7 @@ export function SystemTray({
         >
           {getVolumeIcon()}
         </button>
-        
+
         {/* Volume Dropdown */}
         <AnimatePresence>
           {showVolumeControl && (
@@ -369,7 +369,7 @@ export function SystemTray({
                 >
                   {getVolumeIcon()}
                 </button>
-                
+
                 <div className="flex-1">
                   <input
                     type="range"
@@ -392,7 +392,7 @@ export function SystemTray({
                     "
                   />
                 </div>
-                
+
                 <span className="text-sm text-white/70 font-medium tabular-nums min-w-[3ch]">
                   {volume}%
                 </span>
@@ -401,12 +401,12 @@ export function SystemTray({
           )}
         </AnimatePresence>
       </div>
-      
+
       {/* User Menu */}
       {user && (
         <>
           <div className="w-px h-8 bg-white/10" />
-          
+
           <div ref={userMenuRef} className="relative">
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
@@ -436,7 +436,7 @@ export function SystemTray({
                 showUserMenu && 'rotate-180'
               )} />
             </button>
-            
+
             {/* User Menu Dropdown */}
             <AnimatePresence>
               {showUserMenu && (
@@ -470,7 +470,7 @@ export function SystemTray({
                       </div>
                     )}
                   </div>
-                  
+
                   {/* Menu Items */}
                   <div className="py-1">
                     <button
@@ -489,7 +489,7 @@ export function SystemTray({
                       <User className="w-4 h-4" />
                       Profile
                     </button>
-                    
+
                     <button
                       onClick={() => {
                         onSettings?.();
@@ -506,9 +506,9 @@ export function SystemTray({
                       <Settings className="w-4 h-4" />
                       Settings
                     </button>
-                    
+
                     <div className="my-1 h-px bg-white/10" />
-                    
+
                     <button
                       onClick={() => {
                         onLogout?.();

@@ -1,6 +1,6 @@
 /**
  * OS Components - Advanced desktop OS features
- * 
+ *
  * @author CURSERO AI
  * @created 2025-10-22
  */

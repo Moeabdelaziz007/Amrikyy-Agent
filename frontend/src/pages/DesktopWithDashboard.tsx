@@ -1,7 +1,7 @@
 /**
  * Desktop with Dashboard Demo
  * Shows Window Manager with Dashboard Mini-App
- * 
+ *
  * @page
  * @author CURSERO AI
  * @created 2025-10-21
@@ -11,7 +11,7 @@ import React from 'react';
 import { WindowManagerProvider } from '@/contexts/WindowManagerContext';
 import { Window } from '@/components/layout';
 import { DashboardMiniApp } from '@/mini-apps';
-import { 
+import {
   LayoutDashboard,
   Terminal,
   Settings
@@ -39,7 +39,7 @@ export function DesktopWithDashboard() {
         </Window>
 
         {/* Optional: Terminal Window (minimized by default) */}
-        {/* 
+        {/*
         <Window
           id="terminal-1"
           title="Terminal"

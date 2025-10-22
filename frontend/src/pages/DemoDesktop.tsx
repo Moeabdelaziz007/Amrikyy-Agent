@@ -1,7 +1,7 @@
 /**
  * Demo Desktop - Showcase Window Manager
  * Example of Desktop OS Experience with multiple windows
- * 
+ *
  * @page
  * @author CURSERO AI
  * @created 2025-10-21
@@ -10,13 +10,13 @@
 import React, { useState } from 'react';
 import { WindowManagerProvider } from '@/contexts/WindowManagerContext';
 import { Window } from '@/components/layout';
-import { 
-  Terminal, 
-  FileText, 
-  Settings, 
+import {
+  Terminal,
+  FileText,
+  Settings,
   Mail,
   Calendar,
-  Plus 
+  Plus
 } from 'lucide-react';
 
 // ============================================
@@ -34,11 +34,11 @@ export function DemoDesktop() {
     const newId = `window-${Date.now()}`;
     setWindows([
       ...windows,
-      { 
-        id: newId, 
-        title: `New Window ${windows.length + 1}`, 
+      {
+        id: newId,
+        title: `New Window ${windows.length + 1}`,
         icon: <FileText size={16} />,
-        active: true 
+        active: true
       }
     ]);
   };
@@ -61,9 +61,9 @@ export function DemoDesktop() {
               id={win.id}
               title={win.title}
               icon={win.icon}
-              initialPosition={{ 
-                x: 100 + index * 50, 
-                y: 100 + index * 50 
+              initialPosition={{
+                x: 100 + index * 50,
+                y: 100 + index * 50
               }}
               initialSize={{ width: 600, height: 400 }}
               onClose={() => closeWindow(win.id)}
@@ -101,8 +101,8 @@ export function DemoDesktop() {
                     px-4 py-2 rounded-lg
                     flex items-center gap-2
                     transition-all
-                    ${win.active 
-                      ? 'bg-white/20 text-white' 
+                    ${win.active
+                      ? 'bg-white/20 text-white'
                       : 'bg-white/5 text-gray-400 hover:bg-white/10'
                     }
                   `}
@@ -152,7 +152,7 @@ function WindowContent({ title }: WindowContentProps) {
         <p className="text-gray-300 mb-6">
           This is a demo window showcasing the Desktop OS experience in AMRIKYY AI OS.
         </p>
-        
+
         <div className="space-y-4">
           <div className="p-4 bg-slate-700/50 rounded-lg">
             <h3 className="text-sm font-semibold text-white mb-2">Features:</h3>

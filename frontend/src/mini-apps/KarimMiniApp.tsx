@@ -1,7 +1,7 @@
 /**
  * Karim Mini App - Budget Optimizer Agent
  * Smart cost analysis and budget optimization
- * 
+ *
  * @author Ona AI
  * @created 2025-10-21
  */
@@ -79,10 +79,10 @@ export function KarimMiniApp() {
     try {
       // Import API service
       const { karimAPI } = await import('@/services/api');
-      
+
       // Call backend API
       const response = await karimAPI.optimizeBudget(request);
-      
+
       if (response.success) {
         setResult({
           status: 'success',

@@ -1,7 +1,7 @@
 /**
  * Landing Page - Amrikyy AI OS
  * Desktop-style landing page with Mini Apps Grid
- * 
+ *
  * @author Ona AI
  * @created 2025-10-21
  */
@@ -168,7 +168,7 @@ export default function LandingPage() {
               transition={{ delay: 0.6 }}
               className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
             >
-              <button 
+              <button
                 onClick={() => navigate('/desktop')}
                 className="group px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105"
               >
@@ -177,7 +177,7 @@ export default function LandingPage() {
                   Launch AI OS
                 </span>
               </button>
-              <button 
+              <button
                 onClick={() => navigate('/demo')}
                 className="px-8 py-4 bg-slate-800/50 backdrop-blur-lg text-white font-bold rounded-xl border-2 border-slate-700 hover:border-cyan-500 transition-all duration-300 transform hover:scale-105"
               >
@@ -296,8 +296,8 @@ function MiniAppCard({ app, index, isSelected, onSelect }: {
       onClick={app.available ? onSelect : undefined}
       className={`
         relative p-6 rounded-2xl cursor-pointer transition-all duration-300
-        ${app.available 
-          ? 'bg-slate-800/60 backdrop-blur-lg border-2 border-slate-700/50 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-500/20' 
+        ${app.available
+          ? 'bg-slate-800/60 backdrop-blur-lg border-2 border-slate-700/50 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-500/20'
           : 'bg-slate-800/30 backdrop-blur-lg border-2 border-slate-700/30 opacity-60 cursor-not-allowed'
         }
         ${isSelected ? 'border-cyan-500 shadow-2xl shadow-cyan-500/30' : ''}

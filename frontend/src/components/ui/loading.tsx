@@ -9,11 +9,11 @@ interface LoadingProps {
   text?: string
 }
 
-export function Loading({ 
-  variant = 'spinner', 
-  size = 'md', 
+export function Loading({
+  variant = 'spinner',
+  size = 'md',
   className,
-  text 
+  text
 }: LoadingProps) {
   const sizeClasses = {
     sm: 'w-4 h-4',

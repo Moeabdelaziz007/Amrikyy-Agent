@@ -6,25 +6,25 @@
  * - Keyboard navigation (arrow keys, enter, escape)
  * - Recent searches with localStorage
  * - Beautiful animations with Framer Motion
- * 
+ *
  * @component
  * @example
  * ```tsx
  * <QuickSearch isOpen={isOpen} onClose={() => setIsOpen(false)} />
  * ```
- * 
+ *
  * @author CURSERO AI
  * @created 2025-10-22
  */
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Search, 
-  Command, 
-  File, 
-  Folder, 
-  Terminal, 
+import {
+  Search,
+  Command,
+  File,
+  Folder,
+  Terminal,
   Settings,
   Clock,
   X,
@@ -161,19 +161,19 @@ export function QuickSearch({
   maxResults = 8,
   className
 }: QuickSearchProps) {
-  
+
   // ==================== State ====================
-  
+
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchItem[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [recentSearches, setRecentSearches] = useState<SearchItem[]>([]);
-  
+
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
-  
+
   // ==================== Fuse.js Configuration ====================
-  
+
   const fuse = useRef(new Fuse(items, {
     keys: [
       { name: 'title', weight: 2 },
@@ -185,9 +185,9 @@ export function QuickSearch({
     includeScore: true,
     minMatchCharLength: 1
   }));
-  
+
   // ==================== Effects ====================
-  
+
   /**
    * Focus input when opened
    */
@@ -200,14 +200,14 @@ export function QuickSearch({
       setSelectedIndex(0);
     }
   }, [isOpen]);
-  
+
   /**
    * Update Fuse index when items change
    */
   useEffect(() => {
     fuse.current.setCollection(items);
   }, [items]);
-  
+
   /**
    * Perform fuzzy search
    */
@@ -225,7 +225,7 @@ export function QuickSearch({
       setSelectedIndex(0);
     }
   }, [query, maxResults, recentSearches]);
-  
+
   /**
    * Scroll selected item into view
    */
@@ -240,9 +240,9 @@ export function QuickSearch({
       }
     }
   }, [selectedIndex, results.length]);
-  
+
   // ==================== Handlers ====================
-  
+
   /**
    * Load recent searches from localStorage
    */
@@ -257,7 +257,7 @@ export function QuickSearch({
       console.error('Failed to load recent searches:', error);
     }
   }, []);
-  
+
   /**
    * Save to recent searches
    */
@@ -267,29 +267,29 @@ export function QuickSearch({
         item,
         ...recentSearches.filter(r => r.id !== item.id)
       ].slice(0, MAX_RECENT_SEARCHES);
-      
+
       setRecentSearches(updated);
       localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
     } catch (error) {
       console.error('Failed to save recent search:', error);
     }
   }, [recentSearches]);
-  
+
   /**
    * Handle item selection
    */
   const handleSelect = useCallback((item: SearchItem) => {
     // Save to recent searches
     saveToRecentSearches(item);
-    
+
     // Execute action if exists
     item.action?.();
-    
+
     // Close search
     onClose();
     setQuery('');
   }, [onClose, saveToRecentSearches]);
-  
+
   /**
    * Handle keyboard navigation
    */
@@ -297,35 +297,35 @@ export function QuickSearch({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setSelectedIndex(prev => 
+        setSelectedIndex(prev =>
           prev < results.length - 1 ? prev + 1 : 0
         );
         break;
-        
+
       case 'ArrowUp':
         e.preventDefault();
-        setSelectedIndex(prev => 
+        setSelectedIndex(prev =>
           prev > 0 ? prev - 1 : results.length - 1
         );
         break;
-        
+
       case 'Enter':
         e.preventDefault();
         if (results[selectedIndex]) {
           handleSelect(results[selectedIndex]);
         }
         break;
-        
+
       case 'Escape':
         e.preventDefault();
         onClose();
         break;
-        
+
       default:
         break;
     }
   }, [results, selectedIndex, handleSelect, onClose]);
-  
+
   /**
    * Handle backdrop click
    */
@@ -334,12 +334,12 @@ export function QuickSearch({
       onClose();
     }
   }, [onClose]);
-  
+
   // ==================== Get Icon ====================
-  
+
   const getIcon = (item: SearchItem) => {
     if (item.icon) return item.icon;
-    
+
     switch (item.type) {
       case 'app':
         return <Zap className="w-4 h-4" />;
@@ -353,9 +353,9 @@ export function QuickSearch({
         return <Search className="w-4 h-4" />;
     }
   };
-  
+
   // ==================== Render ====================
-  
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -369,7 +369,7 @@ export function QuickSearch({
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9998]"
             onClick={handleBackdropClick}
           />
-          
+
           {/* Search Modal */}
           <div className="fixed inset-0 flex items-start justify-center pt-[20vh] z-[9999]">
             <motion.div
@@ -419,9 +419,9 @@ export function QuickSearch({
                   </button>
                 )}
               </div>
-              
+
               {/* Results */}
-              <div 
+              <div
                 ref={resultsRef}
                 className="max-h-[400px] overflow-y-auto py-2"
               >
@@ -436,7 +436,7 @@ export function QuickSearch({
                         Recent Searches
                       </div>
                     )}
-                    
+
                     {results.map((item, index) => (
                       <motion.button
                         key={item.id}
@@ -464,7 +464,7 @@ export function QuickSearch({
                         )}>
                           {getIcon(item)}
                         </div>
-                        
+
                         {/* Content */}
                         <div className="flex-1 min-w-0">
                           <div className="text-white font-medium truncate">
@@ -476,14 +476,14 @@ export function QuickSearch({
                             </div>
                           )}
                         </div>
-                        
+
                         {/* Category */}
                         {item.category && (
                           <div className="text-xs text-gray-500 px-2 py-1 rounded bg-white/5">
                             {item.category}
                           </div>
                         )}
-                        
+
                         {/* Arrow */}
                         {index === selectedIndex && (
                           <ArrowRight className="w-4 h-4 text-blue-400" />
@@ -493,7 +493,7 @@ export function QuickSearch({
                   </>
                 )}
               </div>
-              
+
               {/* Footer */}
               <div className="px-4 py-3 border-t border-white/10 bg-slate-950/50">
                 <div className="flex items-center justify-between text-xs text-gray-500">

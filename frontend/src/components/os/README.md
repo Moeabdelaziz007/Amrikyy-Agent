@@ -21,7 +21,7 @@ import { QuickSearch } from '@/components/os';
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const searchItems = [
     {
       id: 'app-maya',
@@ -31,9 +31,9 @@ function App() {
       action: () => console.log('Open Maya')
     }
   ];
-  
+
   return (
-    <QuickSearch 
+    <QuickSearch
       isOpen={isOpen}
       onClose={() => setIsOpen(false)}
       items={searchItems}
@@ -65,7 +65,7 @@ function Taskbar() {
     email: 'john@example.com',
     avatar: '/avatar.jpg'
   };
-  
+
   const notifications = [
     {
       id: '1',
@@ -76,7 +76,7 @@ function Taskbar() {
       type: 'success'
     }
   ];
-  
+
   return (
     <SystemTray
       user={user}
@@ -122,7 +122,7 @@ function App() {
     enabled: true,
     debug: true
   });
-  
+
   return <YourApp />;
 }
 ```
@@ -384,7 +384,7 @@ useKeyboardShortcuts({
 
 ---
 
-**Author:** CURSERO AI  
-**Created:** 2025-10-22  
-**Version:** 1.0.0  
+**Author:** CURSERO AI
+**Created:** 2025-10-22
+**Version:** 1.0.0
 **License:** MIT

@@ -38,7 +38,7 @@ export function MiniAppCard({
   variant = 'default',
   showBadge = true
 }: MiniAppCardProps) {
-  
+
   const handleClick = () => {
     if (app.available && onSelect) {
       onSelect();
@@ -61,8 +61,8 @@ export function MiniAppCard({
       onClick={handleClick}
       className={`
         relative p-6 rounded-2xl cursor-pointer transition-all duration-300
-        ${app.available 
-          ? 'bg-slate-800/60 backdrop-blur-lg border-2 border-slate-700/50 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-500/20' 
+        ${app.available
+          ? 'bg-slate-800/60 backdrop-blur-lg border-2 border-slate-700/50 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-500/20'
           : 'bg-slate-800/30 backdrop-blur-lg border-2 border-slate-700/30 opacity-60 cursor-not-allowed'
         }
         ${isSelected ? 'border-cyan-500 shadow-2xl shadow-cyan-500/30 ring-2 ring-cyan-500/20' : ''}

@@ -50,10 +50,10 @@ export const containerVariants: Variants = {
 }
 
 export const itemVariants: Variants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 20,
-    scale: 0.9 
+    scale: 0.9
   },
   visible: {
     opacity: 1,
@@ -95,11 +95,11 @@ export const cardHoverVariants: Variants = {
 // Button press animation
 export const buttonVariants: Variants = {
   idle: { scale: 1 },
-  hover: { 
+  hover: {
     scale: 1.05,
     transition: { duration: 0.2, ease: easings.easeOutBack }
   },
-  tap: { 
+  tap: {
     scale: 0.95,
     transition: { duration: 0.1 }
   }
@@ -135,11 +135,11 @@ export const modalVariants: Variants = {
 // Backdrop animation
 export const backdropVariants: Variants = {
   hidden: { opacity: 0 },
-  visible: { 
+  visible: {
     opacity: 1,
     transition: { duration: 0.2 }
   },
-  exit: { 
+  exit: {
     opacity: 0,
     transition: { duration: 0.2 }
   }
@@ -161,32 +161,32 @@ export const floatingVariants: Variants = {
 export const slideVariants = {
   left: {
     hidden: { opacity: 0, x: -100 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       x: 0,
       transition: { duration: 0.5, ease: easings.easeOutBack }
     }
   },
   right: {
     hidden: { opacity: 0, x: 100 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       x: 0,
       transition: { duration: 0.5, ease: easings.easeOutBack }
     }
   },
   up: {
     hidden: { opacity: 0, y: 100 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.5, ease: easings.easeOutBack }
     }
   },
   down: {
     hidden: { opacity: 0, y: -100 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.5, ease: easings.easeOutBack }
     }

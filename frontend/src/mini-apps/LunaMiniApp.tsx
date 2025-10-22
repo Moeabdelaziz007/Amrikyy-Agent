@@ -1,7 +1,7 @@
 /**
  * Luna Mini App - Trip Planner Agent
  * AI-powered travel planning assistant
- * 
+ *
  * @author Ona AI
  * @created 2025-10-21
  */
@@ -60,10 +60,10 @@ export function LunaMiniApp() {
     try {
       // Import API service
       const { lunaAPI } = await import('@/services/api');
-      
+
       // Call backend API
       const response = await lunaAPI.planTrip(request);
-      
+
       if (response.success) {
         setResult({
           status: 'success',

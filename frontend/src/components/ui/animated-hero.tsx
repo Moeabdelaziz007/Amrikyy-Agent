@@ -2,11 +2,11 @@ import React from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Button } from './button'
 import { Card } from './card'
-import { 
-  containerVariants, 
-  itemVariants, 
+import {
+  containerVariants,
+  itemVariants,
   floatingVariants,
-  cardHoverVariants 
+  cardHoverVariants
 } from '@/lib/animations'
 
 interface AnimatedHeroProps {
@@ -124,7 +124,7 @@ export function AnimatedHero({
                   initial="rest"
                   animate="rest"
                 >
-                  <Card 
+                  <Card
                     className="p-6 text-center cursor-pointer group"
                     variants={cardHoverVariants}
                   >

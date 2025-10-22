@@ -74,12 +74,12 @@ interface UserCardProps {
 export function UserCard({ user, onSelect, className = '' }: UserCardProps) {
   // Hooks
   const [isHovered, setIsHovered] = useState(false);
-  
+
   // Handlers
   const handleClick = () => {
     onSelect?.(user.id);
   };
-  
+
   // Render
   return (
     <div className={`user-card ${className}`}>
@@ -128,11 +128,11 @@ interface ButtonProps {
 // Always handle errors gracefully
 function Component() {
   const [error, setError] = useState<string | null>(null);
-  
+
   if (error) {
     return <ErrorMessage message={error} />;
   }
-  
+
   return <div>Content</div>;
 }
 ```
@@ -142,11 +142,11 @@ function Component() {
 // Always show loading feedback
 function Component() {
   const [loading, setLoading] = useState(true);
-  
+
   if (loading) {
     return <LoadingSpinner />;
   }
-  
+
   return <div>Content</div>;
 }
 ```
@@ -265,16 +265,16 @@ cp frontend/src/templates/Component.template.tsx frontend/src/components/[catego
 ```typescript
 /**
  * UserCard displays user information in a card format
- * 
+ *
  * @component
  * @example
  * ```tsx
- * <UserCard 
+ * <UserCard
  *   user={{ id: '1', name: 'John', email: 'john@example.com' }}
  *   onSelect={(id) => console.log(id)}
  * />
  * ```
- * 
+ *
  * @param {User} user - User object to display
  * @param {Function} [onSelect] - Optional callback when card is clicked
  * @param {string} [className] - Additional CSS classes
@@ -291,5 +291,5 @@ cp frontend/src/templates/Component.template.tsx frontend/src/components/[catego
 
 ---
 
-**Maintained by:** CURSERO AI - Integration Engineer  
+**Maintained by:** CURSERO AI - Integration Engineer
 **DNA Score:** 99.2/100

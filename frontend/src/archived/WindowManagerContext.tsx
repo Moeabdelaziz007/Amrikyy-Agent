@@ -97,7 +97,7 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
       if (!window) return prev;
 
       const newState: WindowState = window.state === 'maximized' ? 'normal' : 'maximized';
-      
+
       newWindows.set(id, {
         ...window,
         state: newState

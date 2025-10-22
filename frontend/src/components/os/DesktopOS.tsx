@@ -1,13 +1,13 @@
 /**
  * DesktopOS - Complete AI Operating System Desktop
- * 
+ *
  * Combines all OS features:
  * - QuickSearch (Cmd+K)
  * - SystemTray (Clock, Notifications, Volume, User Menu)
  * - Keyboard Shortcuts
  * - Window Management
  * - Taskbar
- * 
+ *
  * @component
  * @example
  * ```tsx
@@ -15,7 +15,7 @@
  *   <YourApps />
  * </DesktopOS>
  * ```
- * 
+ *
  * @author CURSERO AI
  * @created 2025-10-22
  */
@@ -99,43 +99,43 @@ export function DesktopOS({
   showWallpaper = true,
   wallpaperUrl
 }: DesktopOSProps) {
-  
+
   // ==================== State ====================
-  
+
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [notificationList, setNotificationList] = useState(notifications);
   const [volume, setVolume] = useState(75);
-  
+
   // ==================== Handlers ====================
-  
+
   const handleNewWindow = useCallback(() => {
     console.log('[DesktopOS] New Window (Cmd+N)');
     // Implement window creation logic
   }, []);
-  
+
   const handleCloseWindow = useCallback(() => {
     console.log('[DesktopOS] Close Window (Cmd+W)');
     // Implement window close logic
   }, []);
-  
+
   const handleMinimizeWindow = useCallback(() => {
     console.log('[DesktopOS] Minimize Window (Cmd+M)');
     // Implement window minimize logic
   }, []);
-  
+
   const handleQuickSearch = useCallback(() => {
     console.log('[DesktopOS] Quick Search (Cmd+K)');
     setIsSearchOpen(true);
   }, []);
-  
+
   const handleSwitchWindow = useCallback(() => {
     console.log('[DesktopOS] Switch Window (Alt+Tab)');
     // Implement window switching logic
   }, []);
-  
+
   const handleNotificationClick = useCallback((notification: Notification) => {
     console.log('[DesktopOS] Notification clicked:', notification);
-    
+
     // Mark as read
     setNotificationList(prev =>
       prev.map(n =>
@@ -143,39 +143,39 @@ export function DesktopOS({
       )
     );
   }, []);
-  
+
   const handleMarkAllRead = useCallback(() => {
     setNotificationList(prev =>
       prev.map(n => ({ ...n, read: true }))
     );
   }, []);
-  
+
   const handleClearNotifications = useCallback(() => {
     setNotificationList([]);
   }, []);
-  
+
   const handleVolumeChange = useCallback((newVolume: number) => {
     setVolume(newVolume);
     console.log('[DesktopOS] Volume changed:', newVolume);
   }, []);
-  
+
   const handleLogout = useCallback(() => {
     console.log('[DesktopOS] Logout');
     onLogout?.();
   }, [onLogout]);
-  
+
   const handleSettings = useCallback(() => {
     console.log('[DesktopOS] Settings');
     onSettings?.();
   }, [onSettings]);
-  
+
   const handleProfile = useCallback(() => {
     console.log('[DesktopOS] Profile');
     onProfile?.();
   }, [onProfile]);
-  
+
   // ==================== Keyboard Shortcuts ====================
-  
+
   useKeyboardShortcuts({
     onNewWindow: handleNewWindow,
     onCloseWindow: handleCloseWindow,
@@ -186,23 +186,23 @@ export function DesktopOS({
     enabled: true,
     debug: true
   });
-  
+
   // ==================== Wallpaper Style ====================
-  
+
   const wallpaperStyle = showWallpaper ? {
-    backgroundImage: wallpaperUrl 
+    backgroundImage: wallpaperUrl
       ? `url(${wallpaperUrl})`
       : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat'
   } : {};
-  
+
   // ==================== Render ====================
-  
+
   return (
     <WindowManagerProvider>
-      <div 
+      <div
         className={cn(
           'relative w-full h-screen overflow-hidden',
           'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900',
@@ -216,7 +216,7 @@ export function DesktopOS({
           <div className="flex-1 overflow-hidden relative">
             {children}
           </div>
-          
+
           {/* Taskbar */}
           <motion.div
             initial={{ y: 100 }}
@@ -247,12 +247,12 @@ export function DesktopOS({
                   Search
                 </button>
               </div>
-              
+
               {/* Center: Active Windows (placeholder) */}
               <div className="flex-1 flex items-center justify-center gap-2">
                 {/* Window indicators can go here */}
               </div>
-              
+
               {/* Right: System Tray */}
               <SystemTray
                 user={user}
@@ -268,14 +268,14 @@ export function DesktopOS({
             </div>
           </motion.div>
         </div>
-        
+
         {/* Quick Search Modal */}
         <QuickSearch
           isOpen={isSearchOpen}
           onClose={() => setIsSearchOpen(false)}
           items={searchItems}
         />
-        
+
         {/* Keyboard Shortcut Hint (optional, can be toggled) */}
         <div className="fixed bottom-20 left-4 z-40">
           <motion.div

@@ -128,7 +128,7 @@ export const lunaAPI = {
 2. Estimated costs breakdown
 3. Flight and hotel recommendations
 4. Local tips and must-see attractions`;
-    
+
     const response = await apiClient.post('/api/ai/chat', { message: prompt });
     return response.data;
   },
@@ -167,7 +167,7 @@ export const karimAPI = {
    * Optimize budget using AI
    */
   optimizeBudget: async (request: BudgetOptimizeRequest) => {
-    const prompt = `Optimize a budget of $${request.totalBudget} for a ${request.duration}-day trip to ${request.destination} for ${request.travelers} traveler(s). 
+    const prompt = `Optimize a budget of $${request.totalBudget} for a ${request.duration}-day trip to ${request.destination} for ${request.travelers} traveler(s).
 Priorities: ${request.priorities.join(', ')}
 
 Provide:
@@ -175,7 +175,7 @@ Provide:
 2. Potential savings opportunities
 3. Smart recommendations for each priority
 4. Tips to maximize value`;
-    
+
     const response = await apiClient.post('/api/ai/chat', { message: prompt });
     return response.data;
   },

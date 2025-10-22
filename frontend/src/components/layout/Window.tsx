@@ -1,7 +1,7 @@
 /**
  * Window Component - Desktop OS Experience
  * Glassmorphism + Framer Motion + Full Window Management
- * 
+ *
  * @component
  * @example
  * ```tsx
@@ -14,7 +14,7 @@
  *   <YourAppContent />
  * </Window>
  * ```
- * 
+ *
  * @author CURSERO AI
  * @created 2025-10-21
  * @v0-integrated Yes
@@ -22,21 +22,21 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, PanInfo, useMotionValue } from 'framer-motion';
-import { 
-  Minimize2, 
-  Maximize2, 
-  X, 
+import {
+  Minimize2,
+  Maximize2,
+  X,
   Minus,
   Square,
-  GripVertical 
+  GripVertical
 } from 'lucide-react';
 import { useWindowManager } from '@/contexts/WindowManagerContext';
-import type { 
-  WindowProps, 
-  WindowPosition, 
-  WindowSize, 
+import type {
+  WindowProps,
+  WindowPosition,
+  WindowSize,
   ResizeHandle,
-  DragData 
+  DragData
 } from '@/types/window.types';
 
 // ============================================
@@ -70,7 +70,7 @@ export function Window({
   hideDefaultTitleBar = false,
   modal = false
 }: WindowProps) {
-  
+
   // ==================== Window Manager ====================
   const windowManager = useWindowManager();
   const windowState = windowManager.getWindowState(id);
@@ -80,7 +80,7 @@ export function Window({
   const [size, setSize] = useState<WindowSize>(initialSize);
   const [isResizing, setIsResizing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  
+
   // Save position before maximize for restore
   const [savedPosition, setSavedPosition] = useState<WindowPosition>(initialPosition);
   const [savedSize, setSavedSize] = useState<WindowSize>(initialSize);
@@ -157,11 +157,11 @@ export function Window({
       setSavedPosition(position);
       setSavedSize(size);
       windowManager.maximizeWindow(id);
-      
+
       // Full screen size
       const fullWidth = window.innerWidth;
       const fullHeight = window.innerHeight;
-      
+
       setPosition({ x: 0, y: 0 });
       setSize({ width: fullWidth, height: fullHeight });
     }
@@ -212,10 +212,10 @@ export function Window({
    */
   const startResize = useCallback((handle: ResizeHandle, e: React.MouseEvent) => {
     if (!resizable) return;
-    
+
     e.preventDefault();
     e.stopPropagation();
-    
+
     setIsResizing(true);
     handleFocus();
 
@@ -284,7 +284,7 @@ export function Window({
   const handleResizeEnd = useCallback(() => {
     setIsResizing(false);
     dragDataRef.current = null;
-    
+
     document.removeEventListener('mousemove', handleResizeMove);
     document.removeEventListener('mouseup', handleResizeEnd);
   }, [handleResizeMove]);
@@ -296,7 +296,7 @@ export function Window({
     backdropFilter: `blur(${glassIntensity * 20}px)`,
     WebkitBackdropFilter: `blur(${glassIntensity * 20}px)`,
     border: '1px solid rgba(255, 255, 255, 0.18)',
-    boxShadow: isMaximized 
+    boxShadow: isMaximized
       ? 'none'
       : isFocused
         ? '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
@@ -355,7 +355,7 @@ export function Window({
         <div
           className="
             flex items-center justify-between
-            px-4 py-2 
+            px-4 py-2
             bg-gradient-to-r from-slate-800/50 to-slate-900/50
             border-b border-white/10
             cursor-move
@@ -388,7 +388,7 @@ export function Window({
                 <Minus size={16} />
               </button>
             )}
-            
+
             {maximizable && (
               <button
                 onClick={handleMaximize}
@@ -403,7 +403,7 @@ export function Window({
                 {isMaximized ? <Minimize2 size={16} /> : <Square size={16} />}
               </button>
             )}
-            
+
             {closable && (
               <button
                 onClick={handleClose}
@@ -435,7 +435,7 @@ export function Window({
           <ResizeHandle position="s" onMouseDown={(e) => startResize('s', e)} />
           <ResizeHandle position="e" onMouseDown={(e) => startResize('e', e)} />
           <ResizeHandle position="w" onMouseDown={(e) => startResize('w', e)} />
-          
+
           {/* Corners */}
           <ResizeHandle position="ne" onMouseDown={(e) => startResize('ne', e)} />
           <ResizeHandle position="nw" onMouseDown={(e) => startResize('nw', e)} />

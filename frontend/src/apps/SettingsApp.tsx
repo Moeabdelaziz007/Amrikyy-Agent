@@ -1,6 +1,6 @@
 /**
  * Settings App - OS Settings and Preferences
- * 
+ *
  * Features:
  * - Theme selector (light/dark/custom)
  * - Language toggle
@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { 
+import {
   Settings,
   Palette,
   Globe,
@@ -62,23 +62,23 @@ export function SettingsApp({ className, onClose }: SettingsAppProps) {
   // Theme settings
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('system')
   const [accentColor, setAccentColor] = useState('blue')
-  
+
   // Language settings
   const [language, setLanguage] = useState('en')
-  
+
   // Wallpaper settings
   const [wallpaper, setWallpaper] = useState('gradient-1')
-  
+
   // Notification settings
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [desktopNotifications, setDesktopNotifications] = useState(true)
-  
+
   // Accessibility settings
   const [reducedMotion, setReducedMotion] = useState(false)
   const [largeText, setLargeText] = useState(false)
   const [highContrast, setHighContrast] = useState(false)
-  
+
   // System info
   const [systemInfo, setSystemInfo] = useState<SystemInfo | null>(null)
   const [loading, setLoading] = useState(true)
@@ -111,7 +111,7 @@ export function SettingsApp({ className, onClose }: SettingsAppProps) {
       try {
         const response = await fetch('/api/os/status')
         const data = await response.json()
-        
+
         if (data.success) {
           setSystemInfo({
             osName: data.data.systemInfo?.name || 'Amrikyy AI OS',
@@ -147,15 +147,15 @@ export function SettingsApp({ className, onClose }: SettingsAppProps) {
       largeText,
       highContrast
     }
-    
+
     localStorage.setItem('amrikyy_settings', JSON.stringify(settings))
-    
+
     // Apply theme
     document.documentElement.classList.remove('light', 'dark')
     if (theme !== 'system') {
       document.documentElement.classList.add(theme)
     }
-    
+
     alert('Settings saved successfully!')
   }
 

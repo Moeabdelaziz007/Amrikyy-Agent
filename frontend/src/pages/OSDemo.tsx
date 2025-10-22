@@ -1,13 +1,13 @@
 /**
  * OS Demo Page - Showcase of Amrikyy AI OS Features
- * 
+ *
  * Demonstrates:
  * - QuickSearch (Cmd+K)
  * - SystemTray
  * - Keyboard Shortcuts
  * - Window Management
  * - Complete Desktop Experience
- * 
+ *
  * @page
  * @author CURSERO AI
  * @created 2025-10-22
@@ -16,11 +16,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { DesktopOS } from '@/components/os/DesktopOS';
-import { 
-  Rocket, 
-  Zap, 
-  Terminal, 
-  Settings, 
+import {
+  Rocket,
+  Zap,
+  Terminal,
+  Settings,
   BookOpen,
   Code,
   Sparkles
@@ -161,22 +161,22 @@ const DEMO_NOTIFICATIONS: Notification[] = [
 
 export function OSDemo() {
   const [showHelp, setShowHelp] = useState(true);
-  
+
   const handleLogout = () => {
     console.log('[OSDemo] Logout clicked');
     alert('Logout functionality would go here');
   };
-  
+
   const handleSettings = () => {
     console.log('[OSDemo] Settings clicked');
     alert('Settings functionality would go here');
   };
-  
+
   const handleProfile = () => {
     console.log('[OSDemo] Profile clicked');
     alert('Profile functionality would go here');
   };
-  
+
   return (
     <DesktopOS
       user={DEMO_USER}
@@ -218,7 +218,7 @@ export function OSDemo() {
                 <Rocket className="w-12 h-12 text-white" />
               </div>
             </motion.div>
-            
+
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -227,7 +227,7 @@ export function OSDemo() {
             >
               Welcome to Amrikyy AI OS
             </motion.h1>
-            
+
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -237,7 +237,7 @@ export function OSDemo() {
               The world's first AI-native Operating System. Experience the future of computing.
             </motion.p>
           </div>
-          
+
           {/* Features */}
           {showHelp && (
             <motion.div
@@ -261,7 +261,7 @@ export function OSDemo() {
                   Hide
                 </button>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <ShortcutItem
                   shortcut="⌘ K"
@@ -289,7 +289,7 @@ export function OSDemo() {
                   description="Settings"
                 />
               </div>
-              
+
               <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl">
                 <p className="text-sm text-blue-300 text-center">
                   💡 <strong>Tip:</strong> Click "Search" button or press <kbd className="px-2 py-1 bg-white/10 rounded border border-white/20 mx-1">⌘K</kbd> to try the universal search
@@ -297,7 +297,7 @@ export function OSDemo() {
               </div>
             </motion.div>
           )}
-          
+
           {/* Call to Action */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -317,7 +317,7 @@ export function OSDemo() {
             >
               {showHelp ? 'Hide Help' : 'Show Help'}
             </button>
-            
+
             <button
               onClick={handleSettings}
               className="

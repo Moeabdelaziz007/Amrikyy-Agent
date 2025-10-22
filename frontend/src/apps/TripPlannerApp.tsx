@@ -1,6 +1,6 @@
 /**
  * Trip Planner App - Multi-Destination Trip Planning
- * 
+ *
  * Features:
  * - Multi-destination trip builder
  * - Date picker for travel dates
@@ -25,10 +25,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { 
-  MapPin, 
-  Plus, 
-  Trash2, 
+import {
+  MapPin,
+  Plus,
+  Trash2,
   Calendar,
   DollarSign,
   Save,
@@ -114,7 +114,7 @@ export function TripPlannerApp({ className, onClose }: TripPlannerAppProps) {
    * Update a destination
    */
   const updateDestination = (id: string, updates: Partial<Destination>) => {
-    setDestinations(destinations.map(dest => 
+    setDestinations(destinations.map(dest =>
       dest.id === id ? { ...dest, ...updates } : dest
     ))
   }
@@ -161,7 +161,7 @@ export function TripPlannerApp({ className, onClose }: TripPlannerAppProps) {
       destinations,
       totalBudget: calculateTotalBudget(),
       currency,
-      createdAt: selectedTrip 
+      createdAt: selectedTrip
         ? savedTrips.find(t => t.id === selectedTrip)?.createdAt || new Date()
         : new Date(),
       updatedAt: new Date()
@@ -220,9 +220,9 @@ export function TripPlannerApp({ className, onClose }: TripPlannerAppProps) {
 
     const dataStr = JSON.stringify(trip, null, 2)
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr)
-    
+
     const exportFileDefaultName = `${tripName.replace(/\s+/g, '_')}_trip.json`
-    
+
     const linkElement = document.createElement('a')
     linkElement.setAttribute('href', dataUri)
     linkElement.setAttribute('download', exportFileDefaultName)
@@ -268,9 +268,9 @@ export function TripPlannerApp({ className, onClose }: TripPlannerAppProps) {
             <Plus className="w-4 h-4 mr-1" />
             New
           </Button>
-          <Button 
-            onClick={() => setShowSavedTrips(!showSavedTrips)} 
-            variant="outline" 
+          <Button
+            onClick={() => setShowSavedTrips(!showSavedTrips)}
+            variant="outline"
             size="sm"
           >
             <FolderOpen className="w-4 h-4 mr-1" />

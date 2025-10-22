@@ -5,23 +5,23 @@
 export const initTelegramWebApp = () => {
   if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
     const tg = window.Telegram.WebApp;
-    
+
     // Configure WebApp
     tg.ready();
     tg.expand();
-    
+
     // Enable closing confirmation
     tg.enableClosingConfirmation();
-    
+
     // Set header color to match theme
     tg.setHeaderColor('#0ea5e9');
-    
+
     // Set background color
     tg.setBackgroundColor('#f8fafc');
-    
+
     return tg;
   }
-  
+
   return null;
 };
 
@@ -106,8 +106,8 @@ export const getInitDataUnsafe = () => {
 
 // Check if running in Telegram
 export const isTelegramWebApp = () => {
-  return typeof window !== 'undefined' && 
-         window.Telegram?.WebApp && 
+  return typeof window !== 'undefined' &&
+         window.Telegram?.WebApp &&
          window.Telegram.WebApp.initData !== '';
 };
 

@@ -54,7 +54,7 @@ export interface Destination {
 /**
  * Expense category
  */
-export type ExpenseCategory = 
+export type ExpenseCategory =
   | 'accommodation'
   | 'transportation'
   | 'food'

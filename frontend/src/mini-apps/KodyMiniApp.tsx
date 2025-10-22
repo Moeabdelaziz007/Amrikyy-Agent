@@ -1,7 +1,7 @@
 /**
  * Kody Mini App - AI Content Creator Agent
  * Integrates: NotebookLM, Veo3, Nano Banana (Gemini), YouTube API
- * 
+ *
  * @author Ona AI
  * @created 2025-10-21
  */
@@ -139,7 +139,7 @@ export function KodyMiniApp() {
       // });
 
       await new Promise(resolve => setTimeout(resolve, 3000));
-      
+
       // Mock response based on content type
       if (request.type === 'video') {
         setResult({
@@ -400,7 +400,7 @@ export function KodyMiniApp() {
                     )}
                     <div>
                       <h3 className="font-bold text-lg mb-1">
-                        {result.status === 'success' ? 'Content Ready!' : 
+                        {result.status === 'success' ? 'Content Ready!' :
                          result.status === 'error' ? 'Error' : 'Processing...'}
                       </h3>
                       <p className="text-slate-300">{result.message}</p>

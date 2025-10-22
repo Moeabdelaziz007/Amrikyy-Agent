@@ -1,6 +1,6 @@
 /**
  * Maya Travel App - AI-Powered Travel Assistant
- * 
+ *
  * Features:
  * - AI chat interface powered by Gemini Pro
  * - Voice input support
@@ -15,12 +15,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { 
-  Send, 
-  Mic, 
-  MicOff, 
-  Plane, 
-  Globe, 
+import {
+  Send,
+  Mic,
+  MicOff,
+  Plane,
+  Globe,
   Sparkles,
   Loader2,
   MapPin,
@@ -124,11 +124,11 @@ export function MayaTravelApp({ className, onClose }: MayaTravelAppProps) {
       setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
       console.error('Failed to send message:', error)
-      
+
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: language === 'ar' 
+        content: language === 'ar'
           ? 'عذراً، حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى.'
           : 'Sorry, I encountered an error. Please try again.',
         timestamp: new Date(),
@@ -195,7 +195,7 @@ export function MayaTravelApp({ className, onClose }: MayaTravelAppProps) {
     const announcement: Message = {
       id: Date.now().toString(),
       role: 'assistant',
-      content: newLang === 'ar' 
+      content: newLang === 'ar'
         ? 'تم التبديل إلى اللغة العربية. كيف يمكنني مساعدتك؟'
         : 'Switched to English. How can I help you?',
       timestamp: new Date(),
@@ -390,7 +390,7 @@ export function MayaTravelApp({ className, onClose }: MayaTravelAppProps) {
         </div>
 
         <p className="text-xs text-muted-foreground mt-2 text-center">
-          {language === 'ar' 
+          {language === 'ar'
             ? 'اضغط Enter للإرسال • مدعوم بـ Gemini Pro'
             : 'Press Enter to send • Powered by Gemini Pro'}
         </p>
