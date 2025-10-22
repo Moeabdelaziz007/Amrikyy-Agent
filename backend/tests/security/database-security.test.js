@@ -30,8 +30,8 @@ describe('🔒 Database Security Tests', () => {
   describe('✅ RLS Policy Testing (DB-VULN-001)', () => {
     it('should use anon client for user operations', () => {
       // Verify that anon client is initialized with anon key
-      expect(db.anonClient).to.exist;
-      expect(db.adminClient).to.exist;
+      expect(db.anonClient).to.be.defined;
+      expect(db.adminClient).to.be.defined;
     });
 
     it('should use admin client for admin operations', async () => {
@@ -174,15 +174,15 @@ describe('🔒 Database Security Tests', () => {
   describe('✅ Connection Pooling Testing (DB-VULN-006)', () => {
     it('should initialize with proper connection pool settings', () => {
       // Verify connection pool configuration
-      expect(db.anonClient).to.exist;
-      expect(db.adminClient).to.exist;
+      expect(db.anonClient).to.be.defined;
+      expect(db.adminClient).to.be.defined;
       // In real implementation, would verify pool settings
     });
 
     it('should handle connection pool monitoring', () => {
       // Verify that connection monitoring is set up
       // In real implementation, would check monitoring interval
-      expect(db.queryLimiter).to.exist;
+      expect(db.queryLimiter).to.be.defined;
     });
   });
 

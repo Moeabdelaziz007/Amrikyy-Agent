@@ -1,0 +1,69 @@
+{
+  "qdrant": {
+    "url": "https://d85a3c88-c67a-4407-8247-0f06112bb314.us-east4-0.gcp.cloud.qdrant.io",
+    "apiKey": "${QDRANT_API_KEY}",
+    "collections": {
+      "travel_destinations": {
+        "name": "travel_destinations",
+        "vector_size": 384,
+        "distance": "Cosine",
+        "description": "Travel destinations with embeddings for similarity search"
+      },
+      "user_preferences": {
+        "name": "user_preferences", 
+        "vector_size": 384,
+        "distance": "Cosine",
+        "description": "User travel preferences and history"
+      },
+      "travel_reviews": {
+        "name": "travel_reviews",
+        "vector_size": 384, 
+        "distance": "Cosine",
+        "description": "Travel reviews and ratings for sentiment analysis"
+      },
+      "marketing_content": {
+        "name": "marketing_content",
+        "vector_size": 384,
+        "distance": "Cosine", 
+        "description": "Marketing content and campaigns for Kody analysis"
+      }
+    },
+    "indexing": {
+      "batch_size": 100,
+      "parallel_requests": 4,
+      "timeout": 30000
+    },
+    "search": {
+      "top_k": 10,
+      "score_threshold": 0.7,
+      "timeout": 10000
+    }
+  },
+  "embeddings": {
+    "model": "text-embedding-3-small",
+    "dimensions": 384,
+    "provider": "openai"
+  },
+  "use_cases": {
+    "destination_search": {
+      "description": "Find similar travel destinations based on user preferences",
+      "collection": "travel_destinations",
+      "fields": ["name", "description", "activities", "culture", "climate"]
+    },
+    "recommendation_engine": {
+      "description": "Personalized travel recommendations",
+      "collection": "user_preferences", 
+      "fields": ["budget", "interests", "travel_style", "previous_trips"]
+    },
+    "review_analysis": {
+      "description": "Analyze travel reviews for insights",
+      "collection": "travel_reviews",
+      "fields": ["review_text", "rating", "destination", "sentiment"]
+    },
+    "marketing_insights": {
+      "description": "Kody marketing analysis and content optimization",
+      "collection": "marketing_content",
+      "fields": ["content", "campaign_type", "target_audience", "performance"]
+    }
+  }
+}

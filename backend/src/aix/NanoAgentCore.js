@@ -1,483 +1,356 @@
 /**
- * NanoAgent Core - Quantum Strategy Execution Engine
- * 
- * Inspired by:
- * - obra/smallest-agent (minimal agent design)
- * - TinyFish (web automation)
- * - Quantum computing (parallel execution + collapse)
- * 
- * Pattern:
- * 1. Receive task
- * 2. Generate 3-5 strategies (superposition)
- * 3. Execute all in parallel
- * 4. Score each result
- * 5. Collapse to best strategy
- * 6. Return optimal result
- * 
- * Perfect for:
- * - Price comparison (try multiple APIs)
- * - Web scraping with fallbacks
- * - Multi-source data aggregation
- * - Resilient decision-making
+ * NanoAgentCore - Quantum Decision Engine
+ *
+ * A revolutionary micro-agent system that brings quantum computing concepts
+ * to AI decision-making. It allows an agent to explore multiple strategies
+ * in parallel and collapse to the best possible outcome.
+ *
+ * Inspired by GPT-5 Golden Research and professional implementation patterns.
+ *
+ * @version 1.0.0
+ * @author AMRIKYY AI Solutions / Gemini Code Assist
+ * @date 2025-10-19
  */
 
-const { logger } = require('../utils/logger');
-const log = logger.child('NanoAgent');
+const { performance } = require('perf_hooks');
 
 class NanoAgentCore {
-  constructor(options = {}) {
-    // Strategy registry
+  /**
+   * Initializes the NanoAgent Decision Engine.
+   * @param {object} config - Configuration for the engine.
+   * @param {number} [config.maxStrategies=5] - Max number of strategies to run in parallel.
+   * @param {number} [config.timeout=10000] - Timeout in ms for strategy execution.
+   * @param {number} [config.minConfidence=0.6] - Minimum confidence score to consider a result valid.
+   * @param {boolean} [config.learningEnabled=true] - Enable self-optimization of strategy weights.
+   */
+  constructor(config = {}) {
     this.strategies = new Map();
-    
-    // Execution history (for learning)
-    this.history = [];
-    
-    // Strategy performance tracking
-    this.performance = new Map();
-    
-    // Configuration
     this.config = {
-      maxStrategies: options.maxStrategies || 5,
-      timeout: options.timeout || 10000, // 10s max per strategy
-      minConfidence: options.minConfidence || 0.6,
-      parallelExecution: options.parallelExecution !== false,
-      learningEnabled: options.learningEnabled !== false
+      maxStrategies: 5,
+      timeout: 10000,
+      minConfidence: 0.6,
+      learningEnabled: true,
+      ...config,
     };
-
-    log.info('NanoAgent Core initialized', {
-      maxStrategies: this.config.maxStrategies,
-      parallelExecution: this.config.parallelExecution
-    });
+    this.strategyWeights = new Map();
+    console.log('🚀 NanoAgentCore Initialized: Quantum decision-making enabled.');
   }
 
   /**
-   * Register a strategy
+   * Registers a decision-making strategy.
+   * @param {string} name - The unique name of the strategy.
+   * @param {Function} executeFn - The async function that implements the strategy.
+   * @param {object} metadata - Metadata about the strategy.
+   * @param {string} [metadata.cost='medium'] - Estimated cost (low, medium, high).
+   * @param {number} [metadata.reliability=0.8] - Estimated reliability (0.0 to 1.0).
+   * @param {number} [metadata.latency=1500] - Estimated latency in ms.
    */
-  registerStrategy(name, strategyFunction, metadata = {}) {
+  registerStrategy(name, executeFn, metadata = {}) {
+    if (this.strategies.has(name)) {
+      console.warn(`⚠️ Strategy "${name}" is already registered. Overwriting.`);
+    }
     this.strategies.set(name, {
       name,
-      execute: strategyFunction,
+      execute: executeFn,
       metadata: {
-        description: metadata.description || '',
-        cost: metadata.cost || 'low', // low, medium, high
-        reliability: metadata.reliability || 0.8,
-        latency: metadata.latency || 1000, // expected latency in ms
-        ...metadata
+        cost: 'medium',
+        reliability: 0.8,
+        latency: 1500,
+        ...metadata,
       },
-      stats: {
-        executions: 0,
-        successes: 0,
-        failures: 0,
-        totalLatency: 0,
-        lastUsed: null
-      }
     });
-
-    log.info('Strategy registered', { 
-      name, 
-      cost: metadata.cost,
-      reliability: metadata.reliability 
-    });
+    this.strategyWeights.set(name, 1.0); // Initial weight
+    console.log(`✅ Strategy Registered: "${name}"`);
   }
 
   /**
-   * Execute task with quantum strategy approach
-   * 
-   * @param {Object} task - Task to execute
-   * @param {Object} context - Execution context
-   * @returns {Promise<Object>} Best result after collapse
+   * Selects the best strategies to execute based on current weights and task type.
+   * @param {object} task - The task details.
+   * @returns {Array} A list of strategy objects to execute.
+   */
+  _selectStrategies(task) {
+    // Simple selection for now, can be enhanced with task-specific logic
+    return Array.from(this.strategies.values())
+      .sort(
+        (a, b) =>
+          (this.strategyWeights.get(b.name) || 1.0) - (this.strategyWeights.get(a.name) || 1.0)
+      )
+      .slice(0, this.config.maxStrategies);
+  }
+
+  /**
+   * Executes the decision-making process for a given task.
+   * This is the "Quantum Superposition" phase where all strategies run in parallel.
+   * @param {object} task - The task to be executed (e.g., { type: 'price_check', ... }).
+   * @param {object} context - Shared context for all strategies (e.g., API keys, cache instances).
+   * @returns {Promise<object>} The final result after collapsing to the best outcome.
    */
   async execute(task, context = {}) {
-    const startTime = Date.now();
-    
-    log.info('NanoAgent executing task', {
-      task: task.description || task.type,
-      strategiesAvailable: this.strategies.size
-    });
+    const startTime = performance.now();
+    const selectedStrategies = this._selectStrategies(task);
 
-    try {
-      // PHASE 1: SUPERPOSITION - Generate strategy variations
-      const strategies = this.selectStrategies(task, context);
-      
-      if (strategies.length === 0) {
-        throw new Error('No suitable strategies found for task');
-      }
-
-      log.debug('Strategies selected', {
-        count: strategies.length,
-        names: strategies.map(s => s.name)
-      });
-
-      // PHASE 2: PARALLEL EXECUTION - Run all strategies simultaneously
-      const results = await this.executeStrategiesInParallel(
-        strategies, 
-        task, 
-        context
-      );
-
-      // PHASE 3: SCORING - Evaluate each result
-      const scored = this.scoreResults(results, task);
-
-      // PHASE 4: COLLAPSE - Choose best strategy
-      const best = this.collapseToB est(scored, task);
-
-      // PHASE 5: LEARNING - Update strategy performance
-      if (this.config.learningEnabled) {
-        this.learnFromExecution(strategies, scored, best);
-      }
-
-      // Record execution
-      const execution = {
-        task,
-        strategies: strategies.map(s => s.name),
-        results: scored,
-        best: best.strategy,
-        confidence: best.score,
-        totalLatency: Date.now() - startTime,
-        timestamp: Date.now()
-      };
-
-      this.history.push(execution);
-
-      // Keep history limited
-      if (this.history.length > 1000) {
-        this.history.shift();
-      }
-
-      log.success('Task executed successfully', {
-        strategy: best.strategy,
-        score: best.score.toFixed(2),
-        latency: `${Date.now() - startTime}ms`
-      });
-
-      return {
-        success: true,
-        result: best.result,
-        strategy: best.strategy,
-        confidence: best.score,
-        allResults: scored,
-        latency: Date.now() - startTime,
-        metadata: {
-          strategiesTried: strategies.length,
-          successfulStrategies: scored.filter(r => r.success).length
-        }
-      };
-
-    } catch (error) {
-      log.error('NanoAgent execution failed', {
-        error: error.message,
-        latency: `${Date.now() - startTime}ms`
-      });
-
-      return {
-        success: false,
-        error: error.message,
-        latency: Date.now() - startTime
-      };
-    }
-  }
-
-  /**
-   * Select best strategies for task
-   */
-  selectStrategies(task, context) {
-    const candidates = Array.from(this.strategies.values());
-    
-    // Filter by task type compatibility
-    const compatible = candidates.filter(strategy => {
-      if (strategy.metadata.taskTypes) {
-        return strategy.metadata.taskTypes.includes(task.type);
-      }
-      return true; // No filter if not specified
-    });
-
-    // Sort by historical performance
-    const sorted = compatible.sort((a, b) => {
-      const scoreA = this.calculateStrategyScore(a);
-      const scoreB = this.calculateStrategyScore(b);
-      return scoreB - scoreA;
-    });
-
-    // Take top N strategies
-    return sorted.slice(0, this.config.maxStrategies);
-  }
-
-  /**
-   * Calculate strategy historical score
-   */
-  calculateStrategyScore(strategy) {
-    const stats = strategy.stats;
-    
-    if (stats.executions === 0) {
-      // No history - use metadata reliability
-      return strategy.metadata.reliability;
+    if (selectedStrategies.length === 0) {
+      return this._formatErrorResult('No strategies available for this task.');
     }
 
-    // Historical success rate
-    const successRate = stats.successes / stats.executions;
-    
-    // Average latency (lower is better)
-    const avgLatency = stats.totalLatency / stats.executions;
-    const latencyScore = 1 / (1 + avgLatency / 1000); // Normalize to 0-1
-    
-    // Weighted score
-    return (successRate * 0.7) + (latencyScore * 0.2) + (strategy.metadata.reliability * 0.1);
-  }
-
-  /**
-   * Execute strategies in parallel (Quantum Superposition)
-   */
-  async executeStrategiesInParallel(strategies, task, context) {
-    const executions = strategies.map(strategy => 
-      this.executeStrategy(strategy, task, context)
+    console.log(
+      `🧠 NanoAgent Executing Task: "${task.type}". Trying ${selectedStrategies.length} strategies in parallel.`
     );
 
-    // Wait for all to complete or timeout
-    const results = await Promise.allSettled(executions);
+    const promises = selectedStrategies.map((strategy) =>
+      this._executeStrategyWithTimeout(strategy, task, context)
+    );
 
-    return results.map((result, index) => {
-      const strategy = strategies[index];
-      
-      if (result.status === 'fulfilled') {
-        return {
-          strategy: strategy.name,
-          success: result.value.success,
-          result: result.value.data,
-          latency: result.value.latency,
-          cost: strategy.metadata.cost,
-          method: strategy.name
-        };
-      } else {
-        return {
-          strategy: strategy.name,
-          success: false,
-          error: result.reason?.message || 'Unknown error',
-          latency: this.config.timeout,
-          cost: strategy.metadata.cost,
-          method: strategy.name
-        };
+    const allResults = await Promise.all(promises);
+
+    const successfulResults = allResults.filter((r) => r.success && r.result !== null);
+
+    if (successfulResults.length === 0) {
+      if (this.config.learningEnabled) {
+        this._updateWeights(allResults);
       }
-    });
-  }
-
-  /**
-   * Execute single strategy with timeout
-   */
-  async executeStrategy(strategy, task, context) {
-    const startTime = Date.now();
-    
-    try {
-      // Update stats
-      strategy.stats.executions++;
-      strategy.stats.lastUsed = Date.now();
-
-      // Execute with timeout
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Strategy timeout')), this.config.timeout)
-      );
-
-      const executionPromise = strategy.execute(task, context);
-      
-      const result = await Promise.race([executionPromise, timeoutPromise]);
-
-      // Record success
-      strategy.stats.successes++;
-      strategy.stats.totalLatency += Date.now() - startTime;
-
-      return {
-        success: true,
-        data: result,
-        latency: Date.now() - startTime
-      };
-
-    } catch (error) {
-      // Record failure
-      strategy.stats.failures++;
-
-      return {
-        success: false,
-        error: error.message,
-        latency: Date.now() - startTime
-      };
-    }
-  }
-
-  /**
-   * Score all results
-   */
-  scoreResults(results, task) {
-    return results.map(result => {
-      if (!result.success) {
-        return { ...result, score: 0 };
-      }
-
-      // Multi-criteria scoring
-      let score = 0;
-
-      // Success is primary
-      score += 0.4;
-
-      // Latency (faster is better)
-      const latencyScore = 1 / (1 + result.latency / 1000);
-      score += latencyScore * 0.3;
-
-      // Cost (lower is better)
-      const costScores = { low: 1.0, medium: 0.7, high: 0.4 };
-      score += (costScores[result.cost] || 0.5) * 0.2;
-
-      // Task-specific scoring (e.g., for price comparison, lowest price wins)
-      if (task.type === 'price_check' && result.result?.price) {
-        const targetPrice = task.targetPrice || Infinity;
-        if (result.result.price <= targetPrice) {
-          score += 0.1;
-        }
-      }
-
-      return {
-        ...result,
-        score: Math.min(1.0, score)
-      };
-    });
-  }
-
-  /**
-   * Collapse to best result (Quantum Collapse)
-   */
-  collapseToBest(scoredResults, task) {
-    // Filter successful results
-    const successful = scoredResults.filter(r => r.success && r.score > 0);
-
-    if (successful.length === 0) {
-      // All failed - return best failure with explanation
-      const bestFailure = scoredResults.sort((a, b) => b.score - a.score)[0];
-      
-      log.warn('All strategies failed', {
-        strategiesTried: scoredResults.length
-      });
-
-      return {
-        strategy: 'none',
-        result: null,
-        score: 0,
-        allFailed: true,
-        attempts: scoredResults
-      };
+      return this._formatErrorResult('All strategies failed or returned no result.', allResults);
     }
 
-    // Sort by score and return best
-    successful.sort((a, b) => b.score - a.score);
-    
-    const best = successful[0];
+    const bestResult = this._evaluateAndCollapse(successfulResults);
 
-    // Check confidence threshold
-    if (best.score < this.config.minConfidence) {
-      log.warn('Best result below confidence threshold', {
-        score: best.score,
-        threshold: this.config.minConfidence
-      });
+    if (this.config.learningEnabled) {
+      this._updateWeights(allResults, bestResult.strategy);
     }
 
-    return best;
-  }
+    const totalLatency = performance.now() - startTime;
 
-  /**
-   * Learn from execution (Pattern Learning Integration)
-   */
-  learnFromExecution(strategies, scored, best) {
-    // Update strategy performance
-    for (const result of scored) {
-      const strategyName = result.strategy;
-      
-      if (!this.performance.has(strategyName)) {
-        this.performance.set(strategyName, {
-          name: strategyName,
-          totalScore: 0,
-          executions: 0,
-          wins: 0, // Times this was chosen as best
-          averageScore: 0
-        });
-      }
-
-      const perf = this.performance.get(strategyName);
-      perf.totalScore += result.score;
-      perf.executions++;
-      perf.averageScore = perf.totalScore / perf.executions;
-
-      if (result.strategy === best.strategy) {
-        perf.wins++;
-      }
-    }
-
-    // Adapt strategy selection for next time
-    this.adaptStrategyWeights();
-  }
-
-  /**
-   * Adapt strategy weights based on performance
-   */
-  adaptStrategyWeights() {
-    for (const [name, perf] of this.performance) {
-      const strategy = this.strategies.get(name);
-      if (!strategy) continue;
-
-      // Adjust reliability based on wins
-      if (perf.executions >= 10) {
-        const winRate = perf.wins / perf.executions;
-        strategy.metadata.reliability = 
-          0.8 * strategy.metadata.reliability + 0.2 * winRate;
-      }
-    }
-  }
-
-  /**
-   * Get strategy performance report
-   */
-  getPerformanceReport() {
-    const report = [];
-
-    for (const [name, perf] of this.performance) {
-      const strategy = this.strategies.get(name);
-      
-      report.push({
-        name,
-        executions: perf.executions,
-        wins: perf.wins,
-        winRate: perf.executions > 0 ? (perf.wins / perf.executions) : 0,
-        averageScore: perf.averageScore,
-        reliability: strategy?.metadata.reliability || 0,
-        recommendation: perf.winRate > 0.7 ? 'Excellent' : 
-                       perf.winRate > 0.4 ? 'Good' : 'Needs improvement'
-      });
-    }
-
-    return report.sort((a, b) => b.winRate - a.winRate);
-  }
-
-  /**
-   * Get statistics
-   */
-  getStats() {
     return {
-      totalExecutions: this.history.length,
-      registeredStrategies: this.strategies.size,
-      averageStrategiesPerTask: this.calculateAverageStrategies(),
-      averageConfidence: this.calculateAverageConfidence(),
-      performanceReport: this.getPerformanceReport()
+      success: true,
+      result: bestResult.result,
+      strategy: bestResult.strategy,
+      confidence: bestResult.score,
+      allResults: allResults.map(({ execute, ...rest }) => rest), // Don't expose the function itself
+      latency: totalLatency,
+      metadata: {
+        strategiesTried: selectedStrategies.length,
+        successfulStrategies: successfulResults.length,
+      },
     };
   }
 
-  calculateAverageStrategies() {
-    if (this.history.length === 0) return 0;
-    const total = this.history.reduce((sum, h) => sum + h.strategies.length, 0);
-    return total / this.history.length;
+  /**
+   * Wraps a strategy's execution with a timeout.
+   * @param {object} strategy - The strategy to execute.
+   * @param {object} task - The task details.
+   * @param {object} context - Shared context.
+   * @returns {Promise<object>} The result of the strategy execution.
+   */
+  async _executeStrategyWithTimeout(strategy, task, context) {
+    const startTime = performance.now();
+    try {
+      const result = await Promise.race([
+        strategy.execute(task, context),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Strategy timed out')), this.config.timeout)
+        ),
+      ]);
+
+      const latency = performance.now() - startTime;
+      const score = this._calculateScore(result, latency, strategy.metadata);
+
+      if (score < this.config.minConfidence) {
+        throw new Error(
+          `Result confidence (${score.toFixed(2)}) is below threshold (${
+            this.config.minConfidence
+          })`
+        );
+      }
+
+      return {
+        strategy: strategy.name,
+        success: true,
+        result,
+        latency,
+        score,
+      };
+    } catch (error) {
+      return {
+        strategy: strategy.name,
+        success: false,
+        result: null,
+        error: error.message,
+        latency: performance.now() - startTime,
+        score: 0,
+      };
+    }
   }
 
-  calculateAverageConfidence() {
-    if (this.history.length === 0) return 0;
-    const total = this.history.reduce((sum, h) => sum + h.confidence, 0);
-    return total / this.history.length;
+  /**
+   * Calculates a confidence score for a strategy's result.
+   * This can be customized for different task types.
+   * @param {object} result - The result from the strategy.
+   * @param {number} latency - The execution latency.
+   * @param {object} metadata - The strategy's metadata.
+   * @returns {number} A score between 0.0 and 1.0.
+   */
+  _calculateScore(result, latency, metadata) {
+    // Default scoring logic for a price check.
+    // A good result has a price, is available, and is fast.
+    if (!result || typeof result.price !== 'number' || !result.available) {
+      return 0;
+    }
+
+    // Normalize latency against expected latency. Faster is better.
+    const latencyScore = Math.max(0, 1 - latency / (metadata.latency * 2));
+
+    // Reliability is a direct factor.
+    const reliabilityScore = metadata.reliability;
+
+    // Combine scores with weights.
+    // Example: 50% reliability, 50% speed.
+    return reliabilityScore * 0.5 + latencyScore * 0.5;
+  }
+
+  /**
+   * This is the "Quantum Collapse" phase. It evaluates all successful results
+   * and chooses the best one.
+   * @param {Array<object>} successfulResults - An array of successful strategy results.
+   * @returns {object} The best result.
+   */
+  _evaluateAndCollapse(successfulResults) {
+    // For a price check, the best result is the one with the lowest price,
+    // but we can also factor in the confidence score.
+    return successfulResults.reduce((best, current) => {
+      if (!best) return current;
+
+      // Prioritize lower price
+      if (current.result.price < best.result.price) {
+        return current;
+      }
+      // If prices are equal, choose the one with a higher confidence score
+      if (current.result.price === best.result.price && current.score > best.score) {
+        return current;
+      }
+
+      return best;
+    }, null);
+  }
+
+  /**
+   * Updates the weights of strategies based on their performance.
+   * This is the self-learning mechanism.
+   * @param {Array<object>} allResults - The results from all tried strategies.
+   * @param {string} [winningStrategyName] - The name of the winning strategy.
+   */
+  _updateWeights(allResults, winningStrategyName = null) {
+    const learningRate = 0.1; // How much to adjust weights
+
+    allResults.forEach((result) => {
+      const name = result.strategy;
+      const currentWeight = this.strategyWeights.get(name) || 1.0;
+
+      if (name === winningStrategyName) {
+        // Reward the winner
+        const newWeight = currentWeight + learningRate * (1 - currentWeight);
+        this.strategyWeights.set(name, newWeight);
+        console.log(`🧠 Learning: Increased weight for "${name}" to ${newWeight.toFixed(3)}`);
+      } else if (!result.success) {
+        // Penalize failures
+        const newWeight = currentWeight - learningRate * currentWeight;
+        this.strategyWeights.set(name, Math.max(0.1, newWeight)); // Don't let weight go to zero
+        console.log(
+          `🧠 Learning: Decreased weight for failed strategy "${name}" to ${newWeight.toFixed(3)}`
+        );
+      }
+      // We could also slightly penalize losers, but let's keep it simple for now.
+    });
+  }
+
+  /**
+   * Formats a standard error response.
+   * @param {string} message - The error message.
+   * @param {Array|null} allResults - Optional results from all strategies.
+   * @returns {object} The formatted error object.
+   */
+  _formatErrorResult(message, allResults = null) {
+    return {
+      success: false,
+      error: message,
+      result: null,
+      strategy: null,
+      confidence: 0,
+      allResults,
+    };
   }
 }
 
 module.exports = NanoAgentCore;
 
+/**
+ * =================================================
+ *           EXAMPLE STRATEGIES
+ * =================================================
+ *
+ * These would typically be in their own files, e.g.,
+ * `backend/src/aix/strategies/PriceCheckStrategies.js`
+ */
+
+/**
+ * Strategy 1: Check a reliable but potentially slow API.
+ * @returns {Promise<object>} { price, currency, available }
+ */
+async function apiPriceCheck(task, context) {
+  // Mock API call
+  console.log('[Strategy: API] Checking Skyscanner API for', task.destination);
+  await new Promise((resolve) => setTimeout(resolve, 1200)); // Simulate network latency
+  // Simulate a 10% failure rate
+  if (Math.random() < 0.1) {
+    throw new Error('API timeout');
+  }
+  return {
+    price: 347 + Math.floor(Math.random() * 20), // Random price around 347
+    currency: 'USD',
+    available: true,
+    source: 'Skyscanner API',
+  };
+}
+
+/**
+ * Strategy 2: Scrape a website. Less reliable, higher latency.
+ * @returns {Promise<object>} { price, currency, available }
+ */
+async function simpleScrape(task, context) {
+  console.log('[Strategy: Scrape] Scraping Kayak for', task.destination);
+  await new Promise((resolve) => setTimeout(resolve, 3500)); // Simulate scraping time
+  // Simulate a 30% failure rate
+  if (Math.random() < 0.3) {
+    throw new Error('Scraping blocked by CAPTCHA');
+  }
+  return {
+    price: 355 + Math.floor(Math.random() * 30),
+    currency: 'USD',
+    available: true,
+    source: 'Kayak Web Scrape',
+  };
+}
+
+/**
+ * Strategy 3: Check an internal cache. Very fast, but might be stale.
+ * @returns {Promise<object>} { price, currency, available }
+ */
+async function cachedPrice(task, context) {
+  console.log('[Strategy: Cache] Checking internal cache for', task.destination);
+  await new Promise((resolve) => setTimeout(resolve, 50)); // Very fast
+  // Simulate a 70% cache miss
+  if (Math.random() < 0.7) {
+    return null; // Cache miss is not an error, just no result
+  }
+  return {
+    price: 340 + Math.floor(Math.random() * 10), // Usually a bit cheaper
+    currency: 'USD',
+    available: true,
+    source: 'Internal Cache',
+  };
+}
+
+module.exports.exampleStrategies = {
+  apiPriceCheck,
+  simpleScrape,
+  cachedPrice,
+};

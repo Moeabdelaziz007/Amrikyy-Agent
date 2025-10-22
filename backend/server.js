@@ -1,265 +1,250 @@
+// ============================================
+// AMRIKYY TRAVEL AGENT - MVP BACKEND SERVER
+// Simple Express.js server for MVP deployment
+// © 2025 Mohamed H Abdelaziz / AMRIKYY AI Solutions
+// ============================================
+
 const express = require('express');
 const cors = require('cors');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const helmet = require('helmet');
-const compression = require('compression');
-require('dotenv').config();
+const dotenv = require('dotenv');
+
+// Load environment variables
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Import rate limiters
-const {
-  generalLimiter,
-  aiLimiter,
-  paymentLimiter,
-  webhookLimiter,
-  analyticsLimiter
-} = require('./middleware/rateLimiter');
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-// Security middleware
-app.use(helmet());
-app.use(compression());
+// ============================================
+// HEALTH CHECK ENDPOINT
+// ============================================
 
-// ============================================================================
-// SECURITY: CORS Configuration - Strict Origin Validation
-// ============================================================================
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  process.env.TELEGRAM_WEBAPP_URL,
-  'https://amrikyy-travel-agent.com'  // Production domain
-].filter(Boolean);
-
-// Validate required origins in production
-if (process.env.NODE_ENV === 'production') {
-  if (!process.env.FRONTEND_URL) {
-    throw new Error('❌ FATAL: FRONTEND_URL must be set in production');
-  }
-  console.log('✅ CORS configured for production with origins:', allowedOrigins);
-}
-
-app.use(cors({
-  origin: function(origin, callback) {
-    // Allow requests with no origin (mobile apps, Postman, server-to-server)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn(`⚠️ CORS BLOCKED request from unauthorized origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  maxAge: 86400, // Cache preflight for 24 hours
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-// Stripe webhook requires raw body; mount raw parser just for that route
-app.use('/api/payment/webhook', bodyParser.raw({ type: 'application/json' }));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-// Serve AIX Dashboard and static files
-app.use(express.static('backend/public'));
-console.log('✅ AIX Dashboard available at /aix-dashboard.html');
-
-// Apply general rate limiter to all API routes
-app.use('/api/', generalLimiter);
-
-// MongoDB Connection (Optional - using Supabase instead)
-// const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/amrikyy-trips';
-
-// mongoose.connect(MONGODB_URI, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-// })
-// .then(() => console.log('✅ Connected to MongoDB'))
-// .catch(err => console.error('❌ MongoDB connection error:', err));
-
-console.log('✅ Using Supabase as database (MongoDB not required)');
-
-// Routes
-app.get('/', (req, res) => {
-    res.json({
-        message: 'Amrikyy Trips API Server',
-        version: '1.0.0',
-        status: 'running',
-        timestamp: new Date().toISOString()
-    });
-});
-
-// Public API: ping
-app.get('/api/public/ping', (req, res) => {
-    res.json({ ok: true, ts: Date.now() });
-});
-
-// OpenAPI spec
-app.get('/api/openapi.json', (req, res) => {
-    try {
-        const spec = require('./openapi.json');
-        res.json(spec);
-    } catch (e) {
-        res.status(500).json({ error: 'Spec not found' });
-    }
-});
-
-// Health check endpoint
 app.get('/api/health', (req, res) => {
-    res.json({
-        status: 'healthy',
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        memory: process.memoryUsage()
-    });
+  res.status(200).json({
+    status: 'UP',
+    timestamp: new Date().toISOString(),
+    service: 'Amrikyy Travel Agent MVP',
+    version: '1.0.0',
+  });
 });
 
-// Authentication routes
-const authRoutes = require('./routes/auth');
-app.use('/api/auth', authRoutes);
+// ============================================
+// AI CHAT ENDPOINT (MVP CORE FEATURE)
+// ============================================
 
-// Aladdin Agent routes
-const aladdinRoutes = require('./src/routes/aladdin');
-app.use('/api/aladdin', aladdinRoutes);
-
-// Bookings routes
-const bookingRoutes = require('./routes/bookings');
-app.use('/api/bookings', bookingRoutes);
-
-// Trips routes
-const tripRoutes = require('./routes/trips');
-app.use('/api/trips', tripRoutes);
-
-// Expenses routes
-const expenseRoutes = require('./routes/expenses');
-app.use('/api/expenses', expenseRoutes);
-
-// AI Assistant routes
-app.post('/api/ai/chat', (req, res) => {
+app.post('/api/ai/chat', async (req, res) => {
+  try {
     const { message } = req.body;
-    
-    // Placeholder AI response
-    res.json({
-        response: `مرحباً! أنا Maya، مساعد السفر الذكي الخاص بك. سأساعدك في تخطيط رحلتك المثالية. ${message}`,
-        timestamp: new Date().toISOString()
+
+    if (!message) {
+      return res.status(400).json({
+        error: 'Message is required',
+      });
+    }
+
+    // Mock AI response for MVP
+    const aiResponse = {
+      message: `I understand you're interested in: "${message}". This is a demo response from the Amrikyy Travel Agent MVP. The full AI integration will be available in the production version.`,
+      timestamp: new Date().toISOString(),
+      status: 'demo_mode',
+    };
+
+    res.status(200).json({
+      success: true,
+      data: aiResponse,
     });
+  } catch (error) {
+    console.error('AI Chat Error:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      message: 'Something went wrong processing your request',
+    });
+  }
 });
 
-// Destinations routes
-const destinationRoutes = require('./routes/destinations');
-app.use('/api/destinations', destinationRoutes);
+// ============================================
+// TRIP MANAGEMENT ENDPOINTS (MVP)
+// ============================================
 
-// Analytics ingestion (in-memory demo) with rate limiting
-const analyticsEvents = [];
-app.post('/api/analytics/events', analyticsLimiter, (req, res) => {
-    const { type, userId, payload } = req.body || {};
-    analyticsEvents.push({
-        type: type || 'unknown',
-        userId: userId || null,
-        payload: payload || {},
-        ts: Date.now(),
-        ua: req.headers['user-agent'] || ''
+// Create Trip
+app.post('/api/trips', (req, res) => {
+  try {
+    const { destination, startDate, endDate, budget, travelers } = req.body;
+
+    if (!destination || !startDate || !endDate || !budget || !travelers) {
+      return res.status(400).json({
+        error: 'All trip fields are required',
+      });
+    }
+
+    const newTrip = {
+      id: Math.random().toString(36).substr(2, 9),
+      destination,
+      startDate,
+      endDate,
+      budget,
+      travelers,
+      createdAt: new Date().toISOString(),
+      status: 'planned',
+    };
+
+    res.status(201).json({
+      success: true,
+      data: newTrip,
+      message: 'Trip created successfully',
     });
-    res.json({ success: true });
+  } catch (error) {
+    console.error('Create Trip Error:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+    });
+  }
 });
 
-app.get('/api/analytics/summary', (req, res) => {
-    const byType = analyticsEvents.reduce((acc, ev) => {
-        acc[ev.type] = (acc[ev.type] || 0) + 1;
-        return acc;
-    }, {});
-    const total = analyticsEvents.length;
-    res.json({ total, byType, last10: analyticsEvents.slice(-10).reverse() });
+// Get Trips
+app.get('/api/trips', (req, res) => {
+  try {
+    // Mock trips data for MVP
+    const mockTrips = [
+      {
+        id: 'demo_trip_1',
+        destination: 'Paris, France',
+        startDate: '2025-11-01',
+        endDate: '2025-11-07',
+        budget: 2500,
+        travelers: 2,
+        status: 'planned',
+        createdAt: new Date().toISOString(),
+      },
+      {
+        id: 'demo_trip_2',
+        destination: 'Tokyo, Japan',
+        startDate: '2025-12-15',
+        endDate: '2025-12-22',
+        budget: 4000,
+        travelers: 1,
+        status: 'planned',
+        createdAt: new Date().toISOString(),
+      },
+    ];
+
+    res.status(200).json({
+      success: true,
+      data: mockTrips,
+      message: 'Trips retrieved successfully',
+    });
+  } catch (error) {
+    console.error('Get Trips Error:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+    });
+  }
 });
 
-// Payment routes with rate limiting
-const paymentRoutes = require('./routes/payment');
-app.use('/api/payment', paymentLimiter, paymentRoutes);
+// ============================================
+// USER AUTHENTICATION (MVP)
+// ============================================
 
-// Stripe webhook route with webhook rate limiting
-const stripeWebhook = require('./routes/stripe-webhook');
-app.use('/api/payment/webhook', webhookLimiter, stripeWebhook);
+// Register User
+app.post('/api/auth/register', (req, res) => {
+  try {
+    const { email, password, firstName, lastName } = req.body;
 
-// Mini App routes
-const miniappRoutes = require('./routes/miniapp');
-app.use('/api/telegram', miniappRoutes);
+    if (!email || !password || !firstName || !lastName) {
+      return res.status(400).json({
+        error: 'All fields are required',
+      });
+    }
 
-// AI routes (Z.ai GLM-4.6) with AI rate limiting
-const aiRoutes = require('./routes/ai');
-app.use('/api/ai', aiLimiter, aiRoutes);
+    const newUser = {
+      id: Math.random().toString(36).substr(2, 9),
+      email,
+      firstName,
+      lastName,
+      createdAt: new Date().toISOString(),
+    };
 
-// WhatsApp routes with webhook rate limiting
-const whatsappRoutes = require('./routes/whatsapp');
-app.use('/api/whatsapp', webhookLimiter, whatsappRoutes);
-
-// Agent Registry routes
-const agentRoutes = require('./routes/agents');
-app.use('/api/agents', agentRoutes);
-
-// Telegram Integration routes
-const telegramIntegrationRoutes = require('./routes/telegram-integration');
-app.use('/api/telegram', telegramIntegrationRoutes);
-
-// Advanced Telegram Bot (only start if token is provided)
-if (process.env.TELEGRAM_BOT_TOKEN) {
-  const advancedTelegramBot = require('./advanced-telegram-bot');
-  console.log('🤖 Advanced Maya Telegram Bot integration enabled');
-  console.log('🧠 AI Persona: Maya - Professional Travel Agent');
-  console.log('🛠️ MCP Tools: Weather, Flights, Hotels, Halal Restaurants, Prayer Times');
-  console.log('👤 User Profiling: Advanced personalization and data collection');
-} else {
-  console.log('⚠️ Telegram Bot token not provided - Advanced Bot integration disabled');
-}
-
-// ============================================================================
-// SECURITY: Error Handling Middleware - Sanitized Error Responses
-// ============================================================================
-app.use((err, req, res, next) => {
-    // Always log full error server-side for debugging
-    console.error('❌ Error occurred:', {
-        message: err.message,
-        stack: err.stack,
-        path: req.path,
-        method: req.method,
-        timestamp: new Date().toISOString()
+    res.status(201).json({
+      success: true,
+      data: newUser,
+      message: 'User registered successfully',
     });
-    
-    const isProduction = process.env.NODE_ENV === 'production';
-    
-    // In production: Generic error messages only (no internal details)
-    // In development: Detailed errors for debugging
-    res.status(err.status || 500).json({
-        error: isProduction ? 'Something went wrong!' : err.message,
-        ...(isProduction ? {} : { 
-            stack: err.stack,
-            details: err.details 
-        })
+  } catch (error) {
+    console.error('Register Error:', error);
+    res.status(500).json({
+      error: 'Internal server error',
     });
+  }
 });
+
+// Login User
+app.post('/api/auth/login', (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        error: 'Email and password are required',
+      });
+    }
+
+    // Mock user for MVP
+    const user = {
+      id: 'demo_user_1',
+      email,
+      firstName: 'Demo',
+      lastName: 'User',
+      createdAt: new Date().toISOString(),
+    };
+
+    res.status(200).json({
+      success: true,
+      data: user,
+      message: 'Login successful',
+    });
+  } catch (error) {
+    console.error('Login Error:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+    });
+  }
+});
+
+// ============================================
+// ERROR HANDLING
+// ============================================
 
 // 404 handler
 app.use('*', (req, res) => {
-    res.status(404).json({
-        error: 'Route not found',
-        path: req.originalUrl
-    });
+  res.status(404).json({
+    error: 'Endpoint not found',
+    message: `The endpoint ${req.method} ${req.originalUrl} does not exist`,
+  });
 });
 
-// Start server with WebSocket support
-const server = app.listen(PORT, () => {
-    console.log(`🚀 Amrikyy Trips server running on port ${PORT}`);
-    console.log(`📱 Frontend: http://localhost:3000`);
-    console.log(`🔧 Backend API: http://localhost:${PORT}`);
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Global Error:', err);
+  res.status(500).json({
+    error: 'Internal server error',
+    message: 'Something went wrong on our end',
+  });
 });
 
-// Setup WebSocket for real-time workflow updates
-const WebSocket = require('ws');
-const { setupWorkflowWebSocket } = require('./src/websocket/workflowHandler');
+// ============================================
+// START SERVER
+// ============================================
 
-const wss = new WebSocket.Server({ server, path: '/ws/workflow' });
-setupWorkflowWebSocket(wss);
-console.log('🔌 WebSocket server ready at ws://localhost:' + PORT + '/ws/workflow');
+app.listen(PORT, () => {
+  console.log(`🚀 Amrikyy Travel Agent MVP Server running on port ${PORT}`);
+  console.log(`📡 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`🤖 AI Chat: http://localhost:${PORT}/api/ai/chat`);
+  console.log(`✈️  Trips API: http://localhost:${PORT}/api/trips`);
+  console.log(`👤 Auth API: http://localhost:${PORT}/api/auth/login`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+});
 
 module.exports = app;

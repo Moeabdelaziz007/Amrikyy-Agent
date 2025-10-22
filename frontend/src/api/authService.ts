@@ -3,7 +3,8 @@
  * Handles authentication with Amrikyy backend API
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE_URL =
+  (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000';
 
 export interface AuthUser {
   id: string;
@@ -76,14 +77,18 @@ class AuthAPIService {
     options: RequestInit = {}
   ): Promise<any> {
     const url = `${API_BASE_URL}${endpoint}`;
-    
+
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
       ...options.headers,
     };
 
     // Add auth token if available
-    if (this.accessToken && !endpoint.includes('/auth/login') && !endpoint.includes('/auth/signup')) {
+    if (
+      this.accessToken &&
+      !endpoint.includes('/auth/login') &&
+      !endpoint.includes('/auth/signup')
+    ) {
       headers['Authorization'] = `Bearer ${this.accessToken}`;
     }
 
@@ -101,7 +106,7 @@ class AuthAPIService {
         const refreshed = await this.refreshAccessToken();
         if (refreshed) {
           // Retry original request with new token
-          headers['Authorization'] = `Bearer ${this.accessToken}`;
+          (headers as Record<string, string>)['Authorization'] = `Bearer ${this.accessToken}`;
           const retryResponse = await fetch(url, {
             ...options,
             headers,
@@ -256,7 +261,9 @@ class AuthAPIService {
   /**
    * Forgot password
    */
-  async forgotPassword(email: string): Promise<{ success: boolean; message?: string; error?: string }> {
+  async forgotPassword(
+    email: string
+  ): Promise<{ success: boolean; message?: string; error?: string }> {
     try {
       const response = await this.makeRequest('/api/auth/forgot-password', {
         method: 'POST',
@@ -282,7 +289,10 @@ class AuthAPIService {
     try {
       const response = await this.makeRequest('/api/auth/reset-password', {
         method: 'POST',
-        body: JSON.stringify({ access_token: accessToken, new_password: newPassword }),
+        body: JSON.stringify({
+          access_token: accessToken,
+          new_password: newPassword,
+        }),
       });
 
       return response;

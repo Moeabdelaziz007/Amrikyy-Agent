@@ -1,0 +1,177 @@
+/* AI OS Desktop Theme Styles */
+
+:root {
+  /* Desktop Background Colors */
+  --desktop-bg-primary: #0F172A;
+  --desktop-bg-secondary: #1E293B;
+  --desktop-bg-tertiary: #334155;
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-highlight: rgba(255, 255, 255, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  
+  /* Neon/Cyan Accents */
+  --neon-cyan: #22D3EE;
+  --neon-blue: #60A5FA;
+  --neon-purple: #A78BFA;
+  --neon-green: #10B981;
+  --neon-amber: #F59E0B;
+  --neon-pink: #EC4899;
+  
+  /* Agent Colors */
+  --agent-amrikyy: #3B82F6;
+  --agent-safar: #10B981;
+  --agent-thrifty: #F59E0B;
+  --agent-thaqafa: #8B5CF6;
+  
+  /* Grid Animation */
+  --grid-color: rgba(34, 211, 238, 0.3);
+  --grid-size: 40px;
+  
+  /* Hexagon Clip Path */
+  --hexagon-clip: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+/* Desktop Background with Animated Grid */
+.desktop-background {
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
+  background-image: 
+    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 40px; }
+}
+
+/* Glassmorphic Card */
+.glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+/* Hexagonal Avatar */
+.hexagon-avatar {
+  clip-path: var(--hexagon-clip);
+}
+
+/* Breathing Animation */
+@keyframes breathing {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 1; 
+  }
+  50% { 
+    transform: scale(1.05); 
+    opacity: 0.8; 
+  }
+}
+
+.animate-breathing {
+  animation: breathing 4s ease-in-out infinite;
+}
+
+/* Float Animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Rotate Animation */
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-rotate-slow {
+  animation: rotate 20s linear infinite;
+}
+
+/* Pulse Glow */
+@keyframes pulseGlow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Neon Glow Effects */
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
+}
+
+.glow-blue {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+.glow-green {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+}
+
+.glow-purple {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+}
+
+/* Modal Styles */
+.modal-backdrop {
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(20px);
+}
+
+/* Form Input Styles */
+.form-input {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0px 0px 0px 1px rgba(11, 18, 52, 0.10), 0px 1px 2px rgba(11, 18, 52, 0.15);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.2);
+}
+
+/* Dock Styles */
+.dock-container {
+  background: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+}
+
+/* Particle Effects */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: floatUp 10s ease-in infinite;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(20px);
+    opacity: 0;
+  }
+}

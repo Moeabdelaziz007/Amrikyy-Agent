@@ -1,9 +1,13 @@
 /**
  * Enterprise-grade Error Handler for Amrikyy Travel Agent
- * Provides centralized error handling with recovery strategies
+ * Provides centralized error handling with recovery strategies and learning integration
  */
 
 const logger = require('./logger');
+const EnhancedPatternLearningEngine = require('../src/aix/EnhancedPatternLearningEngine');
+
+// Singleton instance of the learning engine
+const patternLearningEngine = new EnhancedPatternLearningEngine();
 
 class AppError extends Error {
   constructor(message, statusCode = 500, isOperational = true, meta = {}) {
@@ -35,6 +39,9 @@ class ErrorHandler {
       ...context,
       ...errorInfo,
     });
+
+    // Feed the error to the learning engine for pattern detection
+    patternLearningEngine.observe({ type: 'error', ...errorInfo });
 
     // Track error frequency
     this.trackError(errorInfo.type);

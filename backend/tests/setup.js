@@ -40,7 +40,8 @@ jest.mock('../database/supabase', () => {
   }));
 });
 
-jest.mock('../src/ai/keloClient', () => {
+// Mock AI services
+jest.mock('../src/ai/zaiClient', () => {
   return jest.fn().mockImplementation(() => ({
     healthCheck: jest.fn().mockResolvedValue({ status: 'healthy' }),
     chat: jest.fn().mockResolvedValue({
@@ -107,6 +108,104 @@ global.testUtils = {
 afterEach(() => {
   jest.clearAllMocks();
 });
+
+// Global test utilities for database operations
+global.testDB = {
+  // Create test user
+  createTestUser: async (userData = {}) => {
+    const defaultUser = {
+      name: 'Test User',
+      email: `test_${Date.now()}@example.com`,
+      phone: '+1234567890',
+      location: 'Test City',
+      bio: 'Test bio for testing',
+      ...userData
+    };
+
+    const { data, error } = await global.testSupabase
+      .from('users')
+      .insert([defaultUser])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  // Create test destination
+  createTestDestination: async (destinationData = {}) => {
+    const defaultDestination = {
+      name: 'Test Destination',
+      description: 'A test destination for testing',
+      country: 'Test Country',
+      region: 'Test Region',
+      rating: 4.0,
+      review_count: 100,
+      price_range: '$$',
+      category: ['city'],
+      images: ['https://example.com/test.jpg'],
+      best_time_to_visit: 'Spring',
+      estimated_cost: { low: 500, high: 1000, currency: 'USD' },
+      attractions: ['Test Attraction'],
+      activities: ['Test Activity'],
+      popular_with: ['Test Group'],
+      tags: ['test'],
+      ...destinationData
+    };
+
+    const { data, error } = await global.testSupabase
+      .from('destinations')
+      .insert([defaultDestination])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  // Create test notification
+  createTestNotification: async (userId, notificationData = {}) => {
+    const defaultNotification = {
+      user_id: userId,
+      title: 'Test Notification',
+      message: 'Test notification message',
+      type: 'info',
+      read: false,
+      ...notificationData
+    };
+
+    const { data, error } = await global.testSupabase
+      .from('notifications')
+      .insert([defaultNotification])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  // Clean up test data
+  cleanupUser: async (userId) => {
+    await global.testSupabase
+      .from('users')
+      .delete()
+      .eq('id', userId);
+  },
+
+  cleanupDestination: async (destinationId) => {
+    await global.testSupabase
+      .from('destinations')
+      .delete()
+      .eq('id', destinationId);
+  },
+
+  cleanupNotification: async (notificationId) => {
+    await global.testSupabase
+      .from('notifications')
+      .delete()
+      .eq('id', notificationId);
+  }
+};
 
 // Global error handler for unhandled promises in tests
 process.on('unhandledRejection', (reason, promise) => {

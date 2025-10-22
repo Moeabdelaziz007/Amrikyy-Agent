@@ -93,15 +93,20 @@ const HologramWorkflow: React.FC<HologramWorkflowProps> = ({
         await new Promise(resolve => setTimeout(resolve, 1500));
 
         const step = thinkingSequence[i];
+        if (!step) continue;
         const stepId = `step-${Date.now()}-${i}`;
 
         // Add new step
         setSteps(prev => [
           ...prev,
           {
-            ...step,
             id: stepId,
-            timestamp: Date.now()
+            agent: step.agent,
+            action: step.action,
+            status: step.status,
+            timestamp: Date.now(),
+            color: step.color,
+            details: step.details
           }
         ]);
 

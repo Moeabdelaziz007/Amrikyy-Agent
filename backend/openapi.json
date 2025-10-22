@@ -43,6 +43,14 @@
     {
       "name": "Analytics",
       "description": "Analytics and tracking"
+    },
+    {
+      "name": "Travel",
+      "description": "Flight, Hotel, and Map related services"
+    },
+    {
+      "name": "MCP",
+      "description": "Model Context Protocol for AI tool calling"
     }
   ],
   "paths": {
@@ -161,7 +169,10 @@
                   "type": "object",
                   "properties": {
                     "success": { "type": "boolean", "example": true },
-                    "reply": { "type": "string", "example": "مرحباً! سأساعدك في التخطيط لرحلتك..." },
+                    "reply": {
+                      "type": "string",
+                      "example": "مرحباً! سأساعدك في التخطيط لرحلتك..."
+                    },
                     "timestamp": { "type": "string", "format": "date-time" },
                     "model": { "type": "string", "example": "glm-4.6" }
                   }
@@ -309,7 +320,7 @@
                 "type": "object",
                 "required": ["amount"],
                 "properties": {
-                  "amount": { "type": "number", "minimum": 0.01, "example": 100.00 },
+                  "amount": { "type": "number", "minimum": 0.01, "example": 100.0 },
                   "currency": { "type": "string", "default": "USD", "example": "USD" },
                   "description": { "type": "string", "example": "Trip to Tokyo" },
                   "customerEmail": { "type": "string", "format": "email" }
@@ -472,6 +483,100 @@
           }
         }
       }
+    },
+    "/flights/search": {
+      "post": {
+        "tags": ["Travel"],
+        "summary": "Search for flights",
+        "description": "Searches for flights using the integrated Kiwi Tequila Service.",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "from": { "type": "string", "example": "NYC" },
+                  "to": { "type": "string", "example": "IST" },
+                  "date": { "type": "string", "format": "date", "example": "2025-12-25" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Successful flight search" }
+        }
+      }
+    },
+    "/hotels/search": {
+      "post": {
+        "tags": ["Travel"],
+        "summary": "Search for hotels",
+        "description": "Searches for hotels using the integrated Booking.com Service.",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "destination": { "type": "string", "example": "Istanbul" },
+                  "checkin": { "type": "string", "format": "date" },
+                  "checkout": { "type": "string", "format": "date" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Successful hotel search" }
+        }
+      }
+    },
+    "/mcp/call": {
+      "post": {
+        "tags": ["MCP"],
+        "summary": "Call an MCP tool",
+        "description": "Executes a registered Model Context Protocol tool.",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "toolName": { "type": "string", "example": "search_flights" },
+                  "params": { "type": "object" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Tool executed successfully" }
+        }
+      }
+    },
+    "/travel-agents/request": {
+      "post": {
+        "tags": ["AI"],
+        "summary": "Submit a request to AI travel agents",
+        "description": "Orchestrates a request across multiple AI agents (Luna, Karim, etc.).",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Error" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Request is being processed" } }
+      }
     }
   },
   "components": {
@@ -505,4 +610,3 @@
     }
   }
 }
-

@@ -4,14 +4,22 @@ import { AuthService } from '../../lib/auth';
 import authAPI, { AuthUser } from '../../api/authService';
 
 // Use backend API or Supabase based on environment
-const USE_BACKEND_API = import.meta.env.VITE_USE_BACKEND_AUTH === 'true';
+const USE_BACKEND_API =
+  (import.meta as any).env?.VITE_USE_BACKEND_AUTH === 'true';
 
 interface AuthContextType {
   user: User | AuthUser | null;
   session: Session | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ data: any; error: any }>;
-  signUp: (email: string, password: string, fullName?: string) => Promise<{ data: any; error: any }>;
+  signIn: (
+    email: string,
+    password: string
+  ) => Promise<{ data: any; error: any }>;
+  signUp: (
+    email: string,
+    password: string,
+    fullName?: string
+  ) => Promise<{ data: any; error: any }>;
   signOut: () => Promise<{ error: any }>;
   signInWithGoogle: () => Promise<{ data: any; error: any }>;
   signInWithGitHub: () => Promise<{ data: any; error: any }>;
@@ -49,7 +57,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Use Supabase
         const { session } = await AuthService.getCurrentSession();
         setSession(session as any);
-        setUser(session?.user as any ?? null);
+        setUser((session?.user as any) ?? null);
         setLoading(false);
       }
     };
@@ -58,27 +66,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     if (!USE_BACKEND_API) {
       // Listen for auth changes (Supabase only)
-      const { data: { subscription } } = AuthService.onAuthStateChange(
-        async (event, session) => {
-          console.log('Auth state change:', event, session?.user?.email);
-          
-          setSession(session);
-          setUser(session?.user ?? null);
-          setLoading(false);
-          
-          // Handle email confirmation
-          if (event === 'SIGNED_IN' && session?.user) {
-            console.log('User signed in successfully:', session.user.email);
-          }
-          
-          // Handle email confirmation
-          if (event === 'TOKEN_REFRESHED' && session?.user) {
-            console.log('Token refreshed for user:', session.user.email);
-          }
+      const {
+        data: { subscription },
+      } = AuthService.onAuthStateChange(async (event, session) => {
+        console.log('Auth state change:', event, session?.user?.email);
+
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
+
+        // Handle email confirmation
+        if (event === 'SIGNED_IN' && session?.user) {
+          console.log('User signed in successfully:', session.user.email);
         }
-      );
+
+        // Handle email confirmation
+        if (event === 'TOKEN_REFRESHED' && session?.user) {
+          console.log('Token refreshed for user:', session.user.email);
+        }
+      });
 
       return () => subscription.unsubscribe();
+    } else {
+      // No subscription to unsubscribe from when using backend API
+      return () => {};
     }
   }, []);
 
@@ -89,7 +100,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(response.user);
         return { data: response, error: null };
       }
-      return { data: null, error: { message: response.error || 'Login failed' } };
+      return {
+        data: null,
+        error: { message: response.error || 'Login failed' },
+      };
     }
     return await AuthService.signIn(email, password);
   };
@@ -101,7 +115,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(response.user);
         return { data: response, error: null };
       }
-      return { data: null, error: { message: response.error || 'Signup failed' } };
+      return {
+        data: null,
+        error: { message: response.error || 'Signup failed' },
+      };
     }
     return await AuthService.signUp(email, password, fullName);
   };
@@ -117,14 +134,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signInWithGoogle = async () => {
     if (USE_BACKEND_API) {
-      return { data: null, error: { message: 'OAuth not supported with backend API yet' } };
+      return {
+        data: null,
+        error: { message: 'OAuth not supported with backend API yet' },
+      };
     }
     return await AuthService.signInWithGoogle();
   };
 
   const signInWithGitHub = async () => {
     if (USE_BACKEND_API) {
-      return { data: null, error: { message: 'OAuth not supported with backend API yet' } };
+      return {
+        data: null,
+        error: { message: 'OAuth not supported with backend API yet' },
+      };
     }
     return await AuthService.signInWithGitHub();
   };
@@ -140,9 +163,5 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signInWithGitHub,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

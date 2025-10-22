@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && npm install && npm run build",
+  "buildCommand": "cd frontend && npm ci && npm run build",
+  "devCommand": "cd frontend && npm run dev",
+  "installCommand": "cd frontend && npm ci",
   "outputDirectory": "frontend/dist",
   "framework": "vite",
-  "installCommand": "cd frontend && npm install",
-  "devCommand": "cd frontend && npm run dev",
   "rewrites": [
     {
       "source": "/(.*)",
@@ -12,6 +12,31 @@
     }
   ],
   "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    },
     {
       "source": "/assets/(.*)",
       "headers": [
@@ -21,14 +46,5 @@
         }
       ]
     }
-  ],
-  "env": {
-    "VITE_API_URL": "@api_url"
-  },
-  "build": {
-    "env": {
-      "VITE_API_URL": "https://maya-travel-backend.up.railway.app"
-    }
-  }
+  ]
 }
-

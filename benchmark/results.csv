@@ -1,0 +1,4 @@
+task_id,agent_model,precision,recall,patch_success_rate,runtime_seconds,aggregate_score
+task_01_triage_secret,gemini-2.5-pro,0.92,0.88,0.0,18.19,0.6137
+task_02_patch_dependency,gemini-2.5-pro,0.0,0.0,0.78,16.6,0.3063
+task_10_explain_logic,gemini-2.5-pro,0.0,0.0,0.0,19.59,0.0674

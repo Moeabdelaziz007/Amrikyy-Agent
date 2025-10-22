@@ -17,6 +17,8 @@
 const { logger } = require('../utils/logger');
 const sqlite3 = require('sqlite3');
 const path = require('path');
+const fs = require('fs');
+const readline = require('readline');
 const log = logger.child('EnhancedPatternLearning');
 
 class EnhancedPatternLearningEngine {
@@ -438,6 +440,48 @@ class EnhancedPatternLearningEngine {
         log.debug('Activity pattern detected', { userId, activity, count: count + 1 });
       }
     }
+  }
+
+  /**
+   * NEW: Learn from a log file by reading and analyzing its content
+   */
+  async learnFromLogFile(filePath) {
+    if (!fs.existsSync(filePath)) {
+      log.warn('Log file not found, skipping analysis', { filePath });
+      return;
+    }
+
+    log.info('Starting analysis of log file', { filePath });
+
+    const fileStream = fs.createReadStream(filePath);
+    const rl = readline.createInterface({
+      input: fileStream,
+      crlfDelay: Infinity
+    });
+
+    let processedCount = 0;
+    for await (const line of rl) {
+      try {
+        const logEntry = JSON.parse(line);
+        
+        // If the log entry represents an error, observe it
+        if (logEntry.level === 'error' || logEntry.level === 'ERROR') {
+          this.observe({
+            type: 'error',
+            errorType: logEntry.type || 'LOGGED_ERROR',
+            message: logEntry.message,
+            stack: logEntry.stack,
+            context: logEntry.context,
+            timestamp: new Date(logEntry.timestamp).getTime()
+          });
+          processedCount++;
+        }
+      } catch (e) {
+        // Ignore lines that are not valid JSON
+      }
+    }
+
+    log.success('Log file analysis complete', { filePath, errorsObserved: processedCount });
   }
 
   /**

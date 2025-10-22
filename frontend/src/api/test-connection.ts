@@ -7,7 +7,7 @@ export const testBackendConnection = async () => {
     const response = await healthCheck();
     console.log('✅ Backend connection successful:', response.data);
     return { success: true, data: response.data };
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Backend connection failed:', error);
     return { success: false, error: error.message };
   }
@@ -28,7 +28,7 @@ export const testAPIEndpoints = async () => {
       const response = await test();
       console.log(`✅ ${name} successful:`, response.data);
       results.push({ name, success: true, data: response.data });
-    } catch (error) {
+    } catch (error: any) {
       console.error(`❌ ${name} failed:`, error);
       results.push({ name, success: false, error: error.message });
     }

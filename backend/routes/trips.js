@@ -1,11 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createClient } = require('@supabase/supabase-js');
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+const supabase = require('../src/utils/supabaseClient');
 
 // TODO: Implement and enable authentication middleware
 // const authenticateUser = (req, res, next) => {
@@ -29,17 +24,16 @@ router.get('/', async (req, res) => {
       .select('*')
       // .eq('user_id', userId) // Enable this when auth is ready
       .order('start_date', { ascending: false });
-    
-    if (error) throw error;
-    
-    res.json({
-      success: true,
-      trips
-    });
+
+    if (error) {
+      throw error;
+    }
+
+    res.json(trips);
   } catch (error) {
     res.status(500).json({
-      success: false,
-      error: error.message
+      error: 'Failed to fetch trips',
+      details: error.message,
     });
   }
 });
@@ -52,104 +46,89 @@ router.post('/', async (req, res) => {
       ...req.body,
       // user_id: userId, // Enable this when auth is ready
     };
-    
-    const { data: trip, error } = await supabase
-      .from('trips')
-      .insert([tripData])
-      .select()
-      .single();
-    
-    if (error) throw error;
-    
-    res.status(201).json({
-      success: true,
-      trip
-    });
+
+    const { data: trip, error } = await supabase.from('trips').insert([tripData]).select().single();
+
+    if (error) {
+      throw error;
+    }
+
+    res.status(201).json(trip);
   } catch (error) {
     res.status(500).json({
-      success: false,
-      error: error.message
+      error: 'Failed to create trip',
+      details: error.message,
     });
   }
 });
 
 // GET /api/trips/:id - Get trip details
 router.get('/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { data: trip, error } = await supabase
-            .from('trips')
-            .select('*')
-            .eq('id', id)
-            .single();
+  try {
+    const { id } = req.params;
+    const { data: trip, error } = await supabase.from('trips').select('*').eq('id', id).single();
 
-        if (error) throw error;
-
-        if (!trip) {
-            return res.status(404).json({ success: false, error: 'Trip not found' });
-        }
-
-        res.json({
-            success: true,
-            trip
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
+    if (error) {
+      throw error;
     }
+
+    if (!trip) {
+      return res.status(404).json({ error: 'Trip not found' });
+    }
+
+    res.json(trip);
+  } catch (error) {
+    res.status(500).json({
+      error: 'Failed to fetch trip details',
+      details: error.message,
+    });
+  }
 });
 
 // PUT /api/trips/:id - Update trip
 router.put('/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const updatedData = req.body;
+  try {
+    const { id } = req.params;
+    const updatedData = req.body;
 
-        const { data: trip, error } = await supabase
-            .from('trips')
-            .update(updatedData)
-            .eq('id', id)
-            .select()
-            .single();
+    const { data: trip, error } = await supabase
+      .from('trips')
+      .update(updatedData)
+      .eq('id', id)
+      .select()
+      .single();
 
-        if (error) throw error;
-
-        res.json({
-            success: true,
-            trip
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
+    if (error) {
+      throw error;
     }
+
+    res.json(trip);
+  } catch (error) {
+    res.status(500).json({
+      error: 'Failed to update trip',
+      details: error.message,
+    });
+  }
 });
 
 // DELETE /api/trips/:id - Delete trip
 router.delete('/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-        const { error } = await supabase
-            .from('trips')
-            .delete()
-            .eq('id', id);
+    const { error } = await supabase.from('trips').delete().eq('id', id);
 
-        if (error) throw error;
-
-        res.json({
-            success: true,
-            message: 'Trip deleted successfully'
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
+    if (error) {
+      throw error;
     }
+
+    res.status(204).send(); // No Content on successful deletion
+  } catch (error) {
+    res.status(500).json({
+      error: 'Failed to delete trip',
+      details: error.message,
+    });
+  }
 });
 
 module.exports = router;
