@@ -1,9 +1,9 @@
 /**
  * Enhanced Travel Agency Agent - EXAMPLE
  * Shows how to integrate new utilities into existing agents
- * 
+ *
  * This is a reference implementation - copy patterns to other agents
- * 
+ *
  * @author Mohamed Hossameldin Abdelaziz
  * @created 2025-10-23
  */
@@ -20,23 +20,23 @@ class EnhancedTravelAgent {
     this.id = 'travel_agency_agent';
     this.name = 'Enhanced Travel Agency';
     this.model = process.env.GEMINI_MODEL || 'gemini-2.0-flash-exp';
-    
+
     // NEW: Add enhancement utilities
     this.errorHandler = new AgentErrorHandler(this.id);
     this.cache = new AgentCacheManager(this.id);
     this.mcp = new AgentMCPIntegration(this.id);
-    
+
     // Gemini setup
     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    this.gemini = this.genAI.getGenerativeModel({ 
+    this.gemini = this.genAI.getGenerativeModel({
       model: this.model,
       generationConfig: {
         temperature: 0.7,
         topP: 0.95,
-        maxOutputTokens: 8192
-      }
+        maxOutputTokens: 8192,
+      },
     });
-    
+
     logger.info('✈️ Enhanced Travel Agent initialized with utilities');
   }
 
@@ -59,7 +59,7 @@ class EnhancedTravelAgent {
    */
   async searchFlights(params) {
     const operation = 'flight_search';
-    
+
     try {
       // STEP 1: Check cache first (exact match)
       const cached = await this.cache.get(operation, params);
@@ -67,57 +67,53 @@ class EnhancedTravelAgent {
         logger.debug(`${this.name}: Cache HIT for flight search`);
         return cached;
       }
-      
+
       // STEP 2: Try semantic cache (similar queries)
       const semantic = await this.cache.findSemantic(operation, params, 0.85);
       if (semantic) {
         logger.debug(`${this.name}: Semantic match for flight search`);
         return semantic;
       }
-      
+
       // STEP 3: Cache miss - generate new response with error handling
       logger.debug(`${this.name}: Cache MISS for flight search, generating...`);
-      
+
       const result = await this.errorHandler.executeWithRetry(async () => {
         // Generate prompt
         const prompt = this.createFlightSearchPrompt(params);
-        
+
         // Call Gemini with retry logic
-        const response = await this.errorHandler.callGeminiWithRetry(
-          this.gemini,
-          prompt
-        );
-        
+        const response = await this.errorHandler.callGeminiWithRetry(this.gemini, prompt);
+
         // Parse with fallback
         const data = this.errorHandler.parseJSONWithFallback(response, {
           flights: [],
-          error: 'Failed to parse response'
+          error: 'Failed to parse response',
         });
-        
+
         // Validate required fields
         this.errorHandler.validateResponse(data, ['flights']);
-        
+
         return {
           success: true,
           data,
           agent: this.name,
-          cached: false
+          cached: false,
         };
       });
-      
+
       // STEP 4: Cache the result
       if (result.success) {
         await this.cache.set(operation, params, result);
       }
-      
+
       return result;
-      
     } catch (error) {
       logger.error(`${this.name}: Flight search error:`, error);
       return {
         success: false,
         error: error.message,
-        agent: this.name
+        agent: this.name,
       };
     }
   }
@@ -127,83 +123,75 @@ class EnhancedTravelAgent {
    */
   async generateItinerary(params) {
     const operation = 'itinerary_planning';
-    
+
     try {
       // Check cache
       const cached = await this.cache.get(operation, params);
       if (cached) {
         return cached;
       }
-      
+
       // Use MCP tools for research
       let context = '';
       if (this.mcp.mcpManager) {
         // Search memory for previous trips to destination
-        const memory = await this.mcp.searchMemory(
-          `destination:${params.destination}`,
-          5
-        );
-        
+        const memory = await this.mcp.searchMemory(`destination:${params.destination}`, 5);
+
         if (memory.success && memory.result) {
           context = `\nPrevious trip data: ${JSON.stringify(memory.result)}`;
         }
-        
+
         // Use sequential thinking for complex itinerary
         const thinking = await this.mcp.think(
           `Plan a ${params.duration}-day itinerary for ${params.destination} ` +
-          `with interests: ${params.interests.join(', ')}`,
+            `with interests: ${params.interests.join(', ')}`,
           params.duration
         );
-        
+
         if (thinking.success) {
           context += `\n\nReasoning steps: ${JSON.stringify(thinking.result)}`;
         }
       }
-      
+
       // Generate with error handling
       const result = await this.errorHandler.executeWithRetry(async () => {
         const prompt = this.createItineraryPrompt(params, context);
-        const response = await this.errorHandler.callGeminiWithRetry(
-          this.gemini,
-          prompt
-        );
-        
+        const response = await this.errorHandler.callGeminiWithRetry(this.gemini, prompt);
+
         const data = this.errorHandler.parseJSONWithFallback(response, {
           days: [],
-          error: 'Failed to parse itinerary'
+          error: 'Failed to parse itinerary',
         });
-        
+
         this.errorHandler.validateResponse(data, ['days', 'budgetBreakdown']);
-        
+
         return {
           success: true,
           data,
           agent: this.name,
-          usedMCP: !!this.mcp.mcpManager
+          usedMCP: !!this.mcp.mcpManager,
         };
       });
-      
+
       // Cache and store in memory
       if (result.success) {
         await this.cache.set(operation, params, result);
-        
+
         if (this.mcp.mcpManager) {
-          await this.mcp.storeMemory(
-            `itinerary:${params.destination}:${Date.now()}`,
-            result.data,
-            { params, agent: this.id }
-          );
+          await this.mcp.storeMemory(`itinerary:${params.destination}:${Date.now()}`, result.data, {
+            params,
+            agent: this.id,
+          });
         }
       }
-      
+
       return result;
-      
     } catch (error) {
       logger.error(`${this.name}: Itinerary generation error:`, error);
       return {
         success: false,
         error: error.message,
-        agent: this.name
+        agent: this.name,
       };
     }
   }
@@ -213,7 +201,7 @@ class EnhancedTravelAgent {
    */
   createFlightSearchPrompt(params) {
     const { from, to, date, passengers = 1, class: travelClass = 'economy' } = params;
-    
+
     return `
 You are a Travel Agency AI Agent specializing in flight bookings.
 
@@ -234,7 +222,7 @@ Include: airline, flightNumber, departure/arrival times, duration, price, amenit
    */
   createItineraryPrompt(params, context = '') {
     const { destination, duration, interests = [], budget } = params;
-    
+
     return `
 You are a Travel Agency AI Agent specializing in itinerary planning.
 
@@ -260,13 +248,13 @@ Provide comprehensive itinerary in JSON format with day-by-day activities, meals
       name: this.name,
       model: this.model,
       capabilities: ['flight_search', 'hotel_search', 'itinerary_planning'],
-      
+
       // NEW: Utility statistics
       errorHandling: this.errorHandler.getStats(),
       cache: this.cache.getStats(),
       mcp: this.mcp.getStats(),
-      
-      timestamp: Date.now()
+
+      timestamp: Date.now(),
     };
   }
 
@@ -277,18 +265,18 @@ Provide comprehensive itinerary in JSON format with day-by-day activities, meals
     return {
       agent: this.name,
       healthy: true,
-      
+
       cache: await this.cache.getHealth(),
       mcp: await this.mcp.getHealth(),
       errorHandler: {
         ...this.errorHandler.getStats(),
         circuitBreaker: {
           state: this.errorHandler.circuitBreaker.state,
-          failures: this.errorHandler.circuitBreaker.failures
-        }
+          failures: this.errorHandler.circuitBreaker.failures,
+        },
       },
-      
-      timestamp: Date.now()
+
+      timestamp: Date.now(),
     };
   }
 
