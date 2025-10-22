@@ -195,7 +195,7 @@ router.get('/analytics/pages', apiLimiter, async (req, res) => {
  * GET /api/seo/analytics/queries
  * الحصول على أفضل الاستعلامات
  */
-router.get('/analytics/queries', async (req, res) => {
+router.get('/analytics/queries', apiLimiter, async (req, res) => {
   try {
     initServices();
     
@@ -218,7 +218,7 @@ router.get('/analytics/queries', async (req, res) => {
  * POST /api/seo/inspect
  * فحص رابط واحد
  */
-router.post('/inspect', async (req, res) => {
+router.post('/inspect', apiLimiter, async (req, res) => {
   try {
     initServices();
     
@@ -247,7 +247,7 @@ router.post('/inspect', async (req, res) => {
  * POST /api/seo/inspect/batch
  * فحص روابط متعددة
  */
-router.post('/inspect/batch', async (req, res) => {
+router.post('/inspect/batch', strictLimiter, async (req, res) => {
   try {
     initServices();
     
@@ -276,7 +276,7 @@ router.post('/inspect/batch', async (req, res) => {
  * GET /api/seo/report
  * الحصول على التقرير اليومي
  */
-router.get('/report', async (req, res) => {
+router.get('/report', apiLimiter, async (req, res) => {
   try {
     initServices();
     
@@ -296,7 +296,7 @@ router.get('/report', async (req, res) => {
  * GET /api/seo/comparison
  * مقارنة الأداء بين فترتين
  */
-router.get('/comparison', async (req, res) => {
+router.get('/comparison', apiLimiter, async (req, res) => {
   try {
     initServices();
     
@@ -319,7 +319,7 @@ router.get('/comparison', async (req, res) => {
  * GET /api/seo/sites
  * الحصول على قائمة المواقع المتحقق منها
  */
-router.get('/sites', async (req, res) => {
+router.get('/sites', apiLimiter, async (req, res) => {
   try {
     initServices();
     
@@ -339,7 +339,7 @@ router.get('/sites', async (req, res) => {
  * GET /api/seo/sitemaps
  * الحصول على قائمة خرائط الموقع المرسلة
  */
-router.get('/sitemaps', async (req, res) => {
+router.get('/sitemaps', apiLimiter, async (req, res) => {
   try {
     initServices();
     
@@ -362,7 +362,7 @@ router.get('/sitemaps', async (req, res) => {
  * GET /api/seo/health
  * فحص صحة خدمات SEO
  */
-router.get('/health', async (req, res) => {
+router.get('/health', apiLimiter, async (req, res) => {
   try {
     initServices();
     

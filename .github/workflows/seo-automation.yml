@@ -1,0 +1,79 @@
+name: SEO Automation
+
+on:
+  schedule:
+    # Run daily at 9 AM UTC
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  seo-tasks:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+      
+      - name: Install dependencies
+        working-directory: backend
+        run: npm ci
+      
+      - name: Generate daily SEO report
+        working-directory: backend
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          echo "Generating SEO report..."
+          node -e "
+            const SEOMonitor = require('./src/services/SEOMonitor');
+            const monitor = new SEOMonitor();
+            monitor.generateDailyReport()
+              .then(result => {
+                console.log('✅ Report generated:', JSON.stringify(result, null, 2));
+                process.exit(0);
+              })
+              .catch(error => {
+                console.error('❌ Error:', error);
+                process.exit(1);
+              });
+          "
+      
+      - name: Submit sitemap to Google
+        working-directory: backend
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+        run: |
+          echo "Submitting sitemap..."
+          node -e "
+            const SitemapGenerator = require('./src/services/SitemapGenerator');
+            const generator = new SitemapGenerator();
+            generator.submitToGoogle('https://amrikyy.com/sitemap.xml')
+              .then(result => {
+                console.log('✅ Sitemap submitted:', JSON.stringify(result, null, 2));
+                process.exit(0);
+              })
+              .catch(error => {
+                console.error('❌ Error:', error);
+                process.exit(1);
+              });
+          "
+      
+      - name: Send notification
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: 'SEO Automation completed'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
