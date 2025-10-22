@@ -2,7 +2,7 @@ services:
   # Backend Service on Render
   - type: web
     name: amrikyy-backend
-    env: node
+    runtime: node
     plan: free
     buildCommand: cd backend && npm install
     startCommand: cd backend && npm start
