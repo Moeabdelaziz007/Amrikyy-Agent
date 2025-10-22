@@ -46,6 +46,7 @@
     "express-session": "^1.17.3",
     "express-winston": "^4.2.0",
     "glob": "^11.0.3",
+    "googleapis": "^164.1.0",
     "helmet": "^6.0.0",
     "ioredis": "^5.8.1",
     "isomorphic-dompurify": "^2.29.0",

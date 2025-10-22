@@ -34,11 +34,13 @@ const authRoutes = require('./routes/auth');
 const bookingRoutes = require('./routes/bookings');
 const osRoutes = require('./routes/os');
 const codebaseRoutes = require('./routes/codebase-routes');
+const seoRoutes = require('./routes/seo-routes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/os', osRoutes);
 app.use('/api/codebase', codebaseRoutes);
+app.use('/api/seo', seoRoutes);
 
 // ============================================
 // HEALTH CHECK ENDPOINT
