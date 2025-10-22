@@ -318,23 +318,13 @@ app.post('/api/auth/login', (req, res) => {
 // ============================================
 // ERROR HANDLING
 // ============================================
+const { notFoundHandler, globalErrorHandler } = require('./middleware/errorHandler');
 
 // 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({
-    error: 'Endpoint not found',
-    message: `The endpoint ${req.method} ${req.originalUrl} does not exist`,
-  });
-});
+app.use(notFoundHandler);
 
 // Global error handler
-app.use((err, req, res, next) => {
-  console.error('Global Error:', err);
-  res.status(500).json({
-    error: 'Internal server error',
-    message: 'Something went wrong on our end',
-  });
-});
+app.use(globalErrorHandler);
 
 // ============================================
 // TELEGRAM BOT INTEGRATION
