@@ -40,6 +40,8 @@ const notebooklmRoutes = require('./routes/notebooklm');
 const vaultRoutes = require('./routes/vault-routes');
 const sabreRoutes = require('./routes/sabre-routes');
 const voiceRoutes = require('./routes/voice');
+const streamRoutes = require('./src/routes/streamRoutes');
+const coordinatorRoutes = require('./src/routes/coordinator');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
@@ -51,6 +53,8 @@ app.use('/api/notebooklm', notebooklmRoutes);
 app.use('/api/vault', vaultRoutes);
 app.use('/api/sabre', sabreRoutes);
 app.use('/api/voice', voiceRoutes);
+app.use('/api/stream', streamRoutes);
+app.use('/api/coordinator', coordinatorRoutes);
 
 // ============================================
 // HEALTH CHECK ENDPOINT

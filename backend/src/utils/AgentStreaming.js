@@ -14,6 +14,7 @@
  */
 
 const logger = require('./logger');
+const { wrapLLMCall } = require('./langsmith_helpers');
 
 class AgentStreaming {
   constructor(agentName) {
