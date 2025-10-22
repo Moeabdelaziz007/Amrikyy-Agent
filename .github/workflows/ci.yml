@@ -166,7 +166,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         continue-on-error: true
 
-  # Deploy Backend to Railway (Production)
+  # Deploy Backend to Render (Production)
   deploy-backend:
     name: Deploy Backend
     needs: [backend-test, security-scan]
@@ -177,14 +177,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
-
-      - name: Deploy to Railway
-        run: railway up --service backend
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        working-directory: ./backend
+      - name: Deploy to Render
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.RENDER_SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
         continue-on-error: true
 
   # Deploy Frontend to Vercel (Production)

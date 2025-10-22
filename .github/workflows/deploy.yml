@@ -9,9 +9,9 @@ env:
   NODE_VERSION: '18.x'
 
 jobs:
-  # Deploy Backend to Railway
+  # Deploy Backend to Render
   deploy-backend:
-    name: Deploy Backend to Railway
+    name: Deploy Backend to Render
     runs-on: ubuntu-latest
     environment: production
     
@@ -19,20 +19,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
-
-      - name: Deploy Backend
-        run: railway up --service amrikyy-backend
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        working-directory: ./backend
+      - name: Deploy to Render
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.RENDER_SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
         continue-on-error: true
 
       - name: Verify Deployment
         run: |
-          sleep 10
-          curl -f https://amrikyy-backend.railway.app/health || echo "Health check failed"
+          sleep 30
+          curl -f https://${{ secrets.RENDER_SERVICE_URL }}/health || echo "Health check failed"
         continue-on-error: true
 
   # Deploy Frontend to Vercel
@@ -74,7 +71,7 @@ jobs:
     steps:
       - name: Health Check - Backend
         run: |
-          curl -f https://amrikyy-backend.railway.app/health || exit 1
+          curl -f https://${{ secrets.RENDER_SERVICE_URL }}/health || exit 1
         continue-on-error: true
 
       - name: Health Check - Frontend
@@ -86,5 +83,5 @@ jobs:
         if: success()
         run: |
           echo "✅ Deployment successful!"
-          echo "Backend: https://amrikyy-backend.railway.app"
+          echo "Backend: https://${{ secrets.RENDER_SERVICE_URL }}"
           echo "Frontend: https://amrikyy.vercel.app"
