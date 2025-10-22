@@ -1,4 +1,5 @@
 import { Routes, Route, Link } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { AppLayout } from '@/components/layout';
 import { Home } from '@/pages/Home';
 import LandingPage from '@/pages/LandingPage';
@@ -12,7 +13,8 @@ import SEODashboard from '@/pages/SEODashboard';
 
 function App() {
   return (
-    <Routes>
+    <>
+      <Routes>
       {/* New Clean Routes */}
       <Route path="/" element={
         <AppLayout>
@@ -68,6 +70,8 @@ function App() {
         </AppLayout>
       } />
     </Routes>
+    <Analytics />
+    </>
   );
 }
 
