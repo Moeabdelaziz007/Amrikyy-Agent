@@ -227,11 +227,21 @@ class AgentStreaming {
    * Stream Gemini response
    */
   async streamGeminiResponse(streamId, geminiModel, prompt, options = {}) {
+    const modelName = geminiModel.model || 'unknown';
+
+    // 1. Define the core LLM call as a separate function
+    const generateFunction = async () => {
+      return await geminiModel.generateContentStream(prompt);
+    };
+
+    // 2. Wrap the function with LangSmith tracing
+    const tracedGenerate = wrapLLMCall(generateFunction, modelName);
+
     try {
       this.sendStatus(streamId, 'generating', { message: 'Starting generation...' });
       
-      // Use Gemini's streaming API
-      const result = await geminiModel.generateContentStream(prompt);
+      // 3. Execute the traced function
+      const result = await tracedGenerate();
       
       let fullText = '';
       let chunkIndex = 0;
