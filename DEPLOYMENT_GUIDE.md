@@ -19,6 +19,7 @@
 - [ ] Type checking passed
 - [ ] Code reviewed and approved
 - [ ] Documentation updated
+- [ ] Backend routes verified
 
 ```bash
 # Run all checks
@@ -29,7 +30,9 @@ npm run type-check
 npm run build
 
 cd ../backend
-node test-rate-limits.js
+# Verify all routes are properly configured
+node check-routes-deploy.js
+node verify-deployment.js
 ```
 
 ### Security
