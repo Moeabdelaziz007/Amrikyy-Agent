@@ -255,7 +255,7 @@ export default function VoiceAI({
               >
                 <div className="flex items-center gap-2 mb-2">
                   <Volume2 className="w-4 h-4 text-cyan-400" />
-                  <p className="text-sm text-cyan-400 font-semibold">{t('voice.maya.says')}</p>
+                  <p className="text-sm text-cyan-400 font-semibold">{t('voice.amrikyy.says')}</p>
                 </div>
                 <p className="text-white">{response}</p>
               </motion.div>

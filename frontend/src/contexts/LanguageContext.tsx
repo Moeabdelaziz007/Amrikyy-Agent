@@ -33,13 +33,13 @@ const translations = {
     'features.book.desc': 'أكمل حجزك بأمان واحصل على تأكيد فوري',
     
     // Voice AI
-    'voice.title': 'مايا - المساعد الذكي',
+    'voice.title': 'أمريكي - المساعد الذكي',
     'voice.listening': 'أستمع...',
     'voice.thinking': 'أفكر...',
-    'voice.ready': 'جاهزة للمساعدة',
+    'voice.ready': 'جاهز للمساعدة',
     'voice.you.said': 'قلت:',
-    'voice.maya.says': 'مايا:',
-    'voice.tooltip': 'تحدث مع مايا',
+    'voice.amrikyy.says': 'أمريكي:',
+    'voice.tooltip': 'تحدث مع أمريكي',
     'voice.processing': 'جاري المعالجة...',
     'voice.speak': 'اضغط للتحدث',
     'voice.stop': 'إيقاف الاستماع',
