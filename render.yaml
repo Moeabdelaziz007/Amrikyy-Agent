@@ -1,0 +1,30 @@
+services:
+  # Backend Service on Render
+  - type: web
+    name: amrikyy-backend
+    env: node
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    # Environment variables will be set in Render dashboard
+    # Add your actual env vars there:
+    # - DATABASE_URL
+    # - JWT_SECRET
+    # - OPENAI_API_KEY
+    # - SUPABASE_URL
+    # - SUPABASE_ANON_KEY
+    # etc.
+    
+    # Health check
+    healthCheckPath: /health
+    
+    # Auto-deploy from main branch
+    autoDeploy: true
+    
+    # Root directory
+    rootDir: backend

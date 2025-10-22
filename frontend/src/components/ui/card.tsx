@@ -1,15 +1,34 @@
 import * as React from 'react'
-
+import { motion, MotionProps } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
-function Card({ className, ...props }: React.ComponentProps<'div'>) {
+interface CardProps extends React.ComponentProps<'div'> {
+  hoverable?: boolean
+  glassmorphism?: boolean
+  gradient?: boolean
+}
+
+function Card({ className, hoverable = false, glassmorphism = false, gradient = false, ...props }: CardProps) {
+  const MotionDiv = motion.div as any
+
   return (
-    <div
+    <MotionDiv
       data-slot="card"
       className={cn(
-        'bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm',
+        'bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm transition-all duration-300',
+        hoverable && 'hover:shadow-lg hover:-translate-y-1 cursor-pointer hover:border-primary/20',
+        glassmorphism && 'backdrop-blur-lg bg-card/80 border-white/10 shadow-xl',
+        gradient && 'bg-gradient-to-br from-card to-card/80',
         className,
       )}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      whileHover={hoverable ? {
+        scale: 1.02,
+        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
+      } : undefined}
+      whileTap={hoverable ? { scale: 0.98 } : undefined}
       {...props}
     />
   )
