@@ -4,10 +4,15 @@ import { Home } from '@/pages/Home';
 import LandingPage from '@/pages/LandingPage';
 import TestBooking from '@/pages/TestBooking';
 import VoiceAI from '@/components/VoiceAI';
+import { LanguageProvider } from '@/contexts/LanguageContext';
+import { LanguageToggle } from '@/components/LanguageToggle';
 
 function App() {
   return (
-    <>
+    <LanguageProvider>
+      {/* Language Toggle Button */}
+      <LanguageToggle />
+      
       {/* Global Voice AI Assistant */}
       <VoiceAI position="fixed" />
       
@@ -48,8 +53,8 @@ function App() {
           <NotFound />
         </AppLayout>
       } />
-    </Routes>
-    </>
+      </Routes>
+    </LanguageProvider>
   );
 }
 
