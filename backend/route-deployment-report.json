@@ -1,0 +1,565 @@
+{
+  "timestamp": "2025-10-22T17:07:20.195Z",
+  "totalRoutes": 37,
+  "properlyConfigured": 36,
+  "totalEndpoints": 182,
+  "registeredInServer": 0,
+  "unregisteredRoutes": [
+    "agents",
+    "ai",
+    "analytics",
+    "auth",
+    "automation",
+    "bookings",
+    "cache",
+    "crypto-payments",
+    "dashboard",
+    "destinations",
+    "discord",
+    "email",
+    "enhanced-ai",
+    "expenses",
+    "flights",
+    "hotels",
+    "ivr",
+    "kelo",
+    "mcp",
+    "messenger",
+    "miniapp",
+    "notifications",
+    "payment",
+    "profile",
+    "qdrant",
+    "revenue",
+    "security",
+    "smart-documentation",
+    "stripe-webhook",
+    "telegram-integration",
+    "travel-agents",
+    "trips",
+    "voice_note_taker",
+    "web-explorer",
+    "whatsapp",
+    "youtube"
+  ],
+  "routes": [
+    {
+      "name": "agents",
+      "file": "agents.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 5,
+        "POST": 5,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 10
+      }
+    },
+    {
+      "name": "ai",
+      "file": "ai.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 2,
+        "POST": 6,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 8
+      }
+    },
+    {
+      "name": "analytics",
+      "file": "analytics.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 7,
+        "POST": 1,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 8
+      }
+    },
+    {
+      "name": "auth",
+      "file": "auth.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 1,
+        "POST": 7,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 8
+      }
+    },
+    {
+      "name": "automation",
+      "file": "automation.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 2,
+        "POST": 4,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 6
+      }
+    },
+    {
+      "name": "bookings",
+      "file": "bookings.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 1,
+        "POST": 0,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 1
+      }
+    },
+    {
+      "name": "cache",
+      "file": "cache.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 4,
+        "POST": 0,
+        "PUT": 0,
+        "DELETE": 2,
+        "PATCH": 0,
+        "total": 6
+      }
+    },
+    {
+      "name": "crypto-payments",
+      "file": "crypto-payments.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 5,
+        "POST": 4,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 9
+      }
+    },
+    {
+      "name": "dashboard",
+      "file": "dashboard.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 1,
+        "POST": 0,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 1
+      }
+    },
+    {
+      "name": "destinations",
+      "file": "destinations.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 4,
+        "POST": 0,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 4
+      }
+    },
+    {
+      "name": "discord",
+      "file": "discord.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 1,
+        "POST": 3,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 4
+      }
+    },
+    {
+      "name": "email",
+      "file": "email.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 1,
+        "POST": 4,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 5
+      }
+    },
+    {
+      "name": "enhanced-ai",
+      "file": "enhanced-ai.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 2,
+        "POST": 6,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 8
+      }
+    },
+    {
+      "name": "expenses",
+      "file": "expenses.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 2,
+        "POST": 1,
+        "PUT": 1,
+        "DELETE": 1,
+        "PATCH": 0,
+        "total": 5
+      }
+    },
+    {
+      "name": "flights",
+      "file": "flights.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 2,
+        "POST": 3,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 5
+      }
+    },
+    {
+      "name": "hotels",
+      "file": "hotels.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 3,
+        "POST": 3,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 6
+      }
+    },
+    {
+      "name": "ivr",
+      "file": "ivr.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 1,
+        "POST": 7,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 8
+      }
+    },
+    {
+      "name": "kelo",
+      "file": "kelo.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 2,
+        "POST": 5,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 7
+      }
+    },
+    {
+      "name": "mcp",
+      "file": "mcp.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 1,
+        "POST": 0,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 1
+      }
+    },
+    {
+      "name": "messenger",
+      "file": "messenger.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 2,
+        "POST": 2,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 4
+      }
+    },
+    {
+      "name": "miniapp",
+      "file": "miniapp.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 2,
+        "POST": 6,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 8
+      }
+    },
+    {
+      "name": "notifications",
+      "file": "notifications.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 1,
+        "POST": 2,
+        "PUT": 1,
+        "DELETE": 1,
+        "PATCH": 0,
+        "total": 5
+      }
+    },
+    {
+      "name": "payment",
+      "file": "payment.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 1,
+        "POST": 4,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 5
+      }
+    },
+    {
+      "name": "profile",
+      "file": "profile.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 1,
+        "POST": 1,
+        "PUT": 1,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 3
+      }
+    },
+    {
+      "name": "qdrant",
+      "file": "qdrant.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 1,
+        "POST": 7,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 8
+      }
+    },
+    {
+      "name": "revenue",
+      "file": "revenue.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 3,
+        "POST": 1,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 4
+      }
+    },
+    {
+      "name": "security",
+      "file": "security.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 4,
+        "POST": 3,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 7
+      }
+    },
+    {
+      "name": "smart-documentation",
+      "file": "smart-documentation.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 4,
+        "POST": 3,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 7
+      }
+    },
+    {
+      "name": "stripe-webhook",
+      "file": "stripe-webhook.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 0,
+        "POST": 1,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 1
+      }
+    },
+    {
+      "name": "supabaseClient",
+      "file": "supabaseClient.js",
+      "hasRouter": false,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 0,
+        "POST": 0,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 0
+      }
+    },
+    {
+      "name": "telegram-integration",
+      "file": "telegram-integration.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 1,
+        "POST": 4,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 5
+      }
+    },
+    {
+      "name": "travel-agents",
+      "file": "travel-agents.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 3,
+        "POST": 1,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 4
+      }
+    },
+    {
+      "name": "trips",
+      "file": "trips.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 2,
+        "POST": 1,
+        "PUT": 1,
+        "DELETE": 1,
+        "PATCH": 0,
+        "total": 5
+      }
+    },
+    {
+      "name": "voice_note_taker",
+      "file": "voice_note_taker.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 1,
+        "POST": 0,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 1
+      }
+    },
+    {
+      "name": "web-explorer",
+      "file": "web-explorer.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 0,
+        "POST": 2,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 2
+      }
+    },
+    {
+      "name": "whatsapp",
+      "file": "whatsapp.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 1,
+        "POST": 1,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 2
+      }
+    },
+    {
+      "name": "youtube",
+      "file": "youtube.js",
+      "hasRouter": true,
+      "hasModuleExports": true,
+      "endpoints": {
+        "GET": 0,
+        "POST": 1,
+        "PUT": 0,
+        "DELETE": 0,
+        "PATCH": 0,
+        "total": 1
+      }
+    }
+  ]
+}
