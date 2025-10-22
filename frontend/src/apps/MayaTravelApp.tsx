@@ -29,6 +29,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
+import VoiceInterface from '@/components/ui/VoiceInterface'
 
 interface Message {
   id: string
@@ -143,46 +144,40 @@ export function MayaTravelApp({ className, onClose }: MayaTravelAppProps) {
   }
 
   /**
-   * Handle voice input
+   * Handle voice input from VoiceInterface
    */
-  const handleVoiceInput = () => {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      alert('Speech recognition is not supported in your browser.')
-      return
+  const handleVoiceTranscript = (transcript: string) => {
+    setInput(transcript)
+  }
+
+  /**
+   * Handle voice commands
+   */
+  const handleVoiceCommand = (command: string) => {
+    console.log('Voice command received:', command)
+    // Process specific commands here
+    switch (command) {
+      case 'flight_booking':
+        setInput('I want to book a flight')
+        break
+      case 'hotel_search':
+        setInput('Find me a hotel')
+        break
+      case 'trip_planning':
+        setInput('Help me plan a trip')
+        break
+      default:
+        // Command will be handled by the transcript
+        break
     }
+  }
 
-    if (isListening) {
-      setIsListening(false)
-      return
-    }
-
-    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition
-    const recognition = new SpeechRecognition()
-
-    recognition.lang = language === 'ar' ? 'ar-SA' : 'en-US'
-    recognition.continuous = false
-    recognition.interimResults = false
-
-    recognition.onstart = () => {
-      setIsListening(true)
-    }
-
-    recognition.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript
-      setInput(transcript)
-      setIsListening(false)
-    }
-
-    recognition.onerror = (event: any) => {
-      console.error('Speech recognition error:', event.error)
-      setIsListening(false)
-    }
-
-    recognition.onend = () => {
-      setIsListening(false)
-    }
-
-    recognition.start()
+  /**
+   * Handle voice errors
+   */
+  const handleVoiceError = (error: string) => {
+    console.error('Voice error:', error)
+    // You could show a toast notification here
   }
 
   /**
@@ -356,23 +351,15 @@ export function MayaTravelApp({ className, onClose }: MayaTravelAppProps) {
             )}
           </div>
 
-          {/* Voice Input Button */}
-          <Button
-            onClick={handleVoiceInput}
-            variant={isListening ? 'default' : 'outline'}
-            size="icon"
-            disabled={isLoading}
-            className={cn(
-              'transition-all',
-              isListening && 'animate-pulse bg-red-500 hover:bg-red-600'
-            )}
-          >
-            {isListening ? (
-              <MicOff className="w-4 h-4" />
-            ) : (
-              <Mic className="w-4 h-4" />
-            )}
-          </Button>
+          {/* Voice Interface */}
+          <VoiceInterface
+            onTranscript={handleVoiceTranscript}
+            onCommand={handleVoiceCommand}
+            onError={handleVoiceError}
+            className="flex-1"
+            showSettings={false}
+            autoProcess={true}
+          />
 
           {/* Send Button */}
           <Button
