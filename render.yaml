@@ -21,7 +21,7 @@ services:
     # etc.
     
     # Health check
-    healthCheckPath: /health
+    healthCheckPath: /api/health
     
     # Auto-deploy from main branch
     autoDeploy: true

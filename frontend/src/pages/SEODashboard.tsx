@@ -12,6 +12,8 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import { 
   Search, 
   TrendingUp, 
@@ -27,6 +29,23 @@ import {
   Download,
   Filter
 } from 'lucide-react';
+import { 
+  LineChart, 
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  AreaChart,
+  Area,
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend, 
+  ResponsiveContainer 
+} from 'recharts';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -79,6 +98,13 @@ interface ComparisonData {
   };
 }
 
+interface TrendData {
+  date: string;
+  clicks: number;
+  impressions: number;
+  ctr: number;
+}
+
 interface SEOData {
   summary: PerformanceSummary | null;
   topPages: PageData[];
@@ -100,6 +126,7 @@ export default function SEODashboard() {
   const [querySort, setQuerySort] = useState<'clicks' | 'impressions' | 'ctr'>('clicks');
   const [pageFilter, setPageFilter] = useState('');
   const [queryFilter, setQueryFilter] = useState('');
+  const [trendData, setTrendData] = useState<TrendData[]>([]);
 
   // دالة fetchSummary مع معالجة أخطاء متقدمة
   const fetchSummary = async () => {
@@ -385,6 +412,95 @@ export default function SEODashboard() {
     });
   };
 
+  // دالة لتوليد trend data (mock للاختبار)
+  const generateTrendData = () => {
+    const data: TrendData[] = [];
+    const today = new Date();
+    
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      
+      data.push({
+        date: date.toLocaleDateString('ar-EG', { month: 'short', day: 'numeric' }),
+        clicks: Math.floor(Math.random() * 1000) + 500,
+        impressions: Math.floor(Math.random() * 5000) + 2000,
+        ctr: parseFloat((Math.random() * 5 + 2).toFixed(2))
+      });
+    }
+    
+    setTrendData(data);
+  };
+
+  // دالة تصدير البيانات إلى PDF
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    
+    // Title
+    doc.setFontSize(20);
+    doc.text('SEO Performance Report', 105, 15, { align: 'center' });
+    
+    // Date
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleDateString('en-US')}`, 105, 22, { align: 'center' });
+    
+    // Summary
+    if (data.summary) {
+      doc.setFontSize(14);
+      doc.text('Performance Summary', 14, 35);
+      
+      (doc as any).autoTable({
+        startY: 40,
+        head: [['Metric', 'Value']],
+        body: [
+          ['Total Clicks', data.summary.totalClicks.toLocaleString()],
+          ['Total Impressions', data.summary.totalImpressions.toLocaleString()],
+          ['Average CTR', `${data.summary.averageCTR}%`],
+          ['Average Position', data.summary.averagePosition],
+        ],
+      });
+    }
+    
+    // Top Pages
+    if (data.topPages.length > 0) {
+      doc.setFontSize(14);
+      doc.text('Top Pages', 14, (doc as any).lastAutoTable.finalY + 15);
+      
+      (doc as any).autoTable({
+        startY: (doc as any).lastAutoTable.finalY + 20,
+        head: [['URL', 'Clicks', 'Impressions', 'CTR']],
+        body: data.topPages.slice(0, 10).map(page => [
+          page.url,
+          page.clicks,
+          page.impressions,
+          `${page.ctr}%`
+        ]),
+      });
+    }
+    
+    // Top Queries
+    if (data.topQueries.length > 0) {
+      doc.addPage();
+      doc.setFontSize(14);
+      doc.text('Top Queries', 14, 20);
+      
+      (doc as any).autoTable({
+        startY: 25,
+        head: [['Query', 'Clicks', 'Impressions', 'CTR']],
+        body: data.topQueries.slice(0, 10).map(query => [
+          query.query,
+          query.clicks,
+          query.impressions,
+          `${query.ctr}%`
+        ]),
+      });
+    }
+    
+    // Save
+    doc.save(`seo-report-${new Date().toISOString().split('T')[0]}.pdf`);
+    console.log('✅ تم تصدير PDF بنجاح');
+  };
+
   // دالة تصدير البيانات إلى CSV
   const exportToCSV = () => {
     const csvData = [];
@@ -436,6 +552,7 @@ export default function SEODashboard() {
     fetchTopPages();
     fetchTopQueries();
     fetchComparison();
+    generateTrendData();
   }, [days]);
 
   return (
@@ -466,7 +583,7 @@ export default function SEODashboard() {
                 <option value={90}>آخر 90 يوم</option>
               </select>
               
-              {/* زر التصدير */}
+              {/* زر تصدير CSV */}
               <Button
                 onClick={exportToCSV}
                 variant="outline"
@@ -474,7 +591,18 @@ export default function SEODashboard() {
                 disabled={!data.summary}
               >
                 <Download className="w-4 h-4" />
-                تصدير
+                CSV
+              </Button>
+              
+              {/* زر تصدير PDF */}
+              <Button
+                onClick={exportToPDF}
+                variant="outline"
+                className="gap-2"
+                disabled={!data.summary}
+              >
+                <FileText className="w-4 h-4" />
+                PDF
               </Button>
               
               {/* زر التحديث */}
@@ -616,6 +744,116 @@ export default function SEODashboard() {
           </Card>
         </div>
 
+        {/* Charts Grid */}
+        {!loading && trendData.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Line Chart */}
+            <Card className="p-6">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-blue-600" />
+                اتجاه الأداء
+              </h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={trendData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis 
+                    dataKey="date" 
+                    style={{ fontSize: '12px' }}
+                  />
+                  <YAxis 
+                    yAxisId="left"
+                    style={{ fontSize: '12px' }}
+                  />
+                  <YAxis 
+                    yAxisId="right" 
+                    orientation="right"
+                    style={{ fontSize: '12px' }}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Legend />
+                  <Line 
+                    yAxisId="left"
+                    type="monotone" 
+                    dataKey="clicks" 
+                    stroke="#3b82f6" 
+                    strokeWidth={2}
+                    name="النقرات"
+                    dot={{ fill: '#3b82f6' }}
+                  />
+                  <Line 
+                    yAxisId="left"
+                    type="monotone" 
+                    dataKey="impressions" 
+                    stroke="#10b981" 
+                    strokeWidth={2}
+                    name="الظهور"
+                    dot={{ fill: '#10b981' }}
+                  />
+                  <Line 
+                    yAxisId="right"
+                    type="monotone" 
+                    dataKey="ctr" 
+                    stroke="#8b5cf6" 
+                    strokeWidth={2}
+                    name="نسبة النقر %"
+                    dot={{ fill: '#8b5cf6' }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+
+            {/* Area Chart */}
+            <Card className="p-6">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-green-600" />
+                الأداء التراكمي
+              </h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart data={trendData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis 
+                    dataKey="date" 
+                    style={{ fontSize: '12px' }}
+                  />
+                  <YAxis style={{ fontSize: '12px' }} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Legend />
+                  <Area 
+                    type="monotone" 
+                    dataKey="clicks" 
+                    stackId="1"
+                    stroke="#3b82f6" 
+                    fill="#3b82f6"
+                    fillOpacity={0.6}
+                    name="النقرات"
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="impressions" 
+                    stackId="2"
+                    stroke="#10b981" 
+                    fill="#10b981"
+                    fillOpacity={0.6}
+                    name="الظهور"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </Card>
+          </div>
+        )}
+
         {/* جداول البيانات */}
         {!loading && data.summary && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -684,6 +922,72 @@ export default function SEODashboard() {
                 </table>
               </div>
             </Card>
+
+            {/* Bar Chart للصفحات */}
+            {data.topPages.length > 0 && (
+              <Card className="p-6">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-blue-600" />
+                  مقارنة أداء الصفحات
+                </h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={data.topPages.slice(0, 5)}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="url" 
+                      style={{ fontSize: '10px' }}
+                      angle={-45}
+                      textAnchor="end"
+                      height={100}
+                      tick={{ fill: '#6b7280' }}
+                    />
+                    <YAxis style={{ fontSize: '12px' }} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Legend />
+                    <Bar dataKey="clicks" fill="#3b82f6" name="النقرات" />
+                    <Bar dataKey="impressions" fill="#10b981" name="الظهور" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card>
+            )}
+
+            {/* Pie Chart لتوزيع CTR */}
+            {data.topPages.length > 0 && (
+              <Card className="p-6">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-purple-600" />
+                  توزيع نسبة النقر (CTR)
+                </h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={data.topPages.slice(0, 5).map(page => ({
+                        name: page.url.split('/').pop() || page.url,
+                        value: parseFloat(page.ctr)
+                      }))}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {data.topPages.slice(0, 5).map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444'][index % 5]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </Card>
+            )}
 
             {/* جدول أفضل الاستعلامات */}
             <Card className="p-6">

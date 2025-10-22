@@ -1,4 +1,4 @@
-# 🔑 Deployment Environment Variables
+ dern# 🔑 Deployment Environment Variables
 
 ## 🎯 CRITICAL - Required for Basic Functionality
 
@@ -8,7 +8,7 @@
 PORT=3001
 NODE_ENV=production
 FRONTEND_URL=https://your-frontend.vercel.app
-API_URL=https://your-backend.railway.app
+API_URL=https://your-backend.vercel.app
 
 # Database
 SUPABASE_URL=https://xxx.supabase.co
@@ -26,7 +26,7 @@ CORS_ORIGIN=https://your-frontend.vercel.app
 
 ### Frontend Core
 ```bash
-VITE_API_URL=https://your-backend.railway.app
+VITE_API_URL=https://your-backend.vercel.app
 ```
 
 ---
@@ -234,7 +234,7 @@ MAX_DAILY_COST=50
 ### 2. Frontend Deployment (Vercel)
 ```bash
 # Only needs VITE_API_URL
-VITE_API_URL=https://your-backend.railway.app
+VITE_API_URL=https://your-backend.vercel.app
 ```
 
 ### 3. Supabase Setup
