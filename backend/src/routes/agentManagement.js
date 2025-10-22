@@ -508,11 +508,13 @@ router.post('/:agent/stats/reset', (req, res) => {
 });
 
 /**
- * Export functions for use in other modules
+ * Export router as default
  */
-module.exports = {
-  router,
-  registerAgent,
-  getAgent,
-  agentRegistry,
-};
+module.exports = router;
+
+/**
+ * Export functions for advanced use
+ */
+module.exports.registerAgent = registerAgent;
+module.exports.getAgent = getAgent;
+module.exports.agentRegistry = agentRegistry;

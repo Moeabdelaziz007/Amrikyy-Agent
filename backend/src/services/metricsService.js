@@ -1,315 +1,490 @@
+const client = require('prom-client');
+const logger = require('../utils/logger');
+
 /**
- * Prometheus Metrics Service
- * Exposes system metrics in Prometheus format + JSON
- * 
+ * @fileoverview Enhanced Metrics Service for Prometheus
+ *
+ * This service centralizes the management of Prometheus metrics for:
+ * - Stream sessions (SSE)
+ * - LLM API calls
+ * - Multi-agent workflows
+ * - API requests
+ * - Cache operations
+ * - Rate limiting
+ *
  * @author Mohamed Hossameldin Abdelaziz
  * @created 2025-10-22
+ * @phase 2
  */
 
-const client = require('prom-client');
-
-/**
- * Metrics registry
- */
-const register = new client.Registry();
-
-// Add default metrics (CPU, memory, etc.)
-client.collectDefaultMetrics({ register });
-
-/**
- * Custom metrics
- */
-
-// API Request Counter
-const httpRequestsTotal = new client.Counter({
-  name: 'http_requests_total',
-  help: 'Total number of HTTP requests',
-  labelNames: ['method', 'route', 'status'],
-  registers: [register]
-});
-
-// API Request Duration
-const httpRequestDuration = new client.Histogram({
-  name: 'http_request_duration_seconds',
-  help: 'HTTP request duration in seconds',
-  labelNames: ['method', 'route', 'status'],
-  buckets: [0.1, 0.5, 1, 2, 5, 10],
-  registers: [register]
-});
-
-// Streaming Metrics
-const streamSessionsTotal = new client.Counter({
-  name: 'stream_sessions_total',
-  help: 'Total number of streaming sessions',
-  labelNames: ['agent', 'status'],
-  registers: [register]
-});
-
-const streamChunksSent = new client.Counter({
-  name: 'stream_chunks_sent_total',
-  help: 'Total number of chunks sent via streaming',
-  labelNames: ['agent'],
-  registers: [register]
-});
-
-const streamSessionDuration = new client.Histogram({
-  name: 'stream_session_duration_seconds',
-  help: 'Streaming session duration in seconds',
-  labelNames: ['agent', 'status'],
-  buckets: [1, 5, 10, 30, 60, 120],
-  registers: [register]
-});
-
-const activeStreams = new client.Gauge({
-  name: 'stream_sessions_active',
-  help: 'Number of currently active streaming sessions',
-  labelNames: ['agent'],
-  registers: [register]
-});
-
-// LLM API Metrics
-const llmCallsTotal = new client.Counter({
-  name: 'llm_calls_total',
-  help: 'Total number of LLM API calls',
-  labelNames: ['model', 'agent', 'status'],
-  registers: [register]
-});
-
-const llmTokensUsed = new client.Counter({
-  name: 'llm_tokens_used_total',
-  help: 'Total number of tokens used',
-  labelNames: ['model', 'agent', 'type'],
-  registers: [register]
-});
-
-const llmCostDollars = new client.Counter({
-  name: 'llm_cost_dollars_total',
-  help: 'Total cost in USD for LLM calls',
-  labelNames: ['model', 'agent'],
-  registers: [register]
-});
-
-const llmCallDuration = new client.Histogram({
-  name: 'llm_call_duration_seconds',
-  help: 'LLM API call duration in seconds',
-  labelNames: ['model', 'agent', 'status'],
-  buckets: [0.5, 1, 2, 5, 10, 30],
-  registers: [register]
-});
-
-// Agent Metrics
-const agentExecutionsTotal = new client.Counter({
-  name: 'agent_executions_total',
-  help: 'Total number of agent executions',
-  labelNames: ['agent', 'operation', 'status'],
-  registers: [register]
-});
-
-const agentExecutionDuration = new client.Histogram({
-  name: 'agent_execution_duration_seconds',
-  help: 'Agent execution duration in seconds',
-  labelNames: ['agent', 'operation', 'status'],
-  buckets: [0.5, 1, 2, 5, 10, 30, 60],
-  registers: [register]
-});
-
-// Cache Metrics
-const cacheOperationsTotal = new client.Counter({
-  name: 'cache_operations_total',
-  help: 'Total number of cache operations',
-  labelNames: ['operation', 'status'],
-  registers: [register]
-});
-
-const cacheHitRate = new client.Gauge({
-  name: 'cache_hit_rate',
-  help: 'Cache hit rate (0-1)',
-  registers: [register]
-});
-
-// Coordinator Metrics
-const coordinatorWorkflowsTotal = new client.Counter({
-  name: 'coordinator_workflows_total',
-  help: 'Total number of coordinator workflows',
-  labelNames: ['strategy', 'status'],
-  registers: [register]
-});
-
-const coordinatorWorkflowDuration = new client.Histogram({
-  name: 'coordinator_workflow_duration_seconds',
-  help: 'Coordinator workflow duration in seconds',
-  labelNames: ['strategy', 'status'],
-  buckets: [1, 5, 10, 30, 60, 120, 300],
-  registers: [register]
-});
-
-// Rate Limiting Metrics
-const rateLimitHits = new client.Counter({
-  name: 'rate_limit_hits_total',
-  help: 'Total number of rate limit hits',
-  labelNames: ['agent', 'operation'],
-  registers: [register]
-});
-
-// Authentication Metrics
-const authAttemptsTotal = new client.Counter({
-  name: 'auth_attempts_total',
-  help: 'Total number of authentication attempts',
-  labelNames: ['method', 'status'],
-  registers: [register]
-});
-
-/**
- * Metrics Service
- */
 class MetricsService {
   constructor() {
-    this.contentType = register.contentType;
-  }
-
-  /**
-   * Expose Prometheus metrics
-   */
-  async exposePrometheus() {
-    return await register.metrics();
-  }
-
-  /**
-   * Get JSON snapshot of metrics
-   */
-  async snapshot() {
-    const metrics = await register.getMetricsAsJSON();
-    return {
-      timestamp: new Date().toISOString(),
-      metrics
-    };
-  }
-
-  /**
-   * Record HTTP request
-   */
-  recordHttpRequest(method, route, status, duration) {
-    httpRequestsTotal.inc({ method, route, status });
-    httpRequestDuration.observe({ method, route, status }, duration);
-  }
-
-  /**
-   * Record streaming session
-   */
-  recordStreamStart(agent) {
-    streamSessionsTotal.inc({ agent, status: 'started' });
-    activeStreams.inc({ agent });
-  }
-
-  recordStreamComplete(agent, duration) {
-    streamSessionsTotal.inc({ agent, status: 'completed' });
-    streamSessionDuration.observe({ agent, status: 'completed' }, duration);
-    activeStreams.dec({ agent });
-  }
-
-  recordStreamFailed(agent, duration) {
-    streamSessionsTotal.inc({ agent, status: 'failed' });
-    streamSessionDuration.observe({ agent, status: 'failed' }, duration);
-    activeStreams.dec({ agent });
-  }
-
-  recordStreamChunk(agent) {
-    streamChunksSent.inc({ agent });
-  }
-
-  /**
-   * Record LLM call
-   */
-  recordLLMCall(model, agent, status, duration, inputTokens, outputTokens, cost) {
-    llmCallsTotal.inc({ model, agent, status });
-    llmCallDuration.observe({ model, agent, status }, duration);
+    this.register = new client.Registry();
+    this.collectDefaultMetrics = client.collectDefaultMetrics;
     
-    if (inputTokens) {
-      llmTokensUsed.inc({ model, agent, type: 'input' }, inputTokens);
+    // Collect default Node.js metrics (CPU, memory, etc.)
+    this.collectDefaultMetrics({ 
+      register: this.register,
+      prefix: 'amrikyy_',
+    });
+
+    this.defineMetrics();
+    
+    logger.info('[MetricsService] Initialized with Prometheus registry');
+  }
+
+  /**
+   * Defines all custom metrics for the application
+   */
+  defineMetrics() {
+    this.metrics = {
+      // ==========================================
+      // STREAMING METRICS
+      // ==========================================
+      
+      stream_chunks_sent: new client.Counter({
+        name: 'amrikyy_stream_chunks_sent_total',
+        help: 'Total number of stream chunks sent to clients',
+        labelNames: ['agent', 'model'],
+        registers: [this.register],
+      }),
+      
+      stream_sessions_completed: new client.Counter({
+        name: 'amrikyy_stream_sessions_completed_total',
+        help: 'Total number of completed stream sessions',
+        labelNames: ['agent', 'model'],
+        registers: [this.register],
+      }),
+      
+      stream_sessions_failed: new client.Counter({
+        name: 'amrikyy_stream_sessions_failed_total',
+        help: 'Total number of failed stream sessions',
+        labelNames: ['agent', 'model', 'error_type'],
+        registers: [this.register],
+      }),
+      
+      stream_sessions_cancelled: new client.Counter({
+        name: 'amrikyy_stream_sessions_cancelled_total',
+        help: 'Total number of cancelled stream sessions',
+        labelNames: ['agent', 'reason'],
+        registers: [this.register],
+      }),
+      
+      stream_duration_seconds: new client.Histogram({
+        name: 'amrikyy_stream_duration_seconds',
+        help: 'Duration of stream sessions in seconds',
+        labelNames: ['agent', 'model', 'status'],
+        buckets: [0.1, 0.5, 1, 2, 5, 10, 30, 60],
+        registers: [this.register],
+      }),
+      
+      active_streams: new client.Gauge({
+        name: 'amrikyy_active_streams',
+        help: 'Number of currently active stream sessions',
+        labelNames: ['agent'],
+        registers: [this.register],
+      }),
+      
+      // ==========================================
+      // LLM CALL METRICS
+      // ==========================================
+      
+      llm_calls_total: new client.Counter({
+        name: 'amrikyy_llm_calls_total',
+        help: 'Total number of calls to LLM APIs',
+        labelNames: ['model', 'status', 'agent'],
+        registers: [this.register],
+      }),
+      
+      llm_call_duration_seconds: new client.Histogram({
+        name: 'amrikyy_llm_call_duration_seconds',
+        help: 'Duration of LLM API calls in seconds',
+        labelNames: ['model', 'agent'],
+        buckets: [0.1, 0.5, 1, 2, 5, 10, 30],
+        registers: [this.register],
+      }),
+      
+      llm_tokens_used: new client.Counter({
+        name: 'amrikyy_llm_tokens_used_total',
+        help: 'Total number of tokens used in LLM calls',
+        labelNames: ['model', 'agent', 'token_type'], // token_type: input, output
+        registers: [this.register],
+      }),
+      
+      llm_cost_usd: new client.Counter({
+        name: 'amrikyy_llm_cost_usd_total',
+        help: 'Total estimated cost of LLM calls in USD',
+        labelNames: ['model', 'agent'],
+        registers: [this.register],
+      }),
+      
+      // ==========================================
+      // API REQUEST METRICS
+      // ==========================================
+      
+      api_requests_total: new client.Counter({
+        name: 'amrikyy_api_requests_total',
+        help: 'Total number of API requests',
+        labelNames: ['method', 'route', 'status_code'],
+        registers: [this.register],
+      }),
+      
+      api_request_duration_seconds: new client.Histogram({
+        name: 'amrikyy_api_request_duration_seconds',
+        help: 'Duration of API requests in seconds',
+        labelNames: ['method', 'route', 'status_code'],
+        buckets: [0.01, 0.05, 0.1, 0.5, 1, 2, 5],
+        registers: [this.register],
+      }),
+      
+      // ==========================================
+      // WORKFLOW METRICS
+      // ==========================================
+      
+      workflow_executions_total: new client.Counter({
+        name: 'amrikyy_workflow_executions_total',
+        help: 'Total number of multi-agent workflow executions',
+        labelNames: ['workflow_name', 'strategy', 'status'],
+        registers: [this.register],
+      }),
+      
+      workflow_duration_seconds: new client.Histogram({
+        name: 'amrikyy_workflow_duration_seconds',
+        help: 'Duration of workflow executions in seconds',
+        labelNames: ['workflow_name', 'strategy'],
+        buckets: [0.5, 1, 2, 5, 10, 30, 60],
+        registers: [this.register],
+      }),
+      
+      active_workflows: new client.Gauge({
+        name: 'amrikyy_active_workflows',
+        help: 'Number of currently active workflows',
+        labelNames: ['strategy'],
+        registers: [this.register],
+      }),
+      
+      // ==========================================
+      // CACHE METRICS
+      // ==========================================
+      
+      cache_operations_total: new client.Counter({
+        name: 'amrikyy_cache_operations_total',
+        help: 'Total number of cache operations',
+        labelNames: ['operation', 'status'], // operation: get, set, delete, clear
+        registers: [this.register],
+      }),
+      
+      cache_hit_rate: new client.Gauge({
+        name: 'amrikyy_cache_hit_rate',
+        help: 'Cache hit rate (0-1)',
+        registers: [this.register],
+      }),
+      
+      // ==========================================
+      // RATE LIMITING METRICS
+      // ==========================================
+      
+      rate_limit_hits_total: new client.Counter({
+        name: 'amrikyy_rate_limit_hits_total',
+        help: 'Total number of rate limit hits (429 responses)',
+        labelNames: ['route', 'api_key_prefix'],
+        registers: [this.register],
+      }),
+      
+      // ==========================================
+      // AUTHENTICATION METRICS
+      // ==========================================
+      
+      auth_attempts_total: new client.Counter({
+        name: 'amrikyy_auth_attempts_total',
+        help: 'Total number of authentication attempts',
+        labelNames: ['method', 'status'], // method: api_key, jwt; status: success, failure
+        registers: [this.register],
+      }),
+    };
+    
+    logger.info('[MetricsService] Defined 20 custom metrics');
+  }
+
+  // ==========================================
+  // HELPER METHODS
+  // ==========================================
+
+  /**
+   * Increments a counter metric
+   * @param {string} name - Metric name (without prefix)
+   * @param {object} [labels={}] - Metric labels
+   * @param {number} [value=1] - Increment value
+   */
+  increment(name, labels = {}, value = 1) {
+    try {
+      if (this.metrics[name]) {
+        this.metrics[name].inc(labels, value);
+      } else {
+        logger.warn(`[MetricsService] Metric not found: ${name}`);
+      }
+    } catch (error) {
+      logger.error(`[MetricsService] Error incrementing ${name}:`, error);
     }
-    if (outputTokens) {
-      llmTokensUsed.inc({ model, agent, type: 'output' }, outputTokens);
+  }
+
+  /**
+   * Observes a value for histogram/summary metrics
+   * @param {string} name - Metric name
+   * @param {object} labels - Metric labels
+   * @param {number} value - Value to observe
+   */
+  observe(name, labels, value) {
+    try {
+      if (this.metrics[name] && this.metrics[name].observe) {
+        this.metrics[name].observe(labels, value);
+      } else {
+        logger.warn(`[MetricsService] Histogram metric not found: ${name}`);
+      }
+    } catch (error) {
+      logger.error(`[MetricsService] Error observing ${name}:`, error);
     }
-    if (cost) {
-      llmCostDollars.inc({ model, agent }, cost);
+  }
+
+  /**
+   * Sets a gauge metric value
+   * @param {string} name - Metric name
+   * @param {object} labels - Metric labels
+   * @param {number} value - Value to set
+   */
+  setGauge(name, labels, value) {
+    try {
+      if (this.metrics[name] && this.metrics[name].set) {
+        this.metrics[name].set(labels, value);
+      } else {
+        logger.warn(`[MetricsService] Gauge metric not found: ${name}`);
+      }
+    } catch (error) {
+      logger.error(`[MetricsService] Error setting gauge ${name}:`, error);
     }
   }
 
   /**
-   * Record agent execution
+   * Increments a gauge metric
+   * @param {string} name - Metric name
+   * @param {object} labels - Metric labels
+   * @param {number} [value=1] - Increment value
    */
-  recordAgentExecution(agent, operation, status, duration) {
-    agentExecutionsTotal.inc({ agent, operation, status });
-    agentExecutionDuration.observe({ agent, operation, status }, duration);
+  incGauge(name, labels, value = 1) {
+    try {
+      if (this.metrics[name] && this.metrics[name].inc) {
+        this.metrics[name].inc(labels, value);
+      } else {
+        logger.warn(`[MetricsService] Gauge metric not found: ${name}`);
+      }
+    } catch (error) {
+      logger.error(`[MetricsService] Error incrementing gauge ${name}:`, error);
+    }
   }
 
   /**
-   * Record cache operation
+   * Decrements a gauge metric
+   * @param {string} name - Metric name
+   * @param {object} labels - Metric labels
+   * @param {number} [value=1] - Decrement value
    */
-  recordCacheOperation(operation, status) {
-    cacheOperationsTotal.inc({ operation, status });
+  decGauge(name, labels, value = 1) {
+    try {
+      if (this.metrics[name] && this.metrics[name].dec) {
+        this.metrics[name].dec(labels, value);
+      } else {
+        logger.warn(`[MetricsService] Gauge metric not found: ${name}`);
+      }
+    } catch (error) {
+      logger.error(`[MetricsService] Error decrementing gauge ${name}:`, error);
+    }
   }
 
-  updateCacheHitRate(rate) {
-    cacheHitRate.set(rate);
+  // ==========================================
+  // CONVENIENCE METHODS FOR SPECIFIC METRICS
+  // ==========================================
+
+  /**
+   * Records a stream event
+   * @param {string} event - Event type (started, chunk, completed, failed, cancelled)
+   * @param {object} data - Event data
+   */
+  recordStreamEvent(event, data = {}) {
+    const { agent = 'unknown', model = 'unknown', error_type, reason } = data;
+
+    switch (event) {
+      case 'started':
+        this.incGauge('active_streams', { agent });
+        break;
+
+      case 'chunk':
+        this.increment('stream_chunks_sent', { agent, model });
+        break;
+
+      case 'completed':
+        this.increment('stream_sessions_completed', { agent, model });
+        this.decGauge('active_streams', { agent });
+        if (data.duration) {
+          this.observe('stream_duration_seconds', { agent, model, status: 'success' }, data.duration);
+        }
+        break;
+
+      case 'failed':
+        this.increment('stream_sessions_failed', { agent, model, error_type: error_type || 'unknown' });
+        this.decGauge('active_streams', { agent });
+        if (data.duration) {
+          this.observe('stream_duration_seconds', { agent, model, status: 'failed' }, data.duration);
+        }
+        break;
+
+      case 'cancelled':
+        this.increment('stream_sessions_cancelled', { agent, reason: reason || 'client_disconnect' });
+        this.decGauge('active_streams', { agent });
+        if (data.duration) {
+          this.observe('stream_duration_seconds', { agent, model, status: 'cancelled' }, data.duration);
+        }
+        break;
+
+      default:
+        logger.warn(`[MetricsService] Unknown stream event: ${event}`);
+    }
   }
 
   /**
-   * Record coordinator workflow
+   * Records an LLM API call
+   * @param {object} data - Call data
    */
-  recordCoordinatorWorkflow(strategy, status, duration) {
-    coordinatorWorkflowsTotal.inc({ strategy, status });
-    coordinatorWorkflowDuration.observe({ strategy, status }, duration);
+  recordLLMCall(data = {}) {
+    const {
+      model = 'unknown',
+      agent = 'unknown',
+      status = 'success', // success, failure
+      duration,
+      inputTokens = 0,
+      outputTokens = 0,
+      cost = 0,
+    } = data;
+
+    this.increment('llm_calls_total', { model, status, agent });
+
+    if (duration !== undefined) {
+      this.observe('llm_call_duration_seconds', { model, agent }, duration);
+    }
+
+    if (inputTokens > 0) {
+      this.increment('llm_tokens_used', { model, agent, token_type: 'input' }, inputTokens);
+    }
+
+    if (outputTokens > 0) {
+      this.increment('llm_tokens_used', { model, agent, token_type: 'output' }, outputTokens);
+    }
+
+    if (cost > 0) {
+      this.increment('llm_cost_usd', { model, agent }, cost);
+    }
   }
 
   /**
-   * Record rate limit hit
+   * Records a coordinator workflow
+   * @param {string} strategy - Workflow strategy
+   * @param {string} status - Workflow status
+   * @param {number} duration - Duration in seconds
+   * @param {string} workflowName - Workflow name
    */
-  recordRateLimitHit(agent, operation) {
-    rateLimitHits.inc({ agent, operation });
+  recordCoordinatorWorkflow(strategy, status, duration, workflowName = 'unnamed') {
+    this.increment('workflow_executions_total', {
+      workflow_name: workflowName,
+      strategy,
+      status,
+    });
+
+    if (duration !== undefined) {
+      this.observe('workflow_duration_seconds', {
+        workflow_name: workflowName,
+        strategy,
+      }, duration);
+    }
   }
 
   /**
-   * Record authentication attempt
-   */
-  recordAuthAttempt(method, status) {
-    authAttemptsTotal.inc({ method, status });
-  }
-
-  /**
-   * Reset all metrics
-   */
-  reset() {
-    register.resetMetrics();
-  }
-
-  /**
-   * Get specific metric
-   */
-  getMetric(name) {
-    return register.getSingleMetric(name);
-  }
-
-  /**
-   * Middleware for automatic request tracking
+   * Express middleware for tracking HTTP requests
+   * @returns {Function} Express middleware
    */
   middleware() {
     return (req, res, next) => {
       const start = Date.now();
-      
-      // Capture response
+
+      // Capture response finish event
       res.on('finish', () => {
         const duration = (Date.now() - start) / 1000;
-        const route = req.route?.path || req.path;
-        this.recordHttpRequest(req.method, route, res.statusCode, duration);
+        const route = req.route?.path || req.path || 'unknown';
+        const method = req.method;
+        const status_code = res.statusCode;
+
+        this.increment('api_requests_total', { method, route, status_code: String(status_code) });
+        this.observe('api_request_duration_seconds', {
+          method,
+          route,
+          status_code: String(status_code),
+        }, duration);
+
+        // Track rate limit hits
+        if (status_code === 429) {
+          const apiKeyPrefix = req.headers['x-api-key']?.substring(0, 8) || 'anonymous';
+          this.increment('rate_limit_hits_total', { route, api_key_prefix: apiKeyPrefix });
+        }
       });
-      
+
       next();
     };
   }
+
+  // ==========================================
+  // EXPORT METHODS
+  // ==========================================
+
+  /**
+   * Exposes metrics in Prometheus text format
+   * @returns {Promise<string>} Prometheus formatted metrics
+   */
+  async exposePrometheus() {
+    try {
+      return await this.register.metrics();
+    } catch (error) {
+      logger.error('[MetricsService] Error exposing Prometheus metrics:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Provides a JSON snapshot of all metrics
+   * @returns {Promise<Array>} Array of metric objects
+   */
+  async snapshot() {
+    try {
+      return await this.register.getMetricsAsJSON();
+    } catch (error) {
+      logger.error('[MetricsService] Error getting JSON snapshot:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Resets all metrics (useful for testing)
+   */
+  reset() {
+    this.register.resetMetrics();
+    logger.info('[MetricsService] All metrics reset');
+  }
+
+  /**
+   * Gets the Prometheus content type
+   * @returns {string} Content type header value
+   */
+  getContentType() {
+    return this.register.contentType;
+  }
 }
 
-// Export singleton instance
-const metricsService = new MetricsService();
-
-module.exports = metricsService;
+// Export a singleton instance
+module.exports = new MetricsService();

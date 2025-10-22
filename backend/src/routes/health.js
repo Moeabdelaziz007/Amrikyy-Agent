@@ -1,7 +1,7 @@
 /**
  * Global Health Check Routes
  * Aggregates health status from all system components
- * 
+ *
  * @author Mohamed Hossameldin Abdelaziz
  * @created 2025-10-22
  */
@@ -30,7 +30,7 @@ async function checkRedis() {
     await redis.set('health:check', 'ok', 10);
     const value = await redis.get('health:check');
     const latency = Date.now() - start;
-    
+
     return {
       status: value === 'ok' ? 'healthy' : 'degraded',
       latency,
@@ -51,19 +51,13 @@ async function checkRedis() {
 async function checkSupabase() {
   const start = Date.now();
   try {
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_ANON_KEY
-    );
-    
+    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+
     // Simple query to check connection
-    const { error } = await supabase
-      .from('users')
-      .select('count')
-      .limit(1);
-    
+    const { error } = await supabase.from('users').select('count').limit(1);
+
     const latency = Date.now() - start;
-    
+
     if (error) {
       return {
         status: 'degraded',
@@ -71,7 +65,7 @@ async function checkSupabase() {
         error: error.message
       };
     }
-    
+
     return {
       status: 'healthy',
       latency,
@@ -94,11 +88,11 @@ async function checkGemini() {
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
-    
+
     // Simple test prompt
     const result = await model.generateContent('ping');
     const latency = Date.now() - start;
-    
+
     return {
       status: result ? 'healthy' : 'degraded',
       latency,
@@ -120,33 +114,38 @@ function checkAgents() {
   try {
     const agentManagement = require('./agentManagement');
     const agents = agentManagement.agentRegistry;
-    
+
     const agentHealth = {};
     let healthyCount = 0;
     let degradedCount = 0;
     let unhealthyCount = 0;
-    
+
     for (const [name, agent] of agents.entries()) {
       const stats = agent.getStats?.() || {};
-      const errorRate = stats.totalCalls > 0 
-        ? (stats.failedCalls || 0) / stats.totalCalls 
-        : 0;
-      
+      const errorRate = stats.totalCalls > 0 ? (stats.failedCalls || 0) / stats.totalCalls : 0;
+
       let status = 'healthy';
-      if (errorRate > 0.5) status = 'unhealthy';
-      else if (errorRate > 0.2) status = 'degraded';
-      
+      if (errorRate > 0.5) {
+        status = 'unhealthy';
+      } else if (errorRate > 0.2) {
+        status = 'degraded';
+      }
+
       agentHealth[name] = {
         status,
         totalCalls: stats.totalCalls || 0,
         errorRate: Math.round(errorRate * 100)
       };
-      
-      if (status === 'healthy') healthyCount++;
-      else if (status === 'degraded') degradedCount++;
-      else unhealthyCount++;
+
+      if (status === 'healthy') {
+        healthyCount++;
+      } else if (status === 'degraded') {
+        degradedCount++;
+      } else {
+        unhealthyCount++;
+      }
     }
-    
+
     return {
       status: unhealthyCount > 0 ? 'degraded' : 'healthy',
       agents: agentHealth,
@@ -169,12 +168,12 @@ function checkAgents() {
  * Aggregate overall health
  */
 function aggregateHealth(components) {
-  const statuses = Object.values(components).map(c => c.status);
-  
-  if (statuses.some(s => s === 'unhealthy')) {
+  const statuses = Object.values(components).map((c) => c.status);
+
+  if (statuses.some((s) => s === 'unhealthy')) {
     return 'unhealthy';
   }
-  if (statuses.some(s => s === 'degraded')) {
+  if (statuses.some((s) => s === 'degraded')) {
     return 'degraded';
   }
   return 'healthy';
@@ -188,34 +187,30 @@ router.get('/health', async (req, res) => {
   try {
     // Check cache
     const now = Date.now();
-    if (cachedHealth && (now - cacheTimestamp) < HEALTH_CACHE_TTL * 1000) {
+    if (cachedHealth && now - cacheTimestamp < HEALTH_CACHE_TTL * 1000) {
       return res.json(cachedHealth);
     }
-    
+
     // Run health checks in parallel with timeout
     const healthPromises = Promise.race([
-      Promise.all([
-        checkRedis(),
-        checkSupabase(),
-        checkGemini()
-      ]),
-      new Promise((_, reject) => 
+      Promise.all([checkRedis(), checkSupabase(), checkGemini()]),
+      new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Health check timeout')), HEALTH_TIMEOUT)
       )
     ]);
-    
+
     const [redisHealth, supabaseHealth, geminiHealth] = await healthPromises;
     const agentHealth = checkAgents();
-    
+
     const components = {
       redis: redisHealth,
       database: supabaseHealth,
       gemini: geminiHealth,
       agents: agentHealth
     };
-    
+
     const overallStatus = aggregateHealth(components);
-    
+
     const response = {
       status: overallStatus,
       timestamp: new Date().toISOString(),
@@ -224,15 +219,14 @@ router.get('/health', async (req, res) => {
       version: '2.0.0',
       phase: 2
     };
-    
+
     // Cache result
     cachedHealth = response;
     cacheTimestamp = now;
-    
+
     // Set appropriate status code
-    const statusCode = overallStatus === 'healthy' ? 200 : 
-                       overallStatus === 'degraded' ? 200 : 503;
-    
+    const statusCode = overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 200 : 503;
+
     res.status(statusCode).json(response);
   } catch (error) {
     res.status(503).json({
@@ -262,7 +256,7 @@ router.get('/health/ready', async (req, res) => {
   try {
     // Check critical dependencies
     const redisHealth = await checkRedis();
-    
+
     if (redisHealth.status === 'unhealthy') {
       return res.status(503).json({
         status: 'not_ready',
@@ -270,7 +264,7 @@ router.get('/health/ready', async (req, res) => {
         timestamp: new Date().toISOString()
       });
     }
-    
+
     res.json({
       status: 'ready',
       timestamp: new Date().toISOString()

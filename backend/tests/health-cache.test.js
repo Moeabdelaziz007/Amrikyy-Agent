@@ -62,22 +62,25 @@ describe('Health Check Endpoints', () => {
       expect(response.body.components.gemini.status).toBe('healthy');
     });
 
-    it('should return 503 if a critical component check fails', async () => {
+    it('should return 503 and an unhealthy status if a critical component check fails', async () => {
       // Mock Supabase to return an error
       const { createClient } = require('@supabase/supabase-js');
       createClient.mockImplementationOnce(() => ({
-        from: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        limit: jest.fn().mockResolvedValue({ error: new Error('Connection failed') }),
+        from: jest.fn(() => ({
+          select: jest.fn(() => ({
+            limit: jest.fn(() => ({
+              error: new Error('Connection failed')
+            }))
+          }))
+        }))
       }));
 
       const response = await request(app).get('/api/health');
       
-      // The overall status is degraded, but the HTTP status might be 200 or 503 depending on config
-      // The code sets 503 for unhealthy, and 200 for degraded. Let's check for that.
-      expect(response.status).toBe(200); // degraded returns 200
-      expect(response.body.status).toBe('degraded');
-      expect(response.body.components.database.status).toBe('degraded');
+      // When a component is unhealthy, the aggregate status is unhealthy and returns 503
+      expect(response.status).toBe(503);
+      expect(response.body.status).toBe('unhealthy');
+      expect(response.body.components.database.status).toBe('degraded'); // The component itself is degraded, but the overall is unhealthy
     });
     
     it('should use cache for subsequent requests within the TTL', async () => {

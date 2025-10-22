@@ -138,6 +138,65 @@ const schemas = {
       focus: Joi.string().valid('pricing', 'features', 'marketing', 'all').default('all'),
     }),
   },
+
+  // Coordinator workflows
+  coordinator: {
+    sequential: Joi.object({
+      steps: Joi.array()
+        .items(
+          Joi.object({
+            agent: Joi.string().min(1).required(),
+            method: Joi.string().min(1).required(),
+            input: Joi.any().optional(),
+            transform: Joi.alternatives().try(Joi.string(), Joi.object(), Joi.array()).optional(),
+          })
+        )
+        .min(1)
+        .required(),
+      input: Joi.any().optional(),
+      transformers: Joi.array().items(Joi.string()).optional(),
+    }),
+
+    parallel: Joi.object({
+      tasks: Joi.array()
+        .items(
+          Joi.object({
+            agent: Joi.string().min(1).required(),
+            method: Joi.string().min(1).required(),
+            input: Joi.any().optional(),
+          })
+        )
+        .min(1)
+        .required(),
+      input: Joi.any().optional(),
+    }),
+
+    hierarchical: Joi.object({
+      master: Joi.object({
+        name: Joi.string().min(1).required(),
+        method: Joi.string().min(1).required(),
+        input: Joi.any().optional(),
+      }).required(),
+      subAgents: Joi.array()
+        .items(
+          Joi.object({
+            name: Joi.string().min(1).required(),
+            method: Joi.string().min(1).required(),
+            input: Joi.any().optional(),
+            inputTransform: Joi.alternatives().try(Joi.string(), Joi.object(), Joi.array()).optional(),
+          })
+        )
+        .min(1)
+        .required(),
+      input: Joi.any().optional(),
+      aggregator: Joi.alternatives().try(Joi.string(), Joi.object(), Joi.array()).optional(),
+    }),
+
+    workflow: Joi.object({
+      workflowName: Joi.string().min(1).required(),
+      input: Joi.any().optional(),
+    }),
+  },
 };
 
 /**
@@ -238,6 +297,14 @@ const validateInnovationAgent = {
   analyzeTrends: validate(schemas.innovationAgent.analyzeTrends, 'body'),
   analyzeCompetitors: validate(schemas.innovationAgent.analyzeCompetitors, 'body'),
 };
+
+/**
+ * Coordinator workflow validation middleware
+ */
+const validateSequentialWorkflow = validate(schemas.coordinator.sequential, 'body');
+const validateParallelWorkflow = validate(schemas.coordinator.parallel, 'body');
+const validateHierarchicalWorkflow = validate(schemas.coordinator.hierarchical, 'body');
+const validateCoordinatorWorkflow = validate(schemas.coordinator.workflow, 'body');
 
 /**
  * Custom validation for specific use cases
@@ -344,4 +411,8 @@ module.exports = {
   validateCustom,
   customValidators,
   schemas,
+  validateSequentialWorkflow,
+  validateParallelWorkflow,
+  validateHierarchicalWorkflow,
+  validateCoordinatorWorkflow,
 };

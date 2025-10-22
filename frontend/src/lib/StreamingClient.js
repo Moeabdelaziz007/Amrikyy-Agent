@@ -1,7 +1,7 @@
 /**
  * Frontend client for consuming streaming agent responses
  * Example using EventSource (Server-Sent Events)
- * 
+ *
  * @author Mohamed Hossameldin Abdelaziz
  * @created 2025-10-22
  */
@@ -21,7 +21,7 @@ export class StreamingClient {
       status: [],
       error: [],
       complete: [],
-      close: []
+      close: [],
     };
   }
 
@@ -43,14 +43,14 @@ export class StreamingClient {
 
     // Setup event listeners
     Object.keys(this.handlers).forEach(event => {
-      this.eventSource.addEventListener(event, (e) => {
+      this.eventSource.addEventListener(event, e => {
         const data = JSON.parse(e.data);
         this.emit(event, data);
       });
     });
 
     // Handle errors
-    this.eventSource.onerror = (error) => {
+    this.eventSource.onerror = error => {
       console.error('[StreamingClient] Connection error:', error);
       this.emit('error', { error: 'Connection failed' });
       this.disconnect();
@@ -124,23 +124,23 @@ export function useStreaming(endpoint, params = {}) {
         setIsConnected(true);
         setStatus('connected');
       })
-      .on('token', (data) => {
+      .on('token', data => {
         setContent(prev => prev + data.token);
       })
-      .on('chunk', (data) => {
+      .on('chunk', data => {
         setContent(prev => prev + data.chunk);
       })
-      .on('progress', (data) => {
+      .on('progress', data => {
         setProgress(data.progress);
       })
-      .on('status', (data) => {
+      .on('status', data => {
         setStatus(data.status);
       })
-      .on('error', (data) => {
+      .on('error', data => {
         setError(data.error);
         setStatus('error');
       })
-      .on('complete', (data) => {
+      .on('complete', data => {
         setResult(data);
         setStatus('complete');
         setProgress(100);
@@ -149,7 +149,6 @@ export function useStreaming(endpoint, params = {}) {
         setIsConnected(false);
       })
       .connect(endpoint, params);
-
   }, [endpoint, params]);
 
   const stop = React.useCallback(() => {
@@ -177,7 +176,7 @@ export function useStreaming(endpoint, params = {}) {
     error,
     result,
     start,
-    stop
+    stop,
   };
 }
 
@@ -185,19 +184,12 @@ export function useStreaming(endpoint, params = {}) {
  * Example: Streaming Blog Post Component
  */
 export function StreamingBlogPost({ topic, tone, length }) {
-  const {
-    isConnected,
-    content,
-    progress,
-    status,
-    error,
-    start,
-    stop
-  } = useStreaming('/content/stream/blog', {
-    topic,
-    tone,
-    length
-  });
+  const { isConnected, content, progress, status, error, start, stop } =
+    useStreaming('/content/stream/blog', {
+      topic,
+      tone,
+      length,
+    });
 
   return (
     <div className="streaming-blog-post">
@@ -210,33 +202,20 @@ export function StreamingBlogPost({ topic, tone, length }) {
         </button>
       </div>
 
-      {status && (
-        <div className="status">
-          Status: {status}
-        </div>
-      )}
+      {status && <div className="status">Status: {status}</div>}
 
       {progress > 0 && (
         <div className="progress-bar">
-          <div 
-            className="progress-fill" 
-            style={{ width: `${progress}%` }}
-          />
+          <div className="progress-fill" style={{ width: `${progress}%` }} />
           <span>{progress}%</span>
         </div>
       )}
 
-      {error && (
-        <div className="error">
-          Error: {error}
-        </div>
-      )}
+      {error && <div className="error">Error: {error}</div>}
 
       {content && (
         <div className="content">
-          <div className="markdown-preview">
-            {content}
-          </div>
+          <div className="markdown-preview">{content}</div>
         </div>
       )}
     </div>
@@ -247,19 +226,12 @@ export function StreamingBlogPost({ topic, tone, length }) {
  * Example: Streaming Itinerary Component
  */
 export function StreamingItinerary({ destination, days, budget }) {
-  const {
-    isConnected,
-    progress,
-    status,
-    error,
-    result,
-    start,
-    stop
-  } = useStreaming('/travel/stream/itinerary', {
-    destination,
-    days,
-    budget
-  });
+  const { isConnected, progress, status, error, result, start, stop } =
+    useStreaming('/travel/stream/itinerary', {
+      destination,
+      days,
+      budget,
+    });
 
   return (
     <div className="streaming-itinerary">
@@ -282,18 +254,11 @@ export function StreamingItinerary({ destination, days, budget }) {
 
       {progress > 0 && (
         <div className="progress-bar">
-          <div 
-            className="progress-fill" 
-            style={{ width: `${progress}%` }}
-          />
+          <div className="progress-fill" style={{ width: `${progress}%` }} />
         </div>
       )}
 
-      {error && (
-        <div className="error-message">
-          {error}
-        </div>
-      )}
+      {error && <div className="error-message">{error}</div>}
 
       {result && result.itinerary && (
         <div className="itinerary-result">
@@ -328,30 +293,30 @@ export function ManualStreamingExample() {
     const streamClient = new StreamingClient();
 
     streamClient
-      .on('connected', (data) => {
+      .on('connected', data => {
         addMessage('Connected', data);
       })
-      .on('token', (data) => {
+      .on('token', data => {
         addMessage('Token', data);
       })
-      .on('chunk', (data) => {
+      .on('chunk', data => {
         addMessage('Chunk', data);
       })
-      .on('progress', (data) => {
+      .on('progress', data => {
         addMessage('Progress', data);
       })
-      .on('status', (data) => {
+      .on('status', data => {
         addMessage('Status', data);
       })
-      .on('error', (data) => {
+      .on('error', data => {
         addMessage('Error', data);
       })
-      .on('complete', (data) => {
+      .on('complete', data => {
         addMessage('Complete', data);
       })
       .connect('/content/stream/social', {
         topic: 'AI Travel Planning',
-        platforms: 'twitter,linkedin,instagram'
+        platforms: 'twitter,linkedin,instagram',
       });
 
     setClient(streamClient);
@@ -365,11 +330,14 @@ export function ManualStreamingExample() {
   };
 
   const addMessage = (type, data) => {
-    setMessages(prev => [...prev, {
-      type,
-      data,
-      timestamp: Date.now()
-    }]);
+    setMessages(prev => [
+      ...prev,
+      {
+        type,
+        data,
+        timestamp: Date.now(),
+      },
+    ]);
   };
 
   return (
@@ -381,14 +349,15 @@ export function ManualStreamingExample() {
         <button onClick={stopStream} disabled={!client}>
           Stop Stream
         </button>
-        <button onClick={() => setMessages([])}>
-          Clear Messages
-        </button>
+        <button onClick={() => setMessages([])}>Clear Messages</button>
       </div>
 
       <div className="messages">
         {messages.map((msg, index) => (
-          <div key={index} className={`message message-${msg.type.toLowerCase()}`}>
+          <div
+            key={index}
+            className={`message message-${msg.type.toLowerCase()}`}
+          >
             <span className="type">[{msg.type}]</span>
             <span className="data">{JSON.stringify(msg.data, null, 2)}</span>
           </div>
@@ -405,27 +374,27 @@ export function vanillaJSExample() {
   const client = new StreamingClient();
 
   client
-    .on('connected', (data) => {
+    .on('connected', data => {
       console.log('Connected:', data);
     })
-    .on('chunk', (data) => {
+    .on('chunk', data => {
       document.getElementById('output').textContent += data.chunk;
     })
-    .on('progress', (data) => {
+    .on('progress', data => {
       document.getElementById('progress').style.width = `${data.progress}%`;
     })
-    .on('complete', (data) => {
+    .on('complete', data => {
       console.log('Complete:', data);
       alert('Generation complete!');
     })
-    .on('error', (data) => {
+    .on('error', data => {
       console.error('Error:', data);
       alert('Error: ' + data.error);
     })
     .connect('/content/stream/blog', {
       topic: 'AI in Travel',
       tone: 'professional',
-      length: 'medium'
+      length: 'medium',
     });
 
   // Later: disconnect

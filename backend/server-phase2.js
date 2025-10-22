@@ -1,7 +1,7 @@
 /**
  * Amrikyy Agent - Phase 2 Production Server
  * Main entry point for Phase 2 API with graceful shutdown
- * 
+ *
  * @author Mohamed Hossameldin Abdelaziz
  * @created 2025-10-22
  */
@@ -26,35 +26,30 @@ let isShuttingDown = false;
  */
 async function performStartupChecks() {
   logger.info('[SERVER] Performing startup checks...');
-  
+
   const checks = {
     env: false,
     redis: false,
-    database: false
+    database: false,
   };
-  
+
   // Check environment variables
-  const requiredEnv = [
-    'GEMINI_API_KEY',
-    'SUPABASE_URL',
-    'SUPABASE_ANON_KEY',
-    'JWT_SECRET'
-  ];
-  
-  const missingEnv = requiredEnv.filter(key => !process.env[key]);
-  
+  const requiredEnv = ['GEMINI_API_KEY', 'SUPABASE_URL', 'SUPABASE_ANON_KEY', 'JWT_SECRET'];
+
+  const missingEnv = requiredEnv.filter((key) => !process.env[key]);
+
   if (missingEnv.length === 0) {
     checks.env = true;
     logger.info('✓ Environment variables configured');
   } else {
     logger.warn('⚠ Missing environment variables:', missingEnv);
   }
-  
+
   // Check Redis connection
   try {
     await redis.set('startup:check', 'ok', 10);
     const value = await redis.get('startup:check');
-    
+
     if (value === 'ok') {
       checks.redis = true;
       logger.info('✓ Redis connection successful');
@@ -64,20 +59,14 @@ async function performStartupChecks() {
   } catch (error) {
     logger.warn('⚠ Redis not available (will use memory cache):', error.message);
   }
-  
+
   // Check database connection
   try {
     const { createClient } = require('@supabase/supabase-js');
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_ANON_KEY
-    );
-    
-    const { error } = await supabase
-      .from('users')
-      .select('count')
-      .limit(1);
-    
+    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+
+    const { error } = await supabase.from('users').select('count').limit(1);
+
     if (!error) {
       checks.database = true;
       logger.info('✓ Database connection successful');
@@ -87,10 +76,10 @@ async function performStartupChecks() {
   } catch (error) {
     logger.warn('⚠ Database check failed:', error.message);
   }
-  
+
   // Summary
   logger.info('[SERVER] Startup checks complete:', checks);
-  
+
   return checks;
 }
 
@@ -100,16 +89,16 @@ async function performStartupChecks() {
 async function start() {
   try {
     logger.info(`[SERVER] Starting Amrikyy Agent Phase 2 (${NODE_ENV})...`);
-    
+
     // Perform startup checks
     const checks = await performStartupChecks();
-    
+
     // Create Express app
     const app = createApp();
-    
+
     // Add metrics middleware
     app.use(metricsService.middleware());
-    
+
     // Start server
     server = app.listen(PORT, HOST, () => {
       console.log('='.repeat(60));
@@ -130,7 +119,7 @@ async function start() {
       console.log('  ✓ Redis Rate Limiting');
       console.log('  ✓ Prometheus Metrics');
       console.log('='.repeat(60));
-      
+
       // Log startup check results
       if (!checks.env) {
         console.warn('⚠ Some environment variables are missing');
@@ -141,16 +130,16 @@ async function start() {
       if (!checks.database) {
         console.warn('⚠ Database connection issue - some features may be limited');
       }
-      
+
       console.log('✅ Server ready to accept connections');
       console.log('');
     });
-    
+
     // Set timeouts
     server.timeout = 120000; // 2 minutes for long-running streams
     server.keepAliveTimeout = 65000; // Keep alive for SSE
     server.headersTimeout = 66000; // Slightly higher than keep alive
-    
+
     // Handle server errors
     server.on('error', (error) => {
       if (error.code === 'EADDRINUSE') {
@@ -160,7 +149,6 @@ async function start() {
       }
       process.exit(1);
     });
-    
   } catch (error) {
     logger.error('[SERVER] Failed to start:', error);
     process.exit(1);
@@ -175,34 +163,34 @@ async function gracefulShutdown(signal) {
     logger.warn('[SERVER] Shutdown already in progress...');
     return;
   }
-  
+
   isShuttingDown = true;
-  
+
   logger.info(`[SERVER] Received ${signal}, starting graceful shutdown...`);
-  
+
   // Stop accepting new connections
   if (server) {
     server.close(() => {
       logger.info('[SERVER] HTTP server closed');
     });
   }
-  
+
   // Give existing requests time to complete
   const shutdownTimeout = setTimeout(() => {
     logger.warn('[SERVER] Shutdown timeout - forcing exit');
     process.exit(1);
   }, 30000); // 30 seconds
-  
+
   try {
     // Close Redis connection
     if (redis && redis.disconnect) {
       await redis.disconnect();
       logger.info('[SERVER] Redis connection closed');
     }
-    
+
     // Close database connections
     // Add any other cleanup here
-    
+
     clearTimeout(shutdownTimeout);
     logger.info('[SERVER] Graceful shutdown complete');
     process.exit(0);

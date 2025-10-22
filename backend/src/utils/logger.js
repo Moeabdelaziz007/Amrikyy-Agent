@@ -34,6 +34,9 @@ class Logger {
   }
 }
 
-module.exports = {
-  logger: new Logger()
-};
+const rootLogger = new Logger();
+
+module.exports = rootLogger;
+module.exports.logger = rootLogger;
+module.exports.createLogger = (module) => new Logger(module);
+module.exports.Logger = Logger;

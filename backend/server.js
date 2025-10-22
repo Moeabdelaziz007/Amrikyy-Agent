@@ -27,6 +27,10 @@ app.use('/api/stripe', express.raw({ type: 'application/json' }), stripeWebhookR
 app.use(cors());
 app.use(express.json());
 
+// Metrics Middleware
+const { trackRequests } = require('./src/middleware/metrics');
+app.use(trackRequests);
+
 // ============================================
 // API ROUTES
 // ============================================
@@ -40,6 +44,13 @@ const notebooklmRoutes = require('./routes/notebooklm');
 const vaultRoutes = require('./routes/vault-routes');
 const sabreRoutes = require('./routes/sabre-routes');
 const voiceRoutes = require('./routes/voice');
+const healthRoutes = require('./src/routes/health');
+const cacheRoutes = require('./src/routes/cache');
+const metricsRoutes = require('./src/routes/metrics');
+
+// Middleware for protected routes
+const { requireAuth } = require('./src/middleware/auth');
+const { defaultLimiter } = require('./src/middleware/rateLimiter');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
@@ -51,19 +62,9 @@ app.use('/api/notebooklm', notebooklmRoutes);
 app.use('/api/vault', vaultRoutes);
 app.use('/api/sabre', sabreRoutes);
 app.use('/api/voice', voiceRoutes);
-
-// ============================================
-// HEALTH CHECK ENDPOINT
-// ============================================
-
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    status: 'UP',
-    timestamp: new Date().toISOString(),
-    service: 'Amrikyy Travel Agent MVP',
-    version: '1.0.0',
-  });
-});
+app.use('/api', healthRoutes);
+app.use('/api/cache', requireAuth, defaultLimiter, cacheRoutes);
+app.use('/api', metricsRoutes);
 
 // ============================================
 // DASHBOARD STATS ENDPOINT

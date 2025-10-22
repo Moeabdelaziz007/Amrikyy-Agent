@@ -269,7 +269,6 @@ For each hotel, add realistic booking information in JSON format:
 Provide 4-6 realistic hotel options with varying prices and ratings.
 `;
 
-    try {
       this.state.status = 'working';
       this.state.currentTask = 'hotel_search';
       
