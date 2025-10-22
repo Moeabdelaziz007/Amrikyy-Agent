@@ -13,8 +13,8 @@
  */
 
 const { v4: uuidv4 } = require('uuid');
-const streamService = require('../services/streamService');
-const logger = require('../utils/logger');
+const streamService = require('../src/services/streamService');
+const logger = require('../src/utils/logger');
 
 /**
  * Stream blog post generation
