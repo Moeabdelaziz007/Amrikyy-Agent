@@ -31,13 +31,26 @@ Click **"New repository secret"** and add each secret below:
 
 ---
 
-### Secret 2: RAILWAY_TOKEN
-- **Name**: `RAILWAY_TOKEN`
-- **Get from**: https://railway.app/account/tokens
+### Secret 2: RENDER_API_KEY
+- **Name**: `RENDER_API_KEY`
+- **Get from**: https://dashboard.render.com/u/settings#api-keys
 - **Steps**: 
-  1. Click "Create New Token"
+  1. Click "Create API Key"
   2. Name it "GitHub Actions"
-  3. Copy and paste
+  3. Copy the key (starts with `rnd_...`)
+
+### Secret 3: RENDER_SERVICE_ID
+- **Name**: `RENDER_SERVICE_ID`
+- **Get from**: Your Render service dashboard URL
+- **Steps**:
+  1. Go to your service in Render
+  2. URL looks like: `dashboard.render.com/web/srv-xxxxx`
+  3. Copy the `srv-xxxxx` part
+
+### Secret 4: RENDER_SERVICE_URL
+- **Name**: `RENDER_SERVICE_URL`
+- **Get from**: Your Render service dashboard
+- **Example**: `amrikyy-backend.onrender.com`
 
 ---
 
@@ -85,7 +98,7 @@ You'll see:
 
 ---
 
-### Secret 6: SENTRY_DSN
+### Secret 8: SENTRY_DSN
 - **Name**: `SENTRY_DSN`
 - **Get from**: https://sentry.io
 - **Steps**:
@@ -98,11 +111,13 @@ You'll see:
 
 ## ✅ STEP 3: Verify
 
-After adding all 6 secrets, you should see:
+After adding all 8 secrets, you should see:
 
 ```
 ✅ METRICS_API_KEY
-✅ RAILWAY_TOKEN
+✅ RENDER_API_KEY
+✅ RENDER_SERVICE_ID
+✅ RENDER_SERVICE_URL
 ✅ VERCEL_TOKEN
 ✅ VERCEL_ORG_ID
 ✅ VERCEL_PROJECT_ID
@@ -155,7 +170,7 @@ git push origin main
 # GitHub Actions will automatically:
 # ✅ Run 520+ tests
 # ✅ Scan for security issues
-# ✅ Deploy backend to Railway
+# ✅ Deploy backend to Render
 # ✅ Deploy frontend to Vercel
 # ✅ Verify health checks
 ```
@@ -176,9 +191,9 @@ git push origin main
 
 ## 🆘 Common Issues
 
-**"Can't create Railway token"**
-- Make sure you have a Railway account
-- Create a project first at https://railway.app/new
+**"Can't create Render API key"**
+- Make sure you have a Render account
+- Create a web service first at https://dashboard.render.com
 
 **"Can't create Vercel token"**
 - Make sure you have a Vercel account  
