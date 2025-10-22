@@ -4,13 +4,24 @@
  */
 
 const logger = require('./logger');
-const KeloClient = require('../src/ai/keloClient');
 const SupabaseDB = require('../database/supabase');
 
 class HealthMonitor {
   constructor() {
-    this.keloClient = new KeloClient();
-    this.db = new SupabaseDB();
+    // Initialize clients safely - only if available
+    try {
+      this.keloClient = process.env.KELO_API_KEY ? require('../src/ai/keloClient') : null;
+    } catch (error) {
+      this.keloClient = null;
+      logger.warn('KeloClient not available:', error.message);
+    }
+
+    try {
+      this.db = new SupabaseDB();
+    } catch (error) {
+      this.db = null;
+      logger.warn('SupabaseDB not available:', error.message);
+    }
 
     this.metrics = {
       uptime: Date.now(),

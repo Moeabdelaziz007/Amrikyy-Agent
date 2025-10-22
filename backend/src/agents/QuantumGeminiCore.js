@@ -27,7 +27,11 @@ class QuantumGeminiCore extends EventEmitter {
       autonomousDecision: true,
       selfOptimization: true
     };
-    this.initializeGemini();
+    // Initialize asynchronously
+    this.initializeGemini().catch(error => {
+      logger.error('Failed to initialize in constructor:', error);
+      this.emit('error', error);
+    });
   }
 
   /**
@@ -69,14 +73,19 @@ class QuantumGeminiCore extends EventEmitter {
       });
 
       logger.info('🚀 Quantum Gemini Core initialized with superpowers');
-      this.emit('initialized', { 
-        model: 'gemini-2.0-flash-exp',
-        quantumState: this.quantumState,
-        superpowers: this.superpowers 
+      
+      // Emit event on next tick to ensure listeners are registered
+      setImmediate(() => {
+        this.emit('initialized', { 
+          model: 'gemini-2.0-flash-exp',
+          quantumState: this.quantumState,
+          superpowers: this.superpowers 
+        });
       });
 
     } catch (error) {
       logger.error('Failed to initialize Quantum Gemini Core:', error);
+      this.emit('error', error);
       throw error;
     }
   }

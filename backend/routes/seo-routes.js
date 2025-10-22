@@ -18,8 +18,32 @@
 
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const SitemapGenerator = require('../src/services/SitemapGenerator');
 const SEOMonitor = require('../src/services/SEOMonitor');
+
+// Rate Limiting Configuration
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    success: false,
+    error: 'تم تجاوز حد الطلبات - حاول مرة أخرى لاحقاً'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const strictLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10, // limit each IP to 10 requests per hour
+  message: {
+    success: false,
+    error: 'تم تجاوز حد الطلبات - حاول مرة أخرى بعد ساعة'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // تهيئة الخدمات
 let sitemapGenerator = null;
@@ -61,7 +85,7 @@ function authMiddleware(req, res, next) {
  * POST /api/seo/sitemap/generate
  * توليد خريطة الموقع من المسارات
  */
-router.post('/sitemap/generate', async (req, res) => {
+router.post('/sitemap/generate', strictLimiter, async (req, res) => {
   try {
     initServices();
     
@@ -94,7 +118,7 @@ router.post('/sitemap/generate', async (req, res) => {
  * POST /api/seo/sitemap/submit
  * إرسال خريطة الموقع لجوجل
  */
-router.post('/sitemap/submit', async (req, res) => {
+router.post('/sitemap/submit', strictLimiter, async (req, res) => {
   try {
     initServices();
     
@@ -127,7 +151,7 @@ router.post('/sitemap/submit', async (req, res) => {
  * GET /api/seo/analytics/summary
  * الحصول على ملخص الأداء
  */
-router.get('/analytics/summary', async (req, res) => {
+router.get('/analytics/summary', apiLimiter, async (req, res) => {
   try {
     initServices();
     
@@ -148,7 +172,7 @@ router.get('/analytics/summary', async (req, res) => {
  * GET /api/seo/analytics/pages
  * الحصول على أفضل الصفحات
  */
-router.get('/analytics/pages', async (req, res) => {
+router.get('/analytics/pages', apiLimiter, async (req, res) => {
   try {
     initServices();
     

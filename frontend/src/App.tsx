@@ -8,6 +8,7 @@ import ResponsiveTest from '@/pages/ResponsiveTest';
 import AmrikyyOSComplete from '@/pages/AmrikyyOSComplete';
 import AppLauncher from '@/pages/AppLauncher';
 import CodebaseExplorer from '@/pages/CodebaseExplorer';
+import SEODashboard from '@/pages/SEODashboard';
 
 function App() {
   return (
@@ -39,6 +40,9 @@ function App() {
 
       {/* Codebase Explorer (Ona AI) */}
       <Route path="/codebase" element={<CodebaseExplorer />} />
+
+      {/* SEO Dashboard */}
+      <Route path="/seo" element={<SEODashboard />} />
 
       {/* Placeholder Routes */}
       <Route path="/search" element={
