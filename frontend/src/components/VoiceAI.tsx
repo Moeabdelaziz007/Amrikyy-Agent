@@ -7,6 +7,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, MicOff, Volume2, X, Sparkles } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface VoiceAIProps {
   onTranscript?: (text: string) => void;
@@ -19,6 +20,7 @@ export default function VoiceAI({
   onResponse,
   position = 'fixed' 
 }: VoiceAIProps) {
+  const { language, t } = useLanguage();
   const [isListening, setIsListening] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [transcript, setTranscript] = useState('');
@@ -38,7 +40,8 @@ export default function VoiceAI({
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
-      recognitionRef.current.lang = 'en-US';
+      // Set language based on current selection
+      recognitionRef.current.lang = language === 'ar' ? 'ar-EG' : 'en-US';
 
       recognitionRef.current.onresult = (event: any) => {
         const current = event.resultIndex;
@@ -134,10 +137,11 @@ export default function VoiceAI({
       setResponse(aiResponse);
       onResponse?.(aiResponse);
       
-      // Speak the response
+      // Speak the response in correct language
       if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(aiResponse);
-        utterance.rate = 1.0;
+        utterance.lang = language === 'ar' ? 'ar-EG' : 'en-US';
+        utterance.rate = language === 'ar' ? 0.9 : 1.0; // Slightly slower for Arabic
         utterance.pitch = 1.0;
         window.speechSynthesis.speak(utterance);
       }
@@ -210,9 +214,9 @@ export default function VoiceAI({
                 <Sparkles className="relative w-8 h-8 text-cyan-400" />
               </motion.div>
               <div>
-                <h3 className="text-lg font-bold text-white">Maya AI</h3>
+                <h3 className="text-lg font-bold text-white">{t('voice.title')}</h3>
                 <p className="text-sm text-slate-400">
-                  {isListening ? 'Listening...' : isProcessing ? 'Thinking...' : 'Ready to help'}
+                  {isListening ? t('voice.listening') : isProcessing ? t('voice.thinking') : t('voice.ready')}
                 </p>
               </div>
             </div>
@@ -235,7 +239,7 @@ export default function VoiceAI({
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-4 p-4 bg-slate-800/50 rounded-2xl border border-slate-700"
               >
-                <p className="text-sm text-slate-300 mb-1 font-semibold">You said:</p>
+                <p className="text-sm text-slate-300 mb-1 font-semibold">{t('voice.you.said')}</p>
                 <p className="text-white">{transcript}</p>
               </motion.div>
             )}
@@ -249,7 +253,7 @@ export default function VoiceAI({
               >
                 <div className="flex items-center gap-2 mb-2">
                   <Volume2 className="w-4 h-4 text-cyan-400" />
-                  <p className="text-sm text-cyan-400 font-semibold">Maya:</p>
+                  <p className="text-sm text-cyan-400 font-semibold">{t('voice.maya.says')}</p>
                 </div>
                 <p className="text-white">{response}</p>
               </motion.div>
@@ -268,7 +272,7 @@ export default function VoiceAI({
                 >
                   <Sparkles className="w-5 h-5" />
                 </motion.div>
-                <span className="text-sm">Processing...</span>
+                <span className="text-sm">{t('voice.processing')}</span>
               </motion.div>
             )}
           </motion.div>
@@ -346,7 +350,7 @@ export default function VoiceAI({
           animate={{ opacity: 1, x: 0 }}
           className="absolute right-20 top-1/2 -translate-y-1/2 bg-slate-900 text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap pointer-events-none"
         >
-          Talk to Maya AI
+          {t('voice.tooltip')}
         </motion.div>
       )}
     </div>
