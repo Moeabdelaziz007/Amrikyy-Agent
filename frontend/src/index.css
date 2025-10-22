@@ -1,8 +1,54 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Arabic Font Support */
+:root {
+  --font-arabic: 'Cairo', 'Tajawal', 'Arial', sans-serif;
+  --font-latin: 'Inter', sans-serif;
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] body {
+  font-family: var(--font-arabic);
+}
+
+[dir="ltr"] body {
+  font-family: var(--font-latin);
+}
+
+/* Arabic Text Styling */
+.arabic-text {
+  font-family: var(--font-arabic);
+  direction: rtl;
+  text-align: right;
+  line-height: 1.8;
+  letter-spacing: 0;
+}
+
+/* Mixed Content (Arabic + English) */
+.mixed-content {
+  font-family: var(--font-arabic);
+  unicode-bidi: plaintext;
+}
+
+/* Better Arabic Rendering */
+@supports (font-feature-settings: normal) {
+  .arabic-text {
+    font-feature-settings: "liga" 1, "calt" 1, "kern" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
 
 /* Custom Animations for Landing Page */
 @keyframes gradient-x {

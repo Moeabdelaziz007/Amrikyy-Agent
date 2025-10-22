@@ -149,16 +149,18 @@ app.post('/api/ai/chat', async (req, res) => {
       });
     }
 
-    // Mock AI response for MVP
-    const aiResponse = {
-      message: `I understand you're interested in: "${message}". This is a demo response from the Amrikyy Travel Agent MVP. The full AI integration will be available in the production version.`,
-      timestamp: new Date().toISOString(),
-      status: 'demo_mode',
-    };
+    // Call Gemini AI
+    const { GoogleGenerativeAI } = require('@google/generative-ai');
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+
+    const result = await model.generateContent(`You are Maya, a friendly travel assistant for Amrikyy platform. Help users with travel planning, booking, and recommendations. User message: ${message}`);
+    const aiResponse = result.response.text();
 
     res.status(200).json({
       success: true,
-      data: aiResponse,
+      response: aiResponse,
+      data: { response: aiResponse }
     });
   } catch (error) {
     console.error('AI Chat Error:', error);
