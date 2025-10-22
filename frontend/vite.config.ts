@@ -15,7 +15,7 @@ export default defineConfig({
     minify: 'terser',
   },
   server: {
-    port: 3000,
+    port: 5173,
     host: '0.0.0.0'
   }
 })
