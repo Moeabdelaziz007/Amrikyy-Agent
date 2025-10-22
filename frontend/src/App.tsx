@@ -15,14 +15,17 @@ function App() {
   return (
     <>
       <Routes>
-      {/* New Clean Routes */}
-      <Route path="/" element={
+      {/* Main Route - App Launcher */}
+      <Route path="/" element={<AppLauncher />} />
+
+      {/* Legacy Home Page (moved to /home) */}
+      <Route path="/home" element={
         <AppLayout>
           <Home />
         </AppLayout>
       } />
 
-      {/* Legacy Landing Page (temporary) */}
+      {/* Legacy Landing Page */}
       <Route path="/landing" element={<LandingPage />} />
 
       {/* AI OS Demo */}
@@ -37,7 +40,7 @@ function App() {
       {/* Complete OS (Claude 4.5) */}
       <Route path="/amrikyy-os" element={<AmrikyyOSComplete />} />
 
-      {/* App Launcher (Blackbox) */}
+      {/* App Launcher (legacy route for backwards compatibility) */}
       <Route path="/launcher" element={<AppLauncher />} />
 
       {/* Codebase Explorer (Ona AI) */}

@@ -35,12 +35,16 @@ const bookingRoutes = require('./routes/bookings');
 const osRoutes = require('./routes/os');
 const codebaseRoutes = require('./routes/codebase-routes');
 const seoRoutes = require('./routes/seo-routes');
+const youtubeRoutes = require('./routes/youtube-automation');
+const notebooklmRoutes = require('./routes/notebooklm');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/os', osRoutes);
 app.use('/api/codebase', codebaseRoutes);
 app.use('/api/seo', seoRoutes);
+app.use('/api/youtube', youtubeRoutes);
+app.use('/api/notebooklm', notebooklmRoutes);
 
 // ============================================
 // HEALTH CHECK ENDPOINT

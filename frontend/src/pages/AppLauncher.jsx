@@ -71,13 +71,13 @@ export default function AppLauncher() {
     },
     {
       id: 'home',
-      title: 'Home Page',
-      subtitle: 'Main Dashboard',
-      description: 'Main landing page with navigation to all features. Start your journey here.',
-      path: '/',
+      title: 'Travel Home',
+      subtitle: 'Booking Dashboard',
+      description: 'Travel booking landing page with flight search and booking features.',
+      path: '/home',
       icon: Home,
       gradient: 'from-indigo-500 via-purple-500 to-pink-500',
-      features: ['Dashboard', 'Navigation', 'Quick Links', 'Overview'],
+      features: ['Flight Search', 'Bookings', 'Travel', 'Dashboard'],
       status: 'Active',
       statusColor: 'bg-indigo-500'
     },
