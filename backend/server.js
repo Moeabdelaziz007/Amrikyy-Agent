@@ -14,9 +14,27 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
+// ============================================
+// STRIPE WEBHOOK - MUST BE BEFORE express.json()
+// ============================================
+// Stripe webhooks need raw body for signature verification
+const stripeWebhookRouter = require('./routes/stripe-webhook');
+app.use('/api/stripe', express.raw({ type: 'application/json' }), stripeWebhookRouter);
+
+// ============================================
+// STANDARD MIDDLEWARE
+// ============================================
 app.use(cors());
 app.use(express.json());
+
+// ============================================
+// API ROUTES
+// ============================================
+const authRoutes = require('./routes/auth');
+const bookingRoutes = require('./routes/bookings');
+
+app.use('/api/auth', authRoutes);
+app.use('/api/bookings', bookingRoutes);
 
 // ============================================
 // HEALTH CHECK ENDPOINT
