@@ -6,15 +6,15 @@ import LandingPage from '@/pages/LandingPage';
 function App() {
   return (
     <Routes>
-      {/* New Clean Routes */}
-      <Route path="/" element={
+      {/* New Stunning Landing Page */}
+      <Route path="/" element={<LandingPage />} />
+      
+      {/* Old Home (moved to /home) */}
+      <Route path="/home" element={
         <AppLayout>
           <Home />
         </AppLayout>
       } />
-      
-      {/* Legacy Landing Page (temporary) */}
-      <Route path="/landing" element={<LandingPage />} />
       
       {/* Placeholder Routes */}
       <Route path="/search" element={
