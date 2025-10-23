@@ -1,97 +1,115 @@
 import React, { useState } from 'react';
 import { 
-  Home, 
-  Smartphone, 
-  Monitor, 
-  Layout, 
-  Sparkles,
-  Layers,
-  Grid,
+  Map,
+  DollarSign,
+  Search,
+  MessageSquare,
+  BookOpen,
+  Code,
   ArrowRight,
   Github,
-  ExternalLink
+  ExternalLink,
+  Sparkles
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 /**
- * App Launcher - Central hub for all Amrikyy OS demos
- * Built by Blackbox AI
+ * App Launcher - Central hub for Amrikyy AI Mini Apps
+ * Travel Intelligence Platform
  */
 export default function AppLauncher() {
   const [hoveredCard, setHoveredCard] = useState(null);
 
-  const demos = [
+  const miniApps = [
     {
-      id: 'complete-os',
-      title: 'Complete OS',
-      subtitle: 'Claude 4.5 Edition',
-      description: 'Full-featured OS with mobile, tablet, and desktop support. Includes 10 functional apps, window management, and beautiful UI.',
-      path: '/amrikyy-os',
-      icon: Layout,
-      gradient: 'from-purple-500 via-pink-500 to-red-500',
-      features: ['10 Apps', 'Window Management', 'Split View', 'Dark Mode'],
-      status: 'Production Ready',
-      statusColor: 'bg-green-500'
+      id: 'luna',
+      title: 'Luna',
+      titleAr: 'لونا',
+      subtitle: 'Trip Planner',
+      description: 'AI-powered travel planning with smart itinerary builder and destination recommendations.',
+      descriptionAr: 'مخطط الرحلات - تخطيط السفر بالذكاء الاصطناعي',
+      path: '/apps/luna',
+      icon: Map,
+      gradient: 'from-cyan-500 to-blue-600',
+      features: ['Trip Planning', 'AI Suggestions', 'Itinerary Builder'],
+      status: 'Available',
+      statusColor: 'bg-green-500',
+      available: true
     },
     {
-      id: 'mobile-demo',
-      title: 'Mobile Demo',
-      subtitle: 'Touch-Optimized',
-      description: 'Mobile-first interface with touch gestures, app drawer, and iOS-style dock. Perfect for smartphones.',
-      path: '/mobile-demo',
-      icon: Smartphone,
-      gradient: 'from-blue-500 via-cyan-500 to-teal-500',
-      features: ['Touch Gestures', 'App Drawer', 'iOS Dock', 'Safe Area'],
-      status: 'Beta',
-      statusColor: 'bg-blue-500'
+      id: 'karim',
+      title: 'Karim',
+      titleAr: 'كريم',
+      subtitle: 'Budget Optimizer',
+      description: 'Smart cost analysis and budget optimization for your travel expenses.',
+      descriptionAr: 'محسن الميزانية - تحليل التكاليف الذكي',
+      path: '/apps/karim',
+      icon: DollarSign,
+      gradient: 'from-purple-500 to-pink-600',
+      features: ['Budget Planning', 'Cost Analysis', 'Savings Tips'],
+      status: 'Available',
+      statusColor: 'bg-green-500',
+      available: true
     },
     {
-      id: 'responsive-test',
-      title: 'Responsive Test',
-      subtitle: 'Multi-Device',
-      description: 'Test responsive behavior across all device sizes. See how the OS adapts from mobile to desktop.',
-      path: '/responsive-test',
-      icon: Monitor,
-      gradient: 'from-green-500 via-emerald-500 to-lime-500',
-      features: ['Device Preview', 'Breakpoints', 'Live Testing', 'Responsive'],
-      status: 'Testing',
-      statusColor: 'bg-yellow-500'
+      id: 'scout',
+      title: 'Scout',
+      titleAr: 'سكاوت',
+      subtitle: 'Deal Finder',
+      description: 'Find the best prices and offers for flights, hotels, and travel packages.',
+      descriptionAr: 'باحث العروض - أفضل الأسعار والعروض',
+      path: '/apps/scout',
+      icon: Search,
+      gradient: 'from-green-500 to-emerald-600',
+      features: ['Flight Deals', 'Hotel Offers', 'Price Tracking'],
+      status: 'Available',
+      statusColor: 'bg-green-500',
+      available: true
     },
     {
-      id: 'os-demo',
-      title: 'OS Demo',
-      subtitle: 'Original Version',
-      description: 'Original OS implementation with basic window management and app system. Foundation for all demos.',
-      path: '/os-demo',
-      icon: Layers,
-      gradient: 'from-orange-500 via-red-500 to-pink-500',
-      features: ['Windows', 'Apps', 'Taskbar', 'Basic UI'],
-      status: 'Legacy',
-      statusColor: 'bg-gray-500'
+      id: 'maya',
+      title: 'Maya',
+      titleAr: 'مايا',
+      subtitle: 'AI Assistant',
+      description: '24/7 AI-powered customer support and travel assistance.',
+      descriptionAr: 'دعم العملاء - مساعد ذكي على مدار الساعة',
+      path: '/apps/maya',
+      icon: MessageSquare,
+      gradient: 'from-yellow-500 to-orange-600',
+      features: ['AI Chat', '24/7 Support', 'Multi-language'],
+      status: 'Coming Soon',
+      statusColor: 'bg-yellow-500',
+      available: false
     },
     {
-      id: 'home',
-      title: 'Travel Home',
-      subtitle: 'Booking Dashboard',
-      description: 'Travel booking landing page with flight search and booking features.',
-      path: '/home',
-      icon: Home,
-      gradient: 'from-indigo-500 via-purple-500 to-pink-500',
-      features: ['Flight Search', 'Bookings', 'Travel', 'Dashboard'],
-      status: 'Active',
-      statusColor: 'bg-indigo-500'
+      id: 'zara',
+      title: 'Zara',
+      titleAr: 'زارا',
+      subtitle: 'Research Agent',
+      description: 'Data analysis and insights for travel trends and destinations.',
+      descriptionAr: 'باحثة متخصصة - تحليل البيانات والرؤى',
+      path: '/apps/zara',
+      icon: BookOpen,
+      gradient: 'from-indigo-500 to-purple-600',
+      features: ['Research', 'Data Analysis', 'Insights'],
+      status: 'Coming Soon',
+      statusColor: 'bg-yellow-500',
+      available: false
     },
     {
-      id: 'landing',
-      title: 'Landing Page',
-      subtitle: 'Marketing Site',
-      description: 'Original landing page with marketing content and feature showcase.',
-      path: '/landing',
-      icon: Sparkles,
-      gradient: 'from-yellow-500 via-orange-500 to-red-500',
-      features: ['Marketing', 'Features', 'Showcase', 'CTA'],
-      status: 'Legacy',
-      statusColor: 'bg-gray-500'
+      id: 'kody',
+      title: 'Kody',
+      titleAr: 'كودي',
+      subtitle: 'Code Interpreter',
+      description: 'Data processing and automation for travel operations.',
+      descriptionAr: 'مفسر الأكواد - معالجة البيانات',
+      path: '/apps/kody',
+      icon: Code,
+      gradient: 'from-red-500 to-pink-600',
+      features: ['Code Analysis', 'Data Processing', 'Automation'],
+      status: 'Coming Soon',
+      statusColor: 'bg-yellow-500',
+      available: false
     }
   ];
 
@@ -118,13 +136,13 @@ export default function AppLauncher() {
           </h1>
           
           <p className="text-xl text-white/80 font-medium max-w-2xl mx-auto mb-8">
-            Next-Generation AI Operating System
+            AI-Powered Travel Intelligence Platform
           </p>
 
           <div className="flex items-center justify-center gap-4">
             <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 border border-white/20">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <span className="text-sm text-white/90">6 Demos Available</span>
+              <span className="text-sm text-white/90">6 Mini Apps</span>
             </div>
             <a 
               href="https://github.com/Moeabdelaziz007/Amrikyy-Agent" 
@@ -139,36 +157,38 @@ export default function AppLauncher() {
           </div>
         </div>
 
-        {/* Demo Cards Grid */}
+        {/* Mini Apps Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          {demos.map((demo) => {
-            const Icon = demo.icon;
-            const isHovered = hoveredCard === demo.id;
+          {miniApps.map((app) => {
+            const Icon = app.icon;
+            const isHovered = hoveredCard === app.id;
 
             return (
               <Link
-                key={demo.id}
-                to={demo.path}
-                onMouseEnter={() => setHoveredCard(demo.id)}
+                key={app.id}
+                to={app.available ? app.path : '#'}
+                onClick={(e) => !app.available && e.preventDefault()}
+                onMouseEnter={() => setHoveredCard(app.id)}
                 onMouseLeave={() => setHoveredCard(null)}
-                className="group relative"
+                className={`group relative ${!app.available ? 'cursor-not-allowed' : ''}`}
               >
                 <div className={`
                   relative bg-white/10 backdrop-blur-xl rounded-3xl p-6 border border-white/20
                   transition-all duration-300 h-full
                   ${isHovered ? 'bg-white/20 scale-105 shadow-2xl' : 'hover:bg-white/15'}
+                  ${!app.available ? 'opacity-75' : ''}
                 `}>
                   {/* Status Badge */}
                   <div className="absolute top-4 right-4">
-                    <div className={`${demo.statusColor} text-white text-xs font-bold px-3 py-1 rounded-full`}>
-                      {demo.status}
+                    <div className={`${app.statusColor} text-white text-xs font-bold px-3 py-1 rounded-full`}>
+                      {app.status}
                     </div>
                   </div>
 
                   {/* Icon */}
                   <div className={`
                     w-16 h-16 rounded-2xl flex items-center justify-center mb-4
-                    bg-gradient-to-br ${demo.gradient}
+                    bg-gradient-to-br ${app.gradient}
                     ${isHovered ? 'scale-110 rotate-3' : ''}
                     transition-all duration-300
                   `}>
@@ -177,20 +197,21 @@ export default function AppLauncher() {
 
                   {/* Title */}
                   <h3 className="text-2xl font-bold text-white mb-1">
-                    {demo.title}
+                    {app.title}
                   </h3>
-                  <p className="text-sm text-purple-300 mb-3 font-medium">
-                    {demo.subtitle}
+                  <p className="text-sm text-purple-300 mb-1 font-medium">{app.titleAr}</p>
+                  <p className="text-sm text-cyan-300 mb-3 font-medium">
+                    {app.subtitle}
                   </p>
 
                   {/* Description */}
                   <p className="text-white/70 text-sm mb-4 leading-relaxed">
-                    {demo.description}
+                    {app.description}
                   </p>
 
                   {/* Features */}
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {demo.features.map((feature, idx) => (
+                    {app.features.map((feature, idx) => (
                       <span 
                         key={idx}
                         className="text-xs bg-white/10 text-white/80 px-2 py-1 rounded-full border border-white/20"
@@ -206,13 +227,13 @@ export default function AppLauncher() {
                     ${isHovered ? 'translate-x-2' : ''}
                     transition-transform duration-300
                   `}>
-                    <span>Launch Demo</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <span>{app.available ? 'Launch App' : 'Coming Soon'}</span>
+                    {app.available && <ArrowRight className="w-4 h-4" />}
                   </div>
 
                   {/* Hover Gradient Border */}
                   <div className={`
-                    absolute inset-0 rounded-3xl bg-gradient-to-br ${demo.gradient} opacity-0
+                    absolute inset-0 rounded-3xl bg-gradient-to-br ${app.gradient} opacity-0
                     ${isHovered ? 'opacity-20' : ''}
                     transition-opacity duration-300 pointer-events-none
                   `} />
