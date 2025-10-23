@@ -8,6 +8,7 @@
 const express = require('express');
 const router = express.Router();
 const streamController = require('../controllers/streamController');
+const { validateStreamRequest, sanitizeInput } = require('../middleware/validation');
 
 // Note: Authentication and rate limiting are applied at the app level in server.js
 // app.use('/api/stream', authenticateToken, aiLimiter, streamRoutes);
@@ -19,6 +20,8 @@ const streamController = require('../controllers/streamController');
  */
 router.get(
     '/:agent',
+    sanitizeInput,
+    validateStreamRequest,
     streamController.streamAgentResponse
 );
 
