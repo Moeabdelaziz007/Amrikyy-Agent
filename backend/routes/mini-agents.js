@@ -344,4 +344,97 @@ router.post('/communicator/notification', async (req, res) => {
   }
 });
 
+/**
+ * Coding Agent Endpoints (Super Coder with 6 Sub-Agents)
+ */
+router.post('/coding/generate', async (req, res) => {
+  try {
+    const { prompt, language, framework, complexity } = req.body;
+    const result = await orchestrator.delegateTask('coding', {
+      type: 'GENERATE_CODE',
+      prompt,
+      language,
+      framework,
+      complexity
+    });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/coding/review', async (req, res) => {
+  try {
+    const { code, language } = req.body;
+    const result = await orchestrator.delegateTask('coding', {
+      type: 'REVIEW_CODE',
+      code,
+      language
+    });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/coding/test', async (req, res) => {
+  try {
+    const { code, language, framework } = req.body;
+    const result = await orchestrator.delegateTask('coding', {
+      type: 'GENERATE_TESTS',
+      code,
+      language,
+      framework
+    });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/coding/document', async (req, res) => {
+  try {
+    const { code, language, format } = req.body;
+    const result = await orchestrator.delegateTask('coding', {
+      type: 'GENERATE_DOCS',
+      code,
+      language,
+      format
+    });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/coding/deploy', async (req, res) => {
+  try {
+    const { project, platform, config } = req.body;
+    const result = await orchestrator.delegateTask('coding', {
+      type: 'DEPLOY_PROJECT',
+      project,
+      platform,
+      config
+    });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/coding/full-project', async (req, res) => {
+  try {
+    const { description, stack, features } = req.body;
+    const result = await orchestrator.delegateTask('coding', {
+      type: 'FULL_PROJECT',
+      description,
+      stack,
+      features
+    });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

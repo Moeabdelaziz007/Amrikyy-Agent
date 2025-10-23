@@ -12,7 +12,7 @@ import TaskHistory from './TaskHistory';
 import { ThemeSelector } from './ThemeSelector'; // Import ThemeSelector
 
 // Import all specific agent icons
-import { MapPinIcon, EyeIcon, SearchIcon, LanguagesIcon, CalendarIcon, HardDriveIcon, VideoIcon, MailIcon, GlobeIcon, XIcon, CogIcon } from './IconComponents'; // Corrected Cog import
+import { MapPinIcon, EyeIcon, SearchIcon, LanguagesIcon, CalendarIcon, HardDriveIcon, VideoIcon, MailIcon, GlobeIcon, XIcon, CogIcon, CodeIcon } from './IconComponents'; // Corrected Cog import, added CodeIcon
 
 interface AgentDefinition {
   id: string;
@@ -173,6 +173,7 @@ const MiniAgentsHub: React.FC = () => {
             agentName: agentTranslations?.name || step.agentId,
             taskType: agentTranslations?.tasks?.[step.taskType as keyof typeof agentTranslations.tasks] || step.taskType,
             taskInput: step.taskInput,
+            // FIX: Remove mockResultKey for Navigator as it uses real API output.
             taskOutput: (translations.agents as Record<string, any>)[step.agentId]?.[lang]?.mockResults?.[step.mockResultKey as keyof typeof translations.agents[string]['en']['mockResults']] || 'Mock output',
             timestamp: new Date().toISOString(),
             status: 'success',
@@ -265,6 +266,13 @@ const MiniAgentsHub: React.FC = () => {
       description: { en: translations.agents.communicator.en.description, ar: translations.agents.communicator.ar.description }, 
       icon: MailIcon, 
       color: 'pink' 
+    },
+    { 
+      id: 'coding', 
+      name: { en: translations.agents.coding.en.name, ar: translations.agents.coding.ar.name }, 
+      description: { en: translations.agents.coding.en.description, ar: translations.agents.coding.ar.description }, 
+      icon: CodeIcon, 
+      color: 'emerald' 
     },
   ];
 

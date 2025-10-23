@@ -23,3 +23,6 @@ export { SchedulerMiniApp } from './SchedulerMiniApp';
 export { StorageMiniApp } from './StorageMiniApp';
 export { MediaMiniApp } from './MediaMiniApp';
 export { CommunicatorMiniApp } from './CommunicatorMiniApp';
+
+// Coding Agent Mini App (Super Coder with 6 Sub-Agents)
+export { CodingMiniApp } from './CodingMiniApp';
