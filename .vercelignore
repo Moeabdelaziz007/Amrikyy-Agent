@@ -23,6 +23,9 @@ MayaTravelAgent
 AmrikyyTravelAgent
 ios
 
+# Old build artifacts
+frontend/dist
+
 # Logs and temp files
 *.log
 debug-logs
