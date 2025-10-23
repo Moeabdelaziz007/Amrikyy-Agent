@@ -59,6 +59,9 @@ const healthRoutes = require('./src/routes/health');
 const metricsRoutes = require('./src/routes/metrics');
 const streamRoutes = require('./src/routes/streamRoutes');
 
+// Mini Agents routes (8 specialized AI agents)
+const miniAgentsRoutes = require('./routes/mini-agents');
+
 // ============================================
 // APPLY ROUTES
 // ============================================
@@ -76,6 +79,9 @@ app.use('/api/voice', voiceRoutes);
 
 // Coordinator API - Protected with auth and rate limiting
 app.use('/api/coordinator', authenticateToken, aiLimiter, coordinatorRoutes);
+
+// Mini Agents API - 8 specialized AI agents (Navigator, Vision, Research, etc.)
+app.use('/api/mini-agents', miniAgentsRoutes);
 
 // ============================================
 // PHASE 2 ROUTES - Health, Metrics, Streaming
