@@ -103,6 +103,97 @@ const MINI_APPS: MiniApp[] = [
     color: 'rose',
     gradient: 'from-rose-500 to-red-600',
     available: false
+  },
+  // ============================================
+  // 8 SPECIALIZED AGENT MINI APPS
+  // ============================================
+  {
+    id: 'navigator',
+    name: 'Navigator',
+    nameAr: 'الملاح',
+    description: 'Location Intelligence - Maps & Directions',
+    descriptionAr: 'ذكاء الموقع - الخرائط والاتجاهات',
+    icon: <Map className="w-8 h-8" />,
+    color: 'blue',
+    gradient: 'from-blue-500 to-cyan-600',
+    available: true
+  },
+  {
+    id: 'vision',
+    name: 'Vision',
+    nameAr: 'الرؤية',
+    description: 'Image Analysis - AI-powered vision',
+    descriptionAr: 'تحليل الصور - رؤية بالذكاء الاصطناعي',
+    icon: <Sparkles className="w-8 h-8" />,
+    color: 'violet',
+    gradient: 'from-violet-500 to-purple-600',
+    available: true
+  },
+  {
+    id: 'research',
+    name: 'Research',
+    nameAr: 'البحث',
+    description: 'Web Intelligence - Search & Scrape',
+    descriptionAr: 'ذكاء الويب - البحث والاستخراج',
+    icon: <Search className="w-8 h-8" />,
+    color: 'emerald',
+    gradient: 'from-emerald-500 to-green-600',
+    available: true
+  },
+  {
+    id: 'translator',
+    name: 'Translator',
+    nameAr: 'المترجم',
+    description: 'Language Translation - 100+ languages',
+    descriptionAr: 'ترجمة اللغات - أكثر من 100 لغة',
+    icon: <Globe className="w-8 h-8" />,
+    color: 'amber',
+    gradient: 'from-amber-500 to-orange-600',
+    available: true
+  },
+  {
+    id: 'scheduler',
+    name: 'Scheduler',
+    nameAr: 'المنظم',
+    description: 'Calendar Management - Events & Tasks',
+    descriptionAr: 'إدارة التقويم - الأحداث والمهام',
+    icon: <BarChart3 className="w-8 h-8" />,
+    color: 'pink',
+    gradient: 'from-pink-500 to-rose-600',
+    available: true
+  },
+  {
+    id: 'storage',
+    name: 'Storage',
+    nameAr: 'التخزين',
+    description: 'File Management - Upload & Organize',
+    descriptionAr: 'إدارة الملفات - الرفع والتنظيم',
+    icon: <TrendingUp className="w-8 h-8" />,
+    color: 'teal',
+    gradient: 'from-teal-500 to-cyan-600',
+    available: true
+  },
+  {
+    id: 'media',
+    name: 'Media',
+    nameAr: 'الوسائط',
+    description: 'Media Processing - Images & Videos',
+    descriptionAr: 'معالجة الوسائط - الصور والفيديو',
+    icon: <Sparkles className="w-8 h-8" />,
+    color: 'fuchsia',
+    gradient: 'from-fuchsia-500 to-pink-600',
+    available: true
+  },
+  {
+    id: 'communicator',
+    name: 'Communicator',
+    nameAr: 'المراسل',
+    description: 'Email & SMS - Communication tools',
+    descriptionAr: 'البريد والرسائل - أدوات التواصل',
+    icon: <MessageSquare className="w-8 h-8" />,
+    color: 'sky',
+    gradient: 'from-sky-500 to-blue-600',
+    available: true
   }
 ];
 
