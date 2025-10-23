@@ -525,13 +525,14 @@ export const translations: {
     coding: { // NEW CODING AGENT
       en: {
         name: "Coding Agent",
-        description: "Generates code with specialized sub-agents for UI, API, DevOps, QA, and Documentation.",
+        description: "Generates code with specialized sub-agents for UI, API, DevOps, QA, Documentation, and Code Review.",
         tasks: {
           generateUI: "Generate UI Code",
           designAPI: "Design API & Backend",
           createDeploymentConfig: "Create Deployment Config",
           writeTests: "Write Test Cases",
           generateDocumentation: "Generate Documentation",
+          reviewCode: "Review Code",
         },
         placeholders: {
           projectDescription: "Describe the project or feature (e.g., 'A login form with email and password')",
@@ -546,6 +547,7 @@ export const translations: {
           testFramework: "Test Framework (e.g., 'Jest', 'Pytest')",
           codeDescription: "Code description or function signature (e.g., 'User registration function')",
           docType: "Documentation Type (e.g., 'API reference', 'user guide', 'code comments')",
+          codeToReview: "Paste code to be reviewed here (e.g., JavaScript function, Python script)",
         },
         mockResults: {
           generatedUI: "Generated React component for a login form:\n```jsx\n// React Login Form Code\n```",
@@ -553,17 +555,19 @@ export const translations: {
           createdDeployment: "Created a basic Dockerfile and Kubernetes deployment YAML.",
           writtenTests: "Generated Jest test suite for user registration.",
           generatedDoc: "Generated documentation for the specified code/feature.",
+          reviewedCode: "Code review: Overall good quality, but consider adding input validation. Rating: 7/10",
         },
       },
       ar: {
         name: "عميل البرمجة",
-        description: "ينشئ الكود مع عملاء فرعيين متخصصين لواجهة المستخدم، الـ API، DevOps، ضمان الجودة، والتوثيق.",
+        description: "ينشئ الكود مع عملاء فرعيين متخصصين لواجهة المستخدم، الـ API، DevOps، ضمان الجودة، التوثيق، ومراجعة الكود.",
         tasks: {
           generateUI: "إنشاء كود واجهة المستخدم",
           designAPI: "تصميم الـ API والواجهة الخلفية",
           createDeploymentConfig: "إنشاء إعدادات النشر",
           writeTests: "كتابة حالات الاختبار",
           generateDocumentation: "إنشاء التوثيق",
+          reviewCode: "مراجعة الكود",
         },
         placeholders: {
           projectDescription: "صف المشروع أو الميزة (مثال: 'نموذج تسجيل دخول بالبريد الإلكتروني وكلمة المرور')",
@@ -578,6 +582,7 @@ export const translations: {
           testFramework: "إطار عمل الاختبار (مثال: 'Jest', 'Pytest')",
           codeDescription: "وصف الكود أو توقيع الدالة (مثال: 'دالة تسجيل المستخدم')",
           docType: "نوع التوثيق (مثال: 'مرجع API', 'دليل المستخدم', 'تعليقات الكود')",
+          codeToReview: "الصق الكود المراد مراجعته هنا (مثال: دالة JavaScript، سكريبت Python)",
         },
         mockResults: {
           generatedUI: "تم إنشاء مكون React لنموذج تسجيل الدخول:\n```jsx\n// كود نموذج تسجيل الدخول React\n```",
@@ -585,6 +590,7 @@ export const translations: {
           createdDeployment: "تم إنشاء Dockerfile أساسي و YAML نشر Kubernetes.",
           writtenTests: "تم إنشاء مجموعة اختبار Jest لتسجيل المستخدمين.",
           generatedDoc: "تم إنشاء التوثيق للكود/الميزة المحددة.",
+          reviewedCode: "مراجعة الكود: جودة جيدة بشكل عام، لكن يُنصح بإضافة التحقق من صحة المدخلات. التقييم: 7/10",
         },
       },
     },

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { motion } from 'framer-motion';
-import { CodeIcon, LayoutGrid, Database, Cloud, Beaker, FileText } from 'lucide-react'; // Using Lucide-React icons
+import { CodeIcon, LayoutGrid, Database, Cloud, Beaker, FileText, MonitorCheck } from 'lucide-react'; // Added MonitorCheck for Code Reviewer
 import { LanguageContext } from '../../App';
 import { useTheme } from '../../contexts/ThemeContext';
 import { translations } from '../../lib/i18n';
@@ -40,6 +40,9 @@ const CodingAgentUI: React.FC<CodingAgentUIProps> = ({ onTaskComplete }) => {
   const [docCodeDescription, setDocCodeDescription] = useState('');
   const [docType, setDocType] = useState('');
 
+  // State for Code Reviewer
+  const [codeToReview, setCodeToReview] = useState('');
+
   const [result, setResult] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -64,7 +67,8 @@ const CodingAgentUI: React.FC<CodingAgentUIProps> = ({ onTaskComplete }) => {
       }
 
       const data = await response.json();
-      const formattedOutput = data.result || JSON.stringify(data); // Assume backend returns { result: "..." }
+      // Assume backend now returns { result: "..." } from Gemini
+      const formattedOutput = data.result || JSON.stringify(data); 
 
       setResult(formattedOutput);
 
@@ -120,6 +124,11 @@ const CodingAgentUI: React.FC<CodingAgentUIProps> = ({ onTaskComplete }) => {
   const handleGenerateDocumentation = () => {
     if (!docCodeDescription && !docType) return;
     executeTask('generateDocumentation', { codeDescription: docCodeDescription, docType: docType });
+  };
+
+  const handleReviewCode = () => {
+    if (!codeToReview) return;
+    executeTask('reviewCode', { code: codeToReview });
   };
 
 
@@ -289,6 +298,24 @@ const CodingAgentUI: React.FC<CodingAgentUIProps> = ({ onTaskComplete }) => {
         />
         <button onClick={handleGenerateDocumentation} disabled={isLoading || (!docCodeDescription && !docType)} className={buttonClass}>
           {isLoading ? globalText.loading : currentText.tasks.generateDocumentation}
+        </button>
+      </div>
+
+      {/* Code Reviewer (NEW) */}
+      <div className={`p-4 rounded-lg shadow`} style={{ background: currentThemeColors.surface }}>
+        <h4 className={`text-xl font-semibold mb-3 text-text flex items-center gap-2`}>
+          <MonitorCheck className="w-5 h-5" /> {currentText.tasks.reviewCode}
+        </h4>
+        <textarea
+          placeholder={currentText.placeholders.codeToReview} // Need to add this placeholder
+          value={codeToReview}
+          onChange={(e) => setCodeToReview(e.target.value)}
+          className={`${inputClass} mb-3`}
+          style={{ borderColor: currentThemeColors.border }}
+          rows={8}
+        />
+        <button onClick={handleReviewCode} disabled={isLoading || !codeToReview} className={buttonClass}>
+          {isLoading ? globalText.loading : currentText.tasks.reviewCode}
         </button>
       </div>
 
