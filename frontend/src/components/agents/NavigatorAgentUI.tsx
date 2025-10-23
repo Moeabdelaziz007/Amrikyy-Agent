@@ -28,8 +28,6 @@ const NavigatorAgentUI: React.FC<NavigatorAgentUIProps> = ({ onTaskComplete }) =
   const executeTask = async (
     taskType: string,
     taskInput: Record<string, any>,
-    apiPath: string,
-    outputFormatter: (data: any) => string
   ) => {
     setIsLoading(true);
     setResult('');
@@ -48,7 +46,22 @@ const NavigatorAgentUI: React.FC<NavigatorAgentUIProps> = ({ onTaskComplete }) =
       }
 
       const data = await response.json();
-      const formattedOutput = outputFormatter(data);
+      let formattedOutput = '';
+      // Custom formatting for NavigatorAgent's real output
+      switch (taskType) {
+        case 'getDirections':
+          formattedOutput = `Route: ${data.summary || currentText.mockResults.directions}`;
+          break;
+        case 'findNearby':
+          formattedOutput = `Found ${data.results?.length || 0} places. Top: ${data.results?.[0]?.name || currentText.mockResults.nearby}`;
+          break;
+        case 'geocode':
+          formattedOutput = `Geocoded: ${data.location?.lat}, ${data.location?.lng || currentText.mockResults.geocode}`;
+          break;
+        default:
+          formattedOutput = JSON.stringify(data); // Fallback for unexpected task types
+      }
+
       setResult(formattedOutput);
 
       onTaskComplete({
@@ -85,18 +98,20 @@ const NavigatorAgentUI: React.FC<NavigatorAgentUIProps> = ({ onTaskComplete }) =
     executeTask(
       'getDirections',
       { origin, destination },
-      `/api/agents/navigator`,
-      (data) => `Route: ${data.route?.summary || currentText.mockResults.directions}`
     );
   };
 
   const handleFindNearby = () => {
     if (!location || !placeType) return;
+    // Assume location is lat,lng string, convert to object if needed for API
+    const [lat, lng] = location.split(',').map(Number);
+    if (isNaN(lat) || isNaN(lng)) {
+      setResult("Error: Invalid location format. Use 'lat,lng'.");
+      return;
+    }
     executeTask(
       'findNearby',
-      { location, placeType },
-      `/api/agents/navigator`,
-      (data) => `Found ${data.results?.length || 0} places. Top: ${data.results?.[0]?.name || currentText.mockResults.nearby}`
+      { location: { lat, lng }, placeType },
     );
   };
 
@@ -105,8 +120,6 @@ const NavigatorAgentUI: React.FC<NavigatorAgentUIProps> = ({ onTaskComplete }) =
     executeTask(
       'geocode',
       { address },
-      `/api/agents/navigator`,
-      (data) => `Geocoded: ${data.location?.lat}, ${data.location?.lng || currentText.mockResults.geocode}`
     );
   };
 

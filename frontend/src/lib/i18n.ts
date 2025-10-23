@@ -1,6 +1,52 @@
-import { TaskHistoryEntry } from './types';
+// FIX: Import React to resolve 'Cannot find namespace' errors.
+import React from 'react';
 
-export const translations = {
+// New type for Task History entries
+export interface TaskHistoryEntry {
+  id: string;
+  agentId: string;
+  agentName: string;
+  taskType: string;
+  taskInput: string | Record<string, any>; // Can be a string or a more complex object
+  taskOutput: string | Record<string, any>; // Can be a string or a more complex object
+  timestamp: string;
+  status: 'success' | 'error';
+  errorMessage?: string;
+  workflowStep?: number; // Optional: for multi-step workflows
+}
+
+// New type for OS apps - Simplified for MiniAgentsHub
+export interface AppDefinition {
+  id: string;
+  name: { en: string; ar: string };
+  icon: React.FC<{ className?: string }>;
+  component: React.ComponentType<any>;
+  props: Record<string, any>;
+}
+
+// FIX: Define AgentData interface for dynamic access to agent translations
+export interface AgentData {
+  en: {
+    name: string;
+    description: string;
+    tasks: Record<string, string>;
+    placeholders: Record<string, string>;
+    mockResults: Record<string, string>;
+  };
+  ar: {
+    name: string;
+    description: string;
+    tasks: Record<string, string>;
+    placeholders: Record<string, string>;
+    mockResults: Record<string, string>;
+  };
+}
+
+// FIX: Update translations type to allow string indexing for agents
+export const translations: {
+  global: Record<'en' | 'ar', Record<string, string>>;
+  agents: Record<string, AgentData>;
+} = {
   global: {
     en: {
       appName: "Amrikyyy QuanrtumOS",
@@ -43,6 +89,15 @@ export const translations = {
       aiPlanning: "Gemini Pro is planning your workflow...",
       workflowStep: "Workflow Step",
       orchestrationFailed: "Orchestration failed: ",
+      // Unified Settings Modal
+      generalSettings: "General Settings",
+      agentSettings: "Agent Settings",
+      selectAgent: "Select Agent",
+      apiKey: "API Key",
+      defaultParameter: "Default Parameter",
+      saveSettings: "Save Settings",
+      settingsSaved: "Settings saved!",
+      selectAgentToConfigure: "Select an agent to configure its settings.",
     },
     ar: {
       appName: "نظام التشغيل Amrikyyy QuanrtumOS",
@@ -85,6 +140,15 @@ export const translations = {
       aiPlanning: "Gemini Pro يخطط لسير عملك...",
       workflowStep: "خطوة سير العمل",
       orchestrationFailed: "فشل التنسيق: ",
+      // Unified Settings Modal
+      generalSettings: "الإعدادات العامة",
+      agentSettings: "إعدادات العميل",
+      selectAgent: "اختر العميل",
+      apiKey: "مفتاح الـ API",
+      defaultParameter: "المعامل الافتراضي",
+      saveSettings: "حفظ الإعدادات",
+      settingsSaved: "تم حفظ الإعدادات!",
+      selectAgentToConfigure: "حدد عميلاً لتكوين إعداداته.",
     },
   },
   agents: {

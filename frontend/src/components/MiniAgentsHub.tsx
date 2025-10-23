@@ -22,6 +22,13 @@ interface AgentDefinition {
   color: string; // Tailwind color class suffix for gradients
 }
 
+// New type for agent specific configuration
+interface AgentConfig {
+  apiKey?: string;
+  defaultParam?: string; // Generic example parameter
+  // Add more configurable parameters as needed
+}
+
 const MiniAgentsHub: React.FC = () => {
   const { lang, setLang } = useContext(LanguageContext);
   const { theme } = useTheme();
@@ -33,15 +40,29 @@ const MiniAgentsHub: React.FC = () => {
     const savedHistory = localStorage.getItem('amrikyy-task-history');
     return savedHistory ? JSON.parse(savedHistory) : [];
   });
-  const [showSettings, setShowSettings] = useState(false);
+  const [showSettings, setShowSettings] = useState(false); // Controls unified settings modal
+  const [currentSettingsTab, setCurrentSettingsTab] = useState<'general' | 'agent'>('general'); // For tabs within settings modal
+
   const [mainAIPrompt, setMainAIPrompt] = useState('');
   const [isOrchestrating, setIsOrchestrating] = useState(false);
   const [orchestrationError, setOrchestrationError] = useState<string | null>(null);
+
+  // Agent-specific configuration states
+  const [selectedAgentForConfig, setSelectedAgentForConfig] = useState<string | null>(null);
+  const [agentConfigurations, setAgentConfigurations] = useState<Record<string, AgentConfig>>(() => {
+    const savedConfigs = localStorage.getItem('amrikyy-agent-configs');
+    return savedConfigs ? JSON.parse(savedConfigs) : {};
+  });
+  const [settingsSaveMessage, setSettingsSaveMessage] = useState<string | null>(null);
 
 
   useEffect(() => {
     localStorage.setItem('amrikyy-task-history', JSON.stringify(taskHistory));
   }, [taskHistory]);
+
+  useEffect(() => {
+    localStorage.setItem('amrikyy-agent-configs', JSON.stringify(agentConfigurations));
+  }, [agentConfigurations]);
 
   const handleTaskComplete = useCallback((entry: TaskHistoryEntry) => {
     setTaskHistory((prevHistory) => [...prevHistory, entry]);
@@ -94,18 +115,18 @@ const MiniAgentsHub: React.FC = () => {
       // Simulate step-by-step execution and logging
       for (let i = 0; i < workflow.steps.length; i++) {
         const step = workflow.steps[i];
-        // Cast translations.agents to Record<string, any> for dynamic key access
+        // FIX: Cast translations.agents to Record<string, any> for dynamic key access.
         const agentTranslations = (translations.agents as Record<string, any>)[step.agentId]?.[lang];
 
         // Simulate agent task execution
-        // For NavigatorAgent, we will use the actual backend endpoint
+        // NavigatorAgent will use the actual backend endpoint, others use mock logic
         if (step.agentId === 'navigator') {
           const agentResponse = await fetch(`http://localhost:3000/api/agents/${step.agentId}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(step.taskInput),
+            body: JSON.stringify({ type: step.taskType, ...step.taskInput }),
           });
 
           if (!agentResponse.ok) {
@@ -114,13 +135,30 @@ const MiniAgentsHub: React.FC = () => {
           }
           const agentResult = await agentResponse.json();
 
+          let formattedOutput = '';
+          // Custom formatting for NavigatorAgent's real output
+          switch (step.taskType) {
+            case 'getDirections':
+              formattedOutput = `Route: ${agentResult.summary || 'N/A'}`;
+              break;
+            case 'findNearby':
+              formattedOutput = `Found ${agentResult.results?.length || 0} places. Top: ${agentResult.results?.[0]?.name || 'N/A'}`;
+              break;
+            case 'geocode':
+              formattedOutput = `Geocoded: ${agentResult.location?.lat}, ${agentResult.location?.lng || 'N/A'}`;
+              break;
+            default:
+              formattedOutput = JSON.stringify(agentResult); // Fallback for unexpected task types
+          }
+
+
           handleTaskComplete({
             id: Date.now().toString() + `-step-${i + 1}`,
             agentId: step.agentId,
             agentName: agentTranslations?.name || step.agentId,
             taskType: agentTranslations?.tasks?.[step.taskType as keyof typeof agentTranslations.tasks] || step.taskType,
             taskInput: step.taskInput,
-            taskOutput: agentResult, // Use real result from backend
+            taskOutput: formattedOutput, // Use real result from backend, formatted
             timestamp: new Date().toISOString(),
             status: 'success',
             workflowStep: i + 1,
@@ -160,6 +198,14 @@ const MiniAgentsHub: React.FC = () => {
       setIsOrchestrating(false);
       setMainAIPrompt('');
     }
+  };
+
+  const handleSaveAgentSettings = () => {
+    // This function will be called to save the agent-specific configurations
+    // The agentConfigurations state is already updated on input change.
+    // Here, you might add validation or further processing before setting a success message.
+    setSettingsSaveMessage(currentGlobalText.settingsSaved);
+    setTimeout(() => setSettingsSaveMessage(null), 3000); // Clear message after 3 seconds
   };
 
 
@@ -243,7 +289,7 @@ const MiniAgentsHub: React.FC = () => {
                 {currentGlobalText.miniAgentsHub}
             </h1>
             <div className="flex items-center gap-4">
-                {/* Language Switcher */}
+                {/* Language Switcher (can be moved to general settings tab) */}
                 <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -254,11 +300,14 @@ const MiniAgentsHub: React.FC = () => {
                 >
                     <GlobeIcon className="w-6 h-6" />
                 </motion.button>
-                {/* Settings Button */}
+                {/* Settings Button - Now opens unified settings modal */}
                 <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setShowSettings(true)}
+                    onClick={() => {
+                        setShowSettings(true);
+                        setCurrentSettingsTab('general'); // Default to general settings when opening
+                    }}
                     className={`p-2 rounded-full border text-text-secondary transition-colors ${currentThemeColors.surface} ${currentThemeColors.border}`}
                     style={{ background: currentThemeColors.surface, borderColor: currentThemeColors.border }}
                     aria-label={lang === 'en' ? 'Open Settings' : 'فتح الإعدادات'}
@@ -332,7 +381,7 @@ const MiniAgentsHub: React.FC = () => {
         {/* Task History */}
         <TaskHistory history={taskHistory} onClearHistory={handleClearHistory} />
 
-        {/* Settings Modal */}
+        {/* Unified Settings Modal */}
         <AnimatePresence>
           {showSettings && (
             <motion.div
@@ -342,109 +391,231 @@ const MiniAgentsHub: React.FC = () => {
               transition={{ duration: 0.3 }}
               className={`fixed inset-0 z-40 flex items-center justify-center bg-black/50 backdrop-blur-sm`}
             >
-              <div className={`w-full max-w-2xl h-[85vh] max-h-[800px] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-white/20`}
+              <div className={`w-full max-w-3xl h-[85vh] max-h-[800px] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-white/20`}
                    style={{ background: currentThemeColors.background }}>
                 <header className={`flex items-center justify-between p-3 border-b`}
                         style={{ background: currentThemeColors.surface, borderColor: currentThemeColors.border }}>
-                  <span className={`font-bold text-text`}>{lang === 'en' ? 'Settings' : 'الإعدادات'}</span>
+                  <span className={`font-bold text-text`}>{currentGlobalText.generalSettings}</span>
                   <button onClick={() => setShowSettings(false)} className={`p-1 rounded-full hover:bg-red-500 hover:text-white transition-colors text-text`}>
                     <XIcon className="w-5 h-5" />
                   </button>
                 </header>
-                <div className="flex-1 overflow-y-auto p-6" style={{ background: currentThemeColors.background }}>
-                  {/* Language Settings */}
-                  <div className={sectionClass} style={{ background: currentThemeColors.surface, borderColor: currentThemeColors.border }}>
-                    <label className={labelClass}>{currentGlobalText.language}</label>
-                    <div className="flex space-x-4">
-                      <button
-                        onClick={() => setLang('en')}
-                        className={`px-6 py-2 rounded-full font-medium ${lang === 'en' ? 'bg-primary text-white' : `${controlBgClass} hover:bg-border`} transition-colors`}
-                        style={{ background: lang === 'en' ? currentThemeColors.primary : currentThemeColors.background, color: lang === 'en' ? 'white' : currentThemeColors.text, borderColor: currentThemeColors.border, border: '1px solid'}}
-                      >
-                        {currentGlobalText.english}
-                      </button>
-                      <button
-                        onClick={() => setLang('ar')}
-                        className={`px-6 py-2 rounded-full font-medium ${lang === 'ar' ? 'bg-primary text-white' : `${controlBgClass} hover:bg-border`} transition-colors`}
-                        style={{ background: lang === 'ar' ? currentThemeColors.primary : currentThemeColors.background, color: lang === 'ar' ? 'white' : currentThemeColors.text, borderColor: currentThemeColors.border, border: '1px solid'}}
-                      >
-                        {currentGlobalText.arabic}
-                      </button>
+                <div className="flex flex-col flex-1">
+                    {/* Tabs for General and Agent Settings */}
+                    <nav className={`flex border-b`} style={{ borderColor: currentThemeColors.border, background: currentThemeColors.surface }}>
+                        <button
+                            className={`flex-1 p-3 text-center font-medium ${currentSettingsTab === 'general' ? 'border-b-2 border-primary text-primary' : 'text-text-secondary hover:text-text'}`}
+                            style={{borderColor: currentSettingsTab === 'general' ? currentThemeColors.primary : currentThemeColors.border}}
+                            onClick={() => setCurrentSettingsTab('general')}
+                        >
+                            {currentGlobalText.generalSettings}
+                        </button>
+                        <button
+                            className={`flex-1 p-3 text-center font-medium ${currentSettingsTab === 'agent' ? 'border-b-2 border-primary text-primary' : 'text-text-secondary hover:text-text'}`}
+                            style={{borderColor: currentSettingsTab === 'agent' ? currentThemeColors.primary : currentThemeColors.border}}
+                            onClick={() => setCurrentSettingsTab('agent')}
+                        >
+                            {currentGlobalText.agentSettings}
+                        </button>
+                    </nav>
+
+                    {/* Settings Content */}
+                    <div className="flex-1 overflow-y-auto p-6" style={{ background: currentThemeColors.background }}>
+                        {currentSettingsTab === 'general' && (
+                            <>
+                                {/* Language Settings */}
+                                <div className={sectionClass} style={{ background: currentThemeColors.surface, borderColor: currentThemeColors.border }}>
+                                    <label className={labelClass}>{currentGlobalText.language}</label>
+                                    <div className="flex space-x-4">
+                                    <button
+                                        onClick={() => setLang('en')}
+                                        className={`px-6 py-2 rounded-full font-medium ${lang === 'en' ? 'bg-primary text-white' : `${controlBgClass} hover:bg-border`} transition-colors`}
+                                        style={{ background: lang === 'en' ? currentThemeColors.primary : currentThemeColors.background, color: lang === 'en' ? 'white' : currentThemeColors.text, borderColor: currentThemeColors.border, border: '1px solid'}}
+                                    >
+                                        {currentGlobalText.english}
+                                    </button>
+                                    <button
+                                        onClick={() => setLang('ar')}
+                                        className={`px-6 py-2 rounded-full font-medium ${lang === 'ar' ? 'bg-primary text-white' : `${controlBgClass} hover:bg-border`} transition-colors`}
+                                        style={{ background: lang === 'ar' ? currentThemeColors.primary : currentThemeColors.background, color: lang === 'ar' ? 'white' : currentThemeColors.text, borderColor: currentThemeColors.border, border: '1px solid'}}
+                                    >
+                                        {currentGlobalText.arabic}
+                                    </button>
+                                    </div>
+                                </div>
+
+                                {/* Theme Settings */}
+                                <div className={sectionClass} style={{ background: currentThemeColors.surface, borderColor: currentThemeColors.border }}>
+                                    <label className={labelClass}>{currentGlobalText.theme}</label>
+                                    <ThemeSelector />
+                                </div>
+
+                                {/* Notifications Settings */}
+                                <div className={sectionClass} style={{ background: currentThemeColors.surface, borderColor: currentThemeColors.border }}>
+                                    <label className={labelClass}>{currentGlobalText.notifications}</label>
+                                    <div className="flex items-center space-x-3">
+                                    <span className={`text-text-secondary`}>{currentGlobalText.enableNotifications}</span>
+                                    <label htmlFor="notification-toggle" className="flex items-center cursor-pointer">
+                                        <span className={toggleClass} style={{ background: notificationsEnabled ? currentThemeColors.primary : currentThemeColors.border }}>
+                                        <span
+                                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${notificationsEnabled ? 'translate-x-6' : 'translate-x-1'}`}
+                                        />
+                                        </span>
+                                        <input
+                                        id="notification-toggle"
+                                        type="checkbox"
+                                        className="sr-only"
+                                        checked={notificationsEnabled}
+                                        onChange={(e) => setNotificationsEnabled(e.target.checked)}
+                                        />
+                                    </label>
+                                    </div>
+                                </div>
+
+                                {/* Text-to-Speech Voice */}
+                                <div className={sectionClass} style={{ background: currentThemeColors.surface, borderColor: currentThemeColors.border }}>
+                                    <label className={labelClass}>{currentGlobalText.ttsVoice}</label>
+                                    <select
+                                    value={selectedVoice}
+                                    onChange={(e) => setSelectedVoice(e.target.value)}
+                                    className={`w-full p-3 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent ${controlBgClass}`}
+                                    style={{ background: currentThemeColors.background, borderColor: currentThemeColors.border, color: currentThemeColors.text }}
+                                    >
+                                    {Object.entries({
+                                        'Zephyr': lang === 'en' ? 'Zephyr (Default, Female)' : 'زفير (افتراضي، أنثوي)',
+                                        'Kore': lang === 'en' ? 'Kore (Male)' : 'كوري (ذكوري)',
+                                        'Puck': lang === 'en' ? 'Puck (Female)' : 'باك (أنثوي)',
+                                        'Charon': lang === 'en' ? 'Charon (Deep Male)' : 'شارون (ذكوري عميق)',
+                                        'Fenrir': lang === 'en' ? 'Fenrir (Childlike Female)' : 'فنرير (أنثوي طفولي)',
+                                    }).map(([value, label]) => (
+                                        <option key={value} value={value}>
+                                        {label}
+                                        </option>
+                                    ))}
+                                    </select>
+                                </div>
+
+                                {/* Text-to-Speech Speed */}
+                                <div className={sectionClass} style={{ background: currentThemeColors.surface, borderColor: currentThemeColors.border }}>
+                                    <label className={labelClass}>{currentGlobalText.ttsSpeed}</label>
+                                    <div className="flex items-center space-x-4">
+                                    <input
+                                        type="range"
+                                        min="0.5"
+                                        max="2.0"
+                                        step="0.25"
+                                        value={playbackSpeed}
+                                        onChange={(e) => setPlaybackSpeed(parseFloat(e.target.value))}
+                                        className="flex-1 h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer"
+                                        style={{ accentColor: currentThemeColors.primary }}
+                                    />
+                                    <span className={`w-12 text-center font-medium text-text-secondary`}>
+                                        {playbackSpeed.toFixed(2)}x
+                                    </span>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+
+                        {currentSettingsTab === 'agent' && (
+                            <>
+                                {/* Agent Selection */}
+                                <div className={sectionClass} style={{ background: currentThemeColors.surface, borderColor: currentThemeColors.border }}>
+                                    <label className={labelClass} htmlFor="agent-select">{currentGlobalText.selectAgent}</label>
+                                    <select
+                                        id="agent-select"
+                                        value={selectedAgentForConfig || ''}
+                                        onChange={(e) => setSelectedAgentForConfig(e.target.value)}
+                                        className={`w-full p-3 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent ${controlBgClass}`}
+                                        style={{ background: currentThemeColors.background, borderColor: currentThemeColors.border, color: currentThemeColors.text }}
+                                    >
+                                        <option value="" disabled>{currentGlobalText.selectAgentToConfigure}</option>
+                                        {agents.map((agent) => (
+                                            <option key={agent.id} value={agent.id}>
+                                                {agent.name[lang]}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {selectedAgentForConfig && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        key={selectedAgentForConfig} // Key for re-animating when agent changes
+                                        className={sectionClass} style={{ background: currentThemeColors.surface, borderColor: currentThemeColors.border }}
+                                    >
+                                        <h3 className={`text-xl font-semibold mb-4 text-text`} style={{color: currentThemeColors.primary}}>
+                                            {translations.agents[selectedAgentForConfig as keyof typeof translations.agents]?.[lang]?.name || selectedAgentForConfig} {currentGlobalText.agentSettings}
+                                        </h3>
+
+                                        {/* API Key Input */}
+                                        <div className="mb-4">
+                                            <label htmlFor={`api-key-${selectedAgentForConfig}`} className="block text-sm font-medium text-text-secondary mb-2">
+                                                {currentGlobalText.apiKey}
+                                            </label>
+                                            <input
+                                                id={`api-key-${selectedAgentForConfig}`}
+                                                type="text"
+                                                placeholder={currentGlobalText.apiKey}
+                                                value={agentConfigurations[selectedAgentForConfig]?.apiKey || ''}
+                                                onChange={(e) => setAgentConfigurations(prev => ({
+                                                    ...prev,
+                                                    [selectedAgentForConfig]: { ...prev[selectedAgentForConfig], apiKey: e.target.value }
+                                                }))}
+                                                className={`w-full p-3 rounded-md border text-text bg-background focus:ring-2 focus:ring-primary focus:border-transparent`}
+                                                style={{ borderColor: currentThemeColors.border }}
+                                            />
+                                        </div>
+
+                                        {/* Default Parameter Input (Generic Example) */}
+                                        <div className="mb-4">
+                                            <label htmlFor={`default-param-${selectedAgentForConfig}`} className="block text-sm font-medium text-text-secondary mb-2">
+                                                {currentGlobalText.defaultParameter}
+                                            </label>
+                                            <input
+                                                id={`default-param-${selectedAgentForConfig}`}
+                                                type="text"
+                                                placeholder={currentGlobalText.defaultParameter}
+                                                value={agentConfigurations[selectedAgentForConfig]?.defaultParam || ''}
+                                                onChange={(e) => setAgentConfigurations(prev => ({
+                                                    ...prev,
+                                                    [selectedAgentForConfig]: { ...prev[selectedAgentForConfig], defaultParam: e.target.value }
+                                                }))}
+                                                className={`w-full p-3 rounded-md border text-text bg-background focus:ring-2 focus:ring-primary focus:border-transparent`}
+                                                style={{ borderColor: currentThemeColors.border }}
+                                            />
+                                        </div>
+
+                                        <motion.button
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={handleSaveAgentSettings}
+                                            className={`w-full px-6 py-3 rounded-lg text-white font-semibold bg-primary hover:opacity-90 transition-colors mt-4`}
+                                            style={{ background: currentThemeColors.primary }}
+                                        >
+                                            {currentGlobalText.saveSettings}
+                                        </motion.button>
+
+                                        {settingsSaveMessage && (
+                                            <motion.p
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                className="text-success mt-3 text-center"
+                                            >
+                                                {settingsSaveMessage}
+                                            </motion.p>
+                                        )}
+                                    </motion.div>
+                                )}
+                                {!selectedAgentForConfig && (
+                                     <p className="text-center text-text-secondary mt-8">
+                                         {currentGlobalText.selectAgentToConfigure}
+                                     </p>
+                                )}
+                            </>
+                        )}
                     </div>
-                  </div>
-
-                  {/* Theme Settings */}
-                  <div className={sectionClass} style={{ background: currentThemeColors.surface, borderColor: currentThemeColors.border }}>
-                    <label className={labelClass}>{currentGlobalText.theme}</label>
-                    <ThemeSelector language={lang} />
-                  </div>
-
-                  {/* Notifications Settings */}
-                  <div className={sectionClass} style={{ background: currentThemeColors.surface, borderColor: currentThemeColors.border }}>
-                    <label className={labelClass}>{currentGlobalText.notifications}</label>
-                    <div className="flex items-center space-x-3">
-                      <span className={`text-text-secondary`}>{currentGlobalText.enableNotifications}</span>
-                      <label htmlFor="notification-toggle" className="flex items-center cursor-pointer">
-                        <span className={toggleClass} style={{ background: notificationsEnabled ? currentThemeColors.primary : currentThemeColors.border }}>
-                          <span
-                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${notificationsEnabled ? 'translate-x-6' : 'translate-x-1'}`}
-                          />
-                        </span>
-                        <input
-                          id="notification-toggle"
-                          type="checkbox"
-                          className="sr-only"
-                          checked={notificationsEnabled}
-                          onChange={(e) => setNotificationsEnabled(e.target.checked)}
-                        />
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Text-to-Speech Voice */}
-                  <div className={sectionClass} style={{ background: currentThemeColors.surface, borderColor: currentThemeColors.border }}>
-                    <label className={labelClass}>{currentGlobalText.ttsVoice}</label>
-                    <select
-                      value={selectedVoice}
-                      onChange={(e) => setSelectedVoice(e.target.value)}
-                      className={`w-full p-3 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent ${controlBgClass}`}
-                      style={{ background: currentThemeColors.background, borderColor: currentThemeColors.border, color: currentThemeColors.text }}
-                    >
-                      {Object.entries({
-                        'Zephyr': lang === 'en' ? 'Zephyr (Default, Female)' : 'زفير (افتراضي، أنثوي)',
-                        'Kore': lang === 'en' ? 'Kore (Male)' : 'كوري (ذكوري)',
-                        'Puck': lang === 'en' ? 'Puck (Female)' : 'باك (أنثوي)',
-                        'Charon': lang === 'en' ? 'Charon (Deep Male)' : 'شارون (ذكوري عميق)',
-                        'Fenrir': lang === 'en' ? 'Fenrir (Childlike Female)' : 'فنرير (أنثوي طفولي)',
-                      }).map(([value, label]) => (
-                        <option key={value} value={value}>
-                          {label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Text-to-Speech Speed */}
-                  <div className={sectionClass} style={{ background: currentThemeColors.surface, borderColor: currentThemeColors.border }}>
-                    <label className={labelClass}>{currentGlobalText.ttsSpeed}</label>
-                    <div className="flex items-center space-x-4">
-                      <input
-                        type="range"
-                        min="0.5"
-                        max="2.0"
-                        step="0.25"
-                        value={playbackSpeed}
-                        onChange={(e) => setPlaybackSpeed(parseFloat(e.target.value))}
-                        className="flex-1 h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer"
-                        style={{ accentColor: currentThemeColors.primary }}
-                      />
-                      <span className={`w-12 text-center font-medium text-text-secondary`}>
-                        {playbackSpeed.toFixed(2)}x
-                      </span>
-                      {/* Removed preview voice button for simplicity in this general settings panel */}
-                    </div>
-                  </div>
-
                 </div>
               </div>
             </motion.div>
