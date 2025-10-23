@@ -22,13 +22,23 @@ const stripeWebhookRouter = require('./routes/stripe-webhook');
 app.use('/api/stripe', express.raw({ type: 'application/json' }), stripeWebhookRouter);
 
 // ============================================
+// IMPORT MIDDLEWARE & SERVICES
+// ============================================
+const { authenticateToken } = require('./middleware/auth');
+const { aiLimiter } = require('./middleware/rateLimiter');
+const metricsService = require('./src/services/metricsService');
+
+// ============================================
 // STANDARD MIDDLEWARE
 // ============================================
 app.use(cors());
 app.use(express.json());
 
+// Metrics middleware (automatic request tracking)
+app.use(metricsService.middleware());
+
 // ============================================
-// API ROUTES
+// IMPORT ROUTES
 // ============================================
 const authRoutes = require('./routes/auth');
 const bookingRoutes = require('./routes/bookings');
@@ -41,12 +51,17 @@ const vaultRoutes = require('./routes/vault-routes');
 const sabreRoutes = require('./routes/sabre-routes');
 const voiceRoutes = require('./routes/voice');
 
-// Import middleware
-const { authenticateToken } = require('./middleware/auth');
-const { aiLimiter } = require('./middleware/rateLimiter');
-
-// Import coordinator routes (new API)
+// Coordinator routes (new API)
 const coordinatorRoutes = require('./src/routes/coordinator');
+
+// Phase 2 routes
+const healthRoutes = require('./src/routes/health');
+const metricsRoutes = require('./src/routes/metrics');
+const streamRoutes = require('./src/routes/streamRoutes');
+
+// ============================================
+// APPLY ROUTES
+// ============================================
 
 app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
@@ -63,10 +78,20 @@ app.use('/api/voice', voiceRoutes);
 app.use('/api/coordinator', authenticateToken, aiLimiter, coordinatorRoutes);
 
 // ============================================
-// HEALTH CHECK ENDPOINT
+// PHASE 2 ROUTES - Health, Metrics, Streaming
 // ============================================
 
-app.get('/api/health', (req, res) => {
+// Health routes (comprehensive health checks)
+app.use('/api', healthRoutes);
+
+// Metrics routes (Prometheus + JSON metrics)
+app.use('/api', metricsRoutes);
+
+// Streaming routes (SSE for real-time agent responses) - Protected
+app.use('/api/stream', authenticateToken, aiLimiter, streamRoutes);
+
+// Legacy health endpoint (kept for backward compatibility)
+app.get('/api/health-legacy', (req, res) => {
   res.status(200).json({
     status: 'UP',
     timestamp: new Date().toISOString(),

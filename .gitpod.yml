@@ -1,0 +1,86 @@
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - name: Backend Setup & Dev Server
+    init: |
+      # Install backend dependencies
+      cd backend
+      if [ -f pnpm-lock.yaml ]; then
+        curl -fsSL https://get.pnpm.io/install.sh | sh -
+        export PATH="$HOME/.local/share/pnpm:$PATH"
+        pnpm install
+      elif [ -f yarn.lock ]; then
+        corepack enable
+        yarn install
+      else
+        npm install
+      fi
+      cd ..
+      # Make scripts executable
+      chmod +x .gitpod/scripts/*.sh
+    command: |
+      # Run codebase indexing
+      .gitpod/scripts/index-codebase.sh
+      # Start backend dev server
+      cd backend
+      npm run dev &
+      # Keep task alive
+      sleep 999999
+  
+  - name: Frontend Setup & Dev Server
+    init: |
+      # Install frontend dependencies
+      cd frontend
+      if [ -f pnpm-lock.yaml ]; then
+        curl -fsSL https://get.pnpm.io/install.sh | sh -
+        export PATH="$HOME/.local/share/pnpm:$PATH"
+        pnpm install
+      elif [ -f yarn.lock ]; then
+        corepack enable
+        yarn install
+      else
+        npm install
+      fi
+      cd ..
+    command: |
+      # Start frontend dev server
+      cd frontend
+      npm run dev &
+      # Keep task alive
+      sleep 999999
+
+ports:
+  - port: 5000
+    name: Backend API
+    description: Backend Express server
+    onOpen: notify
+    visibility: public
+  - port: 5173
+    name: Frontend Vite
+    description: Frontend Vite dev server
+    onOpen: open-preview
+    visibility: public
+  - port: 6379
+    name: Redis
+    description: Redis cache server
+    onOpen: ignore
+    visibility: private
+
+vscode:
+  extensions:
+    - dbaeumer.vscode-eslint
+    - esbenp.prettier-vscode
+    - ms-vscode.vscode-typescript-next
+    - bradlc.vscode-tailwindcss
+    - dsznajder.es7-react-js-snippets
+
+github:
+  prebuilds:
+    master: true
+    branches: true
+    pullRequests: true
+    pullRequestsFromForks: false
+    addCheck: true
+    addComment: true
+    addBadge: true

@@ -8,28 +8,27 @@
 const express = require('express');
 const router = express.Router();
 const streamController = require('../controllers/streamController');
-const { authenticate, rateLimiter } = require('../middleware/auth');
+
+// Note: Authentication and rate limiting are applied at the app level in server.js
+// app.use('/api/stream', authenticateToken, aiLimiter, streamRoutes);
 
 /**
  * @route GET /api/stream/:agent
  * @description Stream responses from a specified agent.
- * @access Private
+ * @access Private (protected by authenticateToken + aiLimiter in server.js)
  */
 router.get(
     '/:agent',
-    authenticate, // Secure the endpoint
-    rateLimiter,    // Prevent abuse
     streamController.streamAgentResponse
 );
 
 /**
  * @route GET /api/stream/stats/:agent?
  * @description Get streaming statistics.
- * @access Private
+ * @access Private (protected by authenticateToken in server.js)
  */
 router.get(
     '/stats/:agent?',
-    authenticate, // Secure the endpoint
     streamController.getStreamingStats
 );
 
