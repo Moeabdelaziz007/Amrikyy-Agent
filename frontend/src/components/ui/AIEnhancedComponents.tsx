@@ -763,14 +763,5 @@ export const AILoading: React.FC<AILoadingProps> = ({
 };
 
 // ============================================
-// EXPORT ALL COMPONENTS
+// COMPONENTS ALREADY EXPORTED ABOVE
 // ============================================
-
-export {
-  AIButton,
-  AICard,
-  AIModal,
-  AIInput,
-  AIToast,
-  AILoading
-};
