@@ -437,4 +437,93 @@ router.post('/coding/full-project', async (req, res) => {
   }
 });
 
+/**
+ * Marketing Agent Endpoints (Super Marketer with 6 Sub-Agents)
+ */
+router.post('/marketing/research', async (req, res) => {
+  try {
+    const { targetAudience, productService, competitors } = req.body;
+    const result = await orchestrator.delegateTask('marketing', {
+      type: 'MARKET_RESEARCH',
+      targetAudience,
+      productService,
+      competitors
+    });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/marketing/seo', async (req, res) => {
+  try {
+    const { productService, keywords } = req.body;
+    const result = await orchestrator.delegateTask('marketing', {
+      type: 'SEO_STRATEGY',
+      productService,
+      keywords
+    });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/marketing/content', async (req, res) => {
+  try {
+    const { topic, targetAudience } = req.body;
+    const result = await orchestrator.delegateTask('marketing', {
+      type: 'CONTENT_STRATEGY',
+      topic,
+      targetAudience
+    });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/marketing/social', async (req, res) => {
+  try {
+    const { platform, productService } = req.body;
+    const result = await orchestrator.delegateTask('marketing', {
+      type: 'SOCIAL_MEDIA',
+      platform,
+      productService
+    });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/marketing/campaign', async (req, res) => {
+  try {
+    const { campaignGoal, budget, duration } = req.body;
+    const result = await orchestrator.delegateTask('marketing', {
+      type: 'CAMPAIGN_PLAN',
+      campaignGoal,
+      budget,
+      duration
+    });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/marketing/analytics', async (req, res) => {
+  try {
+    const { dataToAnalyze, metrics } = req.body;
+    const result = await orchestrator.delegateTask('marketing', {
+      type: 'ANALYTICS',
+      dataToAnalyze,
+      metrics
+    });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

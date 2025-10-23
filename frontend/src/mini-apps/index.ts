@@ -26,3 +26,6 @@ export { CommunicatorMiniApp } from './CommunicatorMiniApp';
 
 // Coding Agent Mini App (Super Coder with 6 Sub-Agents)
 export { CodingMiniApp } from './CodingMiniApp';
+
+// Marketing Agent Mini App (Super Marketer with 6 Sub-Agents)
+export { default as MarketingMiniApp } from './MarketingMiniApp';

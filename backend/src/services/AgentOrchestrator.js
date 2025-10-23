@@ -1,330 +1,235 @@
-/**
- * Agent Orchestrator - Central coordination for Mini Agents
- * Manages workflow execution and task delegation
- */
+// This file conceptually describes how Gemini Pro would orchestrate tasks.
+// For the purpose of this demo, the planExecution method provides a mock workflow.
 
-const NavigatorAgent = require('../agents/mini/NavigatorAgent');
-const VisionAgent = require('../agents/mini/VisionAgent');
-const ResearchAgent = require('../agents/mini/ResearchAgent');
-const TranslatorAgent = require('../agents/mini/TranslatorAgent');
-const SchedulerAgent = require('../agents/mini/SchedulerAgent');
-const StorageAgent = require('../agents/mini/StorageAgent');
-const MediaAgent = require('../agents/mini/MediaAgent');
-const CommunicatorAgent = require('../agents/mini/CommunicatorAgent');
-const logger = require('../utils/logger');
+const TelegramBot = require('node-telegram-bot-api');
+const logger = require('../../utils/logger'); // Assuming a logger utility exists
+const { GoogleGenAI } = require('@google/genai'); // Import for potential future full orchestration
 
 class AgentOrchestrator {
   constructor() {
-    this.agents = {
-      navigator: new NavigatorAgent(),
-      vision: new VisionAgent(),
-      research: new ResearchAgent(),
-      translator: new TranslatorAgent(),
-      scheduler: new SchedulerAgent(),
-      storage: new StorageAgent(),
-      media: new MediaAgent(),
-      communicator: new CommunicatorAgent()
-    };
+    // In a real application, you would initialize Gemini Pro here for full orchestration
+    // this.genAI = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    // this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-    this.workflows = new Map();
-    logger.info('[AgentOrchestrator] Initialized with 8 agents');
+    // Initialize Telegram Bot
+    this.telegramBot = null;
+    if (process.env.TELEGRAM_BOT_TOKEN) {
+      this.telegramBot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: false });
+      logger.info('[AgentOrchestrator] Telegram Bot initialized.');
+    } else {
+      logger.warn('[AgentOrchestrator] TELEGRAM_BOT_TOKEN is not set. Telegram features will be disabled.');
+    }
   }
 
-  /**
-   * Execute a workflow
-   */
-  async executeWorkflow(workflow) {
-    const workflowId = `wf_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
-    logger.info(`[AgentOrchestrator] Executing workflow: ${workflow.name}`);
-
-    const results = {};
-    const startTime = Date.now();
-
+  // Internal function to send Telegram messages
+  async _sendTelegramMessage(chatId, message) {
+    if (!this.telegramBot) {
+      throw new Error('Telegram Bot is not initialized. TELEGRAM_BOT_TOKEN might be missing.');
+    }
     try {
-      for (const step of workflow.steps) {
-        const stepStartTime = Date.now();
-        
-        logger.info(`[AgentOrchestrator] Step ${step.id}: ${step.agent}.${step.task.type}`);
-
-        const agent = this.agents[step.agent];
-        if (!agent) {
-          throw new Error(`Agent not found: ${step.agent}`);
-        }
-
-        // Replace placeholders in task with previous results
-        const task = this.resolveTaskParameters(step.task, results);
-
-        // Execute task
-        const result = await agent.executeTask(task);
-        results[step.id] = result;
-
-        const stepDuration = Date.now() - stepStartTime;
-        logger.info(`[AgentOrchestrator] Step ${step.id} completed in ${stepDuration}ms`);
-
-        // Pass result to next step if specified
-        if (step.passToNext && workflow.steps.indexOf(step) < workflow.steps.length - 1) {
-          const nextStep = workflow.steps[workflow.steps.indexOf(step) + 1];
-          nextStep.task.input = result;
-        }
-      }
-
-      const totalDuration = Date.now() - startTime;
-
-      const workflowResult = {
-        workflowId,
-        name: workflow.name,
-        status: 'completed',
-        results,
-        duration: totalDuration,
-        completedAt: new Date()
-      };
-
-      this.workflows.set(workflowId, workflowResult);
-
-      return workflowResult;
-
+      await this.telegramBot.sendMessage(chatId, message);
+      logger.info(`[AgentOrchestrator] Telegram message sent to ${chatId}: ${message}`);
+      return { success: true, message: 'Telegram message sent successfully.' };
     } catch (error) {
-      logger.error(`[AgentOrchestrator] Workflow error: ${error.message}`);
-      
-      const workflowResult = {
-        workflowId,
-        name: workflow.name,
-        status: 'failed',
-        error: error.message,
-        results,
-        duration: Date.now() - startTime,
-        failedAt: new Date()
+      logger.error(`[AgentOrchestrator] Failed to send Telegram message to ${chatId}: ${error.message}`);
+      throw new Error(`Failed to send Telegram message: ${error.message}`);
+    }
+  }
+
+  // This method would typically call Gemini Pro to generate a step-by-step plan
+  async planExecution(userPrompt, lang = 'en') {
+    logger.info(`Orchestrator received prompt: "${userPrompt}"`);
+    logger.info(`Simulating Gemini Pro planning...`);
+
+    // --- Mock Workflow Definition ---
+    // This is a hardcoded mock for demonstration.
+    // In a real scenario, Gemini Pro would generate this workflow dynamically.
+
+    // Mock Telegram command pattern
+    const telegramMatch = userPrompt.toLowerCase().match(/send a telegram message to (\S+) with content (.+)/i);
+    if (telegramMatch && this.telegramBot) {
+        const chatId = telegramMatch[1];
+        const messageContent = telegramMatch[2];
+        
+        logger.info(`[Orchestrator] Initiating Telegram message sending to ${chatId}...`);
+        try {
+            await this._sendTelegramMessage(chatId, messageContent);
+            return {
+                workflowName: "Telegram Notification",
+                steps: [
+                    {
+                        agentId: "orchestrator", // Orchestrator itself performs this action
+                        taskType: "sendTelegramMessage",
+                        taskInput: { chatId, message: messageContent },
+                        taskOutput: { text: 'Telegram notification sent successfully!' },
+                        mockResultKey: "telegramNotificationSent", // Custom key for frontend
+                    },
+                ]
+            };
+        } catch (error) {
+            logger.error(`[Orchestrator] Error sending Telegram message during orchestration: ${error.message}`);
+            throw new Error(`Orchestration failed to send Telegram message: ${error.message}`);
+        }
+    }
+
+    if (userPrompt.toLowerCase().includes('plan a 7-day trip to egypt')) {
+      return {
+        workflowName: "Egypt Trip Planner",
+        steps: [
+          {
+            agentId: "research",
+            taskType: "webSearch",
+            taskInput: { query: "best historical sites in Egypt for 7 days" },
+            mockResultKey: "webSearch", // Used by frontend for mock output
+          },
+          {
+            agentId: "navigator",
+            taskType: "getDirections",
+            taskInput: { origin: "Cairo", destination: "Luxor" },
+            // Removed mockResultKey as the frontend NavigatorAgentUI will now format the real API response.
+          },
+          {
+            agentId: "scheduler",
+            taskType: "createEvent",
+            taskInput: {
+              title: "Egypt Adventure",
+              location: "Egypt",
+              startTime: "2025-06-01T09:00:00",
+              endTime: "2025-06-07T18:00:00"
+            },
+            mockResultKey: "create", // Used by frontend for mock output
+          },
+          {
+            agentId: "storage",
+            taskType: "createItinerary",
+            taskInput: {
+              destination: "Egypt",
+              startDate: "2025-06-01",
+              endDate: "2025-06-07",
+              days: [{ title: "Day 1: Cairo", activities: ["Pyramids", "Khan el Khalili"] }]
+            },
+            mockResultKey: "create", // Used by frontend for mock output
+          },
+          {
+            agentId: "communicator",
+            taskType: "sendEmail",
+            taskInput: {
+              to: "traveler@example.com",
+              subject: "Your Egypt Trip Plan",
+              body: "Your detailed itinerary has been prepared by Amrikyyy AI."
+            },
+            mockResultKey: "email", // Used by frontend for mock output
+          }
+        ]
       };
-
-      this.workflows.set(workflowId, workflowResult);
-
-      throw error;
-    }
-  }
-
-  /**
-   * Delegate a task to appropriate agent
-   */
-  async delegateTask(agentName, task) {
-    logger.info(`[AgentOrchestrator] Delegating task to ${agentName}`);
-
-    const agent = this.agents[agentName];
-    if (!agent) {
-      throw new Error(`Agent not found: ${agentName}`);
-    }
-
-    return await agent.executeTask(task);
-  }
-
-  /**
-   * Resolve task parameters with previous results
-   */
-  resolveTaskParameters(task, results) {
-    const resolvedTask = { ...task };
-
-    // Replace placeholders like {{step1.result.value}}
-    Object.keys(resolvedTask).forEach(key => {
-      if (typeof resolvedTask[key] === 'string' && resolvedTask[key].includes('{{')) {
-        const placeholder = resolvedTask[key].match(/\{\{([^}]+)\}\}/);
-        if (placeholder) {
-          const path = placeholder[1].split('.');
-          let value = results;
-          
-          for (const segment of path) {
-            value = value?.[segment];
+    } 
+    else if (userPrompt.toLowerCase().includes('find hotels in cairo')) {
+      return {
+        workflowName: "Hotel Finder",
+        steps: [
+          {
+            agentId: "research",
+            taskType: "findHotels",
+            taskInput: { location: "Cairo", filters: "under $100, 4 stars" },
+            mockResultKey: "hotels",
+          },
+          {
+            agentId: "vision",
+            taskType: "analyzeImage",
+            taskInput: { imageUrl: "https://mock-hotel-image.com/cairo.jpg", prompt: "Describe the hotel." },
+            mockResultKey: "analyze",
           }
-
-          if (value !== undefined) {
-            resolvedTask[key] = value;
-          }
-        }
-      }
-    });
-
-    return resolvedTask;
-  }
-
-  /**
-   * Get all agents status
-   */
-  getAllAgentsStatus() {
-    const status = {};
-    
-    Object.entries(this.agents).forEach(([name, agent]) => {
-      status[name] = agent.getStatus();
-    });
-
-    return {
-      success: true,
-      agents: status,
-      totalAgents: Object.keys(this.agents).length
-    };
-  }
-
-  /**
-   * Get workflow history
-   */
-  getWorkflowHistory(limit = 10) {
-    const workflows = Array.from(this.workflows.values())
-      .sort((a, b) => b.completedAt - a.completedAt)
-      .slice(0, limit);
-
-    return {
-      success: true,
-      workflows,
-      total: this.workflows.size
-    };
-  }
-
-  /**
-   * Get workflow by ID
-   */
-  getWorkflow(workflowId) {
-    const workflow = this.workflows.get(workflowId);
-    
-    if (!workflow) {
-      throw new Error(`Workflow not found: ${workflowId}`);
+        ]
+      };
     }
-
-    return {
-      success: true,
-      workflow
-    };
+    // New mock workflow for coding tasks
+    else if (userPrompt.toLowerCase().includes('build a simple blog')) {
+      return {
+        workflowName: "Simple Blog Builder",
+        steps: [
+          {
+            agentId: "coding",
+            taskType: "designAPI",
+            taskInput: { serviceDescription: "A blog platform API for posts and comments.", backendLanguage: "Python" },
+            mockResultKey: "designedAPI",
+          },
+          {
+            agentId: "coding",
+            taskType: "generateUI",
+            taskInput: { projectDescription: "React frontend for a blog, showing posts and a comment section.", uiFramework: "React" },
+            mockResultKey: "generatedUI",
+          },
+          {
+            agentId: "coding",
+            taskType: "createDeploymentConfig",
+            taskInput: { serviceDescription: "Blog application", platform: "Docker/AWS ECS", ciCdTool: "GitHub Actions" },
+            mockResultKey: "createdDeployment",
+          },
+        ]
+      };
+    }
+    // New mock workflow for marketing tasks
+    else if (userPrompt.toLowerCase().includes('develop a marketing plan for a new product')) {
+      return {
+        workflowName: "New Product Marketing Plan",
+        steps: [
+          {
+            agentId: "marketing",
+            taskType: "marketResearch",
+            taskInput: { targetAudience: "tech enthusiasts", productService: "new AI gadget", competitors: "mainstream tech brands" },
+            mockResultKey: "marketResearch",
+          },
+          {
+            agentId: "marketing",
+            taskType: "seoSpecialist",
+            taskInput: { productService: "new AI gadget", keywords: "AI gadget, smart device, tech innovation" },
+            mockResultKey: "seoSpecialist",
+          },
+          {
+            agentId: "marketing",
+            taskType: "contentStrategist",
+            taskInput: { topic: "launch of new AI gadget", targetAudience: "tech enthusiasts, early adopters" },
+            mockResultKey: "contentStrategist",
+          },
+          {
+            agentId: "marketing",
+            taskType: "socialMediaManager",
+            taskInput: { platform: "Instagram, Twitter", productService: "new AI gadget" },
+            mockResultKey: "socialMediaManager",
+          },
+          {
+            agentId: "marketing",
+            taskType: "campaignManager",
+            taskInput: { campaignGoal: "generate pre-orders", budget: "$15000", duration: "1 month" },
+            mockResultKey: "campaignManager",
+          },
+          {
+            agentId: "marketing",
+            taskType: "analyticsExpert",
+            taskInput: { dataToAnalyze: "pre-order numbers, social media mentions, website visits", metrics: "conversion rate, engagement, reach" },
+            mockResultKey: "analyticsExpert",
+          },
+        ]
+      };
+    }
+    else {
+      // Default simple response for other prompts
+      return {
+        workflowName: "Simple Response",
+        steps: [
+          {
+            agentId: "research",
+            taskType: "webSearch",
+            taskInput: { query: userPrompt },
+            mockResultKey: "webSearch",
+          }
+        ]
+      };
+    }
   }
 
-  /**
-   * Create predefined workflow templates
-   */
-  getWorkflowTemplates() {
-    return {
-      success: true,
-      templates: [
-        {
-          id: 'complete-trip-planning',
-          name: 'Complete Trip Planning',
-          description: 'Plan a complete trip with research, navigation, scheduling, and documentation',
-          steps: [
-            {
-              id: 'step1',
-              agent: 'research',
-              task: {
-                type: 'WEB_SEARCH',
-                query: '{{destination}} travel guide'
-              }
-            },
-            {
-              id: 'step2',
-              agent: 'navigator',
-              task: {
-                type: 'FIND_NEARBY',
-                location: { lat: 0, lng: 0 },
-                placeType: 'tourist_attraction'
-              }
-            },
-            {
-              id: 'step3',
-              agent: 'scheduler',
-              task: {
-                type: 'CREATE_EVENT',
-                event: {
-                  title: 'Trip to {{destination}}',
-                  startTime: '{{startDate}}',
-                  endTime: '{{endDate}}'
-                }
-              }
-            },
-            {
-              id: 'step4',
-              agent: 'storage',
-              task: {
-                type: 'CREATE_ITINERARY',
-                tripData: {
-                  destination: '{{destination}}',
-                  startDate: '{{startDate}}',
-                  endDate: '{{endDate}}'
-                }
-              }
-            },
-            {
-              id: 'step5',
-              agent: 'communicator',
-              task: {
-                type: 'EMAIL_ITINERARY',
-                to: '{{email}}',
-                itinerary: '{{step4.itinerary}}'
-              }
-            }
-          ]
-        },
-        {
-          id: 'navigate-foreign-city',
-          name: 'Navigate Foreign City',
-          description: 'Find places, translate, and get directions in a foreign city',
-          steps: [
-            {
-              id: 'step1',
-              agent: 'navigator',
-              task: {
-                type: 'FIND_NEARBY',
-                location: '{{location}}',
-                placeType: '{{placeType}}'
-              }
-            },
-            {
-              id: 'step2',
-              agent: 'research',
-              task: {
-                type: 'GET_REVIEWS',
-                placeName: '{{step1.places[0].name}}'
-              }
-            },
-            {
-              id: 'step3',
-              agent: 'translator',
-              task: {
-                type: 'TRANSLATE_TEXT',
-                text: '{{step2.reviews[0].snippet}}',
-                targetLang: 'en'
-              }
-            }
-          ]
-        },
-        {
-          id: 'research-destination',
-          name: 'Research Destination',
-          description: 'Comprehensive research about a travel destination',
-          steps: [
-            {
-              id: 'step1',
-              agent: 'research',
-              task: {
-                type: 'WEB_SEARCH',
-                query: '{{destination}} travel information'
-              }
-            },
-            {
-              id: 'step2',
-              agent: 'media',
-              task: {
-                type: 'SEARCH_TRAVEL_VIDEOS',
-                destination: '{{destination}}'
-              }
-            },
-            {
-              id: 'step3',
-              agent: 'storage',
-              task: {
-                type: 'SAVE_DOCUMENT',
-                content: '{{step1.results}}',
-                filename: '{{destination}}-research.txt'
-              }
-            }
-          ]
-        }
-      ]
-    };
-  }
+  // In a real system, orchestrator would also execute the workflow by calling agent instances
+  // For this demo, the frontend simulates step-by-step execution based on the plan.
 }
 
 module.exports = AgentOrchestrator;

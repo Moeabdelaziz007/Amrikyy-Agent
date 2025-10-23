@@ -14,7 +14,8 @@ import SchedulerAgentUI from './agents/SchedulerAgentUI';
 import StorageAgentUI from './agents/StorageAgentUI';
 import MediaAgentUI from './agents/MediaAgentUI';
 import CommunicatorAgentUI from './agents/CommunicatorAgentUI';
-import CodingAgentUI from './agents/CodingAgentUI'; // Import CodingAgentUI
+import CodingAgentUI from './agents/CodingAgentUI';
+import MarketingAgentUI from './agents/MarketingAgentUI';
 import { XIcon } from './IconComponents';
 
 interface AgentInterfaceProps {
@@ -32,7 +33,8 @@ const agentComponents: { [key: string]: React.FC<{ onTaskComplete: (entry: TaskH
   storage: StorageAgentUI,
   media: MediaAgentUI,
   communicator: CommunicatorAgentUI,
-  coding: CodingAgentUI, // Add CodingAgentUI
+  coding: CodingAgentUI,
+  marketing: MarketingAgentUI,
 };
 
 const AgentInterface: React.FC<AgentInterfaceProps> = ({ agentId, onClose, onTaskComplete }) => {

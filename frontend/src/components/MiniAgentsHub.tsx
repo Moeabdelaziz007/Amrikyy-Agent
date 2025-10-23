@@ -274,6 +274,13 @@ const MiniAgentsHub: React.FC = () => {
       icon: CodeIcon, 
       color: 'emerald' 
     },
+    { 
+      id: 'marketing', 
+      name: { en: translations.agents.marketing.en.name, ar: translations.agents.marketing.ar.name }, 
+      description: { en: translations.agents.marketing.en.description, ar: translations.agents.marketing.ar.description }, 
+      icon: GlobeIcon, 
+      color: 'yellow' 
+    },
   ];
 
   const currentThemeColors = theme.colors;
