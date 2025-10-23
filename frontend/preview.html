@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amrikyy AI OS - Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto max-w-6xl">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-6xl font-bold text-white mb-4">
+                🚀 Amrikyy AI OS
+            </h1>
+            <p class="text-xl text-white/90">
+                New Kombai UI - Local Preview
+            </p>
+            <p class="text-sm text-white/70 mt-2">
+                Built with React + TypeScript + Vite + Tailwind CSS
+            </p>
+        </div>
+
+        <!-- Pages Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Page 1 -->
+            <div class="card">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 via-pink-500 to-blue-500 flex items-center justify-center">
+                        <span class="text-2xl">🖥️</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">AmrikyyOSComplete</h3>
+                        <p class="text-sm text-gray-500">23.6 KB</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-3">
+                    Complete OS experience with window management, taskbar, and system tray
+                </p>
+                <div class="flex gap-2">
+                    <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Desktop</span>
+                    <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">Mobile</span>
+                    <span class="px-2 py-1 bg-pink-100 text-pink-700 rounded text-xs">Tablet</span>
+                </div>
+            </div>
+
+            <!-- Page 2 -->
+            <div class="card">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                        <span class="text-2xl">🎨</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">AIUIDashboard</h3>
+                        <p class="text-sm text-gray-500">27.5 KB</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-3">
+                    Kombai-like UI enhancement tool with AI-powered component generation
+                </p>
+                <div class="flex gap-2">
+                    <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">AI-Powered</span>
+                    <span class="px-2 py-1 bg-cyan-100 text-cyan-700 rounded text-xs">Components</span>
+                </div>
+            </div>
+
+            <!-- Page 3 -->
+            <div class="card">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                        <span class="text-2xl">🚀</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">AppLauncher</h3>
+                        <p class="text-sm text-gray-500">9.9 KB</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-3">
+                    Modern app launcher with grid layout and search functionality
+                </p>
+                <div class="flex gap-2">
+                    <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Grid</span>
+                    <span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded text-xs">Search</span>
+                </div>
+            </div>
+
+            <!-- Page 4 -->
+            <div class="card">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                        <span class="text-2xl">🌟</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">LandingPage</h3>
+                        <p class="text-sm text-gray-500">12.3 KB</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-3">
+                    Marketing landing page with mini apps showcase (EN/AR)
+                </p>
+                <div class="flex gap-2">
+                    <span class="px-2 py-1 bg-orange-100 text-orange-700 rounded text-xs">Marketing</span>
+                    <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">Bilingual</span>
+                </div>
+            </div>
+
+            <!-- Page 5 -->
+            <div class="card">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-500 flex items-center justify-center">
+                        <span class="text-2xl">📊</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">SEODashboard</h3>
+                        <p class="text-sm text-gray-500">40.3 KB</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-3">
+                    SEO analytics dashboard with real-time metrics and keyword tracking
+                </p>
+                <div class="flex gap-2">
+                    <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">Analytics</span>
+                    <span class="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs">SEO</span>
+                </div>
+            </div>
+
+            <!-- Page 6 -->
+            <div class="card">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center">
+                        <span class="text-2xl">💻</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">CodebaseExplorer</h3>
+                        <p class="text-sm text-gray-500">16 KB</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-3">
+                    Interactive codebase explorer with file tree and syntax highlighting
+                </p>
+                <div class="flex gap-2">
+                    <span class="px-2 py-1 bg-pink-100 text-pink-700 rounded text-xs">Developer</span>
+                    <span class="px-2 py-1 bg-rose-100 text-rose-700 rounded text-xs">Code</span>
+                </div>
+            </div>
+
+            <!-- Page 7 -->
+            <div class="card">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
+                        <span class="text-2xl">📱</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">MobileOSDemo</h3>
+                        <p class="text-sm text-gray-500">19.9 KB</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-3">
+                    Mobile OS experience with touch gestures and app drawer
+                </p>
+                <div class="flex gap-2">
+                    <span class="px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-xs">Mobile</span>
+                    <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Touch</span>
+                </div>
+            </div>
+
+            <!-- Page 8 -->
+            <div class="card">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center">
+                        <span class="text-2xl">🖥️</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">OSDemo</h3>
+                        <p class="text-sm text-gray-500">11 KB</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-3">
+                    Desktop OS demo with window management and taskbar
+                </p>
+                <div class="flex gap-2">
+                    <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">Desktop</span>
+                    <span class="px-2 py-1 bg-gray-200 text-gray-800 rounded text-xs">Windows</span>
+                </div>
+            </div>
+
+            <!-- Page 9 -->
+            <div class="card">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center">
+                        <span class="text-2xl">🎤</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">VoiceTest</h3>
+                        <p class="text-sm text-gray-500">14.2 KB</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-3">
+                    Voice control testing interface with speech recognition
+                </p>
+                <div class="flex gap-2">
+                    <span class="px-2 py-1 bg-teal-100 text-teal-700 rounded text-xs">Voice</span>
+                    <span class="px-2 py-1 bg-cyan-100 text-cyan-700 rounded text-xs">Audio</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="bg-white rounded-2xl p-8 shadow-2xl">
+            <h2 class="text-3xl font-bold mb-6 gradient-text">📊 Project Stats</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-purple-600">9</div>
+                    <div class="text-gray-600">Pages</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-blue-600">174.7 KB</div>
+                    <div class="text-gray-600">Total Code</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-green-600">15+</div>
+                    <div class="text-gray-600">Components</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-orange-600">100%</div>
+                    <div class="text-gray-600">Responsive</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="mt-8 bg-white rounded-2xl p-8 shadow-2xl">
+            <h2 class="text-3xl font-bold mb-6 gradient-text">✨ Key Features</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">🖥️</span>
+                    <span class="text-gray-700">Desktop OS Experience</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">📱</span>
+                    <span class="text-gray-700">Mobile-First Design</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">🤖</span>
+                    <span class="text-gray-700">AI-Enhanced Components</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">✨</span>
+                    <span class="text-gray-700">Premium Animations</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">🎤</span>
+                    <span class="text-gray-700">Voice Control</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">👆</span>
+                    <span class="text-gray-700">Touch Gestures</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">♿</span>
+                    <span class="text-gray-700">WCAG Compliant</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">⚡</span>
+                    <span class="text-gray-700">Optimized Performance</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 text-center text-white/80">
+            <p class="mb-2">Built with ❤️ using Kombai AI</p>
+            <p class="text-sm">React 18 + TypeScript + Vite + Tailwind CSS + Framer Motion</p>
+        </div>
+    </div>
+</body>
+</html>
