@@ -1,88 +1,13 @@
-services:services:services:
-
-  # Backend Service on Render
-
-  - type: web  # Backend Service on Render  # Backend Service on Render
-
-    name: amrikyy-backend
-
-    runtime: node  - type: web  - type: web
-
-    plan: free
-
-    buildCommand: cd backend && npm install    name: amrikyy-backend    name: amrikyy-backend
-
-    startCommand: cd backend && npm start
-
-    envVars:    runtime: node    runtime: node
-
-      - key: NODE_ENV
-
-        value: production    plan: free    plan: free
-
-      - key: PORT
-
-        value: 10000    buildCommand: cd backend && npm install    buildCommand: cd backend && npm install
-
-    # Environment variables will be set in Render dashboard
-
-    # Add your actual env vars there:    startCommand: cd backend && npm start    startCommand: cd backend && npm start
-
-    # - DATABASE_URL
-
-    # - JWT_SECRET    envVars:    envVars:
-
-    # - OPENAI_API_KEY
-
-    # - SUPABASE_URL      - key: NODE_ENV      - key: NODE_ENV
-
-    # - SUPABASE_ANON_KEY
-
-    # etc.        value: production        value: production
-
-    
-
-    # Health check      - key: PORT      - key: PORT
-
-    healthCheckPath: /api/health
-
-            value: 10000        value: 10000
-
-    # Auto-deploy from main branch
-
-    autoDeploy: true    # Environment variables will be set in Render dashboard    # Environment variables will be set in Render dashboard
-
-    
-
-    # Root directory    # Add your actual env vars there:    # Add your actual env vars there:
-
+services:
+  - type: static
+    name: frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+  - type: web
+    name: backend
+    env: node
     rootDir: backend
-    # - DATABASE_URL    # - DATABASE_URL
-
-    # - JWT_SECRET    # - JWT_SECRET
-
-    # - OPENAI_API_KEY    # - OPENAI_API_KEY
-
-    # - SUPABASE_URL    # - SUPABASE_URL
-
-    # - SUPABASE_ANON_KEY    # - SUPABASE_ANON_KEY
-
-    # etc.    # etc.
-
-        
-
-    # Health check    # Health check
-
-    healthCheckPath: /api/health    healthCheckPath: /api/health
-
-        
-
-    # Auto-deploy from main branch    # Auto-deploy from main branch
-
-    autoDeploy: true    autoDeploy: true
-
-        
-
-    # Root directory    # Root directory
-
-    rootDir: backend    rootDir: backend
+    buildCommand: npm install
+    startCommand: node index.js

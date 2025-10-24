@@ -1,114 +1,95 @@
-const request = require('supertest');
-const express = require('express');
-const apiRoutes = require('../routes/api'); // Assuming your API routes are in routes/api.js
-const TelegramBot = require('node-telegram-bot-api'); // Import the actual TelegramBot
+// Mock the @google/genai library
+const mockGenerateContent = jest.fn();
+jest.mock('@google/genai', () => ({
+  ...jest.requireActual('@google/genai'), // Keep Type enum available
+  GoogleGenAI: jest.fn(() => ({
+    models: {
+      generateContent: mockGenerateContent,
+    },
+  })),
+}));
 
-// Mock the node-telegram-bot-api library
-jest.mock('node-telegram-bot-api', () => {
-  return jest.fn().mockImplementation(() => ({
-    sendMessage: jest.fn(),
-  }));
-});
+const OrchestratorAgent = require('../agents/OrchestratorAgent');
+const { GoogleGenAI } = require('@google/genai');
 
-// Create a dummy Express app to test the routes
-const app = express();
-app.use(express.json());
-app.use('/api', apiRoutes);
+// Mock the logger to prevent console output during tests
+jest.mock('../utils/logger', () => ({
+  info: jest.fn(),
+  warn: jest.fn(),
+  error: jest.fn(),
+  debug: jest.fn(),
+}));
 
-describe('Orchestrator API', () => {
-  let mockSendMessage;
-  const mockTelegramBotToken = 'MOCK_TELEGRAM_BOT_TOKEN'; // Define a mock token
-  process.env.TELEGRAM_BOT_TOKEN = mockTelegramBotToken; // Set the environment variable
+describe('OrchestratorAgent', () => {
+  let agent;
+  const mockApiKey = 'MOCK_GEMINI_API_KEY';
 
   beforeEach(() => {
-    // Clear all mocks before each test
+    process.env.API_KEY = mockApiKey;
     jest.clearAllMocks();
-    // Get the mock instance's sendMessage method
-    mockSendMessage = new TelegramBot().sendMessage;
+    agent = new OrchestratorAgent();
   });
 
   afterAll(() => {
-    // Clean up the environment variable
-    delete process.env.TELEGRAM_BOT_TOKEN;
+    delete process.env.API_KEY;
   });
 
-  test('POST /api/orchestrator should return a mock workflow for "Plan a 7-day trip to Egypt"', async () => {
-    const prompt = 'Plan a 7-day trip to Egypt';
-    const response = await request(app)
-      .post('/api/orchestrator')
-      .send({ prompt, lang: 'en' })
-      .expect(200);
+  test('should call Gemini with correct system instruction, prompt, and JSON config', async () => {
+    const mockWorkflow = {
+      name: 'Test Workflow',
+      steps: [{ id: 'step-1', agentId: 'research', taskType: 'webSearch', taskInput: { query: 'testing' } }],
+    };
+    mockGenerateContent.mockResolvedValue({ text: JSON.stringify(mockWorkflow) });
 
-    expect(response.body).toBeDefined();
-    expect(response.body.workflowName).toBe('Egypt Trip Planner');
-    expect(response.body.steps).toBeInstanceOf(Array);
-    expect(response.body.steps.length).toBeGreaterThan(0);
-    expect(response.body.steps[0]).toHaveProperty('agentId', 'research');
+    const prompt = 'this is a test prompt';
+    const result = await agent.planExecution(prompt);
+
+    expect(mockGenerateContent).toHaveBeenCalledTimes(1);
+    const callArgs = mockGenerateContent.mock.calls[0][0];
+
+    expect(callArgs.model).toBe('gemini-2.5-pro');
+    expect(callArgs.contents[0].parts[0].text).toBe(prompt);
+    expect(callArgs.config.systemInstruction).toContain('You are an expert AI orchestrator');
+    expect(callArgs.config.systemInstruction).toContain('- **navigator**:');
+    expect(callArgs.config.responseMimeType).toBe('application/json');
+    expect(callArgs.config.responseSchema).toBeDefined();
+
+    expect(result).toEqual(mockWorkflow);
   });
 
-  test('POST /api/orchestrator should return a simple workflow for unknown prompt', async () => {
-    const prompt = 'What is the capital of France?';
-    const response = await request(app)
-      .post('/api/orchestrator')
-      .send({ prompt, lang: 'en' })
-      .expect(200);
+  test('should parse and return the JSON workflow from Gemini', async () => {
+    const mockWorkflow = {
+      name: 'Multi-step Plan',
+      steps: [
+        { id: 'step-1', agentId: 'research', taskType: 'webSearch', taskInput: { query: 'restaurants' } },
+        { id: 'step-2', agentId: 'scheduler', taskType: 'createEvent', taskInput: { title: 'Dinner at {{steps.step-1.output.results[0].name}}' } },
+      ],
+    };
+    mockGenerateContent.mockResolvedValue({ text: JSON.stringify(mockWorkflow) });
 
-    expect(response.body).toBeDefined();
-    expect(response.body.workflowName).toBe('Simple Response');
-    expect(response.body.steps).toHaveLength(1);
-    expect(response.body.steps[0]).toHaveProperty('agentId', 'research');
+    const result = await agent.planExecution('find restaurants and book one');
+    expect(result).toEqual(mockWorkflow);
   });
 
-  test('POST /api/orchestrator should return 400 if prompt is missing', async () => {
-    const response = await request(app)
-      .post('/api/orchestrator')
-      .send({ lang: 'en' })
-      .expect(400);
+  test('should fall back to mock logic if API key is not set', async () => {
+    delete process.env.API_KEY;
+    agent = new OrchestratorAgent(); // Re-initialize without API key
 
-    expect(response.body).toHaveProperty('error', 'Prompt is required');
+    const result = await agent.planExecution('plan a trip to mars');
+    
+    expect(mockGenerateContent).not.toHaveBeenCalled();
+    expect(result.name).toBe('Trip Planning (Mock)');
+    expect(result.steps[0].agentId).toBe('navigator');
+  });
+  
+  test('should fall back to mock logic if Gemini API call fails', async () => {
+    mockGenerateContent.mockRejectedValue(new Error('API Failure'));
+    
+    const result = await agent.planExecution('this will fail');
+    
+    expect(mockGenerateContent).toHaveBeenCalledTimes(1);
+    expect(result.name).toBe('Simple Web Search (Mock)');
+    expect(result.steps[0].taskInput.query).toBe('this will fail');
   });
 
-  test('POST /api/orchestrator should send a Telegram message for specific prompt', async () => {
-    const mockChatId = '12345';
-    const mockMessage = 'Hello from Amrikyyy AI OS!';
-    const prompt = `Send a Telegram message to ${mockChatId} with content ${mockMessage}`;
-
-    // Mock the sendMessage function to resolve successfully
-    mockSendMessage.mockResolvedValueOnce({});
-
-    const response = await request(app)
-      .post('/api/orchestrator')
-      .send({ prompt, lang: 'en' })
-      .expect(200);
-
-    expect(mockSendMessage).toHaveBeenCalledTimes(1);
-    expect(mockSendMessage).toHaveBeenCalledWith(mockChatId, mockMessage);
-
-    expect(response.body).toBeDefined();
-    expect(response.body.workflowName).toBe('Telegram Notification');
-    expect(response.body.steps).toHaveLength(1);
-    expect(response.body.steps[0]).toHaveProperty('agentId', 'orchestrator');
-    expect(response.body.steps[0]).toHaveProperty('taskType', 'sendTelegramMessage');
-    expect(response.body.steps[0].taskInput).toEqual({ chatId: mockChatId, message: mockMessage });
-    expect(response.body.steps[0].taskOutput.text).toBe('Telegram notification sent successfully!');
-  });
-
-  test('POST /api/orchestrator should handle errors when sending Telegram message', async () => {
-    const mockChatId = 'invalid_chat';
-    const mockMessage = 'Test error message';
-    const prompt = `Send a Telegram message to ${mockChatId} with content ${mockMessage}`;
-    const errorMessage = 'Telegram API error: chat not found';
-
-    // Mock the sendMessage function to reject with an error
-    mockSendMessage.mockRejectedValue(new Error(errorMessage));
-
-    const response = await request(app)
-      .post('/api/orchestrator')
-      .send({ prompt, lang: 'en' })
-      .expect(500); // Expect a 500 status due to the error
-
-    expect(mockSendMessage).toHaveBeenCalledTimes(1);
-    expect(mockSendMessage).toHaveBeenCalledWith(mockChatId, mockMessage);
-    expect(response.body).toHaveProperty('error', `Orchestration failed to send Telegram message: ${errorMessage}`);
-  });
 });

@@ -3,9 +3,9 @@ jest.mock('@google/genai', () => {
   const mockGenerateContent = jest.fn();
   return {
     GoogleGenAI: jest.fn(() => ({
-      getGenerativeModel: jest.fn(() => ({
+      models: {
         generateContent: mockGenerateContent,
-      })),
+      },
     })),
   };
 });
@@ -25,7 +25,7 @@ describe('MarketingAgent', () => {
     jest.clearAllMocks();
     agent = new MarketingAgent();
     // Get the mocked generateContent function
-    mockGenerateContent = GoogleGenAI().getGenerativeModel().generateContent;
+    mockGenerateContent = GoogleGenAI().models.generateContent;
   });
 
   afterAll(() => {
@@ -38,7 +38,7 @@ describe('MarketingAgent', () => {
     agent = new MarketingAgent(); // Re-initialize to reflect missing key
 
     await expect(agent.executeTask({ type: 'marketResearch', targetAudience: 'test', productService: 'test' }))
-      .rejects.toThrow('API_KEY is not configured. Cannot make real AI calls.');
+      .rejects.toThrow('API_KEY is not configured. Cannot make real API calls.');
   });
 
   test('conductMarketResearch should call Gemini with Google Search tool and return response with grounding chunks', async () => {
@@ -61,6 +61,7 @@ describe('MarketingAgent', () => {
 
     expect(mockGenerateContent).toHaveBeenCalledTimes(1);
     const callArgs = mockGenerateContent.mock.calls[0][0];
+    expect(callArgs.model).toBe(agent.modelName);
     expect(callArgs.contents[0].parts[0].text).toContain(agent.subAgents.marketResearch.systemPrompt);
     expect(callArgs.contents[0].parts[0].text).toContain('Conduct market research for a "new streaming service" targeting "young adults".');
     expect(callArgs.config.tools).toEqual([{ googleSearch: {} }]);
@@ -95,6 +96,7 @@ describe('MarketingAgent', () => {
 
     expect(mockGenerateContent).toHaveBeenCalledTimes(1);
     const callArgs = mockGenerateContent.mock.calls[0][0];
+    expect(callArgs.model).toBe(agent.modelName);
     expect(callArgs.contents[0].parts[0].text).toContain(agent.subAgents.seoSpecialist.systemPrompt);
     expect(callArgs.contents[0].parts[0].text).toContain('Optimize the SEO strategy for "e-commerce store".');
     expect(callArgs.config.tools).toEqual([{ googleSearch: {} }]);
@@ -129,6 +131,7 @@ describe('MarketingAgent', () => {
 
     expect(mockGenerateContent).toHaveBeenCalledTimes(1);
     const callArgs = mockGenerateContent.mock.calls[0][0];
+    expect(callArgs.model).toBe(agent.modelName);
     expect(callArgs.contents[0].parts[0].text).toContain(agent.subAgents.contentStrategist.systemPrompt);
     expect(callArgs.contents[0].parts[0].text).toContain('Develop a content strategy for the topic "sustainable living" targeting "environmentally conscious consumers".');
     expect(callArgs.config.tools).toEqual([{ googleSearch: {} }]);
@@ -163,6 +166,7 @@ describe('MarketingAgent', () => {
 
     expect(mockGenerateContent).toHaveBeenCalledTimes(1);
     const callArgs = mockGenerateContent.mock.calls[0][0];
+    expect(callArgs.model).toBe(agent.modelName);
     expect(callArgs.contents[0].parts[0].text).toContain(agent.subAgents.socialMediaManager.systemPrompt);
     expect(callArgs.contents[0].parts[0].text).toContain('Outline a social media management plan for "fashion brand" on "Instagram".');
     expect(callArgs.config.tools).toEqual([{ googleSearch: {} }]);
@@ -198,6 +202,7 @@ describe('MarketingAgent', () => {
 
     expect(mockGenerateContent).toHaveBeenCalledTimes(1);
     const callArgs = mockGenerateContent.mock.calls[0][0];
+    expect(callArgs.model).toBe(agent.modelName);
     expect(callArgs.contents[0].parts[0].text).toContain(agent.subAgents.campaignManager.systemPrompt);
     expect(callArgs.contents[0].parts[0].text).toContain('Plan a marketing campaign with the goal to "increase brand awareness".');
     expect(callArgs.config.tools).toEqual([{ googleSearch: {} }]);
@@ -232,6 +237,7 @@ describe('MarketingAgent', () => {
 
     expect(mockGenerateContent).toHaveBeenCalledTimes(1);
     const callArgs = mockGenerateContent.mock.calls[0][0];
+    expect(callArgs.model).toBe(agent.modelName);
     expect(callArgs.contents[0].parts[0].text).toContain(agent.subAgents.analyticsExpert.systemPrompt);
     expect(callArgs.contents[0].parts[0].text).toContain('Analyze the following marketing data:');
     expect(callArgs.config.tools).toEqual([{ googleSearch: {} }]);
