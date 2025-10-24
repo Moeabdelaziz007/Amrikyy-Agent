@@ -1,3 +1,4 @@
+
 export interface Theme {
   id: string;
   name: string;
@@ -12,6 +13,8 @@ export interface Theme {
     textSecondary: string;
     border: string;
     gradient: string;
+    // FIX: Add 'error' color property to the theme definition.
+    error: string;
   };
   mode: 'light' | 'dark';
 }
@@ -31,7 +34,8 @@ export const themes: Theme[] = [
       text: '#0c4a6e', // sky-900
       textSecondary: '#075985', // sky-800
       border: '#bae6fd', // sky-200
-      gradient: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)'
+      gradient: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)',
+      error: '#ef4444', // red-500
     },
     mode: 'light'
   },
@@ -48,7 +52,8 @@ export const themes: Theme[] = [
       text: '#7c2d12', // orange-900
       textSecondary: '#9a3412', // orange-800
       border: '#fed7aa', // orange-200
-      gradient: 'linear-gradient(135deg, #f97316 0%, #fbbf24 100%)'
+      gradient: 'linear-gradient(135deg, #f97316 0%, #fbbf24 100%)',
+      error: '#ef4444', // red-500
     },
     mode: 'light'
   },
@@ -65,7 +70,8 @@ export const themes: Theme[] = [
       text: '#064e3b', // emerald-900
       textSecondary: '#065f46', // emerald-800
       border: '#a7f3d0', // emerald-200
-      gradient: 'linear-gradient(135deg, #10b981 0%, #22c55e 100%)'
+      gradient: 'linear-gradient(135deg, #10b981 0%, #22c55e 100%)',
+      error: '#ef4444', // red-500
     },
     mode: 'light'
   },
@@ -82,7 +88,8 @@ export const themes: Theme[] = [
       text: '#581c87', // purple-900
       textSecondary: '#6b21a8', // purple-800
       border: '#e9d5ff', // purple-200
-      gradient: 'linear-gradient(135deg, #a855f7 0%, #d946ef 100%)'
+      gradient: 'linear-gradient(135deg, #a855f7 0%, #d946ef 100%)',
+      error: '#ef4444', // red-500
     },
     mode: 'light'
   },
@@ -101,7 +108,8 @@ export const themes: Theme[] = [
       text: '#f1f5f9', // slate-100
       textSecondary: '#cbd5e1', // slate-300
       border: '#334155', // slate-700
-      gradient: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)'
+      gradient: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
+      error: '#f87171', // red-400
     },
     mode: 'dark'
   },
@@ -118,7 +126,8 @@ export const themes: Theme[] = [
       text: '#fafafa', // zinc-50
       textSecondary: '#d4d4d8', // zinc-300
       border: '#3f3f46', // zinc-700
-      gradient: 'linear-gradient(135deg, #ec4899 0%, #a855f7 100%)'
+      gradient: 'linear-gradient(135deg, #ec4899 0%, #a855f7 100%)',
+      error: '#f87171', // red-400
     },
     mode: 'dark'
   },
@@ -135,7 +144,8 @@ export const themes: Theme[] = [
       text: '#d1fae5', // emerald-100
       textSecondary: '#a7f3d0', // emerald-200
       border: '#064e3b', // emerald-900
-      gradient: 'linear-gradient(135deg, #10b981 0%, #14b8a6 100%)'
+      gradient: 'linear-gradient(135deg, #10b981 0%, #14b8a6 100%)',
+      error: '#f87171', // red-400
     },
     mode: 'dark'
   },
@@ -152,7 +162,8 @@ export const themes: Theme[] = [
       text: '#fef3c7', // amber-100
       textSecondary: '#fde68a', // amber-200
       border: '#78350f', // amber-900
-      gradient: 'linear-gradient(135deg, #f59e0b 0%, #f97316 100%)'
+      gradient: 'linear-gradient(135deg, #f59e0b 0%, #f97316 100%)',
+      error: '#f87171', // red-400
     },
     mode: 'dark'
   }

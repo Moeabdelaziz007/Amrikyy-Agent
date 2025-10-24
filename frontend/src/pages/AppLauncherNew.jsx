@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
   ArrowRight,
@@ -18,36 +18,36 @@ import {
   Mail,
   Megaphone,
   Users,
-} from "lucide-react";
-import { Link } from "react-router-dom";
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 // AgentCard Component
 const AgentCard = ({ app, onClick }) => {
-  const getGradientClass = (color) => {
+  const getGradientClass = color => {
     const gradients = {
-      blue: "from-blue-500 to-cyan-500",
-      purple: "from-purple-500 to-pink-500", 
-      green: "from-green-500 to-emerald-500",
-      cyan: "from-cyan-500 to-blue-500",
-      orange: "from-orange-500 to-amber-500",
-      indigo: "from-indigo-500 to-purple-500",
-      red: "from-red-500 to-orange-500",
-      pink: "from-pink-500 to-purple-500",
-      emerald: "from-emerald-500 to-teal-500",
+      blue: 'from-blue-500 to-cyan-500',
+      purple: 'from-purple-500 to-pink-500',
+      green: 'from-green-500 to-emerald-500',
+      cyan: 'from-cyan-500 to-blue-500',
+      orange: 'from-orange-500 to-amber-500',
+      indigo: 'from-indigo-500 to-purple-500',
+      red: 'from-red-500 to-orange-500',
+      pink: 'from-pink-500 to-purple-500',
+      emerald: 'from-emerald-500 to-teal-500',
     };
-    return gradients[color] || "from-gray-500 to-gray-600";
+    return gradients[color] || 'from-gray-500 to-gray-600';
   };
 
   const Icon = app.icon;
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ 
-        scale: 1.05, 
-        boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
-        y: -5 
+      whileHover={{
+        scale: 1.05,
+        boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+        y: -5,
       }}
       whileTap={{ scale: 0.98 }}
       className="relative group cursor-pointer"
@@ -56,21 +56,25 @@ const AgentCard = ({ app, onClick }) => {
       <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 hover:bg-white/20 transition-all duration-300 h-full">
         {/* Status Badge */}
         <div className="absolute top-4 right-4">
-          <div className={`${app.statusColor} text-white text-xs font-bold px-3 py-1 rounded-full`}>
+          <div
+            className={`${app.statusColor} text-white text-xs font-bold px-3 py-1 rounded-full`}
+          >
             {app.status}
           </div>
         </div>
 
         {/* Icon */}
-        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 bg-gradient-to-br ${getGradientClass(app.color)} shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+        <div
+          className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 bg-gradient-to-br ${getGradientClass(
+            app.color
+          )} shadow-lg group-hover:scale-110 transition-transform duration-300`}
+        >
           <Icon className="w-8 h-8 text-white" />
         </div>
 
         {/* Content */}
         <div className="space-y-2">
-          <h3 className="text-xl font-bold text-white">
-            {app.title}
-          </h3>
+          <h3 className="text-xl font-bold text-white">{app.title}</h3>
           <p className="text-sm text-purple-300 font-medium">{app.titleAr}</p>
           <p className="text-sm text-cyan-300 font-medium mb-3">
             {app.subtitle}
@@ -82,7 +86,7 @@ const AgentCard = ({ app, onClick }) => {
           {/* Features */}
           <div className="flex flex-wrap gap-2 pt-2">
             {app.features.map((feature, idx) => (
-              <span 
+              <span
                 key={idx}
                 className="text-xs bg-white/10 text-white/80 px-2 py-1 rounded-full border border-white/20"
               >
@@ -93,13 +97,17 @@ const AgentCard = ({ app, onClick }) => {
 
           {/* Launch Button */}
           <div className="flex items-center gap-2 text-white font-medium pt-4 group-hover:translate-x-2 transition-transform duration-300">
-            <span>{app.available ? "Launch App" : "Coming Soon"}</span>
+            <span>{app.available ? 'Launch App' : 'Coming Soon'}</span>
             {app.available && <ArrowRight className="w-4 h-4" />}
           </div>
         </div>
 
         {/* Hover Gradient Border */}
-        <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${getGradientClass(app.color)} opacity-0 group-hover:opacity-20 transition-opacity duration-300 pointer-events-none`} />
+        <div
+          className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${getGradientClass(
+            app.color
+          )} opacity-0 group-hover:opacity-20 transition-opacity duration-300 pointer-events-none`}
+        />
       </div>
     </motion.div>
   );
@@ -110,102 +118,107 @@ const AgentCard = ({ app, onClick }) => {
  * Beautiful Modern UI with Purple Gradients
  */
 export default function AppLauncher() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
   const miniApps = [
     {
-      id: "luna",
-      title: "Luna",
-      titleAr: "لونا", 
-      subtitle: "Trip Planner",
-      description: "AI-powered travel planning with smart itinerary builder and destination recommendations.",
-      path: "/apps/luna",
+      id: 'luna',
+      title: 'Luna',
+      titleAr: 'لونا',
+      subtitle: 'Trip Planner',
+      description:
+        'AI-powered travel planning with smart itinerary builder and destination recommendations.',
+      path: '/apps/luna',
       icon: PlaneTakeoff,
-      color: "blue",
-      features: ["Trip Planning", "AI Suggestions", "Itinerary Builder"],
-      status: "Available",
-      statusColor: "bg-green-500",
+      color: 'blue',
+      features: ['Trip Planning', 'AI Suggestions', 'Itinerary Builder'],
+      status: 'Available',
+      statusColor: 'bg-green-500',
       available: true,
     },
     {
-      id: "karim",
-      title: "Karim",
-      titleAr: "كريم",
-      subtitle: "Budget Optimizer",
-      description: "Smart cost analysis and budget optimization for your travel expenses.",
-      path: "/apps/karim",
+      id: 'karim',
+      title: 'Karim',
+      titleAr: 'كريم',
+      subtitle: 'Budget Optimizer',
+      description:
+        'Smart cost analysis and budget optimization for your travel expenses.',
+      path: '/apps/karim',
       icon: DollarSign,
-      color: "purple",
-      features: ["Budget Planning", "Cost Analysis", "Savings Tips"],
-      status: "Available",
-      statusColor: "bg-green-500",
+      color: 'purple',
+      features: ['Budget Planning', 'Cost Analysis', 'Savings Tips'],
+      status: 'Available',
+      statusColor: 'bg-green-500',
       available: true,
     },
     {
-      id: "scout",
-      title: "Scout", 
-      titleAr: "سكاوت",
-      subtitle: "Deal Finder",
-      description: "Find the best prices and offers for flights, hotels, and travel packages.",
-      path: "/apps/scout",
+      id: 'scout',
+      title: 'Scout',
+      titleAr: 'سكاوت',
+      subtitle: 'Deal Finder',
+      description:
+        'Find the best prices and offers for flights, hotels, and travel packages.',
+      path: '/apps/scout',
       icon: Search,
-      color: "green",
-      features: ["Flight Deals", "Hotel Offers", "Price Tracking"],
-      status: "Available",
-      statusColor: "bg-green-500",
+      color: 'green',
+      features: ['Flight Deals', 'Hotel Offers', 'Price Tracking'],
+      status: 'Available',
+      statusColor: 'bg-green-500',
       available: true,
     },
     {
-      id: "maya",
-      title: "Maya",
-      titleAr: "مايا",
-      subtitle: "AI Assistant",
-      description: "24/7 AI-powered customer support and travel assistance.",
-      path: "/apps/maya",
+      id: 'maya',
+      title: 'Maya',
+      titleAr: 'مايا',
+      subtitle: 'AI Assistant',
+      description: '24/7 AI-powered customer support and travel assistance.',
+      path: '/apps/maya',
       icon: MessageSquare,
-      color: "orange",
-      features: ["AI Chat", "24/7 Support", "Multi-language"],
-      status: "Coming Soon",
-      statusColor: "bg-yellow-500",
+      color: 'orange',
+      features: ['AI Chat', '24/7 Support', 'Multi-language'],
+      status: 'Coming Soon',
+      statusColor: 'bg-yellow-500',
       available: false,
     },
     {
-      id: "zara",
-      title: "Zara",
-      titleAr: "زارا",
-      subtitle: "Research Agent", 
-      description: "Data analysis and insights for travel trends and destinations.",
-      path: "/apps/zara",
+      id: 'zara',
+      title: 'Zara',
+      titleAr: 'زارا',
+      subtitle: 'Research Agent',
+      description:
+        'Data analysis and insights for travel trends and destinations.',
+      path: '/apps/zara',
       icon: BookOpen,
-      color: "indigo",
-      features: ["Research", "Data Analysis", "Insights"],
-      status: "Coming Soon",
-      statusColor: "bg-yellow-500",
+      color: 'indigo',
+      features: ['Research', 'Data Analysis', 'Insights'],
+      status: 'Coming Soon',
+      statusColor: 'bg-yellow-500',
       available: false,
     },
     {
-      id: "kody",
-      title: "Kody",
-      titleAr: "كودي",
-      subtitle: "Code Interpreter",
-      description: "Data processing and automation for travel operations.",
-      path: "/apps/kody", 
+      id: 'kody',
+      title: 'Kody',
+      titleAr: 'كودي',
+      subtitle: 'Code Interpreter',
+      description: 'Data processing and automation for travel operations.',
+      path: '/apps/kody',
       icon: Code,
-      color: "emerald",
-      features: ["Code Analysis", "Data Processing", "Automation"],
-      status: "Coming Soon",
-      statusColor: "bg-yellow-500",
+      color: 'emerald',
+      features: ['Code Analysis', 'Data Processing', 'Automation'],
+      status: 'Coming Soon',
+      statusColor: 'bg-yellow-500',
       available: false,
     },
   ];
 
-  const filteredApps = miniApps.filter(app =>
-    app.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.subtitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.description.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredApps = miniApps.filter(
+    app =>
+      app.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      app.subtitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      app.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleLaunch = (appId) => {
+  const handleLaunch = appId => {
     const app = miniApps.find(a => a.id === appId);
     if (app && app.available) {
       // Handle app launch logic here
@@ -223,48 +236,48 @@ export default function AppLauncher() {
       >
         {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div 
-            animate={{ 
+          <motion.div
+            animate={{
               x: [0, 100, 0],
               y: [0, -100, 0],
             }}
-            transition={{ 
+            transition={{
               duration: 20,
               repeat: Infinity,
-              ease: "linear"
+              ease: 'linear',
             }}
-            className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl" 
+            className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"
           />
-          <motion.div 
-            animate={{ 
+          <motion.div
+            animate={{
               x: [0, -100, 0],
               y: [0, 100, 0],
             }}
-            transition={{ 
+            transition={{
               duration: 15,
               repeat: Infinity,
-              ease: "linear"
+              ease: 'linear',
             }}
-            className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl" 
+            className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl"
           />
-          <motion.div 
-            animate={{ 
+          <motion.div
+            animate={{
               scale: [1, 1.2, 1],
               opacity: [0.2, 0.3, 0.2],
             }}
-            transition={{ 
+            transition={{
               duration: 8,
               repeat: Infinity,
-              ease: "easeInOut"
+              ease: 'easeInOut',
             }}
-            className="absolute top-1/2 left-1/2 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" 
+            className="absolute top-1/2 left-1/2 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"
           />
         </div>
 
         {/* Content */}
         <div className="relative z-10 flex flex-col min-h-screen">
           {/* Header */}
-          <motion.div 
+          <motion.div
             initial={{ y: -50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.3, ease: 'easeOut', delay: 0.1 }}
@@ -273,13 +286,18 @@ export default function AppLauncher() {
             {/* App Launcher Badge */}
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-6 py-2 mb-6 border border-white/20">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <span className="text-sm text-white/90 font-medium">App Launcher</span>
+              <span className="text-sm text-white/90 font-medium">
+                App Launcher
+              </span>
             </div>
-            
+
             <h1 className="text-7xl font-black text-white mb-4 drop-shadow-2xl">
-              Amrikyy<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">OS</span>
+              Amrikyy
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                OS
+              </span>
             </h1>
-            
+
             <p className="text-xl text-white/80 font-medium max-w-2xl mx-auto mb-8">
               AI-Powered Travel Intelligence Platform
             </p>
@@ -292,7 +310,7 @@ export default function AppLauncher() {
                   type="text"
                   placeholder="Search apps and agents..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                   className="w-full bg-white/10 border border-white/20 rounded-full pl-14 pr-6 py-4 text-lg text-white placeholder-white/60 focus:ring-2 focus:ring-purple-500 focus:border-transparent backdrop-blur-xl"
                   autoFocus
                 />
@@ -303,11 +321,13 @@ export default function AppLauncher() {
             <div className="flex items-center justify-center gap-4 mt-8">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 border border-white/20">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                <span className="text-sm text-white/90">{miniApps.length} Mini Apps</span>
+                <span className="text-sm text-white/90">
+                  {miniApps.length} Mini Apps
+                </span>
               </div>
-              <a 
-                href="https://github.com/Moeabdelaziz007/Amrikyy-Agent" 
-                target="_blank" 
+              <a
+                href="https://github.com/Moeabdelaziz007/Amrikyy-Agent"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 border border-white/20 hover:bg-white/20 transition-all"
               >
@@ -323,7 +343,10 @@ export default function AppLauncher() {
             <motion.div
               className="max-w-7xl mx-auto"
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.3 } }}
+              animate={{
+                opacity: 1,
+                transition: { staggerChildren: 0.1, delayChildren: 0.3 },
+              }}
             >
               <AnimatePresence>
                 <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -335,15 +358,12 @@ export default function AppLauncher() {
                       exit={{ y: 20, opacity: 0 }}
                       transition={{ delay: index * 0.1 }}
                     >
-                      <AgentCard
-                        app={app}
-                        onClick={handleLaunch}
-                      />
+                      <AgentCard app={app} onClick={handleLaunch} />
                     </motion.div>
                   ))}
                 </motion.div>
               </AnimatePresence>
-              
+
               {/* No Results */}
               {filteredApps.length === 0 && (
                 <motion.div
@@ -366,7 +386,7 @@ export default function AppLauncher() {
           </div>
 
           {/* Footer */}
-          <motion.div 
+          <motion.div
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.5 }}

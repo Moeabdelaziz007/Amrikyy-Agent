@@ -8,50 +8,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Enhanced color system with CSS variables for better theming
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        primary: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-        },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
-        muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
-        },
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
-        },
-        maya: {
-          sky: '#0ea5e9',
-          ocean: '#06b6d4',
-          sunset: '#f59e0b',
-          forest: '#10b981',
-          purple: '#8b5cf6',
-          gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        }
+        primary: 'var(--color-primary)',
+        secondary: 'var(--color-secondary)',
+        accent: 'var(--color-accent)',
+        background: 'var(--color-background)',
+        surface: 'var(--color-surface)',
+        text: 'var(--color-text)',
+        textSecondary: 'var(--color-textSecondary)',
+        border: 'var(--color-border)',
+        error: 'var(--color-error)',
       },
       fontFamily: {
         'sans': ['Inter', 'system-ui', 'sans-serif'],
