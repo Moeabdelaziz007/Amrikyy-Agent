@@ -3,7 +3,7 @@
 
 const TelegramBot = require('node-telegram-bot-api');
 const logger = require('../../utils/logger'); // Assuming a logger utility exists
-const { GoogleGenAI } = require('@google/genai'); // Import for potential future full orchestration
+// const { GoogleGenAI } = require('@google/genai'); // Import for potential future full orchestration
 
 class AgentOrchestrator {
   constructor() {
