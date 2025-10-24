@@ -9,7 +9,8 @@ import {
   ArrowRight,
   Github,
   ExternalLink,
-  Sparkles
+  Sparkles,
+  Grid
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
