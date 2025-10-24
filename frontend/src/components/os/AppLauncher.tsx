@@ -35,7 +35,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
   X,
-  Grid3X3,
+  Grid,
   List,
   Star,
   Clock,
@@ -527,7 +527,7 @@ export const AppLauncher: React.FC<AppLauncherProps> = ({
                       : 'text-gray-400 hover:text-white'
                   )}
                 >
-                  <Grid3X3 className="w-4 h-4" />
+                  <Grid className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setCurrentViewMode('list')}
@@ -564,7 +564,7 @@ export const AppLauncher: React.FC<AppLauncherProps> = ({
                     category={{
                       id: 'all',
                       name: 'All Apps',
-                      icon: <Grid3X3 className="w-4 h-4" />,
+                      icon: <Grid className="w-4 h-4" />,
                       color: 'text-gray-400',
                     }}
                     isActive={selectedCategory === 'all'}
