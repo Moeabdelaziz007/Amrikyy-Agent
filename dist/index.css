@@ -1,0 +1,5 @@
+/* Minimal index.css to satisfy /index.css request */
+:root{
+  --color-primary:#3b82f6;
+}
+body{margin:0;padding:0}
