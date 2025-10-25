@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { translations } from '../lib/i18n';
-import { LanguageContext } from '../App';
+import { LanguageContext } from '@/contexts/AppContexts';
 import { Palette, Check } from 'lucide-react'; // Import icons
 import { motion, AnimatePresence } from 'framer-motion'; // Import motion and AnimatePresence
 

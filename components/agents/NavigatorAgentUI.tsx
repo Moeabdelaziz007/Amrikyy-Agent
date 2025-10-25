@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { PlaneTakeoffIcon, Calendar, Hotel, Plane, MapPin, Search } from 'lucide-react';
-import { LanguageContext } from '../../App';
+import { LanguageContext } from '@/contexts/AppContexts';
 import { useTheme } from '../../contexts/ThemeContext';
 import { translations } from '../../lib/i18n';
 import { TaskHistoryEntry } from '../../types';

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import {
   MegaphoneIcon, BarChartBigIcon, LineChartIcon, PencilLineIcon, Share2Icon, RocketIcon, PieChartIcon
 } from '../IconComponents';
-import { LanguageContext } from '../../App';
+import { LanguageContext } from '@/contexts/AppContexts';
 import { useTheme } from '../../contexts/ThemeContext';
 import { translations } from '../../lib/i18n';
 import { TaskHistoryEntry } from '../../types';
