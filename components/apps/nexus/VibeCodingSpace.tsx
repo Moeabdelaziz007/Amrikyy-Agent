@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { motion } from 'framer-motion';
-import { LanguageContext } from '../../../App';
+import { LanguageContext } from '../../../contexts/AppContexts';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { translations } from '../../../lib/i18n';
 import { TaskHistoryEntry } from '../../../types';

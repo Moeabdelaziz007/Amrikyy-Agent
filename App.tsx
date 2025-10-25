@@ -1,45 +1,15 @@
-import React, { useState, createContext, useEffect, useMemo, useContext } from 'react';
+import React, { useState, useEffect, useMemo, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import LoginPage from './components/LoginPage';
-import DesktopManager from './components/os/DesktopManager'; // Import the new DesktopManager
+import DesktopManager from './components/os/DesktopManager';
 
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
-import { themes, Theme } from './lib/themes';
-
-// Language Context
-interface LanguageContextType {
-    lang: 'en' | 'ar';
-    setLang: (lang: 'en' | 'ar') => void;
-}
-export const LanguageContext = createContext<LanguageContextType>({
-    lang: 'en',
-    setLang: () => {},
-});
-
-// Notification Context
-interface NotificationContextType {
-    notificationsEnabled: boolean;
-    setNotificationsEnabled: (enabled: boolean) => void;
-}
-export const NotificationContext = createContext<NotificationContextType>({
-    notificationsEnabled: true,
-    setNotificationsEnabled: () => {},
-});
-
-// TTS Context
-interface TTSContextType {
-    selectedVoice: string;
-    setSelectedVoice: (voice: string) => void;
-    playbackSpeed: number;
-    setPlaybackSpeed: (speed: number) => void;
-}
-export const TTSContext = createContext<TTSContextType>({
-    selectedVoice: 'Zephyr', // Default value
-    setSelectedVoice: () => {},
-    playbackSpeed: 1.0,
-    setPlaybackSpeed: () => {},
-});
+import { 
+  LanguageContext, 
+  NotificationContext, 
+  TTSContext 
+} from './contexts/AppContexts';
 
 
 // AppProviders component to wrap the entire application with contexts

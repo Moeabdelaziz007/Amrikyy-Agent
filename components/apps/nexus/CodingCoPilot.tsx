@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { LanguageContext } from '../../../App';
+import { LanguageContext } from '../../../contexts/AppContexts';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { translations } from '../../../lib/i18n';
 import { TaskHistoryEntry } from '../../../types';

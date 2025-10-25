@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { allApps } from '../lib/apps';
 import useWindowStore from '../stores/windowStore';
-import { LanguageContext } from '../App';
+import { LanguageContext } from '../contexts/AppContexts';
 import { useTheme } from '../contexts/ThemeContext';
 import { Search } from 'lucide-react';
 import AgentCard from './AgentCard'; // Re-using AgentCard for consistency

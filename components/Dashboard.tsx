@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
-import { LanguageContext } from '../App'; // Import LanguageContext
+import { LanguageContext } from '../contexts/AppContexts'; // Import LanguageContext
 import GeminiLogo from './os/GeminiLogo'; // Import the new logo
 
 interface DesktopProps {
