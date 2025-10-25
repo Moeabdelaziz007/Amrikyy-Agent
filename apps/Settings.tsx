@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LanguageContext, NotificationContext } from '../App';
+import { LanguageContext, NotificationContext } from '../contexts/AppContexts';
 import { useTheme } from '../contexts/ThemeContext';
 import { ThemeSelector } from '../components/ThemeSelector';
 import { translations } from '../lib/i18n';

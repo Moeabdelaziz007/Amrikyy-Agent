@@ -4,7 +4,7 @@ import { TaskHistoryEntry } from '../types';
 import { SharedMediaLounge } from '../components/apps/nexus/SharedMediaLounge';
 import VibeCodingSpace from '../components/apps/nexus/VibeCodingSpace';
 import NexusSocialPanel from '../components/apps/nexus/NexusSocialPanel';
-import { LanguageContext } from '../App';
+import { LanguageContext } from '../contexts/AppContexts';
 import { useTheme } from '../contexts/ThemeContext';
 import { translations } from '../lib/i18n';
 import { Video, Code } from 'lucide-react';

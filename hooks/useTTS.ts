@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { TTSContext, LanguageContext } from '../App';
+import { TTSContext, LanguageContext } from '../contexts/AppContexts';
 
 const useTTS = () => {
     const { selectedVoice, playbackSpeed } = useContext(TTSContext);

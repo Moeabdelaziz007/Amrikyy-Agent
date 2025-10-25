@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Folder, FileText, ArrowLeft } from 'lucide-react';
-import { LanguageContext } from '../App';
+import { LanguageContext } from '../contexts/AppContexts';
 import { useTheme } from '../contexts/ThemeContext';
 import { TaskHistoryEntry } from '../types';
 import useWindowStore from '../stores/windowStore';

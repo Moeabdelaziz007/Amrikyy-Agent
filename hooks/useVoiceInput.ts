@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useContext } from 'react';
-import { LanguageContext } from '../App';
+import { LanguageContext } from '../contexts/AppContexts';
 
 // Check for SpeechRecognition API
 // FIX: Cast window to `any` to access experimental SpeechRecognition properties which are not in standard TS DOM types.
