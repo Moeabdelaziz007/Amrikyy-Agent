@@ -11,6 +11,9 @@ import {
   TTSContext 
 } from './contexts/AppContexts';
 
+// Re-export contexts for backward compatibility
+export { LanguageContext, NotificationContext, TTSContext } from './contexts/AppContexts';
+
 
 // AppProviders component to wrap the entire application with contexts
 const AppProviders: React.FC = () => {
