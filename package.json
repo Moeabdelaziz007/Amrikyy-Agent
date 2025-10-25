@@ -13,7 +13,8 @@
     "test:frontend": "jest frontend/src",
     "test:backend": "jest backend",
     "test:e2e": "playwright test",
-    "postinstall": "npx playwright install"
+    "postinstall": "npx playwright install",
+    "postbuild": "cp index.css dist/index.css || true && cp sw.js dist/sw.js || true"
   },
   "dependencies": {
     "@google-cloud/speech": "^6.4.0",
