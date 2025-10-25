@@ -296,8 +296,8 @@ export const translations: {
           'Central intelligence hub that launches specialized mini-apps for content, code, and communication.',
         tasks: {
           contentCreator: 'Launch Content Creator',
-          codeAssistant: 'Open Code Assistant',
-          emailHelper: 'Open Email Helper',
+          coding: 'Open Code Assistant',
+          communicator: 'Open Email Helper',
         },
         placeholders: {},
         mockResults: {},
@@ -307,11 +307,11 @@ export const translations: {
             description:
               'Generate marketing copy, social posts, and long-form assets with grounded sources.',
           },
-          codeAssistant: {
+          coding: {
             title: 'Code Assistant',
             description: 'Debug, explain, and refactor code collaboratively with the coding agent.',
           },
-          emailHelper: {
+          communicator: {
             title: 'Email Helper',
             description:
               'Draft professional emails, summarize long threads, and keep communication on track.',
@@ -324,8 +324,8 @@ export const translations: {
           'المركز الذكي لإطلاق التطبيقات المصغّرة المتخصصة في المحتوى والبرمجة والتواصل.',
         tasks: {
           contentCreator: 'تشغيل صانع المحتوى',
-          codeAssistant: 'فتح مساعد البرمجة',
-          emailHelper: 'فتح مساعد البريد',
+          coding: 'فتح مساعد البرمجة',
+          communicator: 'فتح مساعد البريد',
         },
         placeholders: {},
         mockResults: {},
@@ -335,11 +335,11 @@ export const translations: {
             description:
               'أنشئ نسخاً تسويقية ومنشورات اجتماعية ومقالات طويلة بالاعتماد على المصادر.',
           },
-          codeAssistant: {
+          coding: {
             title: 'مساعد البرمجة',
             description: 'حلّل الكود وشرحه وأعد صياغته بالتعاون مع وكيل البرمجة.',
           },
-          emailHelper: {
+          communicator: {
             title: 'مساعد البريد',
             description: 'أنشئ رسائل احترافية، وخصّص الردود الطويلة، وابق على تواصل منظم.',
           },
