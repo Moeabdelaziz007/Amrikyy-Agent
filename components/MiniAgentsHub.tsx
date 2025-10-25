@@ -76,7 +76,7 @@ const MiniAgentsHub: React.FC<MiniAgentsHubProps> = (_props) => {
         en: agentTranslation.en.description,
         ar: agentTranslation.ar.description,
       },
-      icon: miniApp.appIcon as React.FC<{ className?: string; color?: string; }>,
+      icon: miniApp.appIcon as React.FC<{ className?: string; color?: string }>,
       color: miniApp.color,
       component: miniApp.component,
     };
