@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { LanguageContext, TTSContext } from '../../App';
+import { LanguageContext, TTSContext } from '@/contexts/AppContexts';
 import { useTheme } from '../../contexts/ThemeContext';
 import useTTS from '../../hooks/useTTS';
 import { translations } from '../../lib/i18n';

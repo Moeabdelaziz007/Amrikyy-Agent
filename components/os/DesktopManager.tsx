@@ -7,7 +7,7 @@ import Taskbar from './Taskbar';
 import AppLauncher from '../AppLauncher'; // Import the new AppLauncher
 import { AnimatePresence } from 'framer-motion';
 import { allApps } from '../../lib/apps';
-import { LanguageContext } from '../../App';
+import { LanguageContext } from '@/contexts/AppContexts';
 
 
 const DesktopManager: React.FC = () => {

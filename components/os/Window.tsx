@@ -5,7 +5,7 @@ import { Rnd } from 'react-rnd';
 import { X, Minus, Square, Copy } from 'lucide-react';
 import { WindowData } from '../../types';
 import { useTheme } from '../../contexts/ThemeContext';
-import { LanguageContext } from '../../App';
+import { LanguageContext } from '@/contexts/AppContexts';
 import { allApps } from '../../lib/apps';
 import { appComponentMap } from '../../lib/apps';
 import useWindowStore from '../../stores/windowStore';

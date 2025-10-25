@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Activity, CheckCircle, XCircle, ShieldCheck } from 'lucide-react';
 import useSystemStore from '../../stores/systemStore';
-import { LanguageContext } from '../../App';
+import { LanguageContext } from '@/contexts/AppContexts';
 import { useTheme } from '../../contexts/ThemeContext';
 import { translations } from '../../lib/i18n';
 
