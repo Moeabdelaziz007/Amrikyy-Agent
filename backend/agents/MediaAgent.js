@@ -5,7 +5,16 @@ const { getAi } = require('../services/geminiService');
 const { Modality } = require('@google/genai');
 const logger = require('../utils/logger');
 
+/**
+ * @class MediaAgent
+ * @description An agent that handles various media-related tasks, including video search,
+ * AI-powered image and video generation, and video analysis.
+ */
 class MediaAgent {
+  /**
+   * @constructor
+   * @description Initializes the MediaAgent and its required services.
+   */
   constructor() {
     this.name = 'Media Agent';
     this.description = 'Handles video search, and AI-powered image and video generation and editing.';
@@ -13,6 +22,13 @@ class MediaAgent {
     this.veoService = new VeoService();
   }
 
+  /**
+   * Executes a media-related task based on the provided task object.
+   * @param {object} task - The task to be executed.
+   * @param {string} task.type - The type of media task (e.g., 'searchVideos', 'generateImage').
+   * @returns {Promise<object>} The result of the executed task.
+   * @throws {Error} If the task type is unknown or required parameters are missing.
+   */
   async executeTask(task) {
     logger.info(`[${this.name}] Executing task: ${task.type}`);
 
@@ -59,6 +75,11 @@ class MediaAgent {
     }
   }
 
+  /**
+   * Generates an image based on a text prompt using the Imagen API.
+   * @param {string} prompt - The text prompt for image generation.
+   * @returns {Promise<object>} An object containing the base64 encoded image and its MIME type.
+   */
   async generateImage(prompt) {
     const ai = getAi();
     logger.info(`[${this.name}] Generating image with prompt: "${prompt}"`);
@@ -80,6 +101,14 @@ class MediaAgent {
     return { image: base64ImageBytes, mimeType: 'image/jpeg' };
   }
 
+  /**
+   * Edits an image based on a text prompt using the Gemini API.
+   * @param {object} image - The image to be edited.
+   * @param {string} image.imageBytes - The base64 encoded image data.
+   * @param {string} image.mimeType - The MIME type of the image.
+   * @param {string} prompt - The text prompt describing the desired edits.
+   * @returns {Promise<object>} An object containing the edited image data and MIME type.
+   */
   async editImage(image, prompt) {
     const ai = getAi();
     logger.info(`[${this.name}] Editing image with prompt: "${prompt}"`);
@@ -112,6 +141,11 @@ class MediaAgent {
     throw new Error('Image editing failed to produce an image.');
   }
 
+  /**
+   * Summarizes a YouTube video based on its title.
+   * @param {string} title - The title of the YouTube video.
+   * @returns {Promise<object>} An object containing the video summary.
+   */
   async summarizeVideo(title) {
     const ai = getAi();
     logger.info(`[${this.name}] Summarizing video: "${title}"`);
@@ -123,6 +157,11 @@ class MediaAgent {
     return { result: response.text };
   }
 
+  /**
+   * Provides contextual video suggestions based on a query.
+   * @param {string} query - The title of a YouTube video to base suggestions on.
+   * @returns {Promise<object>} An object containing a list of related video titles.
+   */
   async contextualSearch(query) {
     const ai = getAi();
     logger.info(`[${this.name}] Getting suggestions for: "${query}"`);
@@ -134,6 +173,12 @@ class MediaAgent {
     return { result: response.text };
   }
 
+  /**
+   * Analyzes a video from a URL based on a user's prompt.
+   * @param {string} videoUrl - The URL of the video to analyze.
+   * @param {string} userPrompt - The user's question or prompt about the video.
+   * @returns {Promise<object>} An object containing the analysis of the video.
+   */
   async analyzeVideo(videoUrl, userPrompt) {
     const ai = getAi();
     logger.info(`[${this.name}] Analyzing video: "${videoUrl}"`);

@@ -1,17 +1,7 @@
 /**
- * Coding Agent - Super Coder with 6 Specialized Sub-Agents
- *
- * Architecture:
- * Main Agent orchestrates 6 expert sub-agents:
- * 1. UI/UX Expert - Frontend & Design
- * 2. API Architect - Backend & APIs
- * 3. DevOps Engineer - Deployment & Infrastructure
- * 4. QA Specialist - Testing & Quality
- * 5. Documentation Writer - Docs & Guides
- * 6. Code Reviewer - Quality & Security
- *
- * Each sub-agent provides expert-level results to the main agent
- * for comprehensive code generation.
+ * @fileoverview Coding Agent - A sophisticated agent that orchestrates a team of specialized sub-agents to handle various coding tasks.
+ * @module agents/CodingAgent
+ * @description This agent acts as a high-level controller, delegating tasks to specialized sub-agents for UI/UX, API design, DevOps, QA, documentation, and code review.
  *
  * @author Ona AI
  * @created 2025-10-23
@@ -20,7 +10,14 @@
 const { getAi } = require('../services/geminiService');
 const logger = require('../utils/logger'); // Assuming a logger utility exists
 
+/**
+ * @class CodingAgent
+ * @description An agent that orchestrates 6 specialized sub-agents to perform a wide range of coding tasks.
+ */
 class CodingAgent {
+  /**
+   * @constructor
+   */
   constructor() {
     this.name = 'Coding Agent';
     this.icon = '💻';
@@ -133,7 +130,13 @@ Provide detailed code reviews with actionable improvements.
   }
 
   /**
-   * Execute a task using the appropriate sub-agent
+   * Executes a task by delegating it to the appropriate sub-agent.
+   * @async
+   * @method executeTask
+   * @param {object} task - The task to execute.
+   * @param {string} task.type - The type of task (e.g., 'generateUI', 'designAPI').
+   * @returns {Promise<object>} The result from the sub-agent.
+   * @throws {Error} If the task type is unknown or the API key is not configured.
    */
   async executeTask(task) {
     logger.info(`[CodingAgent] Executing task: ${task.type}`);
@@ -175,6 +178,16 @@ Provide detailed code reviews with actionable improvements.
     }
   }
   
+  /**
+   * A private method to call the Gemini API with a specific sub-agent's system prompt.
+   * @async
+   * @private
+   * @method _callGemini
+   * @param {object} subAgent - The sub-agent to use.
+   * @param {string} userPrompt - The user's prompt.
+   * @param {object} ai - The Gemini AI client.
+   * @returns {Promise<string>} The text response from the Gemini API.
+   */
   async _callGemini(subAgent, userPrompt, ai) {
     const result = await ai.models.generateContent({
       model: this.modelName,
@@ -189,7 +202,12 @@ Provide detailed code reviews with actionable improvements.
 
 
   /**
-   * Sub-Agent 1: UI/UX Expert - Generate frontend code
+   * Sub-Agent 1: UI/UX Expert - Generates frontend code.
+   * @async
+   * @method generateUI
+   * @param {object} task - The UI generation task.
+   * @param {object} ai - The Gemini AI client.
+   * @returns {Promise<object>} The result of the UI generation.
    */
   async generateUI(task, ai) {
     const subAgent = this.subAgents.uiux;
@@ -219,7 +237,12 @@ Provide complete, runnable code.`;
   }
 
   /**
-   * Sub-Agent 2: API Architect - Design backend API
+   * Sub-Agent 2: API Architect - Designs a backend API.
+   * @async
+   * @method designAPI
+   * @param {object} task - The API design task.
+   * @param {object} ai - The Gemini AI client.
+   * @returns {Promise<object>} The result of the API design.
    */
   async designAPI(task, ai) {
     const subAgent = this.subAgents.api;
@@ -251,7 +274,12 @@ Provide complete, production-ready backend code/schema.`;
   }
 
   /**
-   * Sub-Agent 3: DevOps Engineer - Create deployment config
+   * Sub-Agent 3: DevOps Engineer - Creates deployment configurations.
+   * @async
+   * @method createDeployment
+   * @param {object} task - The deployment task.
+   * @param {object} ai - The Gemini AI client.
+   * @returns {Promise<object>} The result of the deployment configuration.
    */
   async createDeployment(task, ai) {
     const subAgent = this.subAgents.devops;
@@ -283,7 +311,12 @@ Provide complete, production-ready deployment files.`;
   }
 
   /**
-   * Sub-Agent 4: QA Specialist - Write test cases
+   * Sub-Agent 4: QA Specialist - Writes test cases.
+   * @async
+   * @method writeTests
+   * @param {object} task - The testing task.
+   * @param {object} ai - The Gemini AI client.
+   * @returns {Promise<object>} The result of the test generation.
    */
   async writeTests(task, ai) {
     const subAgent = this.subAgents.qa;
@@ -313,7 +346,12 @@ Provide complete, runnable test suite.`;
   }
 
   /**
-   * Sub-Agent 5: Documentation Writer - Generate documentation
+   * Sub-Agent 5: Documentation Writer - Generates documentation.
+   * @async
+   * @method generateDocs
+   * @param {object} task - The documentation task.
+   * @param {object} ai - The Gemini AI client.
+   * @returns {Promise<object>} The result of the documentation generation.
    */
   async generateDocs(task, ai) {
     const subAgent = this.subAgents.docs;
@@ -344,7 +382,12 @@ Provide complete, well-formatted documentation.`;
   }
 
   /**
-   * Sub-Agent 6: Code Reviewer - Review code quality
+   * Sub-Agent 6: Code Reviewer - Reviews code for quality, security, and performance.
+   * @async
+   * @method reviewCode
+   * @param {string} code - The code to be reviewed.
+   * @param {object} ai - The Gemini AI client.
+   * @returns {Promise<object>} The result of the code review.
    */
   async reviewCode(code, ai) {
     const subAgent = this.subAgents.reviewer;
@@ -376,7 +419,14 @@ Be constructive and specific.`;
   }
 
   /**
-   * New Task: Refactor Code
+   * Refactors code based on provided instructions.
+   * @async
+   * @method refactorCode
+   * @param {object} task - The refactoring task.
+   * @param {string} task.code - The code to be refactored.
+   * @param {string} task.instructions - The refactoring instructions.
+   * @param {object} ai - The Gemini AI client.
+   * @returns {Promise<object>} The refactored code.
    */
   async refactorCode(task, ai) {
     const subAgent = this.subAgents.reviewer; // A reviewer is good at refactoring

@@ -4,18 +4,25 @@
 // ═══════════════════════════════════════════════════════════════
 
 /**
- * INSTALLATION:
- * 1. Create file: backend/services/quantumRewardEngine.js
- * 2. Install dependencies: npm install
- * 3. Import in backend/server.js
- * 4. Initialize with Supabase client
+ * @fileoverview Quantum Reward Engine
+ * @module services/quantumRewardEngine
+ * @description An advanced multi-agent reinforcement learning system that uses concepts
+ * from quantum mechanics to model and reward agent behavior.
  */
 
 // ═══════════════════════════════════════════════════════════════
 // 📦 CORE QUANTUM REWARD ENGINE
 // ═══════════════════════════════════════════════════════════════
 
+/**
+ * @class QuantumRewardEngine
+ * @description Manages the state, rewards, and learning for a team of AI agents.
+ */
 class QuantumRewardEngine {
+  /**
+   * @constructor
+   * @param {object} supabase - An instance of the Supabase client.
+   */
   constructor(supabase) {
     this.supabase = supabase;
     
@@ -150,7 +157,9 @@ class QuantumRewardEngine {
   }
 
   /**
-   * Initialize the quantum reward system
+   * Initializes the quantum reward system.
+   * @async
+   * @method initializeSystem
    */
   async initializeSystem() {
     try {
@@ -176,7 +185,12 @@ class QuantumRewardEngine {
   // ═══════════════════════════════════════════════════════════════
 
   /**
-   * Calculate immediate reward for agent action
+   * Calculates the immediate reward for an agent's action.
+   * @param {string} agentId - The ID of the agent.
+   * @param {string} action - The action performed by the agent.
+   * @param {object} result - The result of the action.
+   * @param {object} context - The context in which the action was performed.
+   * @returns {number} The calculated immediate reward.
    */
   calculateImmediateReward(agentId, action, result, context) {
     const agent = this.agents[agentId];
@@ -208,7 +222,10 @@ class QuantumRewardEngine {
   }
 
   /**
-   * Calculate long-term reward based on trajectory
+   * Calculates the long-term reward based on a trajectory of actions.
+   * @param {string} agentId - The ID of the agent.
+   * @param {object} trajectory - The trajectory of actions.
+   * @returns {number} The calculated long-term reward.
    */
   calculateLongTermReward(agentId, trajectory) {
     const agent = this.agents[agentId];
@@ -240,7 +257,10 @@ class QuantumRewardEngine {
   }
 
   /**
-   * Calculate collaborative reward for multi-agent interactions
+   * Calculates the collaborative reward for multi-agent interactions.
+   * @param {string[]} agentIds - An array of agent IDs.
+   * @param {object} collectiveResult - The result of the collaborative action.
+   * @returns {object} An object mapping agent IDs to their rewards.
    */
   calculateCollaborativeReward(agentIds, collectiveResult) {
     let reward = 0;
@@ -275,7 +295,11 @@ class QuantumRewardEngine {
   }
 
   /**
-   * Calculate quantum entanglement strength between agents
+   * Calculates the quantum entanglement strength between two agents.
+   * @param {string} agent1Id - The ID of the first agent.
+   * @param {string} agent2Id - The ID of the second agent.
+   * @param {object} interaction - The interaction between the agents.
+   * @returns {number} The entanglement strength.
    */
   calculateQuantumEntanglement(agent1Id, agent2Id, interaction) {
     const agent1 = this.agents[agent1Id];
@@ -300,7 +324,13 @@ class QuantumRewardEngine {
   // ═══════════════════════════════════════════════════════════════
 
   /**
-   * Update agent state after action
+   * Updates the state of an agent after an action.
+   * @async
+   * @method updateAgentState
+   * @param {string} agentId - The ID of the agent.
+   * @param {string} action - The action performed.
+   * @param {number} reward - The reward received.
+   * @returns {Promise<object>} The updated agent state.
    */
   async updateAgentState(agentId, action, reward) {
     const agent = this.agents[agentId];
@@ -324,7 +354,10 @@ class QuantumRewardEngine {
   }
 
   /**
-   * Update quantum entanglements between agents
+   * Updates the quantum entanglements between two agents.
+   * @param {string} agent1Id - The ID of the first agent.
+   * @param {string} agent2Id - The ID of the second agent.
+   * @param {number} strength - The entanglement strength.
    */
   updateQuantumEntanglements(agent1Id, agent2Id, strength) {
     const agent1 = this.agents[agent1Id];
@@ -368,7 +401,8 @@ class QuantumRewardEngine {
   }
 
   /**
-   * Update global quantum state
+   * Updates the global quantum state of the system.
+   * @method updateQuantumState
    */
   updateQuantumState() {
     // Calculate average coherence across all agents
@@ -403,7 +437,9 @@ class QuantumRewardEngine {
   }
 
   /**
-   * Calculate energy variance across agents
+   * Calculates the energy variance across all agents.
+   * @method calculateEnergyVariance
+   * @returns {number} The energy variance.
    */
   calculateEnergyVariance() {
     const agentList = Object.values(this.agents);
@@ -421,7 +457,12 @@ class QuantumRewardEngine {
   // ═══════════════════════════════════════════════════════════════
 
   /**
-   * Store agent state in Supabase
+   * Stores the state of an agent in Supabase.
+   * @async
+   * @method storeAgentState
+   * @param {string} agentId - The ID of the agent.
+   * @param {object} agentData - The state data of the agent.
+   * @returns {Promise<object|null>} The stored data or null on error.
    */
   async storeAgentState(agentId, agentData) {
     try {
@@ -454,7 +495,11 @@ class QuantumRewardEngine {
   }
 
   /**
-   * Store experience in buffer and database
+   * Stores an agent's experience in the buffer and database.
+   * @async
+   * @method storeExperience
+   * @param {object} experience - The experience to store.
+   * @returns {Promise<object|null>} The stored data or null on error.
    */
   async storeExperience(experience) {
     // Add to memory buffer
@@ -495,7 +540,10 @@ class QuantumRewardEngine {
   }
 
   /**
-   * Load agent states from database
+   * Loads agent states from the database.
+   * @async
+   * @method loadAgentStates
+   * @returns {Promise<object[]|null>} The loaded agent states or null on error.
    */
   async loadAgentStates() {
     try {
@@ -535,7 +583,9 @@ class QuantumRewardEngine {
   // ═══════════════════════════════════════════════════════════════
 
   /**
-   * Optimize learning parameters based on performance
+   * Optimizes the learning parameters for an agent based on performance.
+   * @param {string} agentId - The ID of the agent.
+   * @param {object} performanceMetrics - The performance metrics of the agent.
    */
   optimizeLearningParameters(agentId, performanceMetrics) {
     const agent = this.agents[agentId];
@@ -559,7 +609,9 @@ class QuantumRewardEngine {
   }
 
   /**
-   * Sample experiences for batch learning
+   * Samples experiences from the buffer for batch learning.
+   * @param {number} batchSize - The size of the batch to sample.
+   * @returns {object[]} An array of sampled experiences.
    */
   sampleExperiences(batchSize) {
     if (this.experienceBuffer.length < batchSize) {
@@ -586,7 +638,11 @@ class QuantumRewardEngine {
   // ═══════════════════════════════════════════════════════════════
 
   /**
-   * Process user interaction and distribute rewards
+   * Processes a user interaction and distributes rewards to the agents.
+   * @async
+   * @method processInteraction
+   * @param {object} interaction - The user interaction data.
+   * @returns {Promise<object>} The result of the interaction processing.
    */
   async processInteraction(interaction) {
     const {
@@ -664,7 +720,10 @@ class QuantumRewardEngine {
   }
 
   /**
-   * Get agent recommendations for task
+   * Recommends agents for a given task.
+   * @param {string} taskType - The type of the task.
+   * @param {object} taskContext - The context of the task.
+   * @returns {object[]} An array of recommended agents.
    */
   recommendAgentsForTask(taskType, taskContext) {
     const agentList = Object.values(this.agents);
@@ -695,7 +754,8 @@ class QuantumRewardEngine {
   }
 
   /**
-   * Get system health metrics
+   * Gets the health metrics of the system.
+   * @returns {object} The system health metrics.
    */
   getSystemMetrics() {
     const agentList = Object.values(this.agents);
@@ -732,7 +792,9 @@ class QuantumRewardEngine {
 // ═══════════════════════════════════════════════════════════════
 
 /**
- * Create Express routes for the reward engine
+ * Creates Express routes for the reward engine.
+ * @param {object} app - The Express app instance.
+ * @param {QuantumRewardEngine} rewardEngine - The instance of the QuantumRewardEngine.
  */
 const createRewardRoutes = (app, rewardEngine) => {
   

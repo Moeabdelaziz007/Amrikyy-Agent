@@ -1,17 +1,7 @@
 /**
- * Marketing Agent - Super Marketer with 6 Specialized Sub-Agents
- *
- * Architecture:
- * Main Agent orchestrates 6 expert sub-agents:
- * 1. Market Research Analyst - Audience, Trends, Competition
- * 2. SEO Specialist - Keywords, On-page, Off-page
- * 3. Content Strategist - Content Pillars, Calendar, Formats
- * 4. Social Media Manager - Platforms, Engagement, Scheduling
- * 5. Campaign Manager - Planning, Execution, Optimization
- * 6. Analytics Expert - Data Analysis, Reporting, Insights
- *
- * Each sub-agent provides expert-level results to the main agent
- * for comprehensive marketing plan generation and execution.
+ * @fileoverview Marketing Agent - A sophisticated agent that orchestrates a team of specialized sub-agents for marketing tasks.
+ * @module agents/MarketingAgent
+ * @description This agent acts as a high-level controller, delegating tasks to specialized sub-agents for market research, SEO, content strategy, social media, campaign management, and analytics.
  *
  * @author Ona AI
  * @created 2025-10-23
@@ -20,7 +10,14 @@
 const { getAi } = require('../services/geminiService');
 const logger = require('../utils/logger');
 
+/**
+ * @class MarketingAgent
+ * @description An agent that develops marketing strategies, creates content, and analyzes campaigns by orchestrating a team of specialized sub-agents.
+ */
 class MarketingAgent {
+  /**
+   * @constructor
+   */
   constructor() {
     this.name = 'Marketing Agent';
     this.icon = '📢'; // Megaphone emoji
@@ -98,7 +95,13 @@ Provide a clear summary of findings and strategic recommendations.
   }
 
   /**
-   * Helper to make Gemini API calls with Google Search tool
+   * A private helper method to call the Gemini API with the Google Search tool enabled.
+   * @async
+   * @private
+   * @method _callGeminiWithSearch
+   * @param {string} systemPrompt - The system prompt for the AI.
+   * @param {string} userPrompt - The user's prompt.
+   * @returns {Promise<{text: string, groundingChunks: object[]}>} The response from the Gemini API, including grounding chunks.
    */
   async _callGeminiWithSearch(systemPrompt, userPrompt) {
     const ai = getAi();
@@ -117,7 +120,13 @@ Provide a clear summary of findings and strategic recommendations.
   }
 
   /**
-   * Execute a task using the appropriate sub-agent
+   * Executes a task by delegating it to the appropriate sub-agent.
+   * @async
+   * @method executeTask
+   * @param {object} task - The task to execute.
+   * @param {string} task.type - The type of task (e.g., 'marketResearch', 'seoSpecialist').
+   * @returns {Promise<object>} The result from the sub-agent.
+   * @throws {Error} If the task type is unknown or the API key is not configured.
    */
   async executeTask(task) {
     logger.info(`[MarketingAgent] Executing task: ${task.type}`);
@@ -155,7 +164,11 @@ Provide a clear summary of findings and strategic recommendations.
   }
 
   /**
-   * Sub-Agent 1: Market Research Analyst
+   * Sub-Agent 1: Conducts market research.
+   * @async
+   * @method conductMarketResearch
+   * @param {object} task - The market research task.
+   * @returns {Promise<object>} The result of the market research.
    */
   async conductMarketResearch(task) {
     const subAgent = this.subAgents.marketResearch;
@@ -183,7 +196,11 @@ Provide:
   }
 
   /**
-   * Sub-Agent 2: SEO Specialist
+   * Sub-Agent 2: Optimizes SEO strategy.
+   * @async
+   * @method optimizeSEOStrategy
+   * @param {object} task - The SEO task.
+   * @returns {Promise<object>} The result of the SEO optimization.
    */
   async optimizeSEOStrategy(task) {
     const subAgent = this.subAgents.seoSpecialist;
@@ -211,7 +228,11 @@ Provide:
   }
 
   /**
-   * Sub-Agent 3: Content Strategist
+   * Sub-Agent 3: Develops a content strategy.
+   * @async
+   * @method developContentStrategy
+   * @param {object} task - The content strategy task.
+   * @returns {Promise<object>} The result of the content strategy development.
    */
   async developContentStrategy(task) {
     const subAgent = this.subAgents.contentStrategist;
@@ -238,7 +259,11 @@ Provide:
   }
 
   /**
-   * Sub-Agent 4: Social Media Manager
+   * Sub-Agent 4: Manages social media presence.
+   * @async
+   * @method manageSocialMedia
+   * @param {object} task - The social media task.
+   * @returns {Promise<object>} The result of the social media management plan.
    */
   async manageSocialMedia(task) {
     const subAgent = this.subAgents.socialMediaManager;
@@ -265,7 +290,11 @@ Provide:
   }
 
   /**
-   * Sub-Agent 5: Campaign Manager
+   * Sub-Agent 5: Launches a marketing campaign.
+   * @async
+   * @method launchMarketingCampaign
+   * @param {object} task - The campaign task.
+   * @returns {Promise<object>} The result of the marketing campaign plan.
    */
   async launchMarketingCampaign(task) {
     const subAgent = this.subAgents.campaignManager;
@@ -294,7 +323,11 @@ Provide:
   }
 
   /**
-   * Sub-Agent 6: Analytics Expert
+   * Sub-Agent 6: Analyzes marketing data.
+   * @async
+   * @method analyzeMarketingData
+   * @param {object} task - The analytics task.
+   * @returns {Promise<object>} The result of the data analysis.
    */
   async analyzeMarketingData(task) {
     const subAgent = this.subAgents.analyticsExpert;
@@ -357,9 +390,11 @@ Provide:
   }
 
   /**
-   * Orchestrate all sub-agents for a full marketing plan
-   * This is a conceptual example for backend orchestration.
-   * For the frontend, individual tasks are exposed.
+   * Orchestrates all sub-agents to generate a full marketing plan.
+   * @async
+   * @method generateMarketingPlan
+   * @param {string} prompt - The prompt for the marketing plan.
+   * @returns {Promise<object>} A comprehensive marketing plan.
    */
   async generateMarketingPlan(prompt) {
     logger.info('[MarketingAgent] Generating full marketing plan with all sub-agents...');

@@ -2,13 +2,32 @@
 const { getAi } = require('../services/geminiService');
 const logger = require('../utils/logger');
 
+/**
+ * @class ChatAgent
+ * @description An agent that handles conversational chat with the Gemini API.
+ * This agent is responsible for taking a user's prompt and conversation history,
+ * formatting it for the Gemini API, and returning the AI's response.
+ */
 class ChatAgent {
+  /**
+   * @constructor
+   * @description Initializes the ChatAgent with a name, description, and the model to be used.
+   */
   constructor() {
     this.name = 'Chat Agent';
     this.description = 'Handles conversational chat with Gemini.';
     this.modelName = 'gemini-2.5-flash'; 
   }
 
+  /**
+   * Executes a chat task.
+   * @param {object} task - The task to be executed.
+   * @param {string} task.type - The type of task, which must be 'sendMessage'.
+   * @param {string} task.prompt - The user's message to the chat.
+   * @param {Array<object>} [task.history] - The conversation history.
+   * @returns {Promise<object>} An object containing the AI's response.
+   * @throws {Error} If the task type is unknown or the prompt is missing.
+   */
   async executeTask(task) {
     logger.info(`[${this.name}] Executing task: ${task.type}`);
 

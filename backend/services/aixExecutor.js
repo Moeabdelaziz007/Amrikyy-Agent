@@ -4,8 +4,17 @@ const logger = require('../utils/logger');
 
 /**
  * Executes a parsed AIX task using the Gemini API.
- * @param {{PROMPT: string, DATA: string, RULES: string}} parsedAix The parsed sections of an AIX file.
- * @returns {Promise<{success: boolean, output?: string, error?: string}>} The result from the Gemini API.
+ * This function constructs a detailed prompt from the parsed AIX sections (PROMPT, DATA, RULES)
+ * and sends it to the Gemini model for processing. It's designed to handle structured AI tasks
+ * by providing the AI with a clear objective, the data to work with, and the constraints to follow.
+ *
+ * @param {object} parsedAix - The parsed sections of an AIX file.
+ * @param {string} parsedAix.PROMPT - The main objective or instruction for the AI.
+ * @param {string} parsedAix.DATA - The data or content to be processed by the AI.
+ * @param {string} parsedAix.RULES - The constraints, rules, or logic the AI must adhere to.
+ * @returns {Promise<{success: boolean, output?: string, error?: string}>} An object containing the result from the Gemini API.
+ * If successful, it includes `success: true` and the `output` text.
+ * If it fails, it includes `success: false` and an `error` message.
  */
 async function executeAixTask(parsedAix) {
   try {

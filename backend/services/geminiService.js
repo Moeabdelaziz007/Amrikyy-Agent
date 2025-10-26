@@ -2,6 +2,12 @@
 const { GoogleGenAI } = require('@google/genai');
 const logger = require('../utils/logger');
 
+/**
+ * @type {GoogleGenAI | undefined}
+ * @description The singleton instance of the GoogleGenAI client.
+ * It is initialized when the module is first loaded.
+ * @private
+ */
 let ai;
 
 try {
@@ -17,8 +23,11 @@ try {
 
 /**
  * Returns the initialized GoogleGenAI client instance.
- * Throws an error if the client is not initialized.
- * @returns {GoogleGenAI} The GoogleGenAI client instance.
+ * This function provides a way to access the singleton `ai` instance from other parts of the application.
+ * It ensures that the client is initialized before it is used.
+ *
+ * @returns {GoogleGenAI} The initialized GoogleGenAI client instance.
+ * @throws {Error} If the client is not initialized (e.g., if the API_KEY is missing).
  */
 function getAi() {
   if (!ai) {

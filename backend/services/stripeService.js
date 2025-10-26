@@ -1,19 +1,28 @@
 /**
- * Stripe Payment Service
- * Handles payment processing, payment intents, and webhooks
+ * @fileoverview Stripe Payment Service
+ * @module services/stripeService
+ * @description Handles payment processing, payment intents, refunds, and webhooks using the Stripe API.
  */
 
 const Stripe = require('stripe');
 const logger = require('../utils/logger');
 
+/**
+ * @class StripeService
+ * @description Provides methods for interacting with the Stripe API.
+ */
 class StripeService {
+  /**
+   * @constructor
+   */
   constructor() {
     this.stripe = null;
     this.initialized = false;
   }
 
   /**
-   * Initialize Stripe client
+   * Initializes the Stripe client.
+   * @method initialize
    */
   initialize() {
     if (this.initialized) {
@@ -38,7 +47,14 @@ class StripeService {
   }
 
   /**
-   * Create a payment intent
+   * Creates a Stripe payment intent.
+   * @async
+   * @method createPaymentIntent
+   * @param {object} params - The payment intent details.
+   * @param {number} params.amount - The amount to charge (in the smallest currency unit, e.g., cents).
+   * @param {string} [params.currency='usd'] - The currency of the payment.
+   * @param {object} [params.metadata={}] - Metadata to associate with the payment intent.
+   * @returns {Promise<object>} An object containing the payment intent information.
    */
   async createPaymentIntent({ amount, currency = 'usd', metadata = {} }) {
     if (!this.initialized) {
@@ -90,7 +106,11 @@ class StripeService {
   }
 
   /**
-   * Retrieve a payment intent
+   * Retrieves a payment intent by its ID.
+   * @async
+   * @method getPaymentIntent
+   * @param {string} paymentIntentId - The ID of the payment intent.
+   * @returns {Promise<object>} An object containing the payment intent information.
    */
   async getPaymentIntent(paymentIntentId) {
     if (!this.initialized) {
@@ -128,7 +148,11 @@ class StripeService {
   }
 
   /**
-   * Cancel a payment intent
+   * Cancels a payment intent.
+   * @async
+   * @method cancelPaymentIntent
+   * @param {string} paymentIntentId - The ID of the payment intent to cancel.
+   * @returns {Promise<object>} An object indicating the result of the cancellation.
    */
   async cancelPaymentIntent(paymentIntentId) {
     if (!this.initialized) {
@@ -167,7 +191,12 @@ class StripeService {
   }
 
   /**
-   * Verify webhook signature
+   * Verifies the signature of a Stripe webhook.
+   * @method verifyWebhookSignature
+   * @param {Buffer} payload - The raw payload of the webhook.
+   * @param {string} signature - The signature from the 'stripe-signature' header.
+   * @returns {object} The parsed Stripe event.
+   * @throws {Error} If the signature is invalid or the webhook secret is not configured.
    */
   verifyWebhookSignature(payload, signature) {
     if (!this.initialized) {
@@ -197,7 +226,12 @@ class StripeService {
   }
 
   /**
-   * Create a refund
+   * Creates a refund for a payment intent.
+   * @async
+   * @method createRefund
+   * @param {string} paymentIntentId - The ID of the payment intent to refund.
+   * @param {number|null} [amount=null] - The amount to refund. If null, the entire amount will be refunded.
+   * @returns {Promise<object>} An object containing the refund information.
    */
   async createRefund(paymentIntentId, amount = null) {
     if (!this.initialized) {
@@ -249,7 +283,11 @@ class StripeService {
   }
 
   /**
-   * Get payment method details
+   * Retrieves the details of a payment method.
+   * @async
+   * @method getPaymentMethod
+   * @param {string} paymentMethodId - The ID of the payment method.
+   * @returns {Promise<object>} An object containing the payment method details.
    */
   async getPaymentMethod(paymentMethodId) {
     if (!this.initialized) {

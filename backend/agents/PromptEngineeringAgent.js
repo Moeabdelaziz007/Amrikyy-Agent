@@ -2,13 +2,32 @@
 const { getAi } = require('../services/geminiService');
 const logger = require('../utils/logger');
 
+/**
+ * @class PromptEngineeringAgent
+ * @description An agent that refines user prompts to improve the quality of AI-generated content.
+ * This agent takes a user's prompt and a context, and rewrites the prompt to be more detailed,
+ * descriptive, and structured, maximizing the quality of the output from a generative AI model.
+ */
 class PromptEngineeringAgent {
+  /**
+   * @constructor
+   * @description Initializes the PromptEngineeringAgent.
+   */
   constructor() {
     this.name = 'Prompt Engineering Agent';
     this.description = 'Refines user prompts to improve the quality of AI-generated content.';
     this.modelName = 'gemini-2.5-pro'; // Use a powerful model for this task
   }
 
+  /**
+   * Executes a prompt refinement task.
+   * @param {object} task - The task to be executed.
+   * @param {string} task.type - The type of task, must be 'refinePrompt'.
+   * @param {string} task.prompt - The user's prompt to be refined.
+   * @param {string} [task.context] - The context for the prompt refinement.
+   * @returns {Promise<object>} An object containing the refined prompt.
+   * @throws {Error} If the task type is unknown or the prompt is missing.
+   */
   async executeTask(task) {
     logger.info(`[${this.name}] Executing task: refinePrompt`);
 

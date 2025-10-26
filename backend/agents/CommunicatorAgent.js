@@ -2,7 +2,16 @@
 const TelegramService = require('../services/TelegramService');
 const logger = require('../utils/logger');
 
+/**
+ * @class CommunicatorAgent
+ * @description An agent responsible for handling communication tasks, such as sending messages via Telegram.
+ * This agent integrates with the TelegramService to send messages and provides mock responses for other communication tasks like email.
+ */
 class CommunicatorAgent {
+  /**
+   * @constructor
+   * @description Initializes the CommunicatorAgent.
+   */
   constructor() {
     this.name = 'Communicator Agent';
     this.description = 'Handles sending messages via Telegram and other communication tasks.';
@@ -14,6 +23,15 @@ class CommunicatorAgent {
     this.mockSendNotificationResult = { status: "Notification sent" };
   }
 
+  /**
+   * Executes a communication task.
+   * @param {object} task - The task to be executed.
+   * @param {string} task.type - The type of communication task (e.g., 'sendTelegramMessage').
+   * @param {string} [task.chatId] - The chat ID for Telegram messages.
+   * @param {string} [task.message] - The message content.
+   * @returns {Promise<object>} The result of the communication task.
+   * @throws {Error} If the task type is unknown or required parameters are missing.
+   */
   async executeTask(task) {
     logger.info(`[${this.name}] Executing task: ${task.type}`);
 
