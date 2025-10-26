@@ -1,8 +1,6 @@
-// babel.config.js
-module.exports = {
+export default {
   presets: [
-    '@babel/preset-env',
-    ['@babel/preset-react', { runtime: 'automatic' }], // For React 17+ JSX transform
+    ['@babel/preset-env', { targets: { node: 'current' } }],
     '@babel/preset-typescript',
   ],
 };

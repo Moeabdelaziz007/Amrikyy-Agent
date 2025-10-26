@@ -1,6 +1,6 @@
 // backend/src/agents/mini/CommunicatorAgent.js
-const TelegramService = require('../../services/TelegramService');
-const logger = require('../../utils/logger');
+const TelegramService = require('../services/TelegramService');
+const logger = require('../utils/logger');
 
 class CommunicatorAgent {
   constructor() {

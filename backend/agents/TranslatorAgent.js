@@ -1,8 +1,8 @@
 // backend/src/agents/mini/TranslatorAgent.js
-const TranslateService = require('../../services/TranslateService');
+const TranslateService = require('../services/TranslateService');
 const { getAi } = require('../services/geminiService');
 const { Modality } = require('@google/genai');
-const logger = require('../../utils/logger');
+const logger = require('../utils/logger');
 
 class TranslatorAgent {
   constructor() {
