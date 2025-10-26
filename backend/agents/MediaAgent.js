@@ -1,9 +1,9 @@
 // backend/src/agents/mini/MediaAgent.js
-const YouTubeService = require('../../services/YouTubeService');
-const VeoService = require('../../services/VeoService');
+const YouTubeService = require('../services/YouTubeService');
+const VeoService = require('../services/VeoService');
 const { getAi } = require('../services/geminiService');
 const { Modality } = require('@google/genai');
-const logger = require('../../utils/logger');
+const logger = require('../utils/logger');
 
 class MediaAgent {
   constructor() {

@@ -845,4 +845,3 @@ setInterval(() => {
 }, 120000);
 
 module.exports = streamService;
- main
