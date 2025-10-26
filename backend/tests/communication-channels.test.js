@@ -1,4 +1,3 @@
-n;
 /**
  * Integration tests for the new communication channel routes.
  * Verifies that webhook endpoints for Discord, Messenger, Email, and IVR are registered.
@@ -7,6 +6,17 @@ n;
 const request = require('supertest');
 const express = require('express');
 const bodyParser = require('body-parser');
+
+// Mock the logger to prevent errors during route initialization
+const mockLogger = {
+  info: jest.fn(),
+  warn: jest.fn(),
+  error: jest.fn(),
+  child: jest.fn(() => mockLogger), // Return itself for chained calls
+};
+jest.mock('../utils/logger', () => ({
+  logger: mockLogger,
+}));
 
 // Mock AIXConnectionManager for route initialization
 const mockAixConnectionManager = {
@@ -17,7 +27,7 @@ const mockAixConnectionManager = {
 };
 
 // Import routes
-const discordRoute = require('../routes/discord')(mockAixConnectionManager);
+const discordRoute = require('../routes/discord');
 const messengerRoute = require('../routes/messenger');
 const emailRoute = require('../routes/email')(mockAixConnectionManager);
 const ivrRoute = require('../routes/ivr');
