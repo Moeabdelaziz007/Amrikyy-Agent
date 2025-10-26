@@ -34,6 +34,5 @@ class Logger {
   }
 }
 
-module.exports = {
-  logger: new Logger()
-};
+// Export as default logger instance
+module.exports = new Logger();

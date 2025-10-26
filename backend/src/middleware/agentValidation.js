@@ -332,6 +332,101 @@ const customValidators = {
   }),
 };
 
+/**
+ * Coordinator workflow validators
+ */
+const validateSequentialWorkflow = (req, res, next) => {
+  const schema = Joi.object({
+    steps: Joi.array().items(
+      Joi.object({
+        agent: Joi.string().required(),
+        method: Joi.string().required(),
+        transform: Joi.any().optional()
+      })
+    ).min(1).required(),
+    input: Joi.any().required(),
+    transformers: Joi.any().optional()
+  });
+
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return res.status(400).json({
+      success: false,
+      error: 'Validation error',
+      details: error.details.map(d => d.message)
+    });
+  }
+  next();
+};
+
+const validateParallelWorkflow = (req, res, next) => {
+  const schema = Joi.object({
+    tasks: Joi.array().items(
+      Joi.object({
+        agent: Joi.string().required(),
+        method: Joi.string().required(),
+        input: Joi.any().optional()
+      })
+    ).min(1).required(),
+    input: Joi.any().required()
+  });
+
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return res.status(400).json({
+      success: false,
+      error: 'Validation error',
+      details: error.details.map(d => d.message)
+    });
+  }
+  next();
+};
+
+const validateHierarchicalWorkflow = (req, res, next) => {
+  const schema = Joi.object({
+    master: Joi.object({
+      name: Joi.string().required(),
+      method: Joi.string().required()
+    }).required(),
+    subAgents: Joi.array().items(
+      Joi.object({
+        name: Joi.string().required(),
+        method: Joi.string().required(),
+        inputTransform: Joi.any().optional()
+      })
+    ).min(1).required(),
+    input: Joi.any().required(),
+    aggregator: Joi.any().optional()
+  });
+
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return res.status(400).json({
+      success: false,
+      error: 'Validation error',
+      details: error.details.map(d => d.message)
+    });
+  }
+  next();
+};
+
+const validateCoordinatorWorkflow = (req, res, next) => {
+  const schema = Joi.object({
+    workflowName: Joi.string().required(),
+    input: Joi.any().required()
+  });
+
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return res.status(400).json({
+      success: false,
+      error: 'Validation error',
+      details: error.details.map(d => d.message)
+    });
+  }
+  next();
+};
+
 module.exports = {
   validate,
   validateAgentName,
@@ -344,4 +439,9 @@ module.exports = {
   validateCustom,
   customValidators,
   schemas,
+  // Coordinator validators
+  validateSequentialWorkflow,
+  validateParallelWorkflow,
+  validateHierarchicalWorkflow,
+  validateCoordinatorWorkflow,
 };
