@@ -1,0 +1,18 @@
+
+> amrikyy-ai-os@0.0.0 start-backend
+> node backend/index.js
+
+[WARN] [geminiService] API_KEY is not set. Gemini functions will be disabled.
+[INFO] [AgentOrchestratorService] Initialized and ready to orchestrate.
+[WARN] [GoogleMapsService] GOOGLE_MAPS_API_KEY is not set. Real API calls will fail.
+[WARN] [Travel Agent] Gemini API Key is not configured. Real API calls will fail.
+[WARN] [VisionAgent] API_KEY not set. Gemini functions will be disabled.
+[INFO] [VisionAgent] Google Cloud Vision client initialized.
+[WARN] [Research Agent] Gemini API Key is not configured. Real API calls will fail.
+[INFO] [TranslateService] Initialized successfully.
+[WARN] [YouTubeService] YOUTUBE_API_KEY is not set. Real API calls will fail.
+[INFO] [VeoService] Initialized.
+[WARN] [TelegramService] TELEGRAM_BOT_TOKEN is not set. Telegram features will be disabled.
+[WARN] [CodingAgent] API_KEY is not set. Coding Agent will not be able to make real API calls.
+[WARN] [MarketingAgent] API_KEY is not set. Marketing Agent will not be able to make real API calls.
+Backend server listening on port 3000

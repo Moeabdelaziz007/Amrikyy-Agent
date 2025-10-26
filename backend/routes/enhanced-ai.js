@@ -7,8 +7,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { EnhancedModelSwitcher } = require('../ai/EnhancedModelSwitcher');
-const ZaiClient = require('../ai/zaiClient');
+const { EnhancedModelSwitcher } = require('../src/ai/EnhancedModelSwitcher');
+const ZaiClient = require('../src/ai/zaiClient');
 // const { GeminiCLI } = require('../services/automation/GeminiCLI'); // Will be initialized when available
 
 // Initialize multi-model system
