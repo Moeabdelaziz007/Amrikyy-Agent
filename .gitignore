@@ -29,6 +29,10 @@ playwright-report/
 test-results/
 *.log
 
+# Build outputs
+frontend/dist/
+backend/dist/
+
 # IDE folders
 .cursor/
 .continue/

@@ -206,16 +206,6 @@ router.get('/status', async (req, res) => {
   }
 });
 
-module.exports = router;: results.length
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
-  }
-});
-
 /**
  * POST /api/sabre/hotels/search
  * Search for hotels
@@ -400,16 +390,6 @@ router.get('/status', async (req, res) => {
     res.json({
       success: true,
       data: status
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
-  }
-});
-
-module.exports = router;: results.length
     });
   } catch (error) {
     res.status(500).json({

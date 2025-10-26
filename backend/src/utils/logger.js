@@ -34,6 +34,7 @@ class Logger {
   }
 }
 
-module.exports = {
-  logger: new Logger()
-};
+// Export default instance directly (compatible with usage in MultiAgentCoordinator)
+const logger = new Logger();
+
+module.exports = logger;
