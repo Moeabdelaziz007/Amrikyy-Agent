@@ -1,5 +1,5 @@
 // jest-setup.js
-import '@testing-library/jest-dom';
+require('@testing-library/jest-dom');
 
 // Mock localStorage for tests
 const localStorageMock = (function() {
