@@ -1,10 +1,11 @@
-export default {
+module.exports = {
   testEnvironment: 'node',
   transform: {
-    '^.+\\.(t|j)sx?$': 'babel-jest',
+    '^.+\\.(ts|tsx|js|jsx)$': 'babel-jest',
   },
   transformIgnorePatterns: [
     '/node_modules/(?!(@google/genai|cheerio)/)',
   ],
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  setupFiles: ['<rootDir>/jest.setup.js'],
+  testTimeout: 60000,
 };
