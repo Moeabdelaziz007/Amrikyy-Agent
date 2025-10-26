@@ -1,0 +1,496 @@
+
+> amrikyy-ai-os@0.0.0 dev
+> vite
+
+
+  VITE v5.4.21  ready in 640 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:02:39 PM [vite] vite.config.ts changed, restarting server...
+Re-optimizing dependencies because lockfile has changed
+7:02:39 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: http://192.168.0.2:3000/
+7:02:51 PM [vite] vite.config.ts changed, restarting server...
+7:02:51 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:03:10 PM [vite] vite.config.ts changed, restarting server...
+7:03:10 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: http://192.168.0.2:3000/
+7:03:28 PM [vite] vite.config.ts changed, restarting server...
+7:03:28 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:03:39 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:03:39 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:03:51 PM [vite] vite.config.ts changed, restarting server...
+7:03:51 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:04:10 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:04:10 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:04:25 PM [vite] vite.config.ts changed, restarting server...
+7:04:25 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:04:36 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:04:36 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:04:48 PM [vite] vite.config.ts changed, restarting server...
+7:04:48 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:05:48 PM [vite] page reload playwright-report/index.html
+7:11:36 PM [vite] vite.config.ts changed, restarting server...
+Re-optimizing dependencies because lockfile has changed
+Port 3000 is in use, trying another one...
+7:11:36 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:11:49 PM [vite] vite.config.ts changed, restarting server...
+7:11:49 PM [vite] vite.config.ts changed, restarting server...
+7:11:49 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:11:59 PM [vite] vite.config.ts changed, restarting server...
+Re-optimizing dependencies because lockfile has changed
+Port 3000 is in use, trying another one...
+7:11:59 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:12:19 PM [vite] vite.config.ts changed, restarting server...
+7:12:19 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:12:29 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:12:29 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:12:42 PM [vite] vite.config.ts changed, restarting server...
+7:12:42 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:13:44 PM [vite] page reload playwright-report/index.html
+7:19:30 PM [vite] vite.config.ts changed, restarting server...
+Re-optimizing dependencies because lockfile has changed
+Port 3000 is in use, trying another one...
+7:19:30 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:21:37 PM [vite] vite.config.ts changed, restarting server...
+7:21:37 PM [vite] vite.config.ts changed, restarting server...
+7:21:38 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:21:45 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:21:45 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:21:50 PM [vite] vite.config.ts changed, restarting server...
+7:21:50 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:21:57 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:21:57 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:22:12 PM [vite] vite.config.ts changed, restarting server...
+7:22:12 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:22:22 PM [vite] page reload playwright-report/index.html
+7:29:00 PM [vite] vite.config.ts changed, restarting server...
+Re-optimizing dependencies because lockfile has changed
+Port 3000 is in use, trying another one...
+7:29:00 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:30:24 PM [vite] vite.config.ts changed, restarting server...
+7:30:25 PM [vite] vite.config.ts changed, restarting server...
+7:30:25 PM [vite] vite.config.ts changed, restarting server...
+7:30:25 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:37:13 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:37:13 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:37:29 PM [vite] vite.config.ts changed, restarting server...
+7:37:29 PM [vite] vite.config.ts changed, restarting server...
+7:37:29 PM [vite] vite.config.ts changed, restarting server...
+7:37:29 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:37:36 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:37:36 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:37:51 PM [vite] vite.config.ts changed, restarting server...
+7:37:51 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:37:59 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:37:59 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:38:12 PM [vite] vite.config.ts changed, restarting server...
+7:38:12 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:38:19 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:38:19 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:38:24 PM [vite] vite.config.ts changed, restarting server...
+7:38:24 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:38:31 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:38:31 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:38:54 PM [vite] vite.config.ts changed, restarting server...
+7:38:55 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:39:01 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:39:01 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:39:09 PM [vite] vite.config.ts changed, restarting server...
+7:39:09 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:39:15 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:39:15 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:39:23 PM [vite] vite.config.ts changed, restarting server...
+7:39:23 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:46:11 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:46:11 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:46:46 PM [vite] vite.config.ts changed, restarting server...
+7:46:46 PM [vite] vite.config.ts changed, restarting server...
+7:46:46 PM [vite] vite.config.ts changed, restarting server...
+7:46:46 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:47:03 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:47:03 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:47:28 PM [vite] vite.config.ts changed, restarting server...
+7:47:28 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:47:34 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:47:34 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:47:42 PM [vite] vite.config.ts changed, restarting server...
+7:47:42 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:54:30 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:54:30 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:54:43 PM [vite] vite.config.ts changed, restarting server...
+7:54:43 PM [vite] vite.config.ts changed, restarting server...
+7:54:43 PM [vite] vite.config.ts changed, restarting server...
+7:54:43 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:54:58 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:54:58 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:55:35 PM [vite] vite.config.ts changed, restarting server...
+7:55:35 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:55:43 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:55:43 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:56:02 PM [vite] vite.config.ts changed, restarting server...
+7:56:02 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:56:08 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:56:08 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:56:27 PM [vite] vite.config.ts changed, restarting server...
+7:56:27 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:56:34 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:56:34 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:56:51 PM [vite] vite.config.ts changed, restarting server...
+7:56:51 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:57:07 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:57:07 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:57:21 PM [vite] vite.config.ts changed, restarting server...
+7:57:21 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:57:33 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:57:33 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:57:49 PM [vite] vite.config.ts changed, restarting server...
+7:57:49 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:57:55 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:57:56 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:58:03 PM [vite] vite.config.ts changed, restarting server...
+7:58:03 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+7:58:09 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+7:58:09 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+7:58:18 PM [vite] vite.config.ts changed, restarting server...
+7:58:18 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+8:05:10 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+8:05:10 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+8:05:21 PM [vite] vite.config.ts changed, restarting server...
+8:05:22 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+8:05:28 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+8:05:29 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+8:05:33 PM [vite] vite.config.ts changed, restarting server...
+8:05:33 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+8:05:41 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+8:05:41 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+8:05:51 PM [vite] vite.config.ts changed, restarting server...
+8:05:51 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+8:05:58 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+8:05:58 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+8:06:20 PM [vite] vite.config.ts changed, restarting server...
+8:06:20 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+8:06:32 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+8:06:32 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+8:06:51 PM [vite] vite.config.ts changed, restarting server...
+8:06:51 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+8:06:57 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+8:06:57 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+8:14:25 PM [vite] vite.config.ts changed, restarting server...
+8:14:25 PM [vite] vite.config.ts changed, restarting server...
+8:14:25 PM [vite] vite.config.ts changed, restarting server...
+8:14:26 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+8:14:48 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+8:14:48 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+8:17:47 PM [vite] vite.config.ts changed, restarting server...
+8:17:47 PM [vite] vite.config.ts changed, restarting server...
+8:17:48 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+8:18:01 PM [vite] vite.config.ts changed, restarting server...
+Port 3000 is in use, trying another one...
+8:18:01 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: http://192.168.0.2:3001/
+8:18:18 PM [vite] vite.config.ts changed, restarting server...
+8:18:18 PM [vite] server restarted.
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/

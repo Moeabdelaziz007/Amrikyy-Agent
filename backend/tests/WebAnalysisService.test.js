@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+const { describe, it, expect, jest: vi, beforeEach } = require('@jest/globals');
 import WebAnalysisService from '../services/WebAnalysisService';
 
 // Mock dependencies
@@ -23,7 +23,7 @@ describe('WebAnalysisService', () => {
       ];
 
       // Mock Google Custom Search
-      vi.mocked(webAnalysisService.searchGoogle).mockResolvedValue(mockResults);
+      vi.spyOn(webAnalysisService, 'searchGoogle').mockResolvedValue(mockResults);
 
       const results = await webAnalysisService.performWebSearch('test query');
 
@@ -33,7 +33,7 @@ describe('WebAnalysisService', () => {
     });
 
     it('handles search errors gracefully', async () => {
-      vi.mocked(webAnalysisService.searchGoogle).mockRejectedValue(new Error('Search failed'));
+      vi.spyOn(webAnalysisService, 'searchGoogle').mockRejectedValue(new Error('Search failed'));
 
       await expect(webAnalysisService.performWebSearch('test query')).rejects.toThrow(
         'Search failed'
@@ -47,7 +47,7 @@ describe('WebAnalysisService', () => {
         { url: 'https://different.com', title: 'Different', snippet: 'Different' },
       ];
 
-      vi.mocked(webAnalysisService.searchGoogle).mockResolvedValue(mockResults);
+      vi.spyOn(webAnalysisService, 'searchGoogle').mockResolvedValue(mockResults);
 
       const results = await webAnalysisService.performWebSearch('test query');
 
@@ -60,8 +60,8 @@ describe('WebAnalysisService', () => {
       const mockHtml = '<html><body><h1>Test Title</h1><p>Test content</p></body></html>';
       const mockResponse = { data: mockHtml };
 
-      vi.mocked(require('axios').get).mockResolvedValue(mockResponse);
-      vi.mocked(require('cheerio').load).mockReturnValue({
+      vi.spyOn(require('axios'), 'get').mockResolvedValue(mockResponse);
+      vi.spyOn(require('cheerio'), 'load').mockReturnValue({
         text: () => 'Test Title Test content',
         html: () => mockHtml,
       });
@@ -75,8 +75,8 @@ describe('WebAnalysisService', () => {
     it('falls back to Puppeteer when Cheerio fails', async () => {
       const mockHtml = '<html><body><h1>Dynamic Title</h1><p>Dynamic content</p></body></html>';
 
-      vi.mocked(require('axios').get).mockRejectedValue(new Error('Network error'));
-      vi.mocked(require('puppeteer').launch).mockResolvedValue({
+      vi.spyOn(require('axios'), 'get').mockRejectedValue(new Error('Network error'));
+      vi.spyOn(require('puppeteer'), 'launch').mockResolvedValue({
         newPage: vi.fn().mockResolvedValue({
           goto: vi.fn().mockResolvedValue(undefined),
           content: vi.fn().mockResolvedValue(mockHtml),
@@ -91,8 +91,8 @@ describe('WebAnalysisService', () => {
     });
 
     it('handles extraction errors gracefully', async () => {
-      vi.mocked(require('axios').get).mockRejectedValue(new Error('Network error'));
-      vi.mocked(require('puppeteer').launch).mockRejectedValue(new Error('Puppeteer error'));
+      vi.spyOn(require('axios'), 'get').mockRejectedValue(new Error('Network error'));
+      vi.spyOn(require('puppeteer'), 'launch').mockRejectedValue(new Error('Puppeteer error'));
 
       await expect(webAnalysisService.extractContent('https://invalid.com')).rejects.toThrow(
         'Puppeteer error'
@@ -109,7 +109,7 @@ describe('WebAnalysisService', () => {
         sentiment: { score: 0.8, label: 'positive' },
       };
 
-      vi.mocked(webAnalysisService.model.generateContent).mockResolvedValue({
+      vi.spyOn(webAnalysisService.model, 'generateContent').mockResolvedValue({
         response: { text: () => JSON.stringify(mockAnalysis) },
       });
 
@@ -121,7 +121,7 @@ describe('WebAnalysisService', () => {
     });
 
     it('handles analysis errors gracefully', async () => {
-      vi.mocked(webAnalysisService.model.generateContent).mockRejectedValue(
+      vi.spyOn(webAnalysisService.model, 'generateContent').mockRejectedValue(
         new Error('AI analysis failed')
       );
 
@@ -146,13 +146,13 @@ describe('WebAnalysisService', () => {
         ],
       };
 
-      vi.mocked(webAnalysisService.performWebSearch).mockResolvedValue(mockSearchResults);
-      vi.mocked(webAnalysisService.extractContent).mockResolvedValue({
+      vi.spyOn(webAnalysisService, 'performWebSearch').mockResolvedValue(mockSearchResults);
+      vi.spyOn(webAnalysisService, 'extractContent').mockResolvedValue({
         title: 'Test Title',
         content: 'Test content',
         excerpt: 'Test excerpt',
       });
-      vi.mocked(webAnalysisService.model.generateContent).mockResolvedValue({
+      vi.spyOn(webAnalysisService.model, 'generateContent').mockResolvedValue({
         response: { text: () => JSON.stringify(mockAnswer) },
       });
 
@@ -166,7 +166,7 @@ describe('WebAnalysisService', () => {
     it('handles insufficient sources gracefully', async () => {
       const mockSearchResults = [];
 
-      vi.mocked(webAnalysisService.performWebSearch).mockResolvedValue(mockSearchResults);
+      vi.spyOn(webAnalysisService, 'performWebSearch').mockResolvedValue(mockSearchResults);
 
       const result = await webAnalysisService.getAnswerFromWeb('test question');
 
@@ -182,8 +182,8 @@ describe('WebAnalysisService', () => {
         excerpt: 'Technology article excerpt',
       };
 
-      vi.mocked(webAnalysisService.extractContent).mockResolvedValue(mockContent);
-      vi.mocked(webAnalysisService.analyzeContent).mockResolvedValue({
+      vi.spyOn(webAnalysisService, 'extractContent').mockResolvedValue(mockContent);
+      vi.spyOn(webAnalysisService, 'analyzeContent').mockResolvedValue({
         summary: 'Article summary',
         keywords: ['technology', 'test'],
         sentiment: { score: 0.5, label: 'neutral' },
@@ -201,7 +201,7 @@ describe('WebAnalysisService', () => {
     });
 
     it('handles URL analysis errors gracefully', async () => {
-      vi.mocked(webAnalysisService.extractContent).mockRejectedValue(
+      vi.spyOn(webAnalysisService, 'extractContent').mockRejectedValue(
         new Error('URL extraction failed')
       );
 
@@ -215,7 +215,7 @@ describe('WebAnalysisService', () => {
     it('completes search within reasonable time', async () => {
       const mockResults = [{ url: 'https://example.com', title: 'Example', snippet: 'Snippet' }];
 
-      vi.mocked(webAnalysisService.searchGoogle).mockResolvedValue(mockResults);
+      vi.spyOn(webAnalysisService, 'searchGoogle').mockResolvedValue(mockResults);
 
       const start = performance.now();
       await webAnalysisService.performWebSearch('test query');
@@ -227,7 +227,7 @@ describe('WebAnalysisService', () => {
     it('handles concurrent requests efficiently', async () => {
       const mockResults = [{ url: 'https://example.com', title: 'Example', snippet: 'Snippet' }];
 
-      vi.mocked(webAnalysisService.searchGoogle).mockResolvedValue(mockResults);
+      vi.spyOn(webAnalysisService, 'searchGoogle').mockResolvedValue(mockResults);
 
       const start = performance.now();
       const promises = Array(5)
@@ -248,7 +248,7 @@ describe('WebAnalysisService', () => {
     it('sanitizes user input', async () => {
       const maliciousQuery = '<script>alert("xss")</script>';
 
-      vi.mocked(webAnalysisService.searchGoogle).mockResolvedValue([]);
+      vi.spyOn(webAnalysisService, 'searchGoogle').mockResolvedValue([]);
 
       await webAnalysisService.performWebSearch(maliciousQuery);
 

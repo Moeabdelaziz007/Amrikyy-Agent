@@ -6,12 +6,19 @@
 const request = require('supertest');
 const express = require('express');
 const bodyParser = require('body-parser');
-const whatsappRoute = require('../routes/whatsapp');
-const { logger } = require('../src/utils/logger');
 
-// Suppress console logs during tests for cleaner output
-jest.spyOn(logger, 'info').mockImplementation(() => {});
-jest.spyOn(logger, 'error').mockImplementation(() => {});
+// Mock the logger to prevent errors during route initialization
+const mockLogger = {
+  info: jest.fn(),
+  warn: jest.fn(),
+  error: jest.fn(),
+  child: jest.fn(() => mockLogger),
+};
+jest.mock('../src/utils/logger', () => ({
+  logger: mockLogger,
+}));
+
+const whatsappRoute = require('../routes/whatsapp');
 
 // Mock the AIXConnectionManager
 const mockAixConnectionManager = {

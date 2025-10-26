@@ -1,73 +1,14 @@
-node_modules
+# Runtime data
+.private-journal/
+logs/
+*.err
+*.tmp
 
-# Environment files - CRITICAL SECURITY
+# Node & Env
+node_modules/
 .env
-.env.*
-!.env.example
-!.env.template
-backend/.env
-backend/.env.*
-frontend/.env
-frontend/.env.*
-*.env
-*.env.local
-*.env.production
-*.env.staging
-*.env.development
-*.env.test
+.DS_Store
 
-# API Keys and Secrets - NEVER COMMIT
-**/api-keys.json
-**/secrets.json
-**/credentials.json
-**/tokens.json
-**/.credentials/
-
-# Test reports and coverage
+# Build & Coverage
+dist/
 coverage/
-playwright-report/
-test-results/
-*.log
-
-# Build outputs
-frontend/dist/
-backend/dist/
-
-# IDE folders
-.cursor/
-.continue/
-.trunk/
-.vscode/
-
-# OpenMemory - IDE/Assistant specific rules
-.cursor/rules/openmemory.mdc
-CLAUDE.md
-
-# Security audit files
-security-audit.md
-SECURITY_REPORT.md
-
-# Python virtual environments
-*/venv/
-*/env/
-*/kody_env/
-*/python_env/
-**/__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-.vercel
-
-# Large index files
-codebase-index/comprehensive-index.json
-backend/storage/memories/*.json
-
-# Vercel
-.vercel
-
-# Environment files
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
