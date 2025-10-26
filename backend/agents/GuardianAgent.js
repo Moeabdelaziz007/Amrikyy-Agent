@@ -3,6 +3,11 @@ const { getAi } = require('../services/geminiService');
 const { Type } = require('@google/genai');
 const logger = require('../utils/logger');
 
+/**
+ * @const {object} DEBUG_SCHEMA
+ * @description The JSON schema for the debug analysis provided by the Guardian Agent.
+ * @private
+ */
 const DEBUG_SCHEMA = {
   type: Type.OBJECT,
   properties: {
@@ -22,13 +27,34 @@ const DEBUG_SCHEMA = {
   required: ['diagnosis', 'suggestion']
 };
 
+/**
+ * @class GuardianAgent
+ * @description An agent that analyzes and debugs failed agent tasks to provide self-healing capabilities.
+ * This agent takes a failed task as input, analyzes the error, and provides a diagnosis, a suggestion for a fix,
+ * and an optional corrected input for retrying the task.
+ */
 class GuardianAgent {
+  /**
+   * @constructor
+   * @description Initializes the GuardianAgent.
+   */
   constructor() {
     this.name = 'Guardian Agent';
     this.description = 'Analyzes and debugs failed agent tasks to provide self-healing capabilities.';
     this.model = 'gemini-2.5-pro';
   }
 
+  /**
+   * Executes a debugging task for a failed agent task.
+   * @param {object} task - The task to be executed.
+   * @param {object} task.failedTask - The failed task object to be debugged.
+   * @param {string} task.failedTask.agentName - The name of the agent that failed.
+   * @param {string} task.failedTask.taskType - The type of the failed task.
+   * @param {object} task.failedTask.taskInput - The input that caused the task to fail.
+   * @param {string} task.failedTask.errorMessage - The error message from the failed task.
+   * @returns {Promise<object>} A JSON object containing the debug analysis.
+   * @throws {Error} If the failedTask object is missing.
+   */
   async executeTask(task) {
     logger.info(`[${this.name}] Received task for debugging.`);
 

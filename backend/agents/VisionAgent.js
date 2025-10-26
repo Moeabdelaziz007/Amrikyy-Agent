@@ -3,8 +3,17 @@ const { getAi } = require('../services/geminiService');
 const { ImageAnnotatorClient } = require('@google-cloud/vision');
 const axios = require('axios');
 const logger = require('../utils/logger');
+const { Buffer } = require('buffer');
 
+/**
+ * @class VisionAgent
+ * @description An agent that handles image analysis, OCR, and object detection using both Gemini and Google Cloud Vision APIs.
+ */
 class VisionAgent {
+  /**
+   * @constructor
+   * @description Initializes the VisionAgent and its clients.
+   */
   constructor() {
     this.name = 'Vision Agent';
     this.description = 'Handles image analysis, OCR, and object detection.';
@@ -23,6 +32,12 @@ class VisionAgent {
     }
   }
 
+  /**
+   * Fetches an image from a URL and converts it to a base64 encoded string.
+   * @private
+   * @param {string} imageUrl - The URL of the image to fetch.
+   * @returns {Promise<object>} An object containing the base64 encoded image data and its MIME type.
+   */
   async _getImagePart(imageUrl) {
     try {
         if (imageUrl.startsWith('data:image')) {
@@ -41,6 +56,15 @@ class VisionAgent {
     }
   }
 
+  /**
+   * Executes a vision-related task.
+   * @param {object} task - The task to be executed.
+   * @param {string} task.type - The type of vision task (e.g., 'analyzeImage', 'extractText').
+   * @param {string} task.imageUrl - The URL of the image to process.
+   * @param {string} [task.prompt] - An optional prompt for tasks that require it.
+   * @returns {Promise<object>} The result of the vision task.
+   * @throws {Error} If the task type is unknown or required parameters are missing.
+   */
   async executeTask(task) {
     logger.info(`[${this.name}] Executing task: ${task.type}`);
 

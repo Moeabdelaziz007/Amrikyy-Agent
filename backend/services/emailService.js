@@ -2,17 +2,23 @@ const nodemailer = require('nodemailer');
 const logger = require('../utils/logger');
 
 /**
- * Gmail Email Service
- * Uses Gmail SMTP with App Password for sending transactional emails
- * 
- * Setup Instructions:
- * 1. Enable 2-Step Verification on your Gmail account
- * 2. Generate an App Password: https://myaccount.google.com/apppasswords
- * 3. Add to .env:
- *    GMAIL_USER=your-email@gmail.com
- *    GMAIL_APP_PASSWORD=your-16-char-app-password
+ * @fileoverview Gmail Email Service
+ * @module services/emailService
+ * @description Uses Gmail SMTP with an App Password for sending transactional emails.
+ *
+ * @class EmailService
+ * @description Provides methods for sending various types of transactional emails.
+ *
+ * @property {object} transporter - The Nodemailer transporter object.
+ * @property {boolean} initialized - A flag indicating if the service has been initialized.
+ * @property {string} fromEmail - The email address to send emails from.
+ * @property {string} fromName - The name to display as the sender.
+ *
+ * @requires nodemailer
+ * @requires ../utils/logger
+ *
+ * @see {@link https://myaccount.google.com/apppasswords} for generating an App Password.
  */
-
 class EmailService {
   constructor() {
     this.transporter = null;
@@ -22,7 +28,11 @@ class EmailService {
   }
 
   /**
-   * Initialize the email transporter
+   * Initializes the email transporter.
+   * @async
+   * @method initialize
+   * @returns {Promise<void>}
+   * @throws {Error} If the Gmail credentials are not configured.
    */
   async initialize() {
     if (this.initialized) {
@@ -57,7 +67,15 @@ class EmailService {
   }
 
   /**
-   * Send a generic email
+   * Sends a generic email.
+   * @async
+   * @method sendEmail
+   * @param {object} options - The email options.
+   * @param {string} options.to - The recipient's email address.
+   * @param {string} options.subject - The email subject.
+   * @param {string} options.html - The HTML content of the email.
+   * @param {string} [options.text] - The plain text content of the email.
+   * @returns {Promise<{success: boolean, messageId?: string, error?: string}>}
    */
   async sendEmail({ to, subject, html, text }) {
     if (!this.initialized) {
@@ -99,12 +117,16 @@ class EmailService {
   }
 
   /**
-   * Send booking confirmation email
+   * Sends a booking confirmation email.
+   * @async
+   * @method sendBookingConfirmation
+   * @param {object} bookingData - The booking data.
+   * @returns {Promise<{success: boolean, messageId?: string, error?: string}>}
    */
   async sendBookingConfirmation(bookingData) {
-    const { email, bookingId, flightDetails, travelerInfo, totalPrice } = bookingData;
+    const { email } = bookingData;
 
-    const subject = `Booking Confirmation - ${bookingId}`;
+    const subject = `Booking Confirmation - ${bookingData.bookingId}`;
     const html = this._generateBookingConfirmationHTML(bookingData);
 
     return await this.sendEmail({
@@ -115,12 +137,16 @@ class EmailService {
   }
 
   /**
-   * Send payment receipt email
+   * Sends a payment receipt email.
+   * @async
+   * @method sendPaymentReceipt
+   * @param {object} paymentData - The payment data.
+   * @returns {Promise<{success: boolean, messageId?: string, error?: string}>}
    */
   async sendPaymentReceipt(paymentData) {
-    const { email, bookingId, amount, currency, paymentIntentId, receiptUrl } = paymentData;
+    const { email } = paymentData;
 
-    const subject = `Payment Receipt - ${bookingId}`;
+    const subject = `Payment Receipt - ${paymentData.bookingId}`;
     const html = this._generatePaymentReceiptHTML(paymentData);
 
     return await this.sendEmail({
@@ -131,7 +157,12 @@ class EmailService {
   }
 
   /**
-   * Send password reset email
+   * Sends a password reset email.
+   * @async
+   * @method sendPasswordReset
+   * @param {string} email - The recipient's email address.
+   * @param {string} resetLink - The password reset link.
+   * @returns {Promise<{success: boolean, messageId?: string, error?: string}>}
    */
   async sendPasswordReset(email, resetLink) {
     const subject = 'Reset Your Password - Amrikyy Travel';
@@ -145,7 +176,12 @@ class EmailService {
   }
 
   /**
-   * Send welcome email
+   * Sends a welcome email.
+   * @async
+   * @method sendWelcomeEmail
+   * @param {string} email - The recipient's email address.
+   * @param {string} name - The recipient's name.
+   * @returns {Promise<{success: boolean, messageId?: string, error?: string}>}
    */
   async sendWelcomeEmail(email, name) {
     const subject = 'Welcome to Amrikyy Travel!';
@@ -159,10 +195,14 @@ class EmailService {
   }
 
   /**
-   * Generate booking confirmation HTML
+   * Generates the HTML for a booking confirmation email.
+   * @private
+   * @method _generateBookingConfirmationHTML
+   * @param {object} bookingData - The booking data.
+   * @returns {string} The HTML content of the email.
    */
   _generateBookingConfirmationHTML(bookingData) {
-    const { bookingId, flightDetails, travelerInfo, totalPrice, bookingDate } = bookingData;
+    const { bookingId, flightDetails, travelerInfo, totalPrice } = bookingData;
 
     return `
       <!DOCTYPE html>
@@ -274,7 +314,11 @@ class EmailService {
   }
 
   /**
-   * Generate payment receipt HTML
+   * Generates the HTML for a payment receipt email.
+   * @private
+   * @method _generatePaymentReceiptHTML
+   * @param {object} paymentData - The payment data.
+   * @returns {string} The HTML content of the email.
    */
   _generatePaymentReceiptHTML(paymentData) {
     const { bookingId, amount, currency, paymentIntentId, receiptUrl, paymentDate } = paymentData;
@@ -373,7 +417,11 @@ class EmailService {
   }
 
   /**
-   * Generate password reset HTML
+   * Generates the HTML for a password reset email.
+   * @private
+   * @method _generatePasswordResetHTML
+   * @param {string} resetLink - The password reset link.
+   * @returns {string} The HTML content of the email.
    */
   _generatePasswordResetHTML(resetLink) {
     return `
@@ -435,7 +483,11 @@ class EmailService {
   }
 
   /**
-   * Generate welcome email HTML
+   * Generates the HTML for a welcome email.
+   * @private
+   * @method _generateWelcomeHTML
+   * @param {string} name - The recipient's name.
+   * @returns {string} The HTML content of the email.
    */
   _generateWelcomeHTML(name) {
     return `
@@ -513,7 +565,11 @@ class EmailService {
   }
 
   /**
-   * Strip HTML tags for plain text version
+   * Strips HTML tags from a string to create a plain text version.
+   * @private
+   * @method _stripHtml
+   * @param {string} html - The HTML content.
+   * @returns {string} The plain text content.
    */
   _stripHtml(html) {
     return html

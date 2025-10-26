@@ -3,10 +3,16 @@ const OrchestratorAgent = require('../agents/OrchestratorAgent'); // Import the 
 const logger = require('../utils/logger');
 
 /**
- * This service acts as a bridge between the API routes and the core OrchestratorAgent.
+ * @class AgentOrchestratorService
+ * @description This service acts as a bridge between the API routes and the core OrchestratorAgent.
  * It initializes the agent and exposes its planning capabilities.
  */
 class AgentOrchestratorService {
+  /**
+   * @constructor
+   * @description Initializes the AgentOrchestratorService.
+   * Creates an instance of the OrchestratorAgent.
+   */
   constructor() {
     this.orchestratorAgent = new OrchestratorAgent();
     logger.info('[AgentOrchestratorService] Initialized and ready to orchestrate.');
@@ -15,7 +21,7 @@ class AgentOrchestratorService {
   /**
    * Delegates the planning task to the OrchestratorAgent.
    * @param {string} userPrompt - The natural language prompt from the user.
-   * @param {string} lang - The language of the prompt.
+   * @param {string} [lang='en'] - The language of the prompt.
    * @returns {Promise<object>} A structured workflow plan.
    */
   async planExecution(userPrompt, lang = 'en') {

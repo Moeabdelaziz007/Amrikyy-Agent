@@ -2,8 +2,15 @@
 
 /**
  * Parses the content of an .aix file into a structured object.
- * @param {string} fileContent The raw string content of the .aix file.
- * @returns {{PROMPT: string, DATA: string, RULES: string, PYTHON: string}} An object with the content of each section.
+ * The function reads the raw string content of an AIX file, which is expected to be
+ * organized into sections like `[PROMPT]`, `[DATA]`, `[RULES]`, and `[PYTHON]`.
+ * It iterates through each line, identifying the current section and accumulating
+ * the content for that section. The final output is an object where the keys are
+ * the section names and the values are the trimmed content of those sections.
+ *
+ * @param {string} fileContent - The raw string content of the .aix file.
+ * @returns {{PROMPT: string, DATA: string, RULES: string, PYTHON: string}} An object containing the content of each parsed section.
+ * If a section is not found in the file, its corresponding value will be an empty string.
  */
 function parseAixFile(fileContent) {
   const sections = {

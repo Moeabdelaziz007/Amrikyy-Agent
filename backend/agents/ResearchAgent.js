@@ -1,7 +1,20 @@
+// backend/agents/ResearchAgent.js
 const { getAi } = require('../services/geminiService');
 const logger = require('../utils/logger');
+const fs = require('fs/promises');
+const path = require('path');
+const { parseAixFile } = require('../services/aixParser');
+const { executeAixTask } = require('../services/aixExecutor');
 
+/**
+ * @class ResearchAgent
+ * @description An agent that handles web and map search and information retrieval using Gemini with grounding.
+ */
 class ResearchAgent {
+  /**
+   * @constructor
+   * @description Initializes the ResearchAgent.
+   */
   constructor() {
     this.name = "Research Agent";
     this.description = "Handles web and map search and information retrieval using Gemini with grounding.";
@@ -12,12 +25,26 @@ class ResearchAgent {
     }
   }
 
+  /**
+   * Checks if the Gemini API key is configured.
+   * @private
+   * @throws {Error} If the API key is not configured.
+   */
   _checkConfig() {
     if (!process.env.API_KEY) {
       throw new Error('Gemini API Key is not configured.');
     }
   }
 
+  /**
+   * Executes a research task.
+   * @param {object} task - The task to be executed.
+   * @param {string} task.type - The type of research task (e.g., 'webSearch', 'locationQuery').
+   * @param {string} task.query - The search query.
+   * @param {object} [task.userLocation] - The user's location for location-based queries.
+   * @returns {Promise<object>} The result of the research task.
+   * @throws {Error} If the task type is unknown or required parameters are missing.
+   */
   async executeTask(task) {
     logger.info(`[${this.name}] Executing task: ${task.type}`);
     this._checkConfig();
@@ -32,12 +59,15 @@ class ResearchAgent {
         return await this.locationQuery(task.query, task.userLocation);
 
       default:
-        // The old tasks like findHotels, getReviews are now handled by the more powerful webSearch.
-        // We can route them to webSearch for backward compatibility if needed, or just throw an error.
         throw new Error(`Unknown or deprecated task type for Research Agent: ${task.type}`);
     }
   }
 
+  /**
+   * Performs a web search using Gemini with Google Search grounding.
+   * @param {string} query - The search query.
+   * @returns {Promise<object>} An object containing the search results and grounding chunks.
+   */
   async webSearch(query) {
     try {
       const ai = getAi();
@@ -61,6 +91,12 @@ class ResearchAgent {
     }
   }
   
+  /**
+   * Performs a location-based query using Gemini with Google Maps grounding.
+   * @param {string} query - The location-based query.
+   * @param {object} [userLocation] - The user's location.
+   * @returns {Promise<object>} An object containing the query results and grounding chunks.
+   */
   async locationQuery(query, userLocation) {
     try {
       const ai = getAi();
@@ -96,22 +132,19 @@ class ResearchAgent {
       throw new Error(`Failed to perform location query with Gemini: ${error.message}`);
     }
   }
-
 }
 
-module.exports = ResearchAgent;
+const researchAgentInstance = new ResearchAgent();
+module.exports = researchAgentInstance;
 
-
-// New function to run AIX tasks, as requested for testing.
-const fs = require('fs/promises');
-const path = require('path');
-const { parseAixFile } = require('../services/aixParser');
-const { executeAixTask } = require('../services/aixExecutor');
-const loggerForAix = require('../utils/logger');
-
+/**
+ * Runs an AIX (AI eXchange) task from a file.
+ * This function reads an AIX file, parses it, and executes the task using the Gemini API.
+ * @param {string} fileName - The name of the AIX file to run.
+ * @returns {Promise<object>} The result of the AIX task execution.
+ */
 async function runAixTask(fileName) {
   try {
-    // Construct an absolute path from the project root. Assumes process is started from project root.
     const filePath = path.join(process.cwd(), 'backend', 'aix_tasks', fileName);
     const fileContent = await fs.readFile(filePath, 'utf-8');
     const parsedAix = parseAixFile(fileContent);
@@ -123,9 +156,9 @@ async function runAixTask(fileName) {
     const result = await executeAixTask(parsedAix);
     return result;
   } catch (error) {
-    loggerForAix.error(`Error running AIX task ${fileName}:`, error);
+    logger.error(`Error running AIX task ${fileName}:`, error);
     return { success: false, error: 'Could not read or execute the AIX file.' };
   }
 }
 
-module.exports.runAixTask = runAixTask;
+researchAgentInstance.runAixTask = runAixTask;

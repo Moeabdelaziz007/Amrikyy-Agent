@@ -4,7 +4,15 @@ const { getAi } = require('../services/geminiService');
 const { Modality } = require('@google/genai');
 const logger = require('../utils/logger');
 
+/**
+ * @class TranslatorAgent
+ * @description An agent that handles language translation, detection, and speech synthesis.
+ */
 class TranslatorAgent {
+  /**
+   * @constructor
+   * @description Initializes the TranslatorAgent and its services.
+   */
   constructor() {
     this.name = 'Translator Agent';
     this.description = 'Handles text translation, language detection, and text-to-speech.';
@@ -12,6 +20,13 @@ class TranslatorAgent {
     this.ttsModel = 'gemini-2.5-flash-preview-tts';
   }
 
+  /**
+   * Executes a translation-related task.
+   * @param {object} task - The task to be executed.
+   * @param {string} task.type - The type of task (e.g., 'translateText', 'detectLanguage').
+   * @returns {Promise<object>} The result of the task.
+   * @throws {Error} If the task type is unknown or required parameters are missing.
+   */
   async executeTask(task) {
     logger.info(`[${this.name}] Executing task: ${task.type}`);
 
@@ -44,6 +59,13 @@ class TranslatorAgent {
     }
   }
   
+  /**
+   * Transcribes audio to text using the Gemini API.
+   * @param {object} audio - The audio to be transcribed.
+   * @param {string} audio.data - The base64 encoded audio data.
+   * @param {string} audio.mimeType - The MIME type of the audio.
+   * @returns {Promise<object>} An object containing the transcription.
+   */
   async voiceToText(audio) {
     const ai = getAi();
     logger.info(`[${this.name}] Transcribing audio with mime type: ${audio.mimeType}`);
@@ -59,6 +81,12 @@ class TranslatorAgent {
     return { transcription: response.text };
   }
 
+  /**
+   * Converts text to speech using the Gemini API.
+   * @param {string} text - The text to be converted to speech.
+   * @param {string} [language] - The language of the text (e.g., 'ar' for Arabic).
+   * @returns {Promise<object>} An object containing the base64 encoded audio content.
+   */
   async textToVoice(text, language) {
     const ai = getAi();
     // A simple mapping, can be expanded with more voices.

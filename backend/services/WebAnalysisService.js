@@ -8,6 +8,10 @@ const { Readability } = require('@mozilla/readability');
 
 // This is a placeholder for the actual Gemini client.
 const geminiClient = {
+  /**
+   * @param {string} prompt
+   * @returns {Promise<any>}
+   */
   async generateContent(prompt) {
     console.log('--- FAKE GEMINI CALL ---');
     const fakeAnalysis = `
@@ -28,7 +32,11 @@ const geminiClient = {
   }
 };
 
-// This is a placeholder for the Google Search API call.
+/**
+ * This is a placeholder for the Google Search API call.
+ * @param {string} query
+ * @returns {Promise<any>}
+ */
 async function googleSearch(query) {
     console.log(`--- FAKE GOOGLE SEARCH for "${query}" ---`);
     // In a real implementation, this would use axios to call the Google Custom Search API.
@@ -47,8 +55,13 @@ async function googleSearch(query) {
 }
 
 // --- WebAnalysisService Class ---
-
+/**
+ * @class WebAnalysisService
+ */
 class WebAnalysisService {
+  /**
+   * @param {any} geminiClient
+   */
   constructor(geminiClient) {
     this.geminiClient = geminiClient;
   }
@@ -149,7 +162,7 @@ class WebAnalysisService {
     ${cleanedContent.content}`;
     
     try {
-      const result = await this.geminiClient.generateContent(prompt);
+      const result = await this.gemm_iniClient.generateContent(prompt);
       return result.response.text();
     } catch (error) {
       console.error(`[WebAnalysisService] Error analyzing URL ${url} with Gemini:`, error);

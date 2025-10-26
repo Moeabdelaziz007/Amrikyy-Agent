@@ -1,7 +1,8 @@
 /**
- * Authentication Service
- * Handles user authentication, registration, and password management
- * Integrates with Supabase Auth and Email Service
+ * @fileoverview Authentication Service
+ * @module services/authService
+ * @description Handles user authentication, registration, and password management.
+ * Integrates with Supabase Auth for user management and an email service for notifications.
  */
 
 const { createClient } = require('@supabase/supabase-js');
@@ -14,9 +15,18 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+/**
+ * @class AuthService
+ * @description Provides methods for user authentication and profile management.
+ */
 class AuthService {
   /**
-   * Register a new user
+   * Registers a new user with the application.
+   * @param {object} params - The user registration details.
+   * @param {string} params.email - The user's email address.
+   * @param {string} params.password - The user's password (min 6 characters).
+   * @param {string} [params.fullName] - The user's full name.
+   * @returns {Promise<object>} An object containing the result of the signup operation.
    */
   async signup({ email, password, fullName }) {
     try {
@@ -127,7 +137,11 @@ class AuthService {
   }
 
   /**
-   * Login user
+   * Logs in a user.
+   * @param {object} params - The user login credentials.
+   * @param {string} params.email - The user's email address.
+   * @param {string} params.password - The user's password.
+   * @returns {Promise<object>} An object containing the login result, including user and session data.
    */
   async login({ email, password }) {
     try {
@@ -201,7 +215,9 @@ class AuthService {
   }
 
   /**
-   * Refresh access token
+   * Refreshes a user's access token using a refresh token.
+   * @param {string} refreshToken - The refresh token.
+   * @returns {Promise<object>} An object containing the new session data.
    */
   async refreshToken(refreshToken) {
     try {
@@ -251,7 +267,9 @@ class AuthService {
   }
 
   /**
-   * Logout user
+   * Logs out a user by invalidating their token.
+   * @param {string} token - The user's access token.
+   * @returns {Promise<object>} An object indicating the result of the logout operation.
    */
   async logout(token) {
     try {
@@ -291,7 +309,9 @@ class AuthService {
   }
 
   /**
-   * Request password reset
+   * Sends a password reset link to a user's email.
+   * @param {string} email - The user's email address.
+   * @returns {Promise<object>} A success message, regardless of whether the email exists, to prevent enumeration attacks.
    */
   async forgotPassword(email) {
     try {
@@ -342,7 +362,11 @@ class AuthService {
   }
 
   /**
-   * Reset password with token
+   * Resets a user's password using a valid access token.
+   * @param {object} params - The password reset details.
+   * @param {string} params.accessToken - The access token from the password reset link.
+   * @param {string} params.newPassword - The new password (min 6 characters).
+   * @returns {Promise<object>} An object indicating the result of the password reset operation.
    */
   async resetPassword({ accessToken, newPassword }) {
     try {
@@ -391,7 +415,9 @@ class AuthService {
   }
 
   /**
-   * Get current user profile
+   * Retrieves the profile of the currently authenticated user.
+   * @param {string} token - The user's access token.
+   * @returns {Promise<object>} An object containing the user's profile information.
    */
   async getCurrentUser(token) {
     try {
@@ -440,7 +466,11 @@ class AuthService {
   }
 
   /**
-   * Verify email with token
+   * Verifies a user's email address using a token.
+   * @param {object} params - The email verification details.
+   * @param {string} params.token - The verification token from the email link.
+   * @param {string} params.type - The type of verification.
+   * @returns {Promise<object>} An object indicating the result of the email verification.
    */
   async verifyEmail({ token, type }) {
     try {
@@ -483,7 +513,10 @@ class AuthService {
   }
 
   /**
-   * Update user profile
+   * Updates a user's profile information.
+   * @param {string} userId - The ID of the user to update.
+   * @param {object} updates - An object containing the profile fields to update.
+   * @returns {Promise<object>} An object containing the updated profile data.
    */
   async updateProfile(userId, updates) {
     try {

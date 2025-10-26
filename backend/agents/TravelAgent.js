@@ -1,8 +1,17 @@
+// backend/agents/TravelAgent.js
 const { getAi } = require('../services/geminiService');
 const GoogleMapsService = require('../services/GoogleMapsService');
 const logger = require('../utils/logger');
 
+/**
+ * @class TravelAgent
+ * @description An AI-powered travel assistant for planning trips, finding flights, hotels, and local spots.
+ */
 class TravelAgent {
+  /**
+   * @constructor
+   * @description Initializes the TravelAgent and its services.
+   */
   constructor() {
     this.name = "Travel Agent";
     this.description = "A powerful AI travel assistant for planning trips, finding flights, hotels, and local spots.";
@@ -15,6 +24,13 @@ class TravelAgent {
     }
   }
 
+  /**
+   * Executes a travel-related task.
+   * @param {object} task - The task to be executed.
+   * @param {string} task.type - The type of travel task (e.g., 'createItinerary', 'findFlights').
+   * @returns {Promise<object>} The result of the task.
+   * @throws {Error} If the task type is unknown or required parameters are missing.
+   */
   async executeTask(task) {
     logger.info(`[${this.name}] Executing task: ${task.type}`);
     if (!process.env.API_KEY) throw new Error('Gemini API Key is not configured.');
@@ -51,6 +67,11 @@ class TravelAgent {
     }
   }
 
+  /**
+   * Creates a detailed travel itinerary and a representative image.
+   * @param {string} prompt - The user's prompt describing the desired trip.
+   * @returns {Promise<object>} An object containing the itinerary text and a base64 encoded image.
+   */
   async createItinerary(prompt) {
     const ai = getAi();
     const systemInstruction = `You are an expert travel planner. Create a detailed, day-by-day itinerary based on the user's request. Include suggested timings, activity descriptions, and travel tips. Format the output clearly using Markdown.`;
@@ -90,6 +111,13 @@ class TravelAgent {
     return { text: itineraryResponse.text, image: `data:image/jpeg;base64,${base64ImageBytes}` };
   }
 
+  /**
+   * Finds flights based on origin, destination, and dates.
+   * @param {string} origin - The origin of the flight.
+   * @param {string} destination - The destination of the flight.
+   * @param {string} [dates] - The desired travel dates.
+   * @returns {Promise<object>} An object containing flight options and grounding chunks.
+   */
   async findFlights(origin, destination, dates) {
     const ai = getAi();
     const prompt = `You are a flight search assistant. Find flights from ${origin} to ${destination} for the following dates: ${dates || 'anytime soon'}.
@@ -108,6 +136,13 @@ class TravelAgent {
     };
   }
 
+  /**
+   * Finds hotels based on location, dates, and criteria.
+   * @param {string} location - The location to search for hotels.
+   * @param {string} [dates] - The desired dates of stay.
+   * @param {string} [criteria] - The criteria for the hotel search.
+   * @returns {Promise<object>} An object containing hotel options and grounding chunks.
+   */
   async findHotels(location, dates, criteria) {
     const ai = getAi();
     const prompt = `You are a hotel search assistant. Find hotels in ${location} for the dates: ${dates || 'upcoming'}.
@@ -127,6 +162,12 @@ class TravelAgent {
     };
   }
   
+  /**
+   * Finds places of interest based on location and type.
+   * @param {string} location - The location to search in.
+   * @param {string} placeType - The type of place to search for (e.g., 'restaurants', 'museums').
+   * @returns {Promise<object>} An object containing places of interest and grounding chunks.
+   */
   async findPlacesOfInterest(location, placeType) {
     const ai = getAi();
     const prompt = `Find the best ${placeType} in or near ${location}. Provide a list of the top 3-5 places with a brief description of each.`;

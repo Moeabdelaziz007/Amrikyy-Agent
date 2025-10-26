@@ -1,7 +1,8 @@
 /**
- * Booking Service
- * Handles flight bookings, payment processing, and email notifications
- * Orchestrates the complete booking workflow
+ * @fileoverview Booking Service
+ * @module services/bookingService
+ * @description Handles flight bookings, payment processing, and email notifications.
+ * Orchestrates the complete booking workflow from creation to confirmation.
  */
 
 const { createClient } = require('@supabase/supabase-js');
@@ -15,10 +16,21 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+/**
+ * @class BookingService
+ * @description Provides methods for managing flight bookings.
+ */
 class BookingService {
   /**
-   * Create a new booking with payment intent
-   * This is the main orchestrator for the booking workflow
+   * Creates a new booking and initializes a payment intent.
+   * This is the main orchestrator for the booking workflow.
+   * @param {object} params - The booking details.
+   * @param {string} params.userId - The ID of the user making the booking.
+   * @param {object} params.flightDetails - The details of the flight.
+   * @param {object} params.travelerInfo - The information of the traveler.
+   * @param {number} params.totalPrice - The total price of the booking.
+   * @param {string} [params.currency='usd'] - The currency of the payment.
+   * @returns {Promise<object>} An object containing the booking and payment information.
    */
   async createBooking({ userId, flightDetails, travelerInfo, totalPrice, currency = 'usd' }) {
     try {
@@ -122,8 +134,10 @@ class BookingService {
   }
 
   /**
-   * Confirm booking after successful payment
-   * Called by Stripe webhook
+   * Confirms a booking after a successful payment.
+   * This method is typically called by a Stripe webhook.
+   * @param {string} paymentIntentId - The ID of the Stripe payment intent.
+   * @returns {Promise<object>} An object indicating the result of the confirmation.
    */
   async confirmBooking(paymentIntentId) {
     try {
@@ -211,8 +225,10 @@ class BookingService {
   }
 
   /**
-   * Mark booking as failed
-   * Called by Stripe webhook when payment fails
+   * Marks a booking as failed after a payment failure.
+   * This method is typically called by a Stripe webhook.
+   * @param {string} paymentIntentId - The ID of the Stripe payment intent.
+   * @returns {Promise<object>} An object indicating the result of the operation.
    */
   async failBooking(paymentIntentId) {
     try {
@@ -268,7 +284,9 @@ class BookingService {
   }
 
   /**
-   * Cancel a booking
+   * Cancels a booking.
+   * @param {string} bookingId - The ID of the booking to cancel.
+   * @returns {Promise<object>} An object indicating the result of the cancellation.
    */
   async cancelBooking(bookingId) {
     try {
@@ -329,7 +347,9 @@ class BookingService {
   }
 
   /**
-   * Get booking by ID
+   * Retrieves a booking by its ID.
+   * @param {string} bookingId - The ID of the booking to retrieve.
+   * @returns {Promise<object>} An object containing the booking data.
    */
   async getBooking(bookingId) {
     try {
@@ -361,7 +381,13 @@ class BookingService {
   }
 
   /**
-   * Get user bookings
+   * Retrieves a list of bookings for a specific user.
+   * @param {string} userId - The ID of the user.
+   * @param {object} [options] - The query options.
+   * @param {string} [options.status] - The status of the bookings to retrieve.
+   * @param {number} [options.limit=10] - The maximum number of bookings to return.
+   * @param {number} [options.offset=0] - The number of bookings to skip.
+   * @returns {Promise<object>} An object containing the list of bookings.
    */
   async getUserBookings(userId, { status = null, limit = 10, offset = 0 } = {}) {
     try {
@@ -402,7 +428,8 @@ class BookingService {
   }
 
   /**
-   * Generate unique booking ID
+   * Generates a unique booking ID.
+   * @returns {string} A unique booking ID string.
    */
   generateBookingId() {
     const timestamp = Date.now().toString(36).toUpperCase();
@@ -411,7 +438,10 @@ class BookingService {
   }
 
   /**
-   * Request refund for a booking
+   * Requests a refund for a booking.
+   * @param {string} bookingId - The ID of the booking to refund.
+   * @param {number} [amount=null] - The amount to refund. If null, the full amount will be refunded.
+   * @returns {Promise<object>} An object containing the refund information.
    */
   async requestRefund(bookingId, amount = null) {
     try {
