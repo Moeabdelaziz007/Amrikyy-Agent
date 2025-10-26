@@ -47,6 +47,7 @@ const voiceRoutes = require('./routes/voice');
 const healthRoutes = require('./src/routes/health');
 const cacheRoutes = require('./src/routes/cache');
 const metricsRoutes = require('./src/routes/metrics');
+const streamRoutes = require('./src/routes/streamRoutes');
 
 // Middleware for protected routes
 const { requireAuth } = require('./src/middleware/auth');
@@ -65,6 +66,7 @@ app.use('/api/voice', voiceRoutes);
 app.use('/api', healthRoutes);
 app.use('/api/cache', requireAuth, defaultLimiter, cacheRoutes);
 app.use('/api', metricsRoutes);
+app.use('/api/stream', requireAuth, defaultLimiter, streamRoutes);
 
 // ============================================
 // DASHBOARD STATS ENDPOINT
