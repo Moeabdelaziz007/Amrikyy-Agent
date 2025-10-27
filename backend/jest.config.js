@@ -5,8 +5,11 @@ module.exports = {
     '**/__tests__/**/*.js',
     '**/?(*.)+(spec|test).js'
   ],
+  transform: {
+    '^.+\\.[tj]sx?$': 'babel-jest',
+  },
   transformIgnorePatterns: [
-    'node_modules/(?!(isomorphic-dompurify|parse5|jsdom)/)'
+    'node_modules/(?!(isomorphic-dompurify|parse5|jsdom|@mozilla/readability|user-agents|cheerio|axios|tough-cookie|node-fetch|data-uri-to-buffer|fetch-blob|formdata-polyfill|@supabase|@google|googleapis|gaxios))'
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
