@@ -1,6 +1,7 @@
 # Runtime data
 .private-journal/
 logs/
+*.log
 *.err
 *.tmp
 
@@ -12,3 +13,7 @@ node_modules/
 # Build & Coverage
 dist/
 coverage/
+
+# Test Reports
+playwright-report/
+test-results/

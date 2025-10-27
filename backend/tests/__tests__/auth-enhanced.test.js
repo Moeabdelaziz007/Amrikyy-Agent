@@ -8,11 +8,16 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
 // Mock external dependencies
+jest.mock('@google-cloud/text-to-speech', () => ({
+  TextToSpeechClient: jest.fn(() => ({
+    synthesizeSpeech: jest.fn(),
+  })),
+}));
 jest.mock('../../utils/logger');
 jest.mock('../../utils/healthMonitor');
 jest.mock('../../database/supabase');
 jest.mock('jsonwebtoken');
-jest.mock('crypto');
+
 
 // Import after mocking
 const app = require('../../server');

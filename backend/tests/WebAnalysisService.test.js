@@ -1,5 +1,5 @@
 const { describe, it, expect, jest: vi, beforeEach } = require('@jest/globals');
-import WebAnalysisService from '../services/WebAnalysisService';
+const WebAnalysisService = require('../services/WebAnalysisService');
 
 // Mock dependencies
 vi.mock('axios');

@@ -194,8 +194,7 @@ const cleanupTestData = async () => {
     for (const table of tables) {
       await testSupabaseClient
         .from(table)
-        .delete()
-        .neq('id', '00000000-0000-0000-0000-000000000000'); // This does not work for the users table since it does not have the id field, this will need to be fixed
+        .delete();
     }
 
     console.log('✅ Test data cleanup completed');

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+const { describe, it, expect, jest: vi, beforeEach } = require('@jest/globals');
 import request from 'supertest';
 import express from 'express';
 import webExplorerRoutes from '../routes/web-explorer';

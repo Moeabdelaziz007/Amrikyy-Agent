@@ -8,6 +8,30 @@
 const request = require('supertest');
 const { EnhancedModelSwitcher } = require('../src/ai/EnhancedModelSwitcher');
 
+// Mock ClaudeClient for testing purposes, as it's not defined anywhere else
+class ClaudeClient {
+  constructor() {
+    this.model = 'claude-3-5-sonnet-20241022';
+    this.baseUrl = 'https://api.anthropic.com/v1/messages';
+  }
+
+  getCapabilities() {
+    // Check for a dummy API key to simulate enabled/disabled state
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (apiKey && apiKey !== 'test_key') {
+      return {
+        enabled: true,
+        capabilities: ['presentation_generation', 'business_analysis', 'code_generation', 'revenue_forecast'],
+      };
+    } else {
+      return {
+        enabled: false,
+        capabilities: [],
+      };
+    }
+  }
+}
+
 // Mock the server app for testing
 const express = require('express');
 const enhancedAIRoutes = require('../routes/enhanced-ai');

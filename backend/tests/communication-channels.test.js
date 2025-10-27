@@ -18,18 +18,23 @@ jest.mock('../utils/logger', () => ({
   logger: mockLogger,
 }));
 
-// Mock AIXConnectionManager for route initialization
+// Mock the AIXConnectionManager module itself
 const mockAixConnectionManager = {
   registerTransport: jest.fn(),
   getAgentStatus: jest.fn(),
   connectAgent: jest.fn(),
   sendMessage: jest.fn(),
 };
+jest.mock('../src/aix/AIXConnectionManager', () => {
+  return jest.fn().mockImplementation(() => {
+    return mockAixConnectionManager;
+  });
+});
 
 // Import routes
 const discordRoute = require('../routes/discord');
 const messengerRoute = require('../routes/messenger');
-const emailRoute = require('../routes/email')(mockAixConnectionManager);
+const emailRoute = require('../routes/email');
 const ivrRoute = require('../routes/ivr');
 
 // Setup a minimal express app for testing the routes
