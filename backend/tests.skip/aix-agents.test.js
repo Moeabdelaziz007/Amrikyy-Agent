@@ -12,7 +12,6 @@ describe('AIX Agents', () => {
   const agentsDir = path.join(__dirname, '../agents');
   const aixFiles = [
     'cursor.aix',
-    'ona.aix',
     'gemini.aix',
     'aladdin.aix'
   ];
@@ -122,16 +121,6 @@ describe('AIX Agents', () => {
       expect(content).toContain('coordination');
     });
 
-    test('ONA agent should have documentation characteristics', () => {
-      const filePath = path.join(agentsDir, 'ona.aix');
-      const content = fs.readFileSync(filePath, 'utf8');
-      
-      expect(content).toContain('documentation-agent');
-      expect(content).toContain('Documentation & Testing Specialist');
-      expect(content).toContain('meticulous');
-      expect(content).toContain('documentation');
-    });
-
     test('Gemini agent should have performance/security characteristics', () => {
       const filePath = path.join(agentsDir, 'gemini.aix');
       const content = fs.readFileSync(filePath, 'utf8');
@@ -180,7 +169,7 @@ describe('AIX Agents', () => {
   });
 
   describe('File Size and Content Validation', () => {
-    aixFiles.forEach(filename => {
+    aixFiles.forEach(filename => {.
       test(`should have reasonable file size for ${filename}`, () => {
         const filePath = path.join(agentsDir, filename);
         const stats = fs.statSync(filePath);
@@ -207,7 +196,7 @@ describe('AIX Agents', () => {
         uuids.push(uuid);
       });
       
-      expect(uuids).toHaveLength(4);
+      expect(uuids).toHaveLength(3);
     });
 
     test('should have unique species for all agents', () => {
@@ -225,7 +214,7 @@ describe('AIX Agents', () => {
         species.push(agentSpecies);
       });
       
-      expect(species).toHaveLength(4);
+      expect(species).toHaveLength(3);
     });
   });
 

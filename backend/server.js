@@ -403,13 +403,15 @@ if (process.env.TELEGRAM_BOT_TOKEN) {
 // START SERVER
 // ============================================
 
-app.listen(PORT, () => {
-  console.log(`🚀 Amrikyy Travel Agent MVP Server running on port ${PORT}`);
-  console.log(`📡 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`🤖 AI Chat: http://localhost:${PORT}/api/ai/chat`);
-  console.log(`✈️  Trips API: http://localhost:${PORT}/api/trips`);
-  console.log(`👤 Auth API: http://localhost:${PORT}/api/auth/login`);
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Amrikyy Travel Agent MVP Server running on port ${PORT}`);
+    console.log(`📡 Health check: http://localhost:${PORT}/api/health`);
+    console.log(`🤖 AI Chat: http://localhost:${PORT}/api/ai/chat`);
+    console.log(`✈️  Trips API: http://localhost:${PORT}/api/trips`);
+    console.log(`👤 Auth API: http://localhost:${PORT}/api/auth/login`);
+    console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  });
+}
 
 module.exports = app;

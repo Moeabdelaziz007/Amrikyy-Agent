@@ -2,8 +2,15 @@ const request = require('supertest');
 const express = require('express');
 const dashboardRouter = require('../routes/dashboard');
 
+// Mock the auth middleware
+const auth = (req, res, next) => {
+  req.user = { id: 'test-user' };
+  next();
+};
+
 // Setup a minimal express app for testing the router
 const app = express();
+app.use(auth);
 app.use('/api/dashboard', dashboardRouter);
 
 describe('Dashboard API Endpoint', () => {

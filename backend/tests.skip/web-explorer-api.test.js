@@ -1,7 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import request from 'supertest';
-import express from 'express';
-import webExplorerRoutes from '../routes/web-explorer';
+const request = require('supertest');
+const express = require('express');
+const webExplorerRoutes = require('../routes/web-explorer');
 
 // Create test app
 const app = express();
@@ -10,7 +9,7 @@ app.use('/api/explorer', webExplorerRoutes);
 
 describe('Web Explorer API Endpoints', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe('POST /api/explorer/query', () => {
