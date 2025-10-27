@@ -2,8 +2,11 @@ module.exports = {
   testEnvironment: 'node',
   testMatch: [
     '<rootDir>/tests/**/*.test.js',
+    '<rootDir>/tests/**/*.test.ts',
     '**/__tests__/**/*.js',
-    '**/?(*.)+(spec|test).js'
+    '**/__tests__/**/*.ts',
+    '**/?(*.)+(spec|test).js',
+    '**/?(*.)+(spec|test).ts'
   ],
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
@@ -26,7 +29,7 @@ module.exports = {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
-  setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
+  // setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],  // Removed - not needed
   testTimeout: 30000,
   forceExit: true,
   detectOpenHandles: true,
@@ -60,5 +63,5 @@ module.exports = {
   ],
 
   // Setup files for database mocking
-  setupFiles: ['<rootDir>/tests/database-mock.js']
+  // setupFiles: ['<rootDir>/tests/database-mock.js']  // Removed - not needed
 };
