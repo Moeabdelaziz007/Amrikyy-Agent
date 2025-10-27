@@ -41,7 +41,7 @@ router.post('/query', async (req, res) => {
   const { question } = req.body;
 
   if (!question) {
-    return res.status(400).json({ success: false, message: ''question' is required' });
+    return res.status(400).json({ success: false, message: "'question' is required" });
   }
 
   try {
