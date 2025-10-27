@@ -440,11 +440,3 @@ class GeminiWorkTracker {
 }
 
 module.exports = GeminiWorkTracker;
-      analytics.arabicContent.totalReplays,
-    ];
-
-    return [headers.join(','), row.join(',')].join('\n');
-  }
-}
-
-module.exports = GeminiWorkTracker;
