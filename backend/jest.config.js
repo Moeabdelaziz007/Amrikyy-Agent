@@ -1,9 +1,10 @@
 module.exports = {
   testEnvironment: 'node',
   testMatch: [
-    '<rootDir>/tests/**/*.test.js',
-    '**/__tests__/**/*.js',
-    '**/?(*.)+(spec|test).js'
+    '<rootDir>/tests/**/*.test.{js,ts,tsx}',
+    '**/__tests__/**/*.{js,ts,tsx}',
+    '**/?(*.)+(spec|test).{js,ts,tsx}',
+    '<rootDir>/src/**/*.test.{js,ts,tsx}'
   ],
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
@@ -26,7 +27,6 @@ module.exports = {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
-  setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
   testTimeout: 30000,
   forceExit: true,
   detectOpenHandles: true,
