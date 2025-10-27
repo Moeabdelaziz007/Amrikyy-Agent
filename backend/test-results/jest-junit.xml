@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="68" failures="0" errors="0" time="0.966">
-  <testsuite name="Booking Service" errors="0" failures="0" skipped="0" timestamp="2025-10-27T04:44:17" time="0.601" tests="17">
+<testsuites name="jest tests" tests="68" failures="0" errors="0" time="0.837">
+  <testsuite name="Booking Service" errors="0" failures="0" skipped="0" timestamp="2025-10-27T04:45:15" time="0.461" tests="17">
     <testcase classname="Booking Service › generateBookingReference" name="should generate unique booking reference with correct format" time="0.004">
     </testcase>
     <testcase classname="Booking Service › generateBookingReference" name="should start with AMR prefix" time="0.002">
     </testcase>
     <testcase classname="Booking Service › createBooking" name="should create booking successfully" time="0.02">
     </testcase>
-    <testcase classname="Booking Service › createBooking" name="should handle database error during creation" time="0.019">
+    <testcase classname="Booking Service › createBooking" name="should handle database error during creation" time="0.02">
     </testcase>
-    <testcase classname="Booking Service › createBooking" name="should set correct default currency" time="0.002">
+    <testcase classname="Booking Service › createBooking" name="should set correct default currency" time="0.003">
     </testcase>
     <testcase classname="Booking Service › getBooking" name="should retrieve booking by ID" time="0.003">
     </testcase>
-    <testcase classname="Booking Service › getBooking" name="should handle booking not found" time="0.004">
+    <testcase classname="Booking Service › getBooking" name="should handle booking not found" time="0.011">
     </testcase>
     <testcase classname="Booking Service › getBookingByReference" name="should retrieve booking by reference" time="0.002">
     </testcase>
     <testcase classname="Booking Service › getUserBookings" name="should retrieve all user bookings" time="0.002">
     </testcase>
-    <testcase classname="Booking Service › getUserBookings" name="should handle database error" time="0.008">
+    <testcase classname="Booking Service › getUserBookings" name="should handle database error" time="0.003">
     </testcase>
-    <testcase classname="Booking Service › updateBookingStatus" name="should update booking status successfully" time="0.003">
+    <testcase classname="Booking Service › updateBookingStatus" name="should update booking status successfully" time="0.002">
     </testcase>
     <testcase classname="Booking Service › updateBookingStatus" name="should handle update error" time="0.003">
     </testcase>
@@ -31,25 +31,85 @@
     </testcase>
     <testcase classname="Booking Service › getBookingStats" name="should calculate booking statistics correctly" time="0.002">
     </testcase>
-    <testcase classname="Booking Service › getBookingStats" name="should handle empty booking list" time="0.002">
+    <testcase classname="Booking Service › getBookingStats" name="should handle empty booking list" time="0.001">
     </testcase>
     <testcase classname="Booking Service › getBookingStats" name="should only count confirmed bookings in totalSpent" time="0.001">
     </testcase>
   </testsuite>
-  <testsuite name="Rate Limiting Middleware" errors="0" failures="0" skipped="0" timestamp="2025-10-27T04:44:18" time="0.111" tests="22">
+  <testsuite name="Agent Authentication Middleware" errors="0" failures="0" skipped="0" timestamp="2025-10-27T04:45:15" time="0.191" tests="29">
+    <testcase classname="Agent Authentication Middleware › Token Verification" name="should verify valid JWT token" time="0.006">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Token Verification" name="should reject invalid JWT token" time="0.007">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Token Verification" name="should reject expired JWT token" time="0.002">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Token Verification" name="should verify valid API key" time="0.002">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Token Verification" name="should reject invalid API key" time="0.001">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Authentication Middleware" name="should authenticate with valid Bearer token" time="0.004">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Authentication Middleware" name="should authenticate with valid API key" time="0.002">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Authentication Middleware" name="should reject request without credentials" time="0.005">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Authentication Middleware" name="should reject request with invalid token" time="0.008">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Optional Authentication" name="should inject user if valid token provided" time="0.003">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Optional Authentication" name="should continue without user if no token provided" time="0.002">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Permission Checks" name="should grant permission for user role" time="0.002">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Permission Checks" name="should deny permission for insufficient role" time="0.001">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Permission Checks" name="should grant all permissions for internal role" time="0.002">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Permission Checks" name="should deny permission for invalid user" time="0.001">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Permission Middleware" name="should allow request with required permission" time="0.002">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Permission Middleware" name="should deny request without required permission" time="0.004">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Permission Middleware" name="should deny unauthenticated request" time="0.001">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Role Middleware" name="should allow request with required role" time="0.002">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Role Middleware" name="should deny request without required role" time="0.003">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Role Middleware" name="should allow request with any of required roles" time="0.001">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Role Middleware" name="should deny request without any of required roles" time="0.001">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Predefined Role Middleware" name="requireAdmin should allow admin users" time="0.006">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Predefined Role Middleware" name="requireAdmin should allow internal users" time="0.001">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Predefined Role Middleware" name="requireAdmin should deny regular users" time="0.001">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Predefined Role Middleware" name="requirePremium should allow premium users" time="0">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Predefined Role Middleware" name="requirePremium should deny regular users" time="0.001">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Token Generation" name="should generate valid JWT token" time="0.002">
+    </testcase>
+    <testcase classname="Agent Authentication Middleware › Token Generation" name="should generate token with custom expiration" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="Rate Limiting Middleware" errors="0" failures="0" skipped="0" timestamp="2025-10-27T04:45:15" time="0.1" tests="22">
     <testcase classname="Rate Limiting Middleware › API Rate Limiter Configuration" name="should have correct configuration" time="0.003">
     </testcase>
-    <testcase classname="Rate Limiting Middleware › API Rate Limiter Configuration" name="should have standard headers enabled" time="0.001">
+    <testcase classname="Rate Limiting Middleware › API Rate Limiter Configuration" name="should have standard headers enabled" time="0.002">
     </testcase>
     <testcase classname="Rate Limiting Middleware › API Rate Limiter Configuration" name="should have legacy headers disabled" time="0.001">
     </testcase>
     <testcase classname="Rate Limiting Middleware › API Rate Limiter Configuration" name="should have appropriate error message" time="0.002">
     </testcase>
-    <testcase classname="Rate Limiting Middleware › Auth Rate Limiter Configuration" name="should have stricter limits than general API" time="0.001">
+    <testcase classname="Rate Limiting Middleware › Auth Rate Limiter Configuration" name="should have stricter limits than general API" time="0.002">
     </testcase>
     <testcase classname="Rate Limiting Middleware › Auth Rate Limiter Configuration" name="should skip successful requests" time="0.001">
     </testcase>
-    <testcase classname="Rate Limiting Middleware › Auth Rate Limiter Configuration" name="should have authentication-specific error message" time="0.002">
+    <testcase classname="Rate Limiting Middleware › Auth Rate Limiter Configuration" name="should have authentication-specific error message" time="0.004">
     </testcase>
     <testcase classname="Rate Limiting Middleware › AI Rate Limiter Configuration" name="should have appropriate limits for AI endpoints" time="0.001">
     </testcase>
@@ -57,11 +117,11 @@
     </testcase>
     <testcase classname="Rate Limiting Middleware › Payment Rate Limiter Configuration" name="should have very strict limits" time="0.001">
     </testcase>
-    <testcase classname="Rate Limiting Middleware › Payment Rate Limiter Configuration" name="should have payment-specific error message" time="0.001">
+    <testcase classname="Rate Limiting Middleware › Payment Rate Limiter Configuration" name="should have payment-specific error message" time="0">
     </testcase>
     <testcase classname="Rate Limiting Middleware › Payment Rate Limiter Configuration" name="should have longer retry time" time="0.001">
     </testcase>
-    <testcase classname="Rate Limiting Middleware › Rate Limiter Behavior" name="should allow requests within rate limit" time="0.002">
+    <testcase classname="Rate Limiting Middleware › Rate Limiter Behavior" name="should allow requests within rate limit" time="0.001">
     </testcase>
     <testcase classname="Rate Limiting Middleware › Rate Limiter Behavior" name="should block requests after rate limit exceeded" time="0.002">
     </testcase>
@@ -69,9 +129,9 @@
     </testcase>
     <testcase classname="Rate Limiting Middleware › Environment Variable Configuration" name="should respect RATE_LIMIT_WINDOW_MS environment variable" time="0.001">
     </testcase>
-    <testcase classname="Rate Limiting Middleware › Environment Variable Configuration" name="should respect RATE_LIMIT_MAX_REQUESTS environment variable" time="0.001">
+    <testcase classname="Rate Limiting Middleware › Environment Variable Configuration" name="should respect RATE_LIMIT_MAX_REQUESTS environment variable" time="0">
     </testcase>
-    <testcase classname="Rate Limiting Middleware › Environment Variable Configuration" name="should use defaults when env vars not set" time="0.001">
+    <testcase classname="Rate Limiting Middleware › Environment Variable Configuration" name="should use defaults when env vars not set" time="0">
     </testcase>
     <testcase classname="Rate Limiting Middleware › Error Message Quality" name="should provide helpful error messages for general API" time="0.001">
     </testcase>
@@ -80,66 +140,6 @@
     <testcase classname="Rate Limiting Middleware › Error Message Quality" name="should provide clear feedback for AI endpoints" time="0.001">
     </testcase>
     <testcase classname="Rate Limiting Middleware › Error Message Quality" name="should provide contact info for payment limits" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="Agent Authentication Middleware" errors="0" failures="0" skipped="0" timestamp="2025-10-27T04:44:18" time="0.17" tests="29">
-    <testcase classname="Agent Authentication Middleware › Token Verification" name="should verify valid JWT token" time="0.006">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Token Verification" name="should reject invalid JWT token" time="0.007">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Token Verification" name="should reject expired JWT token" time="0.001">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Token Verification" name="should verify valid API key" time="0">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Token Verification" name="should reject invalid API key" time="0">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Authentication Middleware" name="should authenticate with valid Bearer token" time="0.002">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Authentication Middleware" name="should authenticate with valid API key" time="0.001">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Authentication Middleware" name="should reject request without credentials" time="0.005">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Authentication Middleware" name="should reject request with invalid token" time="0.006">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Optional Authentication" name="should inject user if valid token provided" time="0.002">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Optional Authentication" name="should continue without user if no token provided" time="0.001">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Permission Checks" name="should grant permission for user role" time="0.001">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Permission Checks" name="should deny permission for insufficient role" time="0.001">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Permission Checks" name="should grant all permissions for internal role" time="0.001">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Permission Checks" name="should deny permission for invalid user" time="0.001">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Permission Middleware" name="should allow request with required permission" time="0.001">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Permission Middleware" name="should deny request without required permission" time="0.002">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Permission Middleware" name="should deny unauthenticated request" time="0.001">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Role Middleware" name="should allow request with required role" time="0.001">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Role Middleware" name="should deny request without required role" time="0.003">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Role Middleware" name="should allow request with any of required roles" time="0.001">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Role Middleware" name="should deny request without any of required roles" time="0.002">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Predefined Role Middleware" name="requireAdmin should allow admin users" time="0.002">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Predefined Role Middleware" name="requireAdmin should allow internal users" time="0.001">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Predefined Role Middleware" name="requireAdmin should deny regular users" time="0.001">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Predefined Role Middleware" name="requirePremium should allow premium users" time="0.001">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Predefined Role Middleware" name="requirePremium should deny regular users" time="0.001">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Token Generation" name="should generate valid JWT token" time="0.002">
-    </testcase>
-    <testcase classname="Agent Authentication Middleware › Token Generation" name="should generate token with custom expiration" time="0.004">
     </testcase>
   </testsuite>
 </testsuites>
