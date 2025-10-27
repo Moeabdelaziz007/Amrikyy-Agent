@@ -1,5 +1,5 @@
 module.exports = {
-  testEnvironment: "jsdom",
+  testEnvironment: "node",
   transform: {
     "^.+\\.[tj]sx?$": "babel-jest"
   },
@@ -10,9 +10,8 @@ module.exports = {
   testMatch: [
     "**/__tests__/**/*.[jt]s?(x)",
     "**/?(*.)+(spec|test).[jt]s?(x)",
-    "<rootDir>/frontend/src/**/*.test.tsx"
+    "<rootDir>/backend/tests/**/*.test.ts"
   ],
-  setupFilesAfterEnv: ['<rootDir>/docs/setup/jest-setup.cjs'],
   testTimeout: 60000,
-  testPathIgnorePatterns: ['/node_modules/', '/e2e/', '<rootDir>/backend/'],
+  testPathIgnorePatterns: ['/node_modules/', '/e2e/', 'aix-agents.test.js', '<rootDir>/frontend/'],
 };

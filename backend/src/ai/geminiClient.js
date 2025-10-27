@@ -6,7 +6,7 @@
 
 const fetch = require('node-fetch');
 
-class KeloClient {
+class GeminiClient {
   constructor() {
     // Note: Using GEMINI_API_KEY instead of KELO_API_KEY
     this.apiKey = process.env.GEMINI_API_KEY || process.env.KELO_API_KEY;

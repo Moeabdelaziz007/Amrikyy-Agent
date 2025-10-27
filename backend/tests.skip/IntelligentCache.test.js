@@ -1,5 +1,4 @@
 const IntelligentCache = require('../src/cache/IntelligentCache');
-const sinon = require('sinon');
 
 // Mock the logger to prevent console output during tests
 jest.mock('../src/utils/logger', () => ({
@@ -11,13 +10,12 @@ jest.mock('../src/utils/logger', () => ({
   },
 }));
 
-describe.skip('IntelligentCache', () => {
+describe('IntelligentCache', () => {
   let cache;
-  let clock;
 
   beforeEach(() => {
     // Use fake timers to control time-based operations like TTL
-    clock = sinon.useFakeTimers();
+    jest.useFakeTimers();
     // Create a new cache instance for each test
     // We will instantiate the cache directly, avoiding the singleton pattern for tests
     const IntelligentCacheClass = require('../src/cache/IntelligentCache').constructor;
@@ -26,9 +24,7 @@ describe.skip('IntelligentCache', () => {
 
   afterEach(() => {
     // Restore the real timers
-    clock.restore();
-    // Clear any mocks
-    sinon.restore();
+    jest.useRealTimers();
   });
 
   it('should set and get a value from the cache', async () => {
@@ -56,7 +52,7 @@ describe.skip('IntelligentCache', () => {
     expect(cachedValue).toBe(value);
 
     // Advance time by 1.1 seconds
-    clock.tick(1100);
+    jest.advanceTimersByTime(1100);
 
     // Should be null after TTL expires
     cachedValue = await cache.get(key);

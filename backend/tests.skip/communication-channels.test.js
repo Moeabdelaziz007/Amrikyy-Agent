@@ -24,13 +24,14 @@ const mockAixConnectionManager = {
   getAgentStatus: jest.fn(),
   connectAgent: jest.fn(),
   sendMessage: jest.fn(),
+  processMessage: jest.fn().mockResolvedValue({ content: 'mock response' }),
 };
 
 // Import routes
-const discordRoute = require('../routes/discord');
-const messengerRoute = require('../routes/messenger');
+const discordRoute = require('../routes/discord')(mockAixConnectionManager);
+const messengerRoute = require('../routes/messenger')(mockAixConnectionManager);
 const emailRoute = require('../routes/email')(mockAixConnectionManager);
-const ivrRoute = require('../routes/ivr');
+const ivrRoute = require('../routes/ivr')(mockAixConnectionManager);
 
 // Setup a minimal express app for testing the routes
 const app = express();
@@ -48,7 +49,7 @@ describe('Communication Channel Routes', () => {
   });
 
   it('should respond to Messenger webhook', async () => {
-    const response = await request(app).post('/api/messenger/webhook').send({ object: 'page' });
+    const response = await request(app).post('/api/messenger/webhook').send({ object: 'page', entry: [{ messaging: [{ message: { text: 'hello' } }] }] });
     // Expecting a 200 OK response
     expect(response.status).toBe(200);
   });
@@ -56,7 +57,7 @@ describe('Communication Channel Routes', () => {
   it('should respond to Email webhook', async () => {
     const response = await request(app)
       .post('/api/email/webhook')
-      .send({ from: 'test@example.com', text: 'hello' });
+      .send({ from: 'test@example.com', to: 'plan@maya-trips.com', text: 'hello' });
     // Expecting a 200 OK response
     expect(response.status).toBe(200);
   });
