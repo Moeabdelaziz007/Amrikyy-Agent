@@ -12,6 +12,12 @@ module.exports = {
     "**/?(*.)+(spec|test).[jt]s?(x)",
     "<rootDir>/frontend/src/**/*.test.tsx"
   ],
+  collectCoverageFrom: [
+    "components/**/*.tsx",
+    "!**/node_modules/**",
+    "!**/coverage/**",
+    "!jest.config.js"
+  ],
   setupFilesAfterEnv: ['<rootDir>/docs/setup/jest-setup.cjs'],
   testTimeout: 60000,
   testPathIgnorePatterns: ['/node_modules/', '/e2e/', '<rootDir>/backend/'],

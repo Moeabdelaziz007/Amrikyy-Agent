@@ -2,10 +2,27 @@ const request = require('supertest');
 const app = require('../server');
 const { createClient } = require('@supabase/supabase-js');
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+jest.mock('@supabase/supabase-js', () => ({
+  createClient: jest.fn(() => ({
+    from: jest.fn(() => ({
+      select: jest.fn().mockReturnThis(),
+      insert: jest.fn().mockReturnThis(),
+      update: jest.fn().mockReturnThis(),
+      delete: jest.fn().mockReturnThis(),
+      eq: jest.fn().mockReturnThis(),
+      single: jest.fn().mockResolvedValue({ data: {}, error: null }),
+    })),
+  })),
+}));
+
+jest.mock('../middleware/jwtAuth', () => ({
+  authenticateUser: (req, res, next) => {
+    req.user = { id: 'test-user' };
+    next();
+  },
+}));
+
+const supabase = createClient();
 
 describe('Notifications API', () => {
   let testUser;

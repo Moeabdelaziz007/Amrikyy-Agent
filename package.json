@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "start-backend": "node backend/index.js",
     "test": "npm run test:frontend",
-    "test:frontend": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.cjs",
+    "test:frontend": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.cjs --coverage",
     "test:backend": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.backend.cjs",
     "test:e2e": "playwright test",
     "postinstall": "npx playwright install",
