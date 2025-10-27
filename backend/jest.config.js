@@ -1,12 +1,19 @@
 module.exports = {
   testEnvironment: 'node',
   testMatch: [
+ copilot/add-backend-test-suites
     '<rootDir>/tests/**/*.test.js',
     '<rootDir>/tests/**/*.test.ts',
     '**/__tests__/**/*.js',
     '**/__tests__/**/*.ts',
     '**/?(*.)+(spec|test).js',
     '**/?(*.)+(spec|test).ts'
+=======
+    '<rootDir>/tests/**/*.test.{js,ts,tsx}',
+    '**/__tests__/**/*.{js,ts,tsx}',
+    '**/?(*.)+(spec|test).{js,ts,tsx}',
+    '<rootDir>/src/**/*.test.{js,ts,tsx}'
+ main
   ],
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
@@ -29,7 +36,10 @@ module.exports = {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
+ copilot/add-backend-test-suites
   // setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],  // Removed - not needed
+=======
+ main
   testTimeout: 30000,
   forceExit: true,
   detectOpenHandles: true,

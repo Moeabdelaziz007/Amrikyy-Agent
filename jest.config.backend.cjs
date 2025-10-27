@@ -1,17 +1,33 @@
 module.exports = {
-  testEnvironment: "node",
+  testEnvironment: 'node',
+  testTimeout: 30000,
+  forceExit: true,
+  detectOpenHandles: true,
+  clearMocks: true,
+  resetMocks: true,
+  restoreMocks: true,
+  setupFilesAfterEnv: ['<rootDir>/backend/tests/setup.js'],
+  collectCoverageFrom: [
+    'backend/src/**/*.js',
+    'backend/services/**/*.js',
+    'backend/routes/**/*.js',
+    '!**/node_modules/**',
+    '!**/*.test.js',
+  ],
   transform: {
-    "^.+\\.[tj]sx?$": "babel-jest"
+    '^.+\\.jsx?$': 'babel-jest',
   },
-  transformIgnorePatterns: [
-    "/node_modules/(?!(@google/genai|cheerio|lucide-react|framer-motion|zustand|sinon)/)"
-  ],
-  moduleFileExtensions: ["js", "jsx", "mjs", "ts", "tsx"],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
   testMatch: [
-    "**/__tests__/**/*.[jt]s?(x)",
-    "**/?(*.)+(spec|test).[jt]s?(x)",
-    "<rootDir>/backend/tests/**/*.test.ts"
+    "<rootDir>/backend/tests/unit/**/*.js",
+    "<rootDir>/backend/tests/integration/**/*.js",
+    "<rootDir>/backend/tests/api/**/*.js",
+    "<rootDir>/backend/tests/agents/**/*.js",
+    "<rootDir>/backend/tests/middleware/**/*.js",
+    "<rootDir>/backend/tests/security/**/*.js",
+    "<rootDir>/backend/tests/utils/**/*.js",
+    "<rootDir>/backend/tests/*.test.js",
   ],
-  testTimeout: 60000,
-  testPathIgnorePatterns: ['/node_modules/', '/e2e/', 'aix-agents.test.js', '<rootDir>/frontend/'],
 };

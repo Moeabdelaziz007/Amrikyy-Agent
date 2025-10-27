@@ -21,6 +21,7 @@ class MemoryCache {
       sets: 0,
       deletes: 0,
     };
+    this.cleanupInterval = null;
 
     // Register with consolidated monitor instead of using setInterval
     this.registerWithMonitor();
@@ -41,7 +42,16 @@ class MemoryCache {
     } catch (error) {
       // Fallback to old method if consolidated monitor is not available
       logger.warn('⚠️ Consolidated monitor not available, using fallback cleanup');
-      setInterval(() => this.cleanup(), 60000);
+      this.cleanupInterval = setInterval(() => this.cleanup(), 60000);
+    }
+  }
+
+  /**
+   * Shutdown the cache and clear any intervals
+   */
+  shutdown() {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
     }
   }
 
