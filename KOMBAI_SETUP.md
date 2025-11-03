@@ -48,7 +48,7 @@ Kombai requires PowerShell with proper execution policies to run preview command
    ```
 
 2. If below version 7, download and install the latest PowerShell:
-   - Visit: https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell
+   - Visit: https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell
    - Or use winget: `winget install --id Microsoft.Powershell --source winget`
 
 #### Step 2: Set Execution Policy
@@ -171,17 +171,16 @@ export default defineConfig({
 })
 ```
 
-### Add Preview Script
+### Verify Scripts
 
-Add a dedicated preview script in `frontend/package.json`:
+No additional scripts are needed in `frontend/package.json`. The existing `dev` script will work with Kombai thanks to the vite.config.ts settings above:
 
 ```json
 {
   "scripts": {
-    "dev": "vite",
+    "dev": "vite",      // Already Kombai-compatible with new vite.config.ts
     "build": "tsc && vite build",
-    "preview": "vite preview",
-    "kombai:preview": "vite --host --port 5173"
+    "preview": "vite preview"
   }
 }
 ```
