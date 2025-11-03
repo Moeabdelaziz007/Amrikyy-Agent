@@ -14,5 +14,9 @@
     "**/node_modules": true,
     "**/dist": true,
     "**/.git": true
-  }
+  },
+  "terminal.integrated.shellIntegration.enabled": true,
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.defaultProfile.linux": "bash"
 }
