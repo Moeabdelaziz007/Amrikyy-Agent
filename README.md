@@ -53,6 +53,12 @@ Amrikyy AI OS is a full-stack application that provides a web-based operating sy
 
 The application will be available at `http://localhost:5173`.
 
+## 🎨 Kombai Setup (Design-to-Code Tool)
+
+To use Kombai for frontend development and design-to-code workflow, see the comprehensive setup guide:
+
+- **[Kombai Setup Guide](KOMBAI_SETUP.md)** - Complete instructions for setting up Kombai with shell integration, troubleshooting preview issues, and IDE configuration.
+
 ## 🧪 Testing
 
 - **Run all tests:**
