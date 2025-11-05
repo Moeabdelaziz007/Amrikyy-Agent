@@ -165,5 +165,77 @@ export const themes: Theme[] = [
       error: '#f87171', // red-400
     },
     mode: 'dark'
+  },
+  {
+    id: 'cyberpunk',
+    name: 'Cyberpunk',
+    nameAr: 'سايبربانك',
+    colors: {
+      primary: '#ff00ff', // magenta
+      secondary: '#00ffff', // cyan
+      accent: '#ffff00', // yellow
+      background: '#0a0a0a', // near black
+      surface: '#1a1a1a', // dark gray
+      text: '#00ffff', // cyan
+      textSecondary: '#ff00ff', // magenta
+      border: '#333333', // dark border
+      gradient: 'linear-gradient(135deg, #ff00ff 0%, #00ffff 100%)',
+      error: '#ff0055', // hot pink
+    },
+    mode: 'dark'
+  },
+  {
+    id: 'nord',
+    name: 'Nord Aurora',
+    nameAr: 'الشفق الشمالي',
+    colors: {
+      primary: '#88c0d0', // nord frost
+      secondary: '#81a1c1', // nord frost
+      accent: '#8fbcbb', // nord frost
+      background: '#2e3440', // nord dark
+      surface: '#3b4252', // nord dark
+      text: '#eceff4', // nord snow
+      textSecondary: '#d8dee9', // nord snow
+      border: '#4c566a', // nord dark
+      gradient: 'linear-gradient(135deg, #88c0d0 0%, #8fbcbb 100%)',
+      error: '#bf616a', // nord red
+    },
+    mode: 'dark'
+  },
+  {
+    id: 'rose',
+    name: 'Rose Gold',
+    nameAr: 'ذهب وردي',
+    colors: {
+      primary: '#e11d48', // rose-600
+      secondary: '#fb7185', // rose-400
+      accent: '#f43f5e', // rose-500
+      background: '#fff1f2', // rose-50
+      surface: '#ffffff',
+      text: '#881337', // rose-900
+      textSecondary: '#9f1239', // rose-800
+      border: '#fecdd3', // rose-200
+      gradient: 'linear-gradient(135deg, #e11d48 0%, #f43f5e 100%)',
+      error: '#ef4444', // red-500
+    },
+    mode: 'light'
+  },
+  {
+    id: 'dracula',
+    name: 'Dracula',
+    nameAr: 'دراكولا',
+    colors: {
+      primary: '#bd93f9', // purple
+      secondary: '#ff79c6', // pink
+      accent: '#8be9fd', // cyan
+      background: '#282a36', // dark background
+      surface: '#44475a', // current line
+      text: '#f8f8f2', // foreground
+      textSecondary: '#6272a4', // comment
+      border: '#44475a', // current line
+      gradient: 'linear-gradient(135deg, #bd93f9 0%, #ff79c6 100%)',
+      error: '#ff5555', // red
+    },
+    mode: 'dark'
   }
 ];
