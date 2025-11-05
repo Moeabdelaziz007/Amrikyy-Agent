@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  MapPin, Eye, Search, Languages, Calendar, HardDrive, Video, Mail, Cpu, X, Globe, Cog, Code, Megaphone, BarChartBig, LineChart, PencilLine, Share2, Rocket, PieChart, MonitorCheck, FolderOpen, Terminal, History, MessageSquare, PlaneTakeoff, Users, ScrollText
+  MapPin, Eye, Search, Languages, Calendar, HardDrive, Video, Mail, Cpu, X, Globe, Cog, Code, Megaphone, BarChartBig, LineChart, PencilLine, Share2, Rocket, PieChart, MonitorCheck, FolderOpen, Terminal, History, MessageSquare, PlaneTakeoff, Users, ScrollText, Cloud
 } from 'lucide-react'; // Corrected CpuChip to Cpu, added Cog, Code, Megaphone, and sub-agent icons
 
 // FIX: Add color prop to all icon components to allow dynamic coloring.
@@ -121,4 +121,8 @@ export const UsersIcon: React.FC<IconProps> = ({ className, color }) => (
 
 export const ScrollTextIcon: React.FC<IconProps> = ({ className, color }) => (
     <ScrollText className={className} color={color} />
+);
+
+export const CloudIcon: React.FC<IconProps> = ({ className, color }) => (
+    <Cloud className={className} color={color} />
 );

@@ -22,6 +22,7 @@ import {
   MessageSquareIcon,
   UsersIcon,
   ScrollTextIcon,
+  CloudIcon,
 } from '../components/IconComponents';
 
 // Import App Components
@@ -44,6 +45,7 @@ import ChatbotApp from '../apps/ChatbotApp';
 import NexusApp from '../apps/NexusApp';
 import ContentCreatorApp from '../components/ContentCreatorApp';
 import MiniAgentsHub from '../components/MiniAgentsHub';
+import WeatherApp from '../apps/WeatherApp';
 
 export const appComponentMap: { [key: string]: React.ComponentType<any> } = {
   travel: TravelAgentUI,
@@ -64,6 +66,7 @@ export const appComponentMap: { [key: string]: React.ComponentType<any> } = {
   nexus: NexusApp,
   contentCreator: ContentCreatorApp,
   marge: MiniAgentsHub,
+  weather: WeatherApp,
 };
 
 export const allApps: AppDefinition[] = [
@@ -270,5 +273,14 @@ export const allApps: AppDefinition[] = [
     color: 'gray',
     isSystemApp: true,
     component: SettingsApp,
+  },
+  {
+    id: 'weather',
+    name: { en: 'Weather', ar: 'الطقس' },
+    description: { en: 'Check weather forecasts and conditions', ar: 'تحقق من توقعات الطقس والظروف الجوية' },
+    icon: CloudIcon,
+    color: 'cyan',
+    isSystemApp: true,
+    component: WeatherApp,
   },
 ];
